@@ -10,12 +10,31 @@
 *{box-sizing:border-box}
 html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg)}
 #gameFrame{position:fixed;inset:0;width:100%;height:100%;border:0;display:block;background:var(--bg)}
-.versionBadge{position:fixed;top:max(8px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:9999;display:flex;align-items:center;gap:7px;padding:6px 11px;border:1px solid #34d39988;border-radius:999px;background:#020617e8;color:#a7f3d0;font:800 11px/1 Segoe UI,Tahoma,sans-serif;letter-spacing:.2px;box-shadow:0 8px 24px #0008;backdrop-filter:blur(8px);pointer-events:none;white-space:nowrap}
-.versionDot{width:6px;height:6px;border-radius:50%;background:var(--primary);box-shadow:0 0 10px var(--primary)}
+.versionBadge{position:fixed;top:max(10px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:99999;display:flex;align-items:center;gap:8px;padding:8px 13px;border:1px solid #34d399cc;border-radius:999px;background:#020617f5;color:#d1fae5;font:900 12px/1 Segoe UI,Tahoma,sans-serif;letter-spacing:.25px;box-shadow:0 8px 28px #000b,0 0 18px #34d39922;backdrop-filter:blur(10px);pointer-events:none;white-space:nowrap}
+.versionDot{width:7px;height:7px;border-radius:50%;background:var(--primary);box-shadow:0 0 12px var(--primary)}
 </style>
 </head>
 <body>
-<iframe id="gameFrame" src="ninja_forest_run_v3_2.html" title="Jhon's Epic Forest Quest v3.2"></iframe>
+<iframe id="gameFrame" src="ninja_forest_run_v3_2.html?v=3.3" title="Jhon's Epic Forest Quest v3.3"></iframe>
 <div class="versionBadge"><span class="versionDot"></span>JHON'S EPIC FOREST QUEST • v3.3</div>
+<script>
+const frame=document.getElementById('gameFrame');
+function injectVersion(){
+  try{
+    const doc=frame.contentDocument;
+    if(!doc||!doc.body)return;
+    let badge=doc.getElementById('runtimeVersionBadge');
+    if(!badge){
+      badge=doc.createElement('div');
+      badge.id='runtimeVersionBadge';
+      badge.textContent="JHON'S EPIC FOREST QUEST • v3.3";
+      badge.style.cssText='position:fixed;top:max(10px,env(safe-area-inset-top));right:10px;z-index:2147483647;padding:7px 11px;border:1px solid #34d399cc;border-radius:999px;background:#020617ee;color:#d1fae5;font:900 11px/1 Segoe UI,Tahoma,sans-serif;letter-spacing:.2px;box-shadow:0 8px 24px #0008;pointer-events:none;white-space:nowrap';
+      doc.body.appendChild(badge);
+    }
+  }catch(e){}
+}
+frame.addEventListener('load',()=>{injectVersion();setTimeout(injectVersion,150);setTimeout(injectVersion,600)});
+setTimeout(injectVersion,1200);
+</script>
 </body>
 </html>
