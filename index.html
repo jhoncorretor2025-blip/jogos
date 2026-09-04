@@ -4,9 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#020617">
-<meta http-equiv="refresh" content="0;url=ninja_forest_run_v3_2.html">
-<title>Jhon's Epic Forest Quest — v3.2</title>
-<style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#020617;color:#fff;font-family:Segoe UI,Tahoma,sans-serif}body{display:grid;place-items:center}main{text-align:center;padding:24px}a{color:#a7f3d0}</style>
+<title>Jhon's Epic Forest Quest — v3.3</title>
+<style>
+:root{--bg:#020617;--primary:#34d399}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg)}
+#gameFrame{position:fixed;inset:0;width:100%;height:100%;border:0;display:block;background:var(--bg)}
+.versionBadge{position:fixed;top:max(8px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:9999;display:flex;align-items:center;gap:7px;padding:6px 11px;border:1px solid #34d39988;border-radius:999px;background:#020617e8;color:#a7f3d0;font:800 11px/1 Segoe UI,Tahoma,sans-serif;letter-spacing:.2px;box-shadow:0 8px 24px #0008;backdrop-filter:blur(8px);pointer-events:none;white-space:nowrap}
+.versionDot{width:6px;height:6px;border-radius:50%;background:var(--primary);box-shadow:0 0 10px var(--primary)}
+</style>
 </head>
-<body><main>Carregando <b>Jhon's Epic Forest Quest v3.2</b>…<br><a href="ninja_forest_run_v3_2.html">Abrir jogo</a></main><script>location.replace('ninja_forest_run_v3_2.html');</script></body>
+<body>
+<iframe id="gameFrame" src="ninja_forest_run_v3_2.html" title="Jhon's Epic Forest Quest v3.2"></iframe>
+<div class="versionBadge"><span class="versionDot"></span>JHON'S EPIC FOREST QUEST • v3.3</div>
+</body>
 </html>
