@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#020617">
+<title>Jhon's Epic Forest Quest — v2.1</title>
+<style>
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#02040a;color:#fff;font-family:Segoe UI,Tahoma,sans-serif}
+#gameFrame{position:fixed;inset:0;width:100%;height:100%;border:0;display:block;background:#020617}
+#version{position:fixed;top:8px;left:50%;transform:translateX(-50%);z-index:1000;padding:5px 10px;border-radius:999px;background:#020617dd;border:1px solid #34d39966;color:#a7f3d0;font-size:11px;font-weight:800;pointer-events:none;backdrop-filter:blur(6px)}
+#fallback{display:none;position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:1001;background:#07111d;border:1px solid #38bdf8;border-radius:12px;padding:10px 14px;color:#fff;font-size:13px;text-align:center;box-shadow:0 15px 40px #0008}
+#fallback.show{display:block}
+</style>
+</head>
+<body>
+<div id="version">JHON'S EPIC FOREST QUEST • v2.1</div>
+<iframe id="gameFrame" src="ninja_forest_run_v5.html" title="Jhon's Epic Forest Quest"></iframe>
+<div id="fallback">Preparando a próxima fase…</div>
+<script>
+const frame=document.getElementById('gameFrame');
+const fallback=document.getElementById('fallback');
+let lastAuto=0,loadingStarted=Date.now();
+function inspect(){
+  try{
+    const d=frame.contentDocument;
+    if(!d)return;
+    const finish=d.getElementById('finish');
+    const next=d.getElementById('next');
+    const visible=finish && !finish.classList.contains('hidden') && getComputedStyle(finish).display!=='none';
+    if(visible && next && Date.now()-lastAuto>900){
+      lastAuto=Date.now();
+      fallback.classList.add('show');
+      // Clica automaticamente no próximo nível.
+      next.click();
+      setTimeout(()=>fallback.classList.remove('show'),700);
+    }
+  }catch(e){}
+}
+function startWatch(){setInterval(inspect,120);setTimeout(()=>fallback.classList.remove('show'),1500)}
+frame.addEventListener('load',()=>{loadingStarted=Date.now();startWatch()});
+setInterval(()=>{inspect();if(Date.now()-loadingStarted>8000)fallback.classList.remove('show')},500);
+</script>
+</body>
+</html>
