@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#020617">
+<title>Jhon's Epic Forest Quest — v4.2</title>
+<style>
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#020617}
+iframe{width:100%;height:100%;border:0;display:block}
+</style>
+</head>
+<body>
+<iframe id="gameFrame" src="ninja_forest_run_v4_0.html?v=4.2" title="Jhon's Epic Forest Quest v4.2"></iframe>
+<script>
+(function(){
+  const frame=document.getElementById('gameFrame');
+  let mission,controls,styleAdded=false;
+
+  function applyUX(){
+    try{
+      const d=frame.contentDocument;
+      if(!d||!d.body)return;
+
+      if(!styleAdded){
+        const s=d.createElement('style');
+        s.id='ux42';
+        s.textContent=`
+          .hud{top:46px;gap:10px;align-items:flex-start}
+          .hud .card{min-width:220px}
+          .hud .card:first-child{line-height:1.65}
+          .hud .card:nth-child(2){min-width:190px}
+          .mini{top:88px;height:7px;box-shadow:0 0 14px #34d39933}
+          .mission42{position:absolute;left:50%;top:102px;transform:translateX(-50%);z-index:17;background:#020617dd;border:1px solid #38bdf866;border-radius:999px;padding:6px 12px;color:#e0f2fe;font-size:11px;font-weight:900;letter-spacing:.1px;pointer-events:none;white-space:nowrap;box-shadow:0 8px 24px #0006}
+          .controls42{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);z-index:31;background:#020617cc;border:1px solid #334155aa;border-radius:999px;padding:5px 10px;color:#cbd5e1;font-size:10px;font-weight:800;pointer-events:none;opacity:.9}
+          @media(max-width:900px){.hud{top:42px}.hud .card{min-width:0}.mission42{top:79px}.controls42{display:none}.mini{top:78px}}
+          @media(max-width:520px){.hud{top:40px}.mission42{top:74px;font-size:10px;padding:5px 9px}.hud .card{font-size:10px}.hud .card:nth-child(2){min-width:145px}.mini{top:71px}}
+        `;
+        d.head.appendChild(s);
+        styleAdded=true;
+      }
+
+      const version=d.querySelector('.version');
+      if(version)version.textContent="🥷 JHON'S EPIC FOREST QUEST • v4.2";
+
+      const menuText=d.querySelector('#menu .panel p');
+      if(menuText)menuText.innerHTML='<b>Objetivo</b> — avance pela floresta, resgate Carla e entre no portal para desbloquear a próxima fase.';
+
+      const help=d.querySelector('#menu .help');
+      if(help)help.textContent='Seu progresso de fases é salvo automaticamente neste navegador.';
+
+      const portraitTitle=d.querySelector('.portrait h2');
+      if(portraitTitle)portraitTitle.textContent='📱 Vire o celular para horizontal';
+      const portraitText=d.querySelector('.portrait p');
+      if(portraitText)portraitText.textContent='Assim você terá mais espaço para enxergar e controlar Jhon.';
+
+      const pauseText=d.querySelector('#pause .panel p');
+      if(pauseText)pauseText.textContent='O jogo está pausado. Seu progresso desta fase está preservado.';
+
+      const gameoverText=d.querySelector('#gameover .panel p');
+      if(gameoverText)gameoverText.textContent='Você voltou ao último checkpoint. Continue sua jornada.';
+
+      const finishText=d.querySelector('#finishText');
+      if(finishText){
+        const current=finishText.textContent||'';
+        if(current.includes('desbloqueada'))finishText.textContent='Excelente! A próxima fase foi desbloqueada. Continue sua jornada.';
+        else if(current.includes('Você venceu as quatro fases'))finishText.textContent='Parabéns! Você completou todas as quatro fases da aventura.';
+      }
+
+      const combo=d.getElementById('comboTxt');
+      if(combo){
+        const parent=combo.parentElement;
+        if(parent&&!parent.dataset.ux42){
+          parent.innerHTML='<span style="opacity:.8">COMBO</span> <b id="comboTxt">'+(combo.textContent||'0')+'</b>x';
+          parent.dataset.ux42='1';
+        }
+      }
+
+      if(!mission){
+        mission=d.createElement('div');
+        mission.className='mission42';
+        d.querySelector('.game').appendChild(mission);
+      }
+
+      if(!controls){
+        controls=d.createElement('div');
+        controls.className='controls42';
+        controls.textContent='← → mover  •  ↑ pular  •  X atacar  •  SHIFT dash  •  J escudo';
+        d.querySelector('.game').appendChild(controls);
+      }
+
+      const rescuedText=typeof d.defaultView.rescued!=='undefined'?d.defaultView.rescued:null;
+      mission.textContent=rescuedText?'🎯 Carla resgatada • agora encontre o portal 🌀':'🎯 Resgate Carla • depois entre no portal 🌀';
+
+      d.documentElement.setAttribute('lang','pt-BR');
+    }catch(e){}
+  }
+
+  frame.addEventListener('load',function(){applyUX();setTimeout(applyUX,300);setTimeout(applyUX,1000)});
+  setInterval(applyUX,1000);
+})();
+</script>
+</body>
+</html>
