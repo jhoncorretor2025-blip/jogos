@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#020617">
+<title>Jhon's Epic Forest Quest — v4.4</title>
+<style>
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#020617}
+iframe{width:100%;height:100%;border:0;display:block}
+</style>
+</head>
+<body>
+<iframe id="gameFrame" src="ninja_forest_run_v4_0.html?v=4.4" title="Jhon's Epic Forest Quest v4.4"></iframe>
+<script>
+(function(){
+  const frame=document.getElementById('gameFrame');
+  function patch(){
+    try{
+      const d=frame.contentDocument;
+      if(!d||!d.head)return;
+      if(!d.getElementById('mobile44style')){
+        const s=d.createElement('style');
+        s.id='mobile44style';
+        s.textContent=`
+          html,body{width:100%;height:100%;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none}
+          .game{width:100vw!important;height:100vh!important;max-width:none!important;max-height:none!important}
+          canvas{width:100%!important;height:100%!important;touch-action:none}
+          .controls{bottom:max(12px,env(safe-area-inset-bottom))!important;padding-left:max(10px,env(safe-area-inset-left))!important;padding-right:max(10px,env(safe-area-inset-right))!important}
+          .btn{touch-action:none;-webkit-touch-callout:none}
+          .portrait{display:none!important}
+          .version{font-size:10px!important;top:max(6px,env(safe-area-inset-top))!important}
+          @media(max-width:900px){.hud{top:38px!important}.pauseBtn{top:72px!important}.btn{width:58px!important;height:58px!important}.btn.small{width:50px!important;height:50px!important}}
+          @media(max-width:520px){.hud{transform:scale(.9);transform-origin:top left;width:111%}.btn{width:54px!important;height:54px!important}.btn.small{width:48px!important;height:48px!important}.controls{padding-left:6px!important;padding-right:6px!important}}
+        `;
+        d.head.appendChild(s);
+      }
+      const v=d.querySelector('.version');
+      if(v)v.textContent="🥷 JHON'S EPIC FOREST QUEST • v4.4";
+      const p=d.querySelector('#menu .panel p');
+      if(p)p.innerHTML='<b>v4.4</b> — controles otimizados para celular. Você pode jogar na vertical ou na horizontal.';
+      const portrait=d.querySelector('.portrait');
+      if(portrait)portrait.style.display='none';
+      const game=d.querySelector('.game');
+      if(game)game.style.touchAction='none';
+      d.querySelectorAll('.btn').forEach(function(b){b.style.touchAction='none'});
+    }catch(e){console.warn('v4.4 mobile patch',e)}
+  }
+  frame.addEventListener('load',function(){patch();setTimeout(patch,300);setTimeout(patch,1000)});
+  setInterval(patch,2500);
+})();
+</script>
+</body>
+</html>
