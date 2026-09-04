@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jhon's Epic Forest Quest - Save Carla (AI Enhanced)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            margin: 0;
+            background-color: #02040a;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #fff;
+            overflow-x: hidden;
+            touch-action: none;
+        }
+        .game-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            max-width: 950px;
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .game-container {
+            position: relative;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.95), 0 0 50px rgba(16, 185, 129, 0.2);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 2px solid rgba(52, 211, 153, 0.4);
+            width: 950px;
+            max-width: 100%;
+        }
+        canvas {
+            background: linear-gradient(to bottom, #010409, #061421, #0d2333);
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+        .ai-panel {
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 12px;
+            padding: 12px 18px;
+            width: 100%;
+            box-sizing: border-box;
+            backdrop-filter: blur(8px);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        .touch-controls {
+            display: none;
+            position: absolute;
+            bottom: 15px;
+            width: 100%;
+            justify-content: space-between;
+            padding: 0 20px;
+            box-sizing: border-box;
+            z-index: 10;
+        }
+        .touch-group {
+            display: flex;
+            gap: 12px;
+        }
+        .touch-btn {
+            background: rgba(15, 23, 42, 0.85);
+            border: 2px solid #34d399;
+            color: white;
+            font-size: 22px;
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            user-select: none;
+            backdrop-filter: blur(6px);
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.6);
+        }
+        .touch-btn:active {
+            background: rgba(52, 211, 153, 0.9);
+            transform: scale(0.92);
+        }
+        @media (max-width: 900px) {
+            .touch-controls { display: flex; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-wrapper">
+    <div class="game-container">
+        <canvas id="gameCanvas" width="950" height="540"></canvas>
+        
+        <!-- Touch Controls for Mobile -->
+        <div class="touch-controls">
+            <div class="touch-group">
+                <div class="touch-btn" id="btnLeft">◀</div>
+                <div class="touch-btn" id="btnRight">▶</div>
+            </div>
+            <div class="touch-group">
+                <div class="touch-btn" id="btnShield" style="border-color: #38bdf8;">🛡️</div>
+                <div class="touch-btn" id="btnJump" style="border-color: #f87171;">▲</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Ninja Sensei Live Advice Box -->
+    <div class="ai-panel">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="text-xl">🥋</span>
+                <span class="font-bold text-sky-400 text-sm tracking-wide">MOTO-SENSEI (AI ADVISOR)</span>
+            </div>
+            <button id="askAiBtn" onclick="consultSensei()" class="bg-sky-600 hover:bg-sky-500 text-white font-bold px-3 py-1.5 rounded-lg text-xs transition shadow-md border border-sky-400">
+                Pedir Conselho ao Sensei ✨
+            </button>
+        </div>
+        <div id="aiAdviceText" class="text-slate-300 text-sm italic min-h-[24px]">
+            "Saudações, Ninja Jhon. Pressione o botão acima para receber sabedoria tática diretamente da sabedoria ancestral do Gemini!"
+        </div>
+    </div>
+</div>
+
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let audioCtx = null;
+    function initAudio() {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+    }
+
+    function playSound(type) {
+        if (!audioCtx) return;
+        try {
+            let osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            let now = audioCtx.currentTime;
+
+            if (type === 'jump') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(240, now);
+                osc.frequency.exponentialRampToValueAtTime(580, now + 0.15);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.linearRampToValueAtTime(0, now + 0.15);
+                osc.start(now);
+                osc.stop(now + 0.15);
+            } else if (type === 'coin') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(680, now);
+                osc.frequency.setValueAtTime(980, now + 0.08);
+                gain.gain.setValueAtTime(0.12, now);
+                gain.gain.linearRampToValueAtTime(0, now + 0.2);
+                osc.start(now);
+                osc.stop(now + 0.2);
+            } else if (type === 'hit') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(160, now);
+                osc.frequency.linearRampToValueAtTime(30, now + 0.3);
+                gain.gain.setValueAtTime(0.18, now);
+                gain.gain.linearRampToValueAtTime(0, now + 0.3);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            } else if (type === 'shield') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(500, now);
+                osc.frequency.linearRampToValueAtTime(950, now + 0.12);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.linearRampToValueAtTime(0, now + 0.12);
+                osc.start(now);
+                osc.stop(now + 0.12);
+            } else if (type === 'win') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(350, now);
+                osc.frequency.setValueAtTime(520, now + 0.12);
+                osc.frequency.setValueAtTime(700, now + 0.24);
+                gain.gain.setValueAtTime(0.18, now);
+                gain.gain.linearRampToValueAtTime(0, now + 0.45);
+                osc.start(now);
+                osc.stop(now + 0.45);
+            } else if (type === 'rescue') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(440, now);
+                osc.frequency.setValueAtTime(660, now + 0.2);
+                osc.frequency.setValueAtTime(880, now + 0.4);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.linearRampToValueAtTime(0, now + 0.7);
+                osc.start(now);
+                osc.stop(now + 0.7);
+            } else if (type === 'checkpoint') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(550, now);
+                osc.frequency.setValueAtTime(820, now + 0.15);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.linearRampToValueAtTime(0, now + 0.3);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            }
+        } catch(e) {}
+    }
+
+    const keys = { right: false, left: false, up: false, shield: false };
+
+    window.addEventListener('keydown', (e) => {
+        initAudio();
+        if (e.key === 'ArrowRight' || e.key === 'd') keys.right = true;
+        if (e.key === 'ArrowLeft' || e.key === 'a') keys.left = true;
+        if (e.key === 'ArrowUp' || e.key === ' ' || e.key === 'w') {
+            if (!keys.up) tryJump();
+            keys.up = true;
+        }
+        if (e.key === 'j' || e.key === 'J') keys.shield = true;
+        if ((e.key === 'r' || e.key === 'R') && gameState !== 'playing') initGame();
+        if (e.key === 'Enter' && gameState === 'menu') { gameState = 'playing'; }
+    });
+
+    window.addEventListener('keyup', (e) => {
+        if (e.key === 'ArrowRight' || e.key === 'd') keys.right = false;
+        if (e.key === 'ArrowLeft' || e.key === 'a') keys.left = false;
+        if (e.key === 'ArrowUp' || e.key === ' ' || e.key === 'w') keys.up = false;
+        if (e.key === 'j' || e.key === 'J') keys.shield = false;
+    });
+
+    const bindTouch = (id, keyName) => {
+        const el = document.getElementById(id);
+        if(!el) return;
+        el.addEventListener('touchstart', (e) => { initAudio(); e.preventDefault(); keys[keyName] = true; if(keyName==='up') tryJump(); if(keyName==='shield') keys.shield=true; });
+        el.addEventListener('touchend', (e) => { e.preventDefault(); keys[keyName] = false; if(keyName==='shield') keys.shield=false; });
+    };
+    bindTouch('btnLeft', 'left');
+    bindTouch('btnRight', 'right');
+    bindTouch('btnJump', 'up');
+    bindTouch('btnShield', 'shield');
+
+    let gameState = 'menu';
+    let currentLevel = 1;
+    let flashTimer = 0;
+    let cameraX = 0;
+    let shakeTimer = 0;
+    let shakeIntensity = 0;
+
+    function triggerShake(duration, intensity) {
+        shakeTimer = duration;
+        shakeIntensity = intensity;
+    }
+
+    let player = {
+        name: 'Jhon',
+        x: 60, y: 380, width: 24, height: 36,
+        speed: 5.2, dx: 0, dy: 0, gravity: 0.52, jumpPower: -12.0,
+        grounded: false, lives: 3, score: 0, facing: 'right',
+        shieldEnergy: 100, spawnX: 60, spawnY: 380
+    };
+
+    let carla = {
+        name: 'Carla',
+        x: 6100, y: 376, width: 22, height: 34, rescued: false
+    };
+
+    let particles = [];
+    let floatingTexts = [];
+    let fireflies = [];
+
+    for(let i=0; i<80; i++) {
+        fireflies.push({
+            x: Math.random() * 12500,
+            y: Math.random() * 500,
+            size: Math.random() * 2.8 + 1,
+            speedX: (Math.random() - 0.5) * 0.4,
+            speedY: (Math.random() - 0.5) * 0.4,
+            alpha: Math.random(),
+            pulseSpeed: Math.random() * 0.04 + 0.01
+        });
+    }
+
+    function addParticles(x, y, color = '#34d399', count = 8) {
+        for(let i=0; i<count; i++) {
+            particles.push({
+                x: x, y: y,
+                dx: (Math.random() - 0.5) * 6,
+                dy: (Math.random() - 0.5) * 6 - 1.5,
+                radius: Math.random() * 3.5 + 1,
+                color: color,
+                life: 45,
+                maxLife: 45
+            });
+        }
+    }
+
+    function addFloatingText(x, y, text, color = '#facc15') {
+        floatingTexts.push({
+            x: x, y: y, text: text, color: color, life: 55, dy: -1.2
+        });
+    }
+
+    let platforms = [];
+    let coins = [];
+    let enemies = [];
+    let shurikens = [];
+    let checkpoints = [];
+    let goal = { x: 11800, y: 340, width: 40, height: 90 };
+    let worldWidth = 12200;
+
+    function loadLevel(lvl) {
+        currentLevel = lvl;
+        shurikens = [];
+        particles = [];
+        floatingTexts = [];
+        player.x = 60;
+        player.y = 380;
+        player.spawnX = 60;
+        player.spawnY = 380;
+        player.dx = 0;
+        player.dy = 0;
+        cameraX = 0;
+        carla.rescued = false;
+
+        platforms = [
+            { x: 0, y: 440, width: 750, height: 100, color: '#113023', type: 'static' },
+            { x: 820, y: 370, width: 140, height: 22, color: '#1a4732', type: 'static' },
+            { x: 1040, y: 290, width: 150, height: 22, color: '#1a4732', type: 'static' },
+            { x: 1280, y: 440, width: 600, height: 100, color: '#113023', type: 'static' },
+            { x: 1460, y: 220, width: 120, height: 22, color: '#17402c', type: 'moving', minX: 1380, maxX: 1650, dir: 1, speed: 1.8 },
+            { x: 1750, y: 350, width: 160, height: 22, color: '#1a4732', type: 'static' },
+            { x: 2000, y: 440, width: 500, height: 100, color: '#113023', type: 'static' },
+            { x: 2180, y: 250, width: 130, height: 22, color: '#17402c', type: 'moving', minX: 2080, maxX: 2380, dir: -1, speed: 2.2 },
+            { x: 2600, y: 440, width: 700, height: 100, color: '#113023', type: 'static' },
+            { x: 2800, y: 330, width: 130, height: 22, color: '#1a4732', type: 'static' },
+
+            { x: 3400, y: 440, width: 450, height: 100, color: '#16382b', type: 'static' },
+            { x: 3600, y: 270, width: 120, height: 22, color: '#1c4a37', type: 'static' },
+            { x: 3850, y: 180, width: 130, height: 22, color: '#1c4a37', type: 'moving', minX: 3780, maxX: 4100, dir: 1, speed: 2.5 },
+            { x: 4200, y: 440, width: 600, height: 100, color: '#16382b', type: 'static' },
+            { x: 4400, y: 310, width: 140, height: 22, color: '#1c4a37', type: 'static' },
+            { x: 4700, y: 220, width: 120, height: 22, color: '#1c4a37', type: 'static' },
+            { x: 5050, y: 440, width: 550, height: 100, color: '#16382b', type: 'static' },
+            { x: 5280, y: 290, width: 130, height: 22, color: '#1c4a37', type: 'moving', minX: 5180, maxX: 5500, dir: -1, speed: 2.0 },
+            { x: 5700, y: 440, width: 800, height: 100, color: '#16382b', type: 'static' },
+
+            { x: 6700, y: 440, width: 400, height: 100, color: '#0f2b20', type: 'static' },
+            { x: 6950, y: 280, width: 120, height: 22, color: '#173f2f', type: 'static' },
+            { x: 7250, y: 170, width: 130, height: 22, color: '#173f2f', type: 'moving', minX: 7150, maxX: 7500, dir: 1, speed: 2.8 },
+            { x: 7650, y: 440, width: 500, height: 100, color: '#0f2b20', type: 'static' },
+            { x: 7900, y: 310, width: 140, height: 22, color: '#173f2f', type: 'static' },
+            { x: 8200, y: 210, width: 130, height: 22, color: '#173f2f', type: 'static' },
+            { x: 8600, y: 440, width: 600, height: 100, color: '#0f2b20', type: 'static' },
+            { x: 8850, y: 290, width: 130, height: 22, color: '#173f2f', type: 'moving', minX: 8750, maxX: 9100, dir: -1, speed: 2.4 },
+
+            { x: 9400, y: 440, width: 450, height: 100, color: '#133526', type: 'static' },
+            { x: 9650, y: 300, width: 130, height: 22, color: '#1c4d37', type: 'static' },
+            { x: 9950, y: 190, width: 140, height: 22, color: '#1c4d37', type: 'moving', minX: 9850, maxX: 10250, dir: 1, speed: 3.0 },
+            { x: 10400, y: 440, width: 500, height: 100, color: '#133526', type: 'static' },
+            { x: 10680, y: 320, width: 130, height: 22, color: '#1c4d37', type: 'static' },
+            { x: 11000, y: 220, width: 130, height: 22, color: '#1c4d37', type: 'static' },
+            { x: 11400, y: 400, width: 800, height: 140, color: '#133526', type: 'static' }
+        ];
+
+        checkpoints = [
+            { x: 3450, y: 400, width: 25, height: 40, active: false, id: 1 },
+            { x: 6750, y: 400, width: 25, height: 40, active: false, id: 2 },
+            { x: 9450, y: 400, width: 25, height: 40, active: false, id: 3 }
+        ];
+
+        coins = [];
+        for (let cx = 600; cx <= 11600; cx += 250) {
+            coins.push({
+                x: cx + (Math.random() * 80 - 40),
+                y: 180 + Math.sin(cx * 0.01) * 90,
+                radius: 8, collected: false,
+                baseY: 180 + Math.sin(cx * 0.01) * 90
+            });
+        }
+
+        enemies = [
+            { x: 650, y: 416, width: 24, height: 24, minX: 600, maxX: 720, speed: 1.5, dir: 1, type: 'patrol' },
+            { x: 1350, y: 416, width: 24, height: 24, minX: 1300, maxX: 1800, speed: 2.1, dir: 1, type: 'shooter', shootTimer: 0 },
+            { x: 2100, y: 416, width: 24, height: 24, minX: 1900, maxX: 2400, speed: 1.8, dir: 1, type: 'patrol' },
+            { x: 2900, y: 416, width: 24, height: 24, minX: 2700, maxX: 3200, speed: 2.3, dir: 1, type: 'shooter', shootTimer: 0 },
+            { x: 3750, y: 416, width: 24, height: 24, minX: 3500, maxX: 4100, speed: 2.0, dir: 1, type: 'patrol' },
+            { x: 4500, y: 416, width: 24, height: 24, minX: 4300, maxX: 4900, speed: 2.4, dir: 1, type: 'shooter', shootTimer: 0 },
+            { x: 5400, y: 416, width: 24, height: 24, minX: 5100, maxX: 5600, speed: 2.2, dir: 1, type: 'patrol' },
+            { x: 6050, y: 416, width: 24, height: 24, minX: 5800, maxX: 6400, speed: 2.6, dir: 1, type: 'shooter', shootTimer: 0 },
+            { x: 7100, y: 416, width: 24, height: 24, minX: 6800, maxX: 7500, speed: 2.1, dir: 1, type: 'patrol' },
+            { x: 7950, y: 416, width: 24, height: 24, minX: 7700, maxX: 8400, speed: 2.5, dir: 1, type: 'shooter', shootTimer: 0 },
+            { x: 8800, y: 416, width: 24, height: 24, minX: 8500, maxX: 9150, speed: 2.3, dir: 1, type: 'patrol' },
+            { x: 9650, y: 416, width: 24, height: 24, minX: 9450, maxX: 10100, speed: 2.7, dir: 1, type: 'shooter', shootTimer: 0 },
+            { x: 10600, y: 416, width: 24, height: 24, minX: 10450, maxX: 10850, speed: 2.5, dir: 1, type: 'patrol' },
+            { x: 11200, y: 416, width: 24, height: 24, minX: 10900, maxX: 11600, speed: 2.8, dir: 1, type: 'shooter', shootTimer: 0 }
+        ];
+
+        goal = { x: 11850, y: 310, width: 40, height: 90 };
+    }
+
+    function initGame() {
+        player.lives = 3;
+        player.score = 0;
+        player.shieldEnergy = 100;
+        gameState = 'playing';
+        loadLevel(1);
+        fetchAiLore("Início da aventura na Floresta Sombria");
+    }
+
+    function tryJump() {
+        if (player.grounded) {
+            player.dy = player.jumpPower;
+            player.grounded = false;
+            playSound('jump');
+            addParticles(player.x + player.width/2, player.y + player.height, '#38bdf8', 10);
+        }
+    }
+
+    function resetPlayer() {
+        player.x = player.spawnX;
+        player.y = player.spawnY;
+        player.dx = 0;
+        player.dy = 0;
+        flashTimer = 30;
+        triggerShake(15, 6);
+        playSound('hit');
+    }
+
+    async function consultSensei() {
+        const adviceBox = document.getElementById('aiAdviceText');
+        const btn = document.getElementById('askAiBtn');
+        adviceBox.innerText = "🥋 Sensei está meditando e buscando sabedoria no Gemini...";
+        btn.disabled = true;
+
+        const systemPrompt = "Você é um Sensei ninja sábio, mestre de Jhon. Dê um conselho tático muito curto, poético e útil em português (máximo 2 frases) para ajudar Jhon a salvar Carla na floresta perigosa.";
+        const userQuery = `Situação atual do Ninja Jhon: Vidas restantes: ${player.lives}, Pontos: ${player.score}, Carla resgatada: ${carla.rescued ? 'Sim' : 'Não'}. Dê seu conselho!`;
+
+        const payload = {
+            contents: [{ parts: [{ text: userQuery }] }],
+            systemInstruction: { parts: [{ text: systemPrompt }] }
+        };
+
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=`;
+
+        try {
+            let response = null;
+            // Exponential backoff retry loop
+            for (let attempt = 0; attempt < 3; attempt++) {
+                try {
+                    response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (response.ok) break;
+                } catch(err) {
+                    if (attempt === 2) throw err;
+                    await new Promise(r => setTimeout(r, Math.pow(2, attempt) * 1000));
+                }
+            }
+
+            if (response && response.ok) {
+                const result = await response.json();
+                const candidate = result.candidates?.[0];
+                if (candidate && candidate.content?.parts?.[0]?.text) {
+                    adviceBox.innerText = `"${candidate.content.parts[0].text.trim()}"`;
+                } else {
+                    adviceBox.innerText = `"A mente serena vence qualquer obstáculo, Jhon. Avance com cautela!"`;
+                }
+            } else {
+                adviceBox.innerText = `"O vento sopra forte... Concentre-se no seu objetivo, ninja!"`;
+            }
+        } catch (e) {
+            adviceBox.innerText = `"Mesmo sem conexão espiritual, sua lâmina e escudo bastam para vencer!"`;
+        } finally {
+            btn.disabled = false;
+        }
+    }
+
+    async function fetchAiLore(milestone) {
+        const adviceBox = document.getElementById('aiAdviceText');
+        const systemPrompt = "Você é um narrador épico. Escreva uma frase mística e curta em português sobre o marco alcançado pelo Ninja Jhon na floresta.";
+        const userQuery = `Marco alcançado: ${milestone}`;
+
+        const payload = {
+            contents: [{ parts: [{ text: userQuery }] }],
+            systemInstruction: { parts: [{ text: systemPrompt }] }
+        };
+
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=`;
+
+        try {
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if (response.ok) {
+                const result = await response.json();
+                const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (text) adviceBox.innerText = `✨ ${text.trim()}`;
+            }
+        } catch(e) {}
+    }
+
+    function update() {
+        if (gameState !== 'playing') return;
+
+        if (shakeTimer > 0) shakeTimer--;
+
+        if (keys.shield && player.shieldEnergy > 0) {
+            player.shieldEnergy = Math.max(0, player.shieldEnergy - 1.5);
+        } else {
+            player.shieldEnergy = Math.min(100, player.shieldEnergy + 0.6);
+        }
+        let activeShield = keys.shield && player.shieldEnergy > 10;
+
+        if (keys.right) {
+            player.dx = player.speed;
+            player.facing = 'right';
+        } else if (keys.left) {
+            player.dx = -player.speed;
+            player.facing = 'left';
+        } else {
+            player.dx = 0;
+        }
+
+        player.x += player.dx;
+        if (player.x < 0) player.x = 0;
+        if (player.x + player.width > worldWidth) player.x = worldWidth - player.width;
+
+        player.dy += player.gravity;
+        player.y += player.dy;
+        player.grounded = false;
+
+        platforms.forEach(plat => {
+            if (plat.type === 'moving') {
+                plat.x += plat.speed * plat.dir;
+                if (plat.x > plat.maxX || plat.x < plat.minX) {
+                    plat.dir *= -1;
+                }
+                if (
+                    player.x < plat.x + plat.width &&
+                    player.x + player.width > plat.x &&
+                    player.y + player.height > plat.y &&
+                    player.y + player.height - player.dy <= plat.y
+                ) {
+                    player.x += plat.speed * plat.dir;
+                }
+            }
+
+            if (
+                player.x < plat.x + plat.width &&
+                player.x + player.width > plat.x &&
+                player.y + player.height > plat.y &&
+                player.y + player.height - player.dy <= plat.y
+            ) {
+                player.y = plat.y - player.height;
+                player.dy = 0;
+                player.grounded = true;
+            }
+        });
+
+        cameraX = player.x - canvas.width / 2;
+        if (cameraX < 0) cameraX = 0;
+        if (cameraX > worldWidth - canvas.width) cameraX = worldWidth - canvas.width;
+
+        checkpoints.forEach(cp => {
+            if (!cp.active &&
+                player.x < cp.x + cp.width &&
+                player.x + player.width > cp.x &&
+                player.y < cp.y + cp.height &&
+                player.y + player.height > cp.y
+            ) {
+                cp.active = true;
+                player.spawnX = cp.x;
+                player.spawnY = cp.y + cp.height - player.height;
+                playSound('checkpoint');
+                addParticles(cp.x + cp.width/2, cp.y, '#facc15', 16);
+                addFloatingText(cp.x, cp.y - 20, 'CHECKPOINT!', '#facc15');
+                fetchAiLore(`Check-point ${cp.id} ativado na Floresta Sombria!`);
+            }
+        });
+
+        if (!carla.rescued &&
+            player.x < carla.x + carla.width + 15 &&
+            player.x + player.width > carla.x - 15 &&
+            player.y < carla.y + carla.height &&
+            player.y + player.height > carla.y
+        ) {
+            carla.rescued = true;
+            player.score += 1500;
+            playSound('rescue');
+            addParticles(carla.x, carla.y, '#ec4899', 24);
+            addFloatingText(carla.x - 30, carla.y - 30, 'CARLA RESGATADA! +1500', '#ec4899');
+            fetchAiLore("Carla foi resgatada das garras dos inimigos!");
+        }
+
+        enemies.forEach((enemy, index) => {
+            enemy.x += enemy.speed * enemy.dir;
+            if (enemy.x > enemy.maxX || enemy.x < enemy.minX) {
+                enemy.dir *= -1;
+            }
+
+            if (enemy.type === 'shooter') {
+                enemy.shootTimer++;
+                if (enemy.shootTimer > 80) {
+                    enemy.shootTimer = 0;
+                    shurikens.push({
+                        x: enemy.x + enemy.width / 2,
+                        y: enemy.y + enemy.height / 2,
+                        dx: enemy.dir * 4.8,
+                        radius: 5,
+                        angle: 0
+                    });
+                }
+            }
+
+            if (
+                player.x < enemy.x + enemy.width &&
+                player.x + player.width > enemy.x &&
+                player.y < enemy.y + enemy.height &&
+                player.y + player.height > enemy.y
+            ) {
+                if (player.dy > 0 && player.y + player.height - player.dy <= enemy.y + 14) {
+                    enemies.splice(index, 1);
+                    player.dy = -9.2;
+                    player.score += 300;
+                    playSound('coin');
+                    addParticles(enemy.x + enemy.width/2, enemy.y + enemy.height/2, '#ef4444', 16);
+                    addFloatingText(enemy.x, enemy.y - 15, '+300', '#ef4444');
+                } else if (flashTimer === 0) {
+                    player.lives--;
+                    if (player.lives <= 0) {
+                        gameState = 'gameover';
+                        playSound('hit');
+                    } else {
+                        resetPlayer();
+                    }
+                }
+            }
+        });
+
+        shurikens.forEach((shuriken, index) => {
+            shuriken.x += shuriken.dx;
+            shuriken.angle += 0.25;
+
+            let shieldBox = {
+                x: player.facing === 'right' ? player.x + player.width : player.x - 20,
+                y: player.y + 2,
+                width: 20,
+                height: 32
+            };
+
+            if (activeShield &&
+                shieldBox.x < shuriken.x + shuriken.radius &&
+                shieldBox.x + shieldBox.width > shuriken.x - shuriken.radius &&
+                shieldBox.y < shuriken.y + shuriken.radius &&
+                shieldBox.y + shieldBox.height > shuriken.y - shuriken.radius
+            ) {
+                shurikens.splice(index, 1);
+                player.score += 80;
+                playSound('shield');
+                addParticles(shuriken.x, shuriken.y, '#38bdf8', 8);
+                addFloatingText(shuriken.x, shuriken.y - 15, 'BLOQUEADO!', '#38bdf8');
+                return;
+            }
+
+            if (
+                player.x < shuriken.x + shuriken.radius &&
+                player.x + player.width > shuriken.x - shuriken.radius &&
+                player.y < shuriken.y + shuriken.radius &&
+                player.y + player.height > shuriken.y - shuriken.radius &&
+                flashTimer === 0
+            ) {
+                shurikens.splice(index, 1);
+                player.lives--;
+                if (player.lives <= 0) {
+                    gameState = 'gameover';
+                    playSound('hit');
+                } else {
+                    resetPlayer();
+                }
+            }
+
+            if (shuriken.x < cameraX - 100 || shuriken.x > cameraX + canvas.width + 100) {
+                shurikens.splice(index, 1);
+            }
+        });
+
+        let time = Date.now() * 0.005;
+        coins.forEach(coin => {
+            coin.y = coin.baseY + Math.sin(time + coin.x) * 6;
+            if (!coin.collected) {
+                if (
+                    player.x < coin.x + coin.radius * 1.5 &&
+                    player.x + player.width > coin.x - coin.radius * 1.5 &&
+                    player.y < coin.y + coin.radius * 1.5 &&
+                    player.y + player.height > coin.y - coin.radius * 1.5
+                ) {
+                    coin.collected = true;
+                    player.score += 150;
+                    playSound('coin');
+                    addParticles(coin.x, coin.y, '#facc15', 10);
+                    addFloatingText(coin.x, coin.y - 15, '+150', '#facc15');
+                }
+            }
+        });
+
+        if (player.y > canvas.height + 50) {
+            player.lives--;
+            if (player.lives <= 0) {
+                gameState = 'gameover';
+                playSound('hit');
+            } else {
+                resetPlayer();
+            }
+        }
+
+        if (
+            player.x < goal.x + goal.width &&
+            player.x + player.width > goal.x &&
+            player.y < goal.y + goal.height &&
+            player.y + player.height > goal.y
+        ) {
+            playSound('win');
+            gameState = 'won';
+            player.score += 3000;
+            fetchAiLore("Missão concluída com sucesso! Jhon e Carla triunfaram na floresta.");
+        }
+
+        if (flashTimer > 0) flashTimer--;
+
+        particles.forEach((p, idx) => {
+            p.x += p.dx;
+            p.y += p.dy;
+            p.life--;
+            if(p.life <= 0) particles.splice(idx, 1);
+        });
+
+        floatingTexts.forEach((ft, idx) => {
+            ft.y += ft.dy;
+            ft.life--;
+            if(ft.life <= 0) floatingTexts.splice(idx, 1);
+        });
+
+        fireflies.forEach(ff => {
+            ff.x += ff.speedX;
+            ff.y += ff.speedY;
+            ff.alpha += ff.pulseSpeed;
+            if (ff.alpha > 1 || ff.alpha < 0.1) ff.pulseSpeed *= -1;
+            if (ff.x < 0) ff.x = worldWidth;
+            if (ff.x > worldWidth) ff.x = 0;
+            if (ff.y < 0) ff.y = canvas.height;
+            if (ff.y > canvas.height) ff.y = 0;
+        });
+    }
+
+    function draw() {
+        ctx.save();
+        if (shakeTimer > 0) {
+            let offsetX = (Math.random() - 0.5) * shakeIntensity;
+            let offsetY = (Math.random() - 0.5) * shakeIntensity;
+            ctx.translate(offsetX, offsetY);
+        }
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        let skyGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        skyGradient.addColorStop(0, '#010409');
+        skyGradient.addColorStop(0.5, '#071826');
+        skyGradient.addColorStop(1, '#0e293f');
+        ctx.fillStyle = skyGradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.save();
+        let moonX = canvas.width - 150 - (cameraX * 0.08);
+        let moonGlow = ctx.createRadialGradient(moonX, 90, 10, moonX, 90, 85);
+        moonGlow.addColorStop(0, 'rgba(255, 255, 220, 0.45)');
+        moonGlow.addColorStop(1, 'rgba(255, 255, 220, 0)');
+        ctx.fillStyle = moonGlow;
+        ctx.fillRect(moonX - 90, 5, 180, 180);
+
+        ctx.fillStyle = '#fef08a';
+        ctx.beginPath();
+        ctx.arc(moonX, 90, 32, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        let bgLayers = [
+            { speed: 0.12, color: '#040d16', sizeMul: 1.3 },
+            { speed: 0.30, color: '#091c2b', sizeMul: 1.0 },
+            { speed: 0.60, color: '#0f2f44', sizeMul: 0.8 }
+        ];
+
+        bgLayers.forEach((layer, idx) => {
+            ctx.fillStyle = layer.color;
+            let offsetX = -(cameraX * layer.speed) % canvas.width;
+            for (let i = -1; i < 7; i++) {
+                let treeX = i * 280 + offsetX + (idx * 70);
+                ctx.beginPath();
+                ctx.arc(treeX, 260 + idx * 15, (80 + idx * 22) * layer.sizeMul, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillRect(treeX - 12 - idx*2, 260 + idx*15, 24 + idx*4, 300);
+            }
+        });
+
+        fireflies.forEach(ff => {
+            if (ff.x >= cameraX - 50 && ff.x <= cameraX + canvas.width + 50) {
+                ctx.save();
+                ctx.globalAlpha = ff.alpha;
+                ctx.fillStyle = '#6ee7b7';
+                ctx.shadowColor = '#10b981';
+                ctx.shadowBlur = 8;
+                ctx.beginPath();
+                ctx.arc(ff.x - cameraX, ff.y, ff.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        });
+
+        ctx.save();
+        ctx.translate(-cameraX, 0);
+
+        particles.forEach(p => {
+            ctx.save();
+            ctx.globalAlpha = p.life / p.maxLife;
+            ctx.fillStyle = p.color;
+            ctx.shadowColor = p.color;
+            ctx.shadowBlur = 6;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        });
+
+        platforms.forEach(plat => {
+            ctx.fillStyle = plat.color;
+            ctx.fillRect(plat.x, plat.y, plat.width, plat.height);
+            
+            ctx.fillStyle = 'rgba(0,0,0,0.4)';
+            ctx.fillRect(plat.x, plat.y + plat.height - 8, plat.width, 8);
+
+            ctx.fillStyle = '#34d399';
+            ctx.shadowColor = '#10b981';
+            ctx.shadowBlur = 10;
+            ctx.fillRect(plat.x, plat.y, plat.width, 7);
+            ctx.shadowBlur = 0;
+        });
+
+        checkpoints.forEach(cp => {
+            ctx.fillStyle = cp.active ? '#facc15' : '#475569';
+            ctx.fillRect(cp.x + 8, cp.y, 8, cp.height);
+            ctx.save();
+            if(cp.active) {
+                ctx.shadowColor = '#facc15';
+                ctx.shadowBlur = 15;
+            }
+            ctx.fillStyle = cp.active ? '#fde047' : '#64748b';
+            ctx.beginPath();
+            ctx.arc(cp.x + 12, cp.y, 11, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        });
+
+        if (!carla.rescued) {
+            ctx.save();
+            ctx.shadowColor = '#ec4899';
+            ctx.shadowBlur = 12;
+            ctx.fillStyle = '#ec4899';
+            ctx.fillRect(carla.x, carla.y, carla.width, carla.height);
+            ctx.fillStyle = '#f59e0b';
+            ctx.fillRect(carla.x + 2, carla.y + 4, carla.width - 4, 8);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(carla.x + 6, carla.y + 8, 4, 3);
+            ctx.restore();
+        }
+
+        coins.forEach(coin => {
+            if (!coin.collected) {
+                ctx.save();
+                ctx.shadowColor = '#facc15';
+                ctx.shadowBlur = 12;
+                ctx.fillStyle = '#facc15';
+                ctx.beginPath();
+                ctx.arc(coin.x, coin.y, coin.radius, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = '#ca8a04';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                ctx.fillStyle = '#fef08a';
+                ctx.fillRect(coin.x - 2, coin.y - 3, 3, 3);
+                ctx.restore();
+            }
+        });
+
+        enemies.forEach(enemy => {
+            ctx.save();
+            ctx.shadowColor = enemy.type === 'shooter' ? '#8b5cf6' : '#ef4444';
+            ctx.shadowBlur = 10;
+            ctx.fillStyle = enemy.type === 'shooter' ? '#7c3aed' : '#dc2626';
+            ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
+            
+            ctx.fillStyle = '#facc15';
+            ctx.fillRect(enemy.x + 3, enemy.y + 6, 5, 5);
+            ctx.fillRect(enemy.x + 16, enemy.y + 6, 5, 5);
+
+            if (enemy.type === 'shooter') {
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(enemy.x + 9, enemy.y - 6, 6, 6);
+            }
+            ctx.restore();
+        });
+
+        shurikens.forEach(shuriken => {
+            ctx.save();
+            ctx.translate(shuriken.x, shuriken.y);
+            ctx.rotate(shuriken.angle);
+            ctx.shadowColor = '#38bdf8';
+            ctx.shadowBlur = 10;
+            ctx.fillStyle = '#f8fafc';
+            ctx.fillRect(-6, -2, 12, 4);
+            ctx.fillRect(-2, -6, 4, 12);
+            ctx.fillStyle = '#0f172a';
+            ctx.beginPath();
+            ctx.arc(0, 0, 2.5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        });
+
+        ctx.fillStyle = '#78350f';
+        ctx.fillRect(goal.x + 16, goal.y, 8, goal.height);
+        ctx.save();
+        ctx.shadowColor = '#f43f5e';
+        ctx.shadowBlur = 16;
+        ctx.fillStyle = '#f43f5e';
+        ctx.beginPath();
+        ctx.moveTo(goal.x + 24, goal.y + 10);
+        ctx.lineTo(goal.x + 70, goal.y + 35);
+        ctx.lineTo(goal.x + 24, goal.y + 60);
+        ctx.fill();
+        ctx.restore();
+
+        if (flashTimer % 4 < 2) {
+            ctx.save();
+            ctx.shadowColor = '#000';
+            ctx.shadowBlur = 8;
+            ctx.fillStyle = '#18181b';
+            ctx.fillRect(player.x, player.y, player.width, player.height);
+
+            ctx.fillStyle = '#f43f5e';
+            ctx.shadowColor = '#f43f5e';
+            ctx.shadowBlur = 8;
+            ctx.fillRect(player.x + 2, player.y + 6, player.width - 4, 4);
+            let ribbonOffset = player.facing === 'right' ? -10 : player.width;
+            ctx.fillRect(player.x + ribbonOffset, player.y + 6, 12, 4);
+
+            ctx.fillStyle = '#ffffff';
+            let eyeOffset = player.facing === 'right' ? 14 : 6;
+            ctx.fillRect(player.x + eyeOffset, player.y + 8, 4, 3);
+            ctx.restore();
+        }
+
+        let activeShield = keys.shield && player.shieldEnergy > 10;
+        if (activeShield) {
+            ctx.save();
+            ctx.shadowColor = '#38bdf8';
+            ctx.shadowBlur = 20;
+            ctx.fillStyle = 'rgba(56, 189, 248, 0.4)';
+            ctx.strokeStyle = '#38bdf8';
+            ctx.lineWidth = 3;
+            let shieldX = player.facing === 'right' ? player.x + player.width : player.x - 20;
+            ctx.fillRect(shieldX, player.y + 2, 20, 32);
+            ctx.strokeRect(shieldX, player.y + 2, 20, 32);
+            ctx.restore();
+        }
+
+        floatingTexts.forEach(ft => {
+            ctx.save();
+            ctx.font = 'bold 15px Segoe UI';
+            ctx.fillStyle = ft.color;
+            ctx.shadowColor = ft.color;
+            ctx.shadowBlur = 8;
+            ctx.fillText(ft.text, ft.x - cameraX, ft.y);
+            ctx.restore();
+        });
+
+        ctx.restore();
+
+        ctx.save();
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
+        ctx.strokeStyle = 'rgba(52, 211, 153, 0.3)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.roundRect(18, 15, 250, 65, 10);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 16px Segoe UI';
+        ctx.fillText(`Ninja: Jhon | Vidas: ${player.lives} ❤️`, 32, 40);
+        ctx.fillText(`Pontos: ${player.score} 🪙 | Carla: ${carla.rescued ? 'RESGATADA 💖' : 'À ESPERA ⏳'}`, 32, 62);
+
+        let shieldBoxX = canvas.width - 190;
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
+        ctx.beginPath();
+        ctx.roundRect(shieldBoxX - 15, 15, 175, 65, 10);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+        ctx.fillRect(shieldBoxX, 42, 145, 12);
+        ctx.fillStyle = player.shieldEnergy > 10 ? '#38bdf8' : '#64748b';
+        ctx.shadowColor = '#38bdf8';
+        ctx.shadowBlur = player.shieldEnergy > 10 ? 8 : 0;
+        ctx.fillRect(shieldBoxX, 42, (player.shieldEnergy / 100) * 145, 12);
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = '#ffffff';
+        ctx.strokeRect(shieldBoxX, 42, 145, 12);
+        
+        ctx.fillStyle = '#38bdf8';
+        ctx.font = 'bold 13px Segoe UI';
+        ctx.fillText('ESCUDO [ J ]', shieldBoxX, 32);
+        ctx.restore();
+
+        if (gameState === 'menu') {
+            ctx.fillStyle = 'rgba(2, 6, 23, 0.95)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#34d399';
+            ctx.shadowColor = '#10b981';
+            ctx.shadowBlur = 20;
+            ctx.font = 'bold 36px Segoe UI';
+            ctx.textAlign = 'center';
+            ctx.fillText('JHON\'S EPIC FOREST QUEST (AI)', canvas.width / 2, canvas.height / 2 - 70);
+            ctx.shadowBlur = 0;
+            ctx.fillStyle = '#cbd5e1';
+            ctx.font = '16px Segoe UI';
+            ctx.fillText('Mover: Setas / A-D | Pular: Seta Cima / W | Escudo: J', canvas.width / 2, canvas.height / 2 - 15);
+            ctx.fillStyle = '#ec4899';
+            ctx.fillText('Resgate Carla e consulte o Sensei Gemini para obter conselhos táticos!', canvas.width / 2, canvas.height / 2 + 20);
+            ctx.fillStyle = '#facc15';
+            ctx.font = 'bold 18px Segoe UI';
+            ctx.fillText('Pressiona [ ENTER ] para começar', canvas.width / 2, canvas.height / 2 + 75);
+            ctx.textAlign = 'left';
+        } else if (gameState === 'gameover') {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#ef4444';
+            ctx.shadowColor = '#ef4444';
+            ctx.shadowBlur = 20;
+            ctx.font = 'bold 42px Segoe UI';
+            ctx.textAlign = 'center';
+            ctx.fillText('FIM DE JOGO', canvas.width / 2, canvas.height / 2 - 25);
+            ctx.shadowBlur = 0;
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '18px Segoe UI';
+            ctx.fillText('Pressiona [ R ] para tentar novamente', canvas.width / 2, canvas.height / 2 + 25);
+            ctx.textAlign = 'left';
+        } else if (gameState === 'won') {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#34d399';
+            ctx.shadowColor = '#34d399';
+            ctx.shadowBlur = 20;
+            ctx.font = 'bold 40px Segoe UI';
+            ctx.textAlign = 'center';
+            ctx.fillText('MISSÃO CUMPRIDA! JHON E CARLA SALVOS!', canvas.width / 2, canvas.height / 2 - 30);
+            ctx.shadowBlur = 0;
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '18px Segoe UI';
+            ctx.fillText(`Pontuação Total: ${player.score} | Pressiona [ R ] para jogar de novo`, canvas.width / 2, canvas.height / 2 + 20);
+            ctx.textAlign = 'left';
+        }
+    }
+
+    function loop() {
+        update();
+        draw();
+        requestAnimationFrame(loop);
+    }
+
+    window.onload = function() {
+        loadLevel(1);
+        loop();
+    };
+</script>
+
+</body>
+</html>
