@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#02040a">
+<title>Jhon's Epic Forest Quest — v1.1</title>
+<style>
+:root{--g:#34d399;--b:#38bdf8;--p:#ec4899;--r:#f43f5e;--y:#facc15;--bg:#02040a}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:#fff;font-family:Segoe UI,Tahoma,sans-serif;touch-action:none;overscroll-behavior:none}
+body{display:flex;align-items:center;justify-content:center}
+.wrap{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+.game{position:relative;width:min(1200px,100vw);height:auto;aspect-ratio:16/9;overflow:hidden;background:#020617;border:1px solid #34d39955;border-radius:16px;box-shadow:0 20px 70px #000b}
+canvas{display:block;width:100%;height:100%;image-rendering:auto}
+.hud{position:absolute;left:10px;right:10px;top:10px;display:flex;justify-content:space-between;gap:8px;pointer-events:none;z-index:5}
+.card{background:#020617d9;border:1px solid #94a3b833;border-radius:10px;padding:8px 10px;backdrop-filter:blur(5px);font-size:13px;line-height:1.35}
+.bar{width:150px;height:8px;background:#0f172a;border-radius:99px;overflow:hidden;border:1px solid #fff2}.bar i{display:block;height:100%}
+.mobile-tip{display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:20;background:#0b1220ee;border:1px solid #38bdf855;border-radius:14px;padding:16px 20px;text-align:center;max-width:85%;font-weight:700}
+.controls{position:absolute;left:12px;right:12px;bottom:12px;display:flex;justify-content:space-between;align-items:flex-end;z-index:10;pointer-events:none}
+.grp{display:flex;gap:10px;pointer-events:auto}.btn{width:64px;height:64px;border-radius:18px;border:2px solid #34d39999;background:#0f172acc;color:#fff;display:flex;align-items:center;justify-content:center;font-size:25px;font-weight:800;user-select:none;backdrop-filter:blur(6px);box-shadow:0 8px 20px #0008}.btn:active{transform:scale(.94);background:#34d39944}
+.pause{position:absolute;right:10px;bottom:10px;z-index:15;pointer-events:auto}.tiny{width:44px;height:44px;border-radius:12px;font-size:18px}
+.overlay{position:absolute;inset:0;z-index:30;background:#020617e8;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px}.panel{width:min(560px,92%);background:#0b1220;border:1px solid #38bdf855;border-radius:18px;padding:22px;box-shadow:0 20px 70px #000}.panel h1{margin:0 0 8px;color:var(--g);font-size:clamp(24px,4vw,40px)}.panel p{color:#cbd5e1;line-height:1.5}.start{background:#059669;border:1px solid #6ee7b7;color:#fff;padding:12px 20px;border-radius:12px;font-size:18px;font-weight:800}
+.hidden{display:none!important}.banner{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:25;background:#06111ff2;border:1px solid #34d39988;border-radius:16px;padding:18px 22px;text-align:center;min-width:260px;box-shadow:0 15px 55px #000}
+.banner h2{margin:0 0 6px;color:var(--g)}.banner p{margin:0;color:#cbd5e1}.version{position:absolute;bottom:8px;left:8px;color:#64748b;font-size:10px;z-index:12}
+@media(max-width:900px) and (orientation:portrait){.mobile-tip{display:block}.game{width:100vw;height:100vh;aspect-ratio:auto;border-radius:0}.hud{top:max(8px,env(safe-area-inset-top))}.controls{bottom:max(10px,env(safe-area-inset-bottom))}}
+@media(max-width:900px) and (orientation:landscape){.game{width:100vw;height:100vh;aspect-ratio:auto;border-radius:0}.card{font-size:12px;padding:6px 8px}.bar{width:125px}.btn{width:58px;height:58px}.pause{bottom:8px}}
+@media(min-width:901px){.controls{display:none}.pause{display:block!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="game" id="game">
+<canvas id="c" width="960" height="540"></canvas>
+<div class="hud"><div class="card"><b>🥷 JHON</b> <span id="lives">♥♥♥</span> · <span id="level">FASE 1</span><br><span>🪙 <b id="coins">0</b> · ⭐ <b id="score">0</b> · ⏱️ <b id="time">00:00</b></span></div><div class="card"><span style="color:#7dd3fc;font-weight:800">🛡️ <b id="energy">100%</b></span><div class="bar"><i id="energyBar" style="width:100%;background:#38bdf8"></i></div></div></div>
+<div class="controls"><div class="grp"><div class="btn" data-key="left">◀</div><div class="btn" data-key="right">▶</div><div class="btn" data-action="dash">⚡</div></div><div class="grp"><div class="btn" data-action="shield">🛡️</div><div class="btn" data-action="jump">▲</div><div class="btn" data-action="attack">⚔️</div></div></div>
+<button class="btn tiny pause" id="pauseBtn">Ⅱ</button>
+<div id="portrait" class="mobile-tip">📱 Gire o celular para jogar na horizontal</div>
+<div id="banner" class="banner hidden"><h2 id="bt">FASE CONCLUÍDA!</h2><p id="bp">Próxima fase...</p></div>
+<div class="version">v1.1 • Mobile Optimized</div>
+</div>
+<div id="menu" class="overlay"><div class="panel"><h1>JHON'S EPIC FOREST QUEST</h1><p><b>Versão 1.1</b> otimizada para celular. Atravesse a floresta, use o segundo salto, dash e escudo, resgate Carla e avance pelas 4 fases.</p><p>Toque nos botões. No PC: ← →, Espaço, Shift, X e J.</p><button class="start" id="start">▶ Começar</button></div></div>
+</div>
+<script>
+'use strict';
+const cv=document.getElementById('c'),ctx=cv.getContext('2d',{alpha:false,desynchronized:true});
+const DPR=Math.min(window.devicePixelRatio||1,1.35); // limita custo em telas de alta densidade
+const W=cv.width,H=cv.height;
+const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+let state='menu',level=1,camera=0,last=performance.now(),acc=0,startTime=0,elapsed=0,pausedFrom='playing';
+let quality=window.innerWidth<600?'low':'high';
+const keys={left:false,right:false,shield:false};
+const p={x:55,y:380,w:30,h:44,dx:0,dy:0,speed:6.2,g:.5,jump:-13,ground:false,coyote:0,buffer:0,air:1,lives:3,score:0,energy:100,dashCd:0,dash:0,atkCd:0,atk:0,inv:80,facing:1,spawnX:55,spawnY:380};
+let coins=0,goal={},carla={},rescued=false,parts=[],texts=[],shots=[],enemies=[],checkpoints=[],plats=[];
+const LEVELS={
+1:{name:'Floresta Sombria',w:4200,goal:3990,carla:3490,cp:[1220,2240,3270],plats:[[0,440,620,100],[665,390,180,20],[865,330,180,20],[1065,395,160,20],[1245,440,480,100],[1780,370,185,20],[2010,310,185,20],[2240,440,500,100],[2800,360,180,20],[3040,300,180,20],[3280,390,170,20],[3490,440,710,100]],en:[520,1370,2470,3160]},
+2:{name:'Ruínas da Lua',w:4550,goal:4350,carla:3680,cp:[1030,2240,3470],plats:[[0,440,550,100],[600,390,180,20],[820,330,180,20],[1040,440,470,100],[1570,375,180,20],[1800,315,180,20],[2025,255,180,20],[2250,440,470,100],[2780,370,180,20],[3010,310,180,20],[3240,255,180,20],[3480,440,500,100],[4010,370,180,20],[4230,310,180,20],[4450,410,100,120]],en:[440,1190,2310,2880,3640,4290]},
+3:{name:'Floresta do Fogo',w:4850,goal:4680,carla:3880,cp:[1020,2230,3470],plats:[[0,440,540,100],[585,390,185,20],[810,325,185,20],[1035,440,455,100],[1540,375,185,20],[1770,315,185,20],[1995,255,185,20],[2220,440,500,100],[2780,375,185,20],[3010,315,185,20],[3240,255,185,20],[3470,440,500,100],[4030,370,185,20],[4260,310,185,20],[4490,440,360,100]],en:[420,1170,2320,2840,3380,4080,4530]},
+4:{name:'Santuário Final',w:5200,goal:4990,carla:3970,cp:[1300,2500,3740],boss:true,plats:[[0,440,580,100],[630,390,190,20],[860,330,190,20],[1090,270,190,20],[1320,440,470,100],[1810,375,190,20],[2040,315,190,20],[2270,255,190,20],[2500,440,500,100],[3050,375,190,20],[3280,315,190,20],[3510,255,190,20],[3740,440,500,100],[4280,375,190,20],[4510,315,190,20],[4740,440,460,100]],en:[470,1360,2600,3120,3800,4350],boss:true}}
+function saveKey(){return 'jhon_forest_v1_1'}
+function save(){try{localStorage.setItem(saveKey(),JSON.stringify({unlocked:Math.max(+localStorage.getItem('jhf_unlocked')||1,level)}))}catch(e){}}
+function load(){try{return JSON.parse(localStorage.getItem('jhon_forest_save')||'{}')}catch(e){return {}}}
+function fx(x,y,c,n=6){if(quality==='low')n=Math.min(n,3);for(let i=0;i<n;i++)parts.push({x,y,dx:(Math.random()-.5)*6,dy:(Math.random()-.5)*6-1,r:1+Math.random()*2,c,l:24})}
+function tx(x,y,t,c='#facc15'){texts.push({x,y,t,c,l:45})}
+function build(lv){level=lv;const z=LEVELS[lv];plats=z.plats.map((a,i)=>({x:a[0],y:a[1],w:a[2],h:a[3],safe:false,id:i}));
+// rota de apoio: nenhum vão perigoso fica sem plataforma extra.
+for(let i=0;i<plats.length-1;i++){const a=plats[i],b=plats[i+1],gap=b.x-(a.x+a.w);if(gap>120){const n=Math.ceil(gap/115)-1;for(let j=0;j<n;j++){const x=a.x+a.w+(j+1)*gap/(n+1)-38;const y=Math.max(250,Math.min(a.y,b.y)-52);plats.push({x,y,w:76,h:18,safe:true,id:'s'+i+'_'+j})}}}plats.sort((a,b)=>a.x-b.x);
+enemies=z.en.map((x,i)=>({x,y:408,w:32,h:32,min:x-80,max:x+90,s:1.3+(i%3)*.3,dir:i%2?1:-1,type:i%2?'shooter':'runner',timer:30+i*5,alive:true,hp:1}));if(z.boss)enemies.push({x:4850,y:350,w:78,h:90,min:4580,max:5070,s:1,dir:-1,type:'boss',timer:0,alive:true,hp:10});
+checkpoints=z.cp.map((x,i)=>({x,y:390,w:25,h:50,on:false,id:i+1}));coins=0;shots=[];parts=[];texts=[];rescued=false;carla={x:z.carla,y:370,w:32,h:45};goal={x:z.goal,y:320,w:75,h:120};p.x=55;p.y=390;p.spawnX=55;p.spawnY=390;p.dx=p.dy=0;p.energy=100;p.air=1;p.inv=80;p.dashCd=0;p.atkCd=0;camera=0;elapsed=0;startTime=performance.now();document.getElementById('level').textContent='FASE '+lv;banner(false);hud()}
+function startGame(){state='playing';level=1;p.lives=3;p.score=0;build(1);document.getElementById('menu').classList.add('hidden');last=performance.now();acc=0;}
+function jump(){if(state!=='playing')return;if(p.ground||p.coyote>0){p.dy=p.jump;p.ground=false;p.coyote=0;p.air=1;fx(p.x+15,p.y+44,'#38bdf8',7)}else if(p.air>0){p.dy=p.jump*.9;p.air--;fx(p.x+15,p.y+44,'#a78bfa',8);tx(p.x,p.y-8,'2º SALTO','#c4b5fd')}}
+function dash(){if(state!=='playing'||p.dashCd>0)return;p.dx=p.facing*15;p.dashCd=45;p.dash=8;p.inv=20;fx(p.x+15,p.y+20,'#67e8f9',10)}
+function attack(){if(state!=='playing'||p.atkCd>0)return;p.atk=10;p.atkCd=18;const ax=p.facing>0?p.x+p.w:p.x-60,aw=60,ay=p.y+4;for(const e of enemies){if(!e.alive)continue;if(ax<e.x+e.w&&ax+aw>e.x&&ay<e.y+e.h&&ay+36>e.y){e.hp--;p.score+=e.type==='boss'?200:100;fx(e.x+e.w/2,e.y+e.h/2,'#f43f5e',8);if(e.hp<=0){e.alive=false;p.score+=e.type==='boss'?1500:180}}}}
+function shield(){return keys.shield&&p.energy>4}
+function hurt(){if(p.inv>0||state!=='playing')return;p.lives--;p.inv=70;p.x=p.spawnX;p.y=p.spawnY;p.dx=p.dy=0;p.energy=Math.max(p.energy,35);fx(p.x,p.y,'#f43f5e',8);if(p.lives<=0){state='gameover';banner(true,'FIM DE JOGO','Toque em Reiniciar')}hud()}
+function complete(){if(state!=='playing')return;state='finish';save();document.getElementById('bt').textContent=level<4?'FASE '+level+' CONCLUÍDA!':'🏆 MISSÃO CUMPRIDA!';document.getElementById('bp').textContent=level<4?'Próxima fase em 0,8s…':'Você venceu as 4 fases!';banner(true);setTimeout(()=>{if(state!=='finish')return;if(level<4){build(level+1);state='playing'}else{state='won';banner(true,'🏆 VOCÊ VENCEU!','Toque em Reiniciar')}},800)}
+function banner(on,title,text){const b=document.getElementById('banner');if(on){b.classList.remove('hidden');if(title)document.getElementById('bt').textContent=title;if(text)document.getElementById('bp').textContent=text}else b.classList.add('hidden')}
+function hud(){document.getElementById('lives').textContent='♥'.repeat(Math.max(0,p.lives))||'—';document.getElementById('score').textContent=p.score;document.getElementById('coins').textContent=coins;document.getElementById('energy').textContent=Math.round(p.energy)+'%';document.getElementById('energyBar').style.width=p.energy+'%';document.getElementById('time').textContent=new Date(elapsed*1000).toISOString().slice(14,19)}
+function update(dt){if(state!=='playing')return;elapsed=Math.floor((performance.now()-startTime)/1000);if(p.inv)p.inv--;if(p.dashCd)p.dashCd--;if(p.atkCd)p.atkCd--;if(p.atk)p.atk--;if(shield())p.energy=Math.max(0,p.energy-1.2);else p.energy=Math.min(100,p.energy+.55);if(!p.dash){if(keys.left){p.dx=-p.speed;p.facing=-1}else if(keys.right){p.dx=p.speed;p.facing=1}else p.dx*=.82}else p.dash--;
+if(p.buffer>0)p.buffer--;if((keys.up||p.buffer>0)&&(p.ground||p.coyote>0||p.air>0)){jump();p.buffer=0}p.x=Math.max(0,Math.min(worldW-p.w,p.x+p.dx));p.dy+=p.g*dt*60;p.y+=p.dy*dt*60;p.ground=false;
+for(const q of plats){if(p.x<q.x+q.w&&p.x+p.w>q.x&&p.y+p.h>q.y&&p.y+p.h-p.dy<=q.y&&p.dy>=0){p.y=q.y-p.h;p.dy=0;p.ground=true;p.air=1}}
+if(p.ground)p.coyote=.12;else p.coyote=Math.max(0,p.coyote-dt);camera=Math.max(0,Math.min(worldW-W,p.x-W*.42));
+for(const c of checkpoints)if(!c.on&&p.x<c.x+c.w&&p.x+p.w>c.x&&p.y<c.y+c.h&&p.y+p.h>c.y){c.on=true;p.spawnX=c.x;p.spawnY=c.y-5;p.score+=100;tx(c.x,c.y-20,'CHECKPOINT!','#facc15');fx(c.x,c.y,'#facc15',10)}
+if(!rescued&&Math.abs(p.x-carla.x)<62){rescued=true;p.score+=1000;tx(carla.x-35,carla.y-20,'CARLA +1000','#ec4899');fx(carla.x,carla.y,'#ec4899',12)}
+for(const e of enemies){if(!e.alive)continue;e.x+=e.s*e.dir;if(e.x>e.max||e.x<e.min)e.dir*=-1;if((e.type==='shooter'||e.type==='boss')&&++e.timer>(e.type==='boss'?48:90)){e.timer=0;shots.push({x:e.x+e.w/2,y:e.y+e.h/2,dx:(p.x<e.x?-1:1)*(e.type==='boss'?5.2:4.4),r:e.type==='boss'?7:5})}if(p.x<e.x+e.w&&p.x+p.w>e.x&&p.y<e.y+e.h&&p.y+p.h>e.y){if(p.dy>0&&p.y+p.h-p.dy<=e.y+14&&e.type!=='boss'){e.alive=false;p.dy=-9;p.score+=250;fx(e.x,e.y,'#ef4444',8)}else hurt()}}
+for(let i=shots.length-1;i>=0;i--){const s=shots[i];s.x+=s.dx;const hit=p.x<s.x+s.r&&p.x+p.w>s.x-s.r&&p.y<s.y+s.r&&p.y+p.h>s.y-s.r;if(hit){if(shield()){p.score+=50;shots.splice(i,1);fx(s.x,s.y,'#38bdf8',6)}else{shots.splice(i,1);hurt()}}else if(s.x<camera-100||s.x>camera+W+100)shots.splice(i,1)}
+if(p.y>H+80)hurt();if(p.x+p.w>goal.x&&p.x<goal.x+goal.w&&p.y+p.h>goal.y&&p.y<goal.y+goal.h)complete();
+for(const q of parts){q.x+=q.dx;q.y+=q.dy;q.l--}parts=parts.filter(q=>q.l>0);for(const q of texts){q.y-=.7;q.l--}texts=texts.filter(q=>q.l>0);hud()}
+function draw(){ctx.fillStyle='#06111b';ctx.fillRect(0,0,W,H);const grad=ctx.createLinearGradient(0,0,0,H);grad.addColorStop(0,'#010409');grad.addColorStop(.55,'#071826');grad.addColorStop(1,'#102f48');ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);ctx.fillStyle='#fef08a';ctx.beginPath();ctx.arc(W-110,72,28,0,Math.PI*2);ctx.fill();
+for(let i=0;i<7;i++){const x=(i*230-camera*.16)%1150;ctx.fillStyle='#07131f';ctx.beginPath();ctx.arc(x,300,105,0,Math.PI*2);ctx.fill();ctx.fillRect(x-12,300,24,270)}
+ctx.save();ctx.translate(-camera,0);for(const q of plats){ctx.fillStyle=q.safe?'#123b52':'#12382a';ctx.fillRect(q.x,q.y,q.w,q.h);ctx.fillStyle=q.safe?'#38bdf8':'#34d399';ctx.fillRect(q.x,q.y,q.w,5)}
+for(const c of checkpoints){ctx.fillStyle=c.on?'#facc15':'#64748b';ctx.fillRect(c.x+8,c.y,8,c.h)}
+ctx.fillStyle='#34d399';ctx.shadowColor='#34d399';ctx.shadowBlur=20;ctx.beginPath();ctx.arc(goal.x+30,goal.y+55,29,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;ctx.fillStyle='#06111f';ctx.beginPath();ctx.arc(goal.x+30,goal.y+55,17,0,Math.PI*2);ctx.fill();
+if(!rescued){ctx.fillStyle='#ec4899';ctx.fillRect(carla.x,carla.y,carla.w,carla.h)}
+for(const e of enemies)if(e.alive){ctx.fillStyle=e.type==='boss'?'#991b1b':e.type==='shooter'?'#7c3aed':'#dc2626';ctx.fillRect(e.x,e.y,e.w,e.h);if(e.type==='boss'){ctx.fillStyle='#ef4444';ctx.fillRect(e.x,e.y-7,e.w*(e.hp/10),5)}}
+for(const s of shots){ctx.save();ctx.translate(s.x,s.y);ctx.rotate(performance.now()*.01);ctx.fillStyle='#fff';ctx.fillRect(-6,-2,12,4);ctx.fillRect(-2,-6,4,12);ctx.restore()}
+ctx.save();if(p.inv%6<3)ctx.globalAlpha=.5;ctx.fillStyle='#111827';ctx.fillRect(p.x,p.y,p.w,p.h);ctx.fillStyle='#f43f5e';ctx.fillRect(p.x+(p.facing>0?2:-12),p.y+7,12,5);if(p.atk){ctx.strokeStyle='#fff';ctx.lineWidth=4;ctx.beginPath();ctx.arc(p.x+(p.facing>0?28:-28),p.y+20,24,p.facing>0?-1.2:2, p.facing>0?.55:3.7);ctx.stroke()}if(shield()){ctx.strokeStyle='#38bdf8';ctx.lineWidth=3;ctx.strokeRect(p.facing>0?p.x+p.w:p.x-20,p.y+4,20,34)}ctx.restore();
+for(const q of parts){ctx.globalAlpha=q.l/24;ctx.fillStyle=q.c;ctx.beginPath();ctx.arc(q.x,q.y,q.r,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1}for(const q of texts){ctx.fillStyle=q.c;ctx.font='bold 14px Segoe UI';ctx.fillText(q.t,q.x,q.y)}ctx.restore()}
+function loop(now){const frame=Math.min((now-last)/1000,.05);last=now;acc+=frame;const step=1/60;let count=0;while(acc>=step&&count<3){update(step);acc-=step;count++}draw();requestAnimationFrame(loop)}
+function setKey(k,v){keys[k]=v}
+window.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight','ArrowUp',' '].includes(e.key))e.preventDefault();if(e.key==='ArrowLeft'||e.key.toLowerCase()==='a')setKey('left',true);if(e.key==='ArrowRight'||e.key.toLowerCase()==='d')setKey('right',true);if(e.key==='ArrowUp'||e.key===' '||e.key.toLowerCase()==='w'){p.buffer=.12;keys.up=true}if(e.key==='j'||e.key==='J')keys.shield=true;if(e.key==='Shift')dash();if(e.key==='x'||e.key==='X'||e.key==='k'||e.key==='K')attack();if(e.key==='Escape')togglePause();if(e.key==='Enter'&&state==='menu')startGame();if((e.key==='r'||e.key==='R')&&(state==='gameover'||state==='won'))startGame()});
+window.addEventListener('keyup',e=>{if(e.key==='ArrowLeft'||e.key.toLowerCase()==='a')setKey('left',false);if(e.key==='ArrowRight'||e.key.toLowerCase()==='d')setKey('right',false);if(e.key==='ArrowUp'||e.key===' '||e.key.toLowerCase()==='w')keys.up=false;if(e.key==='j'||e.key==='J')keys.shield=false});
+for(const b of document.querySelectorAll('.btn[data-key]')){const k=b.dataset.key;b.addEventListener('pointerdown',e=>{e.preventDefault();setKey(k,true)});b.addEventListener('pointerup',e=>{e.preventDefault();setKey(k,false)});b.addEventListener('pointercancel',()=>setKey(k,false));b.addEventListener('pointerleave',()=>setKey(k,false))}
+for(const b of document.querySelectorAll('.btn[data-action]')){b.addEventListener('pointerdown',e=>{e.preventDefault();const a=b.dataset.action;if(a==='jump'){p.buffer=.12;jump()}if(a==='dash')dash();if(a==='attack')attack();if(a==='shield')keys.shield=true});b.addEventListener('pointerup',()=>{if(b.dataset.action==='shield')keys.shield=false});b.addEventListener('pointercancel',()=>{if(b.dataset.action==='shield')keys.shield=false})}
+function togglePause(){if(state==='playing'){pausedFrom='playing';state='paused';document.getElementById('pauseBtn').textContent='▶'}else if(state==='paused'){state=pausedFrom;document.getElementById('pauseBtn').textContent='Ⅱ'}}
+document.getElementById('start').onclick=()=>{startGame()};document.getElementById('pauseBtn').onclick=togglePause;
+window.addEventListener('blur',()=>{if(state==='playing')togglePause()});document.addEventListener('visibilitychange',()=>{if(document.hidden&&state==='playing')togglePause()});
+window.addEventListener('resize',()=>{quality=window.innerWidth<600?'low':'high'});
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
