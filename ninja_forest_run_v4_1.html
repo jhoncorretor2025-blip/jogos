@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#020617">
+<title>Jhon's Epic Forest Quest — v4.1</title>
+<style>
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#020617}
+iframe{width:100%;height:100%;border:0;display:block}
+</style>
+</head>
+<body>
+<iframe id="gameFrame" src="ninja_forest_run_v4_0.html?v=4.1" title="Jhon's Epic Forest Quest v4.1"></iframe>
+<script>
+(function(){
+  const frame=document.getElementById('gameFrame');
+  function applyUX(){
+    try{
+      const d=frame.contentDocument;
+      if(!d||!d.body)return;
+
+      const version=d.querySelector('.version');
+      if(version)version.textContent="🥷 JHON'S EPIC FOREST QUEST • v4.1";
+
+      const menuText=d.querySelector('#menu .panel p');
+      if(menuText)menuText.innerHTML='<b>Objetivo</b> — avance pela floresta, resgate Carla e entre no portal para desbloquear a próxima fase.';
+
+      const help=d.querySelector('#menu .help');
+      if(help)help.textContent='Seu progresso de fases é salvo automaticamente neste navegador.';
+
+      const portraitTitle=d.querySelector('.portrait h2');
+      if(portraitTitle)portraitTitle.textContent='📱 Vire o celular para horizontal';
+      const portraitText=d.querySelector('.portrait p');
+      if(portraitText)portraitText.textContent='Assim você terá mais espaço para enxergar e controlar Jhon.';
+
+      const pauseText=d.querySelector('#pause .panel p');
+      if(pauseText)pauseText.textContent='O jogo está pausado. Seu progresso desta fase está preservado.';
+
+      const gameoverText=d.querySelector('#gameover .panel p');
+      if(gameoverText)gameoverText.textContent='Você voltou ao último checkpoint. Continue sua jornada.';
+
+      const finishText=d.querySelector('#finishText');
+      if(finishText && !finishText.dataset.ux41){
+        const observer=new MutationObserver(function(){
+          if(finishText.textContent.includes('desbloqueada')){
+            finishText.textContent='Excelente! A próxima fase foi desbloqueada. Continue sua jornada.';
+          }else if(finishText.textContent.includes('Você venceu as quatro fases')){
+            finishText.textContent='Parabéns! Você completou todas as quatro fases da aventura.';
+          }
+        });
+        observer.observe(finishText,{childList:true,characterData:true,subtree:true});
+        finishText.dataset.ux41='1';
+      }
+
+      const hudLeft=d.querySelector('.hud .card:first-child');
+      if(hudLeft){
+        const combo=d.getElementById('comboTxt');
+        if(combo && !combo.dataset.ux41){
+          const parent=combo.parentElement;
+          if(parent)parent.innerHTML=parent.innerHTML.replace(/<b id="comboTxt">0<\\/b>x combo/,'<span style="opacity:.8">COMBO</span> <b id="comboTxt">0</b>x');
+          combo.dataset.ux41='1';
+        }
+      }
+
+      const pauseTop=d.getElementById('pauseTop');
+      if(pauseTop)pauseTop.textContent='⏸ Pausar';
+
+      d.documentElement.setAttribute('lang','pt-BR');
+    }catch(e){/* aguarda o iframe carregar completamente */}
+  }
+  frame.addEventListener('load',function(){
+    applyUX();
+    setTimeout(applyUX,300);
+    setTimeout(applyUX,1000);
+  });
+  setInterval(applyUX,2500);
+})();
+</script>
+</body>
+</html>
