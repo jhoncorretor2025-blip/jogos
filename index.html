@@ -4,11 +4,47 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#020617">
-<title>Jhon's Epic Forest Quest — v4.1</title>
+<title>Jhon's Epic Forest Quest — v4.2</title>
 <style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#020617}iframe{width:100%;height:100%;border:0;display:block}</style>
 </head>
 <body>
-<iframe id="gameFrame" src="ninja_forest_run_v4_0.html?v=4.1" title="Jhon's Epic Forest Quest v4.1"></iframe>
-<script src="musica.js?v=4.1"></script>
+<iframe id="gameFrame" src="ninja_forest_run_v4_0.html?v=4.2" title="Jhon's Epic Forest Quest v4.2"></iframe>
+<script>
+(function(){
+  const frame=document.getElementById('gameFrame');
+  function inject(src){
+    const d=frame.contentDocument;
+    if(!d || !d.body) return false;
+    if(d.querySelector('script[data-jhon-src="'+src+'"]')) return true;
+    const s=d.createElement('script');
+    s.src=src+'?v=4.2';
+    s.dataset.jhonSrc=src;
+    s.onload=function(){
+      try{
+        if(src==='inimigos.js' && typeof d.defaultView.build==='function'){
+          d.defaultView.build(d.defaultView.level||1);
+          d.defaultView.state='menu';
+          d.defaultView.renderLevels();
+          d.defaultView.last=performance.now();
+        }
+      }catch(e){}
+    };
+    d.body.appendChild(s);
+    return true;
+  }
+  function apply(){
+    try{
+      const d=frame.contentDocument;
+      if(!d || !d.body) return;
+      const v=d.querySelector('.version');
+      if(v) v.textContent="🥷 JHON'S EPIC FOREST QUEST • v4.2";
+      inject('musica.js');
+      inject('inimigos.js');
+    }catch(e){}
+  }
+  frame.addEventListener('load',function(){apply();setTimeout(apply,300);setTimeout(apply,1000);setTimeout(apply,2000)});
+  setInterval(apply,3000);
+})();
+</script>
 </body>
 </html>
