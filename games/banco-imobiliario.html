@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#070b14">
+<title>Banco Imobiliário — Jogos do Jhon</title>
+<style>
+  :root{--bg:#070b14;--card:#0f172a;--line:#1e293b;--txt:#e2e8f0;--muted:#94a3b8;--you:#22d3ee;--ia:#fb7185}
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    min-height:100vh;min-height:100dvh;
+    background:radial-gradient(700px 420px at 50% -10%,rgba(52,211,153,.14),transparent 65%),var(--bg);
+    color:var(--txt);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    padding:12px 12px 20px;display:flex;flex-direction:column;align-items:center;
+    -webkit-tap-highlight-color:transparent;user-select:none;
+  }
+  .top{width:100%;max-width:520px;display:flex;align-items:center;gap:10px;margin-bottom:8px}
+  .back{color:var(--muted);text-decoration:none;font-size:22px;padding:6px 8px;border-radius:10px}
+  .back:hover{background:#111c31;color:var(--txt)}
+  h1{font-size:17px;margin:0;font-weight:700;flex:1}
+  .hud{width:100%;max-width:520px;display:flex;gap:8px;margin-bottom:8px}
+  .pcard{flex:1;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:7px 10px;display:flex;justify-content:space-between;align-items:center;gap:6px}
+  .pcard.you{border-color:rgba(34,211,238,.45)}
+  .pcard.ia{border-color:rgba(251,113,133,.35)}
+  .pcard span{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+  .pcard b{font-size:15px;font-variant-numeric:tabular-nums}
+  #board{
+    width:100%;max-width:520px;aspect-ratio:1;display:grid;gap:4px;
+    grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(5,1fr);
+  }
+  .sp{
+    position:relative;border-radius:7px;background:#101a2e;border:1px solid #1e2f4a;
+    padding:3px;font-size:8.5px;line-height:1.15;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;
+  }
+  .sp .nm{font-weight:700;font-size:8.5px;color:#cbd5e1;word-break:break-word}
+  .sp .pr{font-size:7.5px;color:#64748b}
+  .sp.own0{border-color:var(--you);background:#0b2a33}
+  .sp.own1{border-color:var(--ia);background:#2a1119}
+  .sp.here{outline:2px solid #fbbf24;outline-offset:-2px}
+  .sp .houses{position:absolute;top:2px;right:3px;font-size:7px;color:#fbbf24;letter-spacing:-1px}
+  .sp .pawns{position:absolute;bottom:2px;left:3px;display:flex;gap:2px;font-size:9px}
+  .center{
+    grid-column:2 / span 3;grid-row:2 / span 3;border-radius:12px;background:linear-gradient(160deg,#0d1a2c,#0a1322);
+    border:1px solid #1e2f4a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px;text-align:center;
+  }
+  .dice{font-size:26px;line-height:1}
+  .turn{font-size:11px;color:var(--muted)}
+  .turn b{color:var(--txt)}
+  .btn{
+    font:inherit;font-size:13px;font-weight:700;border-radius:10px;padding:9px 14px;border:0;cursor:pointer;
+    background:linear-gradient(90deg,#34d399,#22d3ee);color:#04211b;
+  }
+  .btn:disabled{opacity:.4;cursor:default}
+  .btn:active{transform:scale(.97)}
+  .msg{width:100%;max-width:520px;min-height:34px;margin-top:10px;font-size:13.5px;color:var(--muted);text-align:center;line-height:1.45}
+  .msg b{color:var(--txt)}
+  .ver{color:#475569;font-size:11.5px;margin-top:10px}
+  #sheet{
+    position:fixed;left:0;right:0;bottom:0;background:#0d1728;border-top:1px solid var(--line);
+    padding:14px 16px 18px;display:none;flex-direction:column;gap:10px;z-index:8;
+  }
+  #sheet.show{display:flex}
+  #sheet p{margin:0;font-size:14px;line-height:1.5;text-align:center;color:var(--txt)}
+  #sheet .row{display:flex;gap:8px}
+  #sheet .row .btn{flex:1}
+  #sheet .btn.no{background:#101a2e;border:1px solid var(--line);color:var(--txt)}
+  #ov{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(4,8,16,.86);backdrop-filter:blur(4px);z-index:9}
+  #ov.show{display:flex}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px 22px;text-align:center;max-width:330px;width:100%}
+  .panel h2{margin:0 0 8px;font-size:23px}
+  .panel p{margin:0 0 6px;color:var(--muted);font-size:14.5px;line-height:1.6}
+  .panel .btn{margin-top:14px;width:100%;padding:13px}
+</style>
+</head>
+<body>
+  <div class="top">
+    <a class="back" href="../index.html" title="Voltar">←</a>
+    <h1>🏠 Banco Imobiliário</h1>
+  </div>
+
+  <div class="hud">
+    <div class="pcard you"><span>Você</span><b id="cash0">R$ 1.000</b></div>
+    <div class="pcard ia"><span>IA</span><b id="cash1">R$ 1.000</b></div>
+  </div>
+
+  <div id="board"></div>
+  <div class="msg" id="msg">Toque em <b>Rolar</b> para começar. Você joga primeiro.</div>
+  <div class="ver">v1.0 · 22/11/2026</div>
+
+  <div id="sheet">
+    <p id="sheetText"></p>
+    <div class="row">
+      <button class="btn no" id="sheetNo">Passar</button>
+      <button class="btn" id="sheetYes">Comprar</button>
+    </div>
+  </div>
+
+  <div id="ov">
+    <div class="panel">
+      <h2 id="ovTitle"></h2>
+      <p id="ovText"></p>
+      <button class="btn" id="ovBtn">Jogar de novo</button>
+    </div>
+  </div>
+
+<script>
+(function(){
+  const START_CASH = 1000;
+  const SPACES = [
+    {name:'Início', type:'start'},
+    {name:'Centro', type:'prop', price:220, rent:44},
+    {name:'Sorte', type:'chance'},
+    {name:'Praia', type:'prop', price:180, rent:36},
+    {name:'IPTU', type:'tax', amount:100},
+    {name:'Vila Nova', type:'prop', price:140, rent:28},
+    {name:'Sorte', type:'chance'},
+    {name:'Jardim', type:'prop', price:200, rent:40},
+    {name:'Descanso', type:'rest'},
+    {name:'Alameda', type:'prop', price:160, rent:32},
+    {name:'Sorte', type:'chance'},
+    {name:'Colina', type:'prop', price:190, rent:38},
+    {name:'Manutenção', type:'tax', amount:90},
+    {name:'Periferia', type:'prop', price:120, rent:24},
+    {name:'Sorte', type:'chance'},
+    {name:'Avenida', type:'prop', price:240, rent:48}
+  ];
+  const CARDS = [
+    {t:'Honorários de vistoria: +R$ 150', v:150},
+    {t:'Reparo de infiltração: -R$ 120', v:-120},
+    {t:'Aluguel atrasado recebido: +R$ 80', v:80},
+    {t:'Imposto surpresa: -R$ 90', v:-90},
+    {t:'Comissão de venda: +R$ 200', v:200},
+    {t:'Conta de luz do imóvel vazio: -R$ 60', v:-60}
+  ];
+
+  const boardEl = document.getElementById('board');
+  const msgEl = document.getElementById('msg');
+  const cashEls = [document.getElementById('cash0'), document.getElementById('cash1')];
+  const sheet = document.getElementById('sheet');
+  const sheetText = document.getElementById('sheetText');
+  const sheetYes = document.getElementById('sheetYes');
+  const sheetNo = document.getElementById('sheetNo');
+  const ov = document.getElementById('ov');
+  const ovTitle = document.getElementById('ovTitle');
+  const ovText = document.getElementById('ovText');
+
+  let spaces, players, turn, busy, over, dice, pending;
+
+  function money(v){ return 'R$ ' + Math.round(v).toLocaleString('pt-BR'); }
+
+  function cellPos(i){
+    if (i <= 4) return {r:1, c:i+1};
+    if (i <= 8) return {r:i-3, c:5};
+    if (i <= 12) return {r:5, c:13-i};
+    return {r:17-i, c:1};
+  }
+
+  function render(){
+    boardEl.innerHTML = '';
+    spaces.forEach(function(s, i){
+      const p = cellPos(i);
+      const d = document.createElement('div');
+      d.className = 'sp' + (s.owner === 0 ? ' own0' : s.owner === 1 ? ' own1' : '');
+      d.style.gridRow = p.r; d.style.gridColumn = p.c;
+      const houses = s.houses ? '🏠'.repeat(s.houses) : '';
+      const pawns = (players[0].pos === i ? '<span style="color:var(--you)">●</span>' : '') +
+                    (players[1].pos === i ? '<span style="color:var(--ia)">●</span>' : '');
+      d.innerHTML = '<div class="nm">' + s.name + '</div>' +
+        '<div class="pr">' + (s.type === 'prop' ? money(s.price) : '') + '</div>' +
+        (houses ? '<div class="houses">' + houses + '</div>' : '') +
+        (pawns ? '<div class="pawns">' + pawns + '</div>' : '');
+      boardEl.appendChild(d);
+    });
+
+    const center = document.createElement('div');
+    center.className = 'center';
+    center.innerHTML = '<div class="dice">' + (dice ? dice : '🎲') + '</div>' +
+      '<div class="turn">Vez de <b>' + (turn === 0 ? 'Você' : 'IA') + '</b></div>' +
+      '<button class="btn" id="rollBtn"' + (busy || over || turn === 1 ? ' disabled' : '') + '>Rolar</button>';
+    boardEl.appendChild(center);
+    document.getElementById('rollBtn').addEventListener('click', roll);
+
+    cashEls[0].textContent = money(players[0].cash);
+    cashEls[1].textContent = money(players[1].cash);
+  }
+
+  function reset(){
+    spaces = SPACES.map(function(s){ return Object.assign({}, s, {owner: -1, houses: 0}); });
+    players = [{cash: START_CASH, pos: 0}, {cash: START_CASH, pos: 0}];
+    turn = 0; busy = false; over = false; dice = ''; pending = null;
+    sheet.classList.remove('show');
+    ov.classList.remove('show');
+    msgEl.innerHTML = 'Toque em <b>Rolar</b> para começar. Você joga primeiro.';
+    render();
+  }
+
+  function roll(){
+    if (busy || over || turn === 1) return;
+    busy = true;
+    const d1 = 1 + Math.floor(Math.random() * 6);
+    const d2 = 1 + Math.floor(Math.random() * 6);
+    dice = d1 + d2;
+    const p = players[turn];
+    const from = p.pos;
+    const to = (from + dice) % spaces.length;
+    if (to < from) { p.cash += 200; msgEl.innerHTML = '💼 Passou pelo <b>Início</b>: +R$ 200.'; }
+    p.pos = to;
+    render();
+    setTimeout(function(){ resolve(to); }, 380);
+  }
+
+  function resolve(i){
+    const s = spaces[i];
+    const who = turn === 0 ? 'Você' : 'IA';
+
+    if (s.type === 'prop') {
+      if (s.owner === -1) return offerBuy(i);
+      if (s.owner === turn) {
+        if (s.houses < 3) return offerBuild(i);
+        msgEl.innerHTML = '🏠 <b>' + s.name + '</b> já está com 3 casas.';
+        return next();
+      }
+      const rent = s.rent * (1 + s.houses);
+      pay(turn, s.owner, rent, 'Aluguel em <b>' + s.name + '</b>: ' + money(rent) + '.');
+      return;
+    }
+
+    if (s.type === 'tax') {
+      players[turn].cash -= s.amount;
+      msgEl.innerHTML = '🧾 <b>' + s.name + '</b>: -' + money(s.amount) + '.';
+      return afterCash();
+    }
+
+    if (s.type === 'chance') {
+      const c = CARDS[Math.floor(Math.random() * CARDS.length)];
+      players[turn].cash += c.v;
+      msgEl.innerHTML = '🎴 ' + c.t;
+      return afterCash();
+    }
+
+    if (s.type === 'start') {
+      players[turn].cash += 100;
+      msgEl.innerHTML = '🏁 Caiu no <b>Início</b>: +R$ 100.';
+      return next();
+    }
+
+    msgEl.innerHTML = '☕ <b>Descanso</b>. Nada acontece.';
+    next();
+  }
+
+  function offerBuy(i){
+    const s = spaces[i];
+    const p = players[turn];
+    if (turn === 1) {
+      const buy = p.cash - s.price > 220;
+      if (buy) {
+        p.cash -= s.price; s.owner = 1;
+        msgEl.innerHTML = '🤖 IA comprou <b>' + s.name + '</b>.';
+      } else {
+        msgEl.innerHTML = '🤖 IA passou de <b>' + s.name + '</b>.';
+      }
+      render();
+      return next();
+    }
+    if (p.cash < s.price) {
+      msgEl.innerHTML = '💸 Saldo insuficiente para <b>' + s.name + '</b>.';
+      return next();
+    }
+    pending = {kind: 'buy', i: i};
+    sheetText.innerHTML = '<b>' + s.name + '</b> está à venda por <b>' + money(s.price) + '</b>.<br>Aluguel: ' + money(s.rent) + '.';
+    sheetYes.textContent = 'Comprar';
+    sheetYes.style.display = '';
+    sheetNo.textContent = 'Passar';
+    sheet.classList.add('show');
+  }
+
+  function offerBuild(i){
+    const s = spaces[i];
+    const p = players[turn];
+    const cost = Math.round(s.price * 0.6);
+    if (p.cash < cost + 150) {
+      msgEl.innerHTML = '🏠 <b>' + s.name + '</b> é sua. Sem caixa para construir agora.';
+      return next();
+    }
+    if (turn === 1) {
+      if (p.cash - cost > 300) {
+        p.cash -= cost; s.houses++;
+        msgEl.innerHTML = '🤖 IA construiu em <b>' + s.name + '</b> (aluguel maior).';
+      } else {
+        msgEl.innerHTML = '🤖 IA manteve <b>' + s.name + '</b> como está.';
+      }
+      render();
+      return next();
+    }
+    pending = {kind: 'build', i: i};
+    sheetText.innerHTML = 'Você caiu em <b>' + s.name + '</b>, que é sua.<br>Construir uma casa por <b>' + money(cost) + '</b>? Aluguel vai a ' + money(s.rent * (1 + s.houses + 1)) + '.';
+    sheetYes.textContent = 'Construir';
+    sheetYes.style.display = '';
+    sheetNo.textContent = 'Depois';
+    sheet.classList.add('show');
+  }
+
+  function pay(from, to, amount, text){
+    const p = players[from];
+    const paid = Math.min(p.cash, amount);
+    p.cash -= paid;
+    players[to].cash += paid;
+    msgEl.innerHTML = text + (paid < amount ? ' <b>Sem caixa: pagou o que tinha.</b>' : '');
+    afterCash();
+  }
+
+  function afterCash(){
+    render();
+    if (players[0].cash < 0 || players[1].cash < 0) return end();
+    next();
+  }
+
+  function next(){
+    busy = false;
+    turn = 1 - turn;
+    render();
+    if (turn === 1 && !over) {
+      setTimeout(function(){
+        if (!over) roll();
+      }, 700);
+    }
+  }
+
+  function end(){
+    over = true; busy = true;
+    const win = players[0].cash >= players[1].cash;
+    ovTitle.textContent = win ? '🏆 Você venceu!' : '💀 A IA venceu';
+    ovText.innerHTML = 'Seu caixa: <b>' + money(players[0].cash) + '</b><br>Caixa da IA: <b>' + money(players[1].cash) + '</b>';
+    ov.classList.add('show');
+    render();
+  }
+
+  function closeSheet(){
+    sheet.classList.remove('show');
+    pending = null;
+  }
+
+  sheetYes.addEventListener('click', function(){
+    if (!pending) return closeSheet();
+    const s = spaces[pending.i];
+    const p = players[turn];
+    if (pending.kind === 'buy') {
+      p.cash -= s.price; s.owner = turn;
+      msgEl.innerHTML = '✅ Você comprou <b>' + s.name + '</b>.';
+    } else {
+      const cost = Math.round(s.price * 0.6);
+      p.cash -= cost; s.houses++;
+      msgEl.innerHTML = '🏠 Casa construída em <b>' + s.name + '</b>.';
+    }
+    closeSheet();
+    render();
+    next();
+  });
+
+  sheetNo.addEventListener('click', function(){
+    const wasBuy = pending && pending.kind === 'buy';
+    closeSheet();
+    msgEl.innerHTML = wasBuy ? 'Você passou da compra.' : 'Você deixou para depois.';
+    next();
+  });
+
+  document.getElementById('ovBtn').addEventListener('click', reset);
+  window.addEventListener('keydown', function(e){
+    if (e.key === 'Enter' && !busy && !over) roll();
+  });
+
+  reset();
+})();
+</script>
+</body>
+</html>

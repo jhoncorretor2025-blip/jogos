@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#070b14">
+<title>Corrida Infinita — Jogos do Jhon</title>
+<style>
+  :root{--bg:#070b14;--card:#0f172a;--line:#1e293b;--txt:#e2e8f0;--muted:#94a3b8}
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    min-height:100vh;min-height:100dvh;
+    background:radial-gradient(700px 420px at 50% -10%,rgba(34,211,238,.14),transparent 65%),var(--bg);
+    color:var(--txt);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    padding:12px 14px 20px;display:flex;flex-direction:column;align-items:center;
+    -webkit-tap-highlight-color:transparent;user-select:none;
+  }
+  .top{width:100%;max-width:420px;display:flex;align-items:center;gap:10px;margin-bottom:8px}
+  .back{color:var(--muted);text-decoration:none;font-size:22px;padding:6px 8px;border-radius:10px}
+  .back:hover{background:#111c31;color:var(--txt)}
+  h1{font-size:17px;margin:0;font-weight:700;flex:1}
+  .hud{width:100%;max-width:420px;display:flex;gap:8px;margin-bottom:8px}
+  .stat{flex:1;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:7px 10px;text-align:center}
+  .stat span{display:block;font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+  .stat b{font-size:18px;font-variant-numeric:tabular-nums}
+  .stage{position:relative;width:100%;max-width:420px;aspect-ratio:3/4}
+  canvas{width:100%;height:100%;display:block;border-radius:16px;touch-action:none}
+  .overlay{
+    position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;
+    gap:8px;text-align:center;padding:24px;border-radius:16px;background:rgba(4,8,16,.84);backdrop-filter:blur(3px);
+  }
+  .overlay.show{display:flex}
+  .overlay h2{margin:0;font-size:23px}
+  .overlay p{margin:0;color:var(--muted);font-size:14px;line-height:1.5}
+  .btn{
+    margin-top:10px;font:inherit;font-size:14.5px;font-weight:700;border-radius:11px;padding:12px 22px;border:0;cursor:pointer;
+    background:linear-gradient(90deg,#22d3ee,#60a5fa);color:#04211b;
+  }
+  .btn:active{transform:scale(.97)}
+  .pad{display:flex;gap:10px;margin-top:12px;width:100%;max-width:420px}
+  .pad button{
+    flex:1;border:1px solid var(--line);background:#101a2e;color:var(--txt);border-radius:12px;
+    font-size:19px;padding:12px;cursor:pointer;
+  }
+  .pad button:active{background:#1b2b47;transform:scale(.97)}
+  .hint{color:#64748b;font-size:12.5px;margin:10px 0 0;text-align:center}
+  .ver{color:#475569;font-size:11.5px;margin-top:10px}
+</style>
+</head>
+<body>
+  <div class="top">
+    <a class="back" href="../index.html" title="Voltar">←</a>
+    <h1>🏎️ Corrida Infinita</h1>
+  </div>
+
+  <div class="hud">
+    <div class="stat"><span>Pontos</span><b id="score">0</b></div>
+    <div class="stat"><span>Moedas</span><b id="coins">0</b></div>
+    <div class="stat"><span>Recorde</span><b id="best">0</b></div>
+  </div>
+
+  <div class="stage">
+    <canvas id="cv"></canvas>
+    <div class="overlay show" id="ov">
+      <h2 id="ovTitle">Corrida Infinita</h2>
+      <p id="ovText">Desvie dos carros, pegue moedas e vá o mais longe que puder.</p>
+      <button class="btn" id="ovBtn">Acelerar</button>
+    </div>
+  </div>
+
+  <div class="pad">
+    <button id="left" aria-label="Esquerda">◀</button>
+    <button id="pause" aria-label="Pausar">⏸</button>
+    <button id="right" aria-label="Direita">▶</button>
+  </div>
+
+  <p class="hint">Setas ou A/D · deslize na pista · <b>espaço</b> pausa</p>
+  <div class="ver">v1.0 · 22/11/2026</div>
+
+<script>
+(function(){
+  const cv = document.getElementById('cv');
+  const ctx = cv.getContext('2d');
+  const ov = document.getElementById('ov');
+  const ovTitle = document.getElementById('ovTitle');
+  const ovText = document.getElementById('ovText');
+  const ovBtn = document.getElementById('ovBtn');
+  const scoreEl = document.getElementById('score');
+  const coinsEl = document.getElementById('coins');
+  const bestEl = document.getElementById('best');
+
+  const LANES = 3;
+  let W = 360, H = 480, laneW = 120;
+  let player, targetLane, speed, dist, coins, objects, spawnT, coinT, running, over, paused, last, best;
+
+  best = Number(localStorage.getItem('corrida.best') || 0);
+  bestEl.textContent = best;
+
+  function fit(){
+    const r = cv.getBoundingClientRect();
+    W = Math.round(r.width); H = Math.round(r.height);
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cv.width = Math.round(W * dpr);
+    cv.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    laneW = W / LANES;
+    draw();
+  }
+
+  function laneCenter(i){ return laneW * i + laneW / 2; }
+
+  function reset(){
+    player = {x: laneCenter(1), y: 0, w: laneW * .46, h: laneW * .78};
+    targetLane = 1;
+    speed = 250; dist = 0; coins = 0;
+    objects = []; spawnT = 0; coinT = 0;
+    running = false; over = false; paused = false; last = 0;
+    scoreEl.textContent = '0';
+    coinsEl.textContent = '0';
+    ovTitle.textContent = 'Corrida Infinita';
+    ovText.textContent = 'Desvie dos carros, pegue moedas e vá o mais longe que puder.';
+    ovBtn.textContent = 'Acelerar';
+    ov.classList.add('show');
+    draw();
+  }
+
+  function start(){
+    reset();
+    ov.classList.remove('show');
+    running = true;
+  }
+
+  function spawnCar(){
+    const lane = Math.floor(Math.random() * LANES);
+    // evita fechar as 3 faixas ao mesmo tempo
+    const busy = objects.filter(function(o){ return o.type === 'car' && o.y < H * .45; }).map(function(o){ return o.lane; });
+    let l = lane, guard = 0;
+    while (busy.indexOf(l) >= 0 && guard++ < 8) l = Math.floor(Math.random() * LANES);
+    objects.push({
+      type: 'car', lane: l, y: -120,
+      w: laneW * .46, h: laneW * .78,
+      color: ['#fb7185', '#a78bfa', '#fbbf24', '#34d399'][Math.floor(Math.random() * 4)]
+    });
+  }
+
+  function spawnCoin(){
+    objects.push({
+      type: 'coin',
+      lane: Math.floor(Math.random() * LANES),
+      y: -30, w: laneW * .22, h: laneW * .22
+    });
+  }
+
+  function hit(a, b){
+    return Math.abs(a.x - b.x) < (a.w + b.w) / 2 - 6 &&
+           Math.abs(a.y - b.y) < (a.h + b.h) / 2 - 6;
+  }
+
+  function update(dt){
+    speed = Math.min(720, speed + dt * 12);
+    dist += speed * dt;
+    player.y = H - player.h / 2 - 16;
+
+    const tx = laneCenter(targetLane);
+    player.x += (tx - player.x) * Math.min(1, dt * 12);
+
+    spawnT -= dt;
+    if (spawnT <= 0) {
+      spawnCar();
+      spawnT = Math.max(0.34, 0.95 - dist / 9000);
+    }
+    coinT -= dt;
+    if (coinT <= 0) { spawnCoin(); coinT = 1.4 + Math.random(); }
+
+    for (let i = objects.length - 1; i >= 0; i--) {
+      const o = objects[i];
+      o.y += speed * dt;
+      o.x = laneCenter(o.lane);
+
+      if (o.type === 'coin') {
+        if (hit(player, o)) { coins++; coinsEl.textContent = coins; objects.splice(i, 1); continue; }
+      } else if (hit(player, o)) {
+        return die();
+      }
+      if (o.y > H + 140) objects.splice(i, 1);
+    }
+
+    scoreEl.textContent = Math.floor(dist / 12) + coins * 10;
+  }
+
+  function draw(){
+    if (!W) return;
+    ctx.fillStyle = '#0a1220';
+    ctx.fillRect(0, 0, W, H);
+
+    // asfalto
+    ctx.fillStyle = '#111c2e';
+    ctx.fillRect(W * .03, 0, W * .94, H);
+
+    // faixas
+    ctx.strokeStyle = 'rgba(148,163,184,.28)';
+    ctx.lineWidth = 3;
+    ctx.setLineDash([26, 22]);
+    ctx.lineDashOffset = -(dist * .5) % 48;
+    for (let i = 1; i < LANES; i++) {
+      ctx.beginPath();
+      ctx.moveTo(laneW * i, 0);
+      ctx.lineTo(laneW * i, H);
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    // objetos
+    objects.forEach(function(o){
+      if (o.type === 'coin') {
+        const r = o.w / 2;
+        ctx.save();
+        ctx.shadowColor = '#fbbf24'; ctx.shadowBlur = 12;
+        ctx.fillStyle = '#fbbf24';
+        ctx.beginPath(); ctx.arc(o.x, o.y, r, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+        ctx.fillStyle = 'rgba(120,70,0,.55)';
+        ctx.font = 'bold ' + Math.round(r * 1.1) + 'px system-ui';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('$', o.x, o.y + 1);
+      } else {
+        drawCar(o.x, o.y, o.w, o.h, o.color);
+      }
+    });
+
+    if (player) drawCar(player.x, player.y, player.w, player.h, '#22d3ee', true);
+
+    if (paused) {
+      ctx.fillStyle = 'rgba(4,8,16,.6)';
+      ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = '#e2e8f0';
+      ctx.font = 'bold 22px system-ui';
+      ctx.textAlign = 'center';
+      ctx.fillText('Pausado', W / 2, H / 2);
+    }
+  }
+
+  function drawCar(x, y, w, h, color, isPlayer){
+    const r = Math.min(w, h) * .22;
+    ctx.save();
+    if (isPlayer) { ctx.shadowColor = color; ctx.shadowBlur = 14; }
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.roundRect(x - w/2, y - h/2, w, h, r);
+    ctx.fill();
+    ctx.restore();
+
+    // para-brisa
+    ctx.fillStyle = 'rgba(4,12,22,.55)';
+    ctx.beginPath();
+    ctx.roundRect(x - w*.32, y - h*.22, w*.64, h*.24, 4);
+    ctx.fill();
+    // rodas
+    ctx.fillStyle = '#0b1220';
+    ctx.fillRect(x - w/2 - 3, y - h*.28, 4, h*.22);
+    ctx.fillRect(x + w/2 - 1, y - h*.28, 4, h*.22);
+    ctx.fillRect(x - w/2 - 3, y + h*.08, 4, h*.22);
+    ctx.fillRect(x + w/2 - 1, y + h*.08, 4, h*.22);
+  }
+
+  function die(){
+    running = false; over = true;
+    const score = Math.floor(dist / 12) + coins * 10;
+    const rec = score > best;
+    if (rec) { best = score; bestEl.textContent = best; localStorage.setItem('corrida.best', best); }
+    ovTitle.textContent = rec ? 'Novo recorde! 🏆' : 'Bateu! 💥';
+    ovText.innerHTML = 'Pontos: <b>' + score + '</b> · Moedas: <b>' + coins + '</b>';
+    ovBtn.textContent = 'Correr de novo';
+    ov.classList.add('show');
+    draw();
+  }
+
+  function frame(t){
+    requestAnimationFrame(frame);
+    if (!running || paused) { last = t; return; }
+    if (!last) last = t;
+    let dt = (t - last) / 1000;
+    last = t;
+    if (dt > .05) dt = .05;
+    update(dt);
+    if (running) draw();
+  }
+
+  function move(d){
+    if (!running || paused) return;
+    targetLane = Math.max(0, Math.min(LANES - 1, targetLane + d));
+  }
+
+  ovBtn.addEventListener('click', start);
+  document.getElementById('left').addEventListener('click', function(){ move(-1); });
+  document.getElementById('right').addEventListener('click', function(){ move(1); });
+  document.getElementById('pause').addEventListener('click', function(){
+    if (!running) return;
+    paused = !paused;
+    draw();
+  });
+
+  window.addEventListener('keydown', function(e){
+    const k = e.key.toLowerCase();
+    if (['arrowleft','arrowright',' '].indexOf(k) >= 0) e.preventDefault();
+    if (k === 'arrowleft' || k === 'a') move(-1);
+    else if (k === 'arrowright' || k === 'd') move(1);
+    else if (k === ' ') { if (running) { paused = !paused; draw(); } }
+    else if (k === 'enter' && (over || !running)) start();
+  });
+
+  let tx = 0, ty = 0;
+  const stage = document.querySelector('.stage');
+  stage.addEventListener('touchstart', function(e){
+    const t = e.changedTouches[0]; tx = t.clientX; ty = t.clientY;
+  }, {passive:true});
+  stage.addEventListener('touchend', function(e){
+    const t = e.changedTouches[0];
+    const dx = t.clientX - tx, dy = t.clientY - ty;
+    if (Math.abs(dx) > 22 && Math.abs(dx) > Math.abs(dy)) move(dx > 0 ? 1 : -1);
+    else if (Math.abs(dy) > 40) { if (running) { paused = !paused; draw(); } }
+  }, {passive:true});
+
+  window.addEventListener('resize', fit);
+  reset();
+  fit();
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

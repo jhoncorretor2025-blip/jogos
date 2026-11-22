@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#070b14">
+<title>Batalha Naval — Jogos do Jhon</title>
+<style>
+  :root{--bg:#070b14;--card:#0f172a;--line:#1e293b;--txt:#e2e8f0;--muted:#94a3b8}
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    min-height:100vh;min-height:100dvh;
+    background:radial-gradient(700px 420px at 50% -10%,rgba(96,165,250,.16),transparent 65%),var(--bg);
+    color:var(--txt);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    padding:12px 14px 20px;display:flex;flex-direction:column;align-items:center;
+    -webkit-tap-highlight-color:transparent;user-select:none;
+  }
+  .top{width:100%;max-width:520px;display:flex;align-items:center;gap:10px;margin-bottom:8px}
+  .back{color:var(--muted);text-decoration:none;font-size:22px;padding:6px 8px;border-radius:10px}
+  .back:hover{background:#111c31;color:var(--txt)}
+  h1{font-size:17px;margin:0;font-weight:700;flex:1}
+  .bar{width:100%;max-width:520px;display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+  .btn{
+    flex:1;min-width:96px;font:inherit;font-size:13.5px;font-weight:700;border-radius:11px;padding:10px;
+    border:0;cursor:pointer;background:linear-gradient(90deg,#60a5fa,#22d3ee);color:#062028;
+  }
+  .btn.ghost{background:#101a2e;border:1px solid var(--line);color:var(--txt);font-weight:600}
+  .btn:disabled{opacity:.4;cursor:default}
+  .btn:active{transform:scale(.98)}
+  .msg{width:100%;max-width:520px;min-height:22px;font-size:14px;text-align:center;color:var(--muted);margin-bottom:8px}
+  .msg b{color:var(--txt)}
+  .boards{width:100%;max-width:520px;display:flex;flex-direction:column;gap:14px}
+  .board-wrap{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px}
+  .board-wrap h2{margin:0 0 8px;font-size:12.5px;color:var(--muted);font-weight:600;letter-spacing:.4px;text-transform:uppercase;display:flex;justify-content:space-between}
+  .board-wrap h2 span{color:#475569;text-transform:none;letter-spacing:0}
+  .grid{display:grid;grid-template-columns:repeat(10,1fr);gap:3px}
+  .cell{
+    aspect-ratio:1;border-radius:4px;background:#0b1a2e;border:1px solid #16283f;
+    display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer;
+  }
+  .cell.ship{background:#1e3a8a;border-color:#3b82f6}
+  .cell.miss{background:#0b1a2e;color:#475569}
+  .cell.hit{background:#7f1d1d;border-color:#dc2626}
+  .cell.sunk{background:#450a0a;border-color:#b91c1c;color:#fca5a5}
+  .cell:active{transform:scale(.94)}
+  #radar .cell:hover{background:#16283f}
+  .ver{color:#475569;font-size:11.5px;margin-top:14px}
+  #ov{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(4,8,16,.86);backdrop-filter:blur(4px);z-index:9}
+  #ov.show{display:flex}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px 22px;text-align:center;max-width:330px;width:100%}
+  .panel h2{margin:0 0 8px;font-size:23px}
+  .panel p{margin:0 0 6px;color:var(--muted);font-size:14.5px;line-height:1.6}
+  .panel .btn{margin-top:14px;width:100%;padding:13px}
+</style>
+</head>
+<body>
+  <div class="top">
+    <a class="back" href="../index.html" title="Voltar">←</a>
+    <h1>🚢 Batalha Naval</h1>
+  </div>
+
+  <div class="bar">
+    <button class="btn ghost" id="rotate">↻ Girar</button>
+    <button class="btn ghost" id="random">🎲 Aleatório</button>
+    <button class="btn" id="start" disabled>Começar</button>
+  </div>
+
+  <div class="msg" id="msg">Posicione seus 5 navios. Toque numa casa para colocar.</div>
+
+  <div class="boards">
+    <div class="board-wrap">
+      <h2>Seu tabuleiro <span id="mineInfo">—</span></h2>
+      <div class="grid" id="mine"></div>
+    </div>
+    <div class="board-wrap">
+      <h2>Radar inimigo <span id="foeInfo">0 acertos</span></h2>
+      <div class="grid" id="radar"></div>
+    </div>
+  </div>
+
+  <div class="ver">v1.0 · 22/11/2026</div>
+
+  <div id="ov">
+    <div class="panel">
+      <h2 id="ovTitle"></h2>
+      <p id="ovText"></p>
+      <button class="btn" id="ovBtn">Jogar de novo</button>
+    </div>
+  </div>
+
+<script>
+(function(){
+  const SIZE = 10, N = SIZE * SIZE;
+  const SHIPS = [5, 4, 3, 3, 2];
+  const mineEl = document.getElementById('mine');
+  const radarEl = document.getElementById('radar');
+  const msgEl = document.getElementById('msg');
+  const startBtn = document.getElementById('start');
+  const rotateBtn = document.getElementById('rotate');
+  const randomBtn = document.getElementById('random');
+  const mineInfo = document.getElementById('mineInfo');
+  const foeInfo = document.getElementById('foeInfo');
+  const ov = document.getElementById('ov');
+  const ovTitle = document.getElementById('ovTitle');
+  const ovText = document.getElementById('ovText');
+
+  let mine, foe, phase, placing, horiz, playerTurn, hitsOnFoe, aiTargets, aiHits, over;
+
+  function blank(){
+    return Array.from({length: N}, function(){ return {ship: -1, shot: false}; });
+  }
+
+  function canPlace(board, start, size, horizontal){
+    const r = Math.floor(start / SIZE), c = start % SIZE;
+    for (let k = 0; k < size; k++) {
+      const rr = horizontal ? r : r + k;
+      const cc = horizontal ? c + k : c;
+      if (rr >= SIZE || cc >= SIZE) return false;
+      if (board[rr * SIZE + cc].ship !== -1) return false;
+    }
+    return true;
+  }
+
+  function place(board, start, size, horizontal, id){
+    const r = Math.floor(start / SIZE), c = start % SIZE;
+    for (let k = 0; k < size; k++) {
+      const rr = horizontal ? r : r + k;
+      const cc = horizontal ? c + k : c;
+      board[rr * SIZE + cc].ship = id;
+    }
+  }
+
+  function autoPlace(board){
+    board.forEach(function(c){ c.ship = -1; c.shot = false; });
+    SHIPS.forEach(function(size, id){
+      let ok = false, guard = 0;
+      while (!ok && guard++ < 400) {
+        const horizontal = Math.random() < .5;
+        const start = Math.floor(Math.random() * N);
+        if (canPlace(board, start, size, horizontal)) {
+          place(board, start, size, horizontal, id);
+          ok = true;
+        }
+      }
+    });
+  }
+
+  function shipCells(board, id){
+    const out = [];
+    board.forEach(function(c, i){ if (c.ship === id) out.push(i); });
+    return out;
+  }
+
+  function isSunk(board, id){
+    const cells = shipCells(board, id);
+    return cells.length > 0 && cells.every(function(i){ return board[i].shot; });
+  }
+
+  function paint(){
+    mineEl.innerHTML = '';
+    for (let i = 0; i < N; i++) {
+      const c = mine[i];
+      const d = document.createElement('div');
+      d.className = 'cell';
+      if (c.ship >= 0 && phase !== 'battle') d.classList.add('ship');
+      else if (c.ship >= 0 && phase === 'battle') d.classList.add('ship');
+      if (c.shot) {
+        d.classList.remove('ship');
+        const sunk = c.ship >= 0 && isSunk(mine, c.ship);
+        d.classList.add(sunk ? 'sunk' : (c.ship >= 0 ? 'hit' : 'miss'));
+        d.textContent = c.ship >= 0 ? '✕' : '•';
+      }
+      mineEl.appendChild(d);
+    }
+
+    radarEl.innerHTML = '';
+    for (let i = 0; i < N; i++) {
+      const c = foe[i];
+      const d = document.createElement('div');
+      d.className = 'cell';
+      if (c.shot) {
+        const sunk = c.ship >= 0 && isSunk(foe, c.ship);
+        d.classList.add(sunk ? 'sunk' : (c.ship >= 0 ? 'hit' : 'miss'));
+        d.textContent = c.ship >= 0 ? '✕' : '•';
+      }
+      d.addEventListener('click', function(){ shoot(i); });
+      radarEl.appendChild(d);
+    }
+
+    const remaining = SHIPS.filter(function(_, id){ return !isSunk(foe, id); }).length;
+    const alive = SHIPS.filter(function(_, id){ return !isSunk(mine, id); }).length;
+    foeInfo.textContent = hitsOnFoe + ' acertos · ' + remaining + ' navios restantes';
+    mineInfo.textContent = phase === 'battle' ? alive + ' navios seus' : 'posicionando';
+  }
+
+  function reset(){
+    mine = blank(); foe = blank();
+    phase = 'place'; placing = 0; horiz = true;
+    playerTurn = true; hitsOnFoe = 0; over = false;
+    aiTargets = []; aiHits = [];
+    startBtn.disabled = true;
+    startBtn.textContent = 'Começar';
+    ov.classList.remove('show');
+    msgEl.innerHTML = 'Posicione seus <b>5 navios</b>. Toque numa casa para colocar.';
+    paint();
+  }
+
+  function tryPlace(i){
+    if (phase !== 'place') return;
+    if (placing >= SHIPS.length) return;
+    const size = SHIPS[placing];
+    if (!canPlace(mine, i, size, horiz)) {
+      msgEl.innerHTML = '❌ Não cabe aqui. Tente outra casa ou <b>gire</b>.';
+      return;
+    }
+    place(mine, i, size, horiz, placing);
+    placing++;
+    if (placing >= SHIPS.length) {
+      startBtn.disabled = false;
+      msgEl.innerHTML = '✅ Frota pronta! Toque em <b>Começar</b>.';
+    } else {
+      msgEl.innerHTML = 'Navio de <b>' + SHIPS[placing] + '</b> casas. Toque para colocar.';
+    }
+    paint();
+  }
+
+  function startBattle(){
+    if (phase !== 'place' || placing < SHIPS.length) return;
+    phase = 'battle';
+    playerTurn = true;
+    msgEl.innerHTML = '🎯 Sua vez: toque no <b>radar inimigo</b>.';
+    startBtn.textContent = 'Reiniciar';
+    startBtn.disabled = false;
+    paint();
+  }
+
+  function shoot(i){
+    if (phase !== 'battle' || !playerTurn || over) return;
+    if (foe[i].shot) return;
+    foe[i].shot = true;
+    if (foe[i].ship >= 0) {
+      hitsOnFoe++;
+      msgEl.innerHTML = '💥 Acertou!';
+    } else {
+      msgEl.innerHTML = '🌊 Água.';
+    }
+    paint();
+
+    if (SHIPS.every(function(_, id){ return isSunk(foe, id); })) return finish(true);
+    playerTurn = false;
+    msgEl.innerHTML += ' Vez da IA…';
+    setTimeout(aiTurn, 520);
+  }
+
+  function aiTurn(){
+    if (over) return;
+    let target = -1;
+    while (aiTargets.length && target < 0) {
+      const t = aiTargets.shift();
+      if (t >= 0 && t < N && !mine[t].shot) target = t;
+    }
+    if (target < 0) {
+      const free = [];
+      for (let i = 0; i < N; i++) {
+        if (!mine[i].shot) {
+          const r = Math.floor(i / SIZE), c = i % SIZE;
+          if ((r + c) % 2 === 0) free.push(i);
+        }
+      }
+      if (!free.length) {
+        for (let i = 0; i < N; i++) if (!mine[i].shot) free.push(i);
+      }
+      target = free[Math.floor(Math.random() * free.length)];
+    }
+    if (target === undefined || target < 0) return;
+
+    mine[target].shot = true;
+    if (mine[target].ship >= 0) {
+      aiHits.push(target);
+      const r = Math.floor(target / SIZE), c = target % SIZE;
+      [[-1,0],[1,0],[0,-1],[0,1]].forEach(function(d){
+        const rr = r + d[0], cc = c + d[1];
+        if (rr >= 0 && rr < SIZE && cc >= 0 && cc < SIZE) {
+          const k = rr * SIZE + cc;
+          if (!mine[k].shot) aiTargets.push(k);
+        }
+      });
+      msgEl.innerHTML = '💥 A IA acertou seu navio.';
+    } else {
+      msgEl.innerHTML = '🌊 A IA errou. Sua vez!';
+    }
+    paint();
+
+    if (SHIPS.every(function(_, id){ return isSunk(mine, id); })) return finish(false);
+    playerTurn = true;
+  }
+
+  function finish(win){
+    over = true;
+    phase = 'done';
+    ovTitle.textContent = win ? '🏆 Você venceu!' : '💀 A IA venceu';
+    ovText.innerHTML = win
+      ? 'Afundou a frota inimiga com <b>' + hitsOnFoe + '</b> acertos.'
+      : 'A IA afundou seus navios. Tente de novo.';
+    ov.classList.add('show');
+    startBtn.textContent = 'Reiniciar';
+  }
+
+  startBtn.addEventListener('click', function(){
+    if (phase === 'battle' || phase === 'done') reset();
+    else startBattle();
+  });
+  rotateBtn.addEventListener('click', function(){
+    horiz = !horiz;
+    msgEl.innerHTML = horiz ? '↔ Navios na horizontal.' : '↕ Navios na vertical.';
+  });
+  randomBtn.addEventListener('click', function(){
+    autoPlace(mine);
+    placing = SHIPS.length;
+    startBtn.disabled = false;
+    msgEl.innerHTML = '🎲 Frota posicionada. Toque em <b>Começar</b>.';
+    paint();
+  });
+
+  mineEl.addEventListener('click', function(e){
+    const cell = e.target.closest('.cell');
+    if (!cell) return;
+    const i = Array.prototype.indexOf.call(mineEl.children, cell);
+    tryPlace(i);
+  });
+
+  window.addEventListener('keydown', function(e){
+    if (e.key.toLowerCase() === 'r' && phase === 'place') rotateBtn.click();
+  });
+
+  reset();
+})();
+</script>
+</body>
+</html>

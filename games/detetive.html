@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#070b14">
+<title>Detetive — Jogos do Jhon</title>
+<style>
+  :root{--bg:#070b14;--card:#0f172a;--line:#1e293b;--txt:#e2e8f0;--muted:#94a3b8;--acc:#fbbf24}
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    min-height:100vh;min-height:100dvh;
+    background:radial-gradient(700px 420px at 50% -10%,rgba(251,191,36,.13),transparent 65%),var(--bg);
+    color:var(--txt);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    padding:12px 14px 24px;display:flex;flex-direction:column;align-items:center;
+    -webkit-tap-highlight-color:transparent;user-select:none;
+  }
+  .top{width:100%;max-width:560px;display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .back{color:var(--muted);text-decoration:none;font-size:22px;padding:6px 8px;border-radius:10px}
+  .back:hover{background:#111c31;color:var(--txt)}
+  h1{font-size:17px;margin:0;font-weight:700;flex:1}
+  .badge{font-size:12px;color:var(--muted);background:#101a2e;border:1px solid var(--line);border-radius:99px;padding:5px 10px}
+  .card{width:100%;max-width:560px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px}
+  .card h2{margin:0 0 8px;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+  #clues{margin:0;padding-left:18px;font-size:13.5px;line-height:1.6;color:#cbd5e1}
+  #clues li{margin-bottom:4px}
+  .cols{width:100%;max-width:560px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .col{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px}
+  .col h3{margin:0 0 6px;font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+  .opt{
+    display:block;width:100%;text-align:left;font:inherit;font-size:12.5px;padding:7px 8px;margin-bottom:5px;
+    border-radius:8px;border:1px solid #1e2f4a;background:#0d1728;color:#cbd5e1;cursor:pointer;
+  }
+  .opt.out{text-decoration:line-through;opacity:.45;border-style:dashed}
+  .opt:active{transform:scale(.98)}
+  .actions{width:100%;max-width:560px;display:flex;gap:8px;margin-top:12px}
+  .btn{
+    flex:1;font:inherit;font-size:14px;font-weight:700;border-radius:11px;padding:12px;border:0;cursor:pointer;
+    background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#3b2500;
+  }
+  .btn.ghost{background:#101a2e;border:1px solid var(--line);color:var(--txt);font-weight:600}
+  .btn:active{transform:scale(.98)}
+  .msg{width:100%;max-width:560px;min-height:22px;margin-top:10px;font-size:13.5px;text-align:center;color:var(--muted)}
+  .msg b{color:var(--txt)}
+  .ver{color:#475569;font-size:11.5px;margin-top:12px}
+  #sheet{position:fixed;inset:0;display:none;align-items:flex-end;background:rgba(4,8,16,.75);z-index:8}
+  #sheet.show{display:flex}
+  .sheet-box{width:100%;background:#0d1728;border-top:1px solid var(--line);border-radius:18px 18px 0 0;padding:18px 16px 22px}
+  .sheet-box h2{margin:0 0 10px;font-size:17px;text-align:center}
+  .field{margin-bottom:10px}
+  .field label{display:block;font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+  .field select{
+    width:100%;font:inherit;font-size:14px;padding:11px;border-radius:10px;
+    background:#101a2e;border:1px solid var(--line);color:var(--txt);
+  }
+  .sheet-box .btn{width:100%;margin-top:6px}
+  .sheet-box .btn.ghost{margin-top:8px}
+  #ov{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(4,8,16,.88);backdrop-filter:blur(4px);z-index:9}
+  #ov.show{display:flex}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px 20px;text-align:center;max-width:340px;width:100%}
+  .panel h2{margin:0 0 8px;font-size:22px}
+  .panel p{margin:0 0 5px;color:var(--muted);font-size:14px;line-height:1.6}
+  .panel p b{color:var(--txt)}
+  .panel .btn{margin-top:14px;width:100%;padding:13px}
+</style>
+</head>
+<body>
+  <div class="top">
+    <a class="back" href="../index.html" title="Voltar">←</a>
+    <h1>🕵️ Detetive</h1>
+    <span class="badge" id="tries">3 acusações</span>
+  </div>
+
+  <div class="card">
+    <h2>Pistas do caso</h2>
+    <ol id="clues"></ol>
+  </div>
+
+  <div class="cols">
+    <div class="col"><h3>Suspeitos</h3><div id="sus"></div></div>
+    <div class="col"><h3>Armas</h3><div id="arm"></div></div>
+    <div class="col"><h3>Locais</h3><div id="loc"></div></div>
+  </div>
+
+  <div class="actions">
+    <button class="btn ghost" id="new">Novo caso</button>
+    <button class="btn" id="accuse">Acusar</button>
+  </div>
+
+  <div class="msg" id="msg">Toque nos nomes para riscar o que já foi descartado.</div>
+  <div class="ver">v1.0 · 22/11/2026</div>
+
+  <div id="sheet">
+    <div class="sheet-box">
+      <h2>Quem, com o quê e onde?</h2>
+      <div class="field"><label for="sSel">Suspeito</label><select id="sSel"></select></div>
+      <div class="field"><label for="wSel">Arma</label><select id="wSel"></select></div>
+      <div class="field"><label for="pSel">Local</label><select id="pSel"></select></div>
+      <button class="btn" id="confirm">Confirmar acusação</button>
+      <button class="btn ghost" id="cancel">Cancelar</button>
+    </div>
+  </div>
+
+  <div id="ov">
+    <div class="panel">
+      <h2 id="ovTitle"></h2>
+      <p id="ovText"></p>
+      <button class="btn" id="ovBtn">Novo caso</button>
+    </div>
+  </div>
+
+<script>
+(function(){
+  const SUS = ['Ana Prado','Bruno Lima','Carla Nunes','Diego Matos','Elisa Rocha','Fábio Reis'];
+  const ARM = ['Corda','Faca','Veneno','Chave inglesa','Candelabro','Revólver'];
+  const LOC = ['Biblioteca','Cozinha','Jardim','Escritório','Sala','Garagem'];
+
+  const TEMPLATES = [
+    function(s, w, p){ return 'Álibi confirmado: <b>' + s + '</b> estava na delegacia na hora. A arma <b>' + w + '</b> ficou trancada no armário. E as câmeras não mostram nada na <b>' + p + '</b>.'; },
+    function(s, w, p){ return 'Uma testemunha viu <b>' + s + '</b> do outro lado da cidade. A perícia descartou <b>' + w + '</b> (sem digitais). O local <b>' + p + '</b> estava trancado por dentro.'; },
+    function(s, w, p){ return 'O celular de <b>' + s + '</b> registrou sinal longe do crime. <b>' + w + '</b> estava limpa e guardada. E o alarme da <b>' + p + '</b> não disparou.'; }
+  ];
+
+  const cluesEl = document.getElementById('clues');
+  const susEl = document.getElementById('sus');
+  const armEl = document.getElementById('arm');
+  const locEl = document.getElementById('loc');
+  const msgEl = document.getElementById('msg');
+  const triesEl = document.getElementById('tries');
+  const sheet = document.getElementById('sheet');
+  const sSel = document.getElementById('sSel');
+  const wSel = document.getElementById('wSel');
+  const pSel = document.getElementById('pSel');
+  const ov = document.getElementById('ov');
+  const ovTitle = document.getElementById('ovTitle');
+  const ovText = document.getElementById('ovText');
+
+  let solution, clues, out, tries, over;
+
+  function shuffle(a){
+    const b = a.slice();
+    for (let i = b.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const t = b[i]; b[i] = b[j]; b[j] = t;
+    }
+    return b;
+  }
+
+  function pick(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
+
+  function build(){
+    solution = {
+      s: Math.floor(Math.random() * SUS.length),
+      w: Math.floor(Math.random() * ARM.length),
+      p: Math.floor(Math.random() * LOC.length)
+    };
+    const wrongSus = shuffle(SUS.map(function(_, i){ return i; }).filter(function(i){ return i !== solution.s; }));
+    const wrongArm = shuffle(ARM.map(function(_, i){ return i; }).filter(function(i){ return i !== solution.w; }));
+    const wrongLoc = shuffle(LOC.map(function(_, i){ return i; }).filter(function(i){ return i !== solution.p; }));
+
+    clues = [];
+    for (let k = 0; k < 5; k++) {
+      const tpl = TEMPLATES[k % TEMPLATES.length];
+      clues.push(tpl(SUS[wrongSus[k]], ARM[wrongArm[k]], LOC[wrongLoc[k]]));
+    }
+
+    out = {s: {}, w: {}, p: {}};
+    tries = 3;
+    over = false;
+    triesEl.textContent = '3 acusações';
+    msgEl.innerHTML = 'Toque nos nomes para riscar o que já foi descartado.';
+    ov.classList.remove('show');
+    sheet.classList.remove('show');
+
+    cluesEl.innerHTML = clues.map(function(c){ return '<li>' + c + '</li>'; }).join('');
+    renderList(susEl, SUS, 's');
+    renderList(armEl, ARM, 'w');
+    renderList(locEl, LOC, 'p');
+
+    fillSelect(sSel, SUS);
+    fillSelect(wSel, ARM);
+    fillSelect(pSel, LOC);
+  }
+
+  function renderList(el, arr, key){
+    el.innerHTML = '';
+    arr.forEach(function(name, i){
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'opt' + (out[key][i] ? ' out' : '');
+      b.textContent = name;
+      b.addEventListener('click', function(){
+        if (over) return;
+        out[key][i] = !out[key][i];
+        b.classList.toggle('out', out[key][i]);
+      });
+      el.appendChild(b);
+    });
+  }
+
+  function fillSelect(el, arr){
+    el.innerHTML = arr.map(function(n, i){ return '<option value="' + i + '">' + n + '</option>'; }).join('');
+  }
+
+  document.getElementById('accuse').addEventListener('click', function(){
+    if (over) return;
+    sheet.classList.add('show');
+  });
+  document.getElementById('cancel').addEventListener('click', function(){
+    sheet.classList.remove('show');
+  });
+
+  document.getElementById('confirm').addEventListener('click', function(){
+    if (over) return;
+    const a = {s: Number(sSel.value), w: Number(wSel.value), p: Number(pSel.value)};
+    sheet.classList.remove('show');
+    const right = (a.s === solution.s ? 1 : 0) + (a.w === solution.w ? 1 : 0) + (a.p === solution.p ? 1 : 0);
+
+    if (right === 3) {
+      over = true;
+      ovTitle.textContent = '🕵️ Caso resolvido!';
+      ovText.innerHTML = 'Era <b>' + SUS[solution.s] + '</b>, com <b>' + ARM[solution.w] + '</b>, na <b>' + LOC[solution.p] + '</b>.';
+      ov.classList.add('show');
+      return;
+    }
+
+    tries--;
+    triesEl.textContent = tries + (tries === 1 ? ' acusação' : ' acusações');
+    if (tries <= 0) {
+      over = true;
+      ovTitle.textContent = '❌ Caso arquivado';
+      ovText.innerHTML = 'A resposta era <b>' + SUS[solution.s] + '</b>, com <b>' + ARM[solution.w] + '</b>, na <b>' + LOC[solution.p] + '</b>.';
+      ov.classList.add('show');
+      return;
+    }
+
+    const parts = [];
+    if (a.s === solution.s) parts.push('o <b>suspeito</b> estava certo');
+    if (a.w === solution.w) parts.push('a <b>arma</b> estava certa');
+    if (a.p === solution.p) parts.push('o <b>local</b> estava certo');
+    msgEl.innerHTML = '❌ Errado. ' + (parts.length ? 'Mas ' + parts.join(' e ') + '. Restam ' + tries + '.' : 'Nenhuma parte bateu. Restam ' + tries + '.');
+  });
+
+  document.getElementById('new').addEventListener('click', build);
+  document.getElementById('ovBtn').addEventListener('click', build);
+
+  build();
+})();
+</script>
+</body>
+</html>

@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#070b14">
-<title>Jogos do Jhon</title>
-<meta name="description" content="Arcade de jogos web do Jhon: cobra, memória, velha, campo minado, forca e Ninja Forest Run.">
+<title>Jogos do Jhon · v2.0</title>
+<meta name="description" content="Arcade de jogos web do Jhon: 2048, batalha naval, banco imobiliário, detetive, corrida, cobra, memória, velha, campo minado e forca.">
 <style>
   :root{
     --bg:#070b14; --card:#0f172a; --line:#1e293b; --txt:#e2e8f0; --muted:#94a3b8;
@@ -19,17 +19,23 @@
       radial-gradient(800px 500px at 90% 0%, rgba(167,139,250,.16), transparent 60%),
       var(--bg);
     color:var(--txt); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-    padding:28px 16px 48px; -webkit-tap-highlight-color:transparent;
+    padding:26px 16px 44px; -webkit-tap-highlight-color:transparent;
   }
-  .wrap{max-width:1000px;margin:0 auto}
-  header{text-align:center;margin-bottom:26px}
+  .wrap{max-width:1020px;margin:0 auto}
+  header{text-align:center;margin-bottom:20px}
   h1{
     font-size:clamp(28px,7vw,44px); margin:0 0 8px; letter-spacing:-1px;
     background:linear-gradient(90deg,var(--a1),var(--a2),var(--a5));
     -webkit-background-clip:text; background-clip:text; color:transparent;
   }
   .sub{color:var(--muted);font-size:15px;margin:0}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-top:26px}
+  .version{
+    display:inline-flex;align-items:center;gap:8px;margin-top:10px;font-size:12px;color:#94a3b8;
+    background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:99px;padding:5px 12px;
+  }
+  .version b{color:#e2e8f0;font-weight:700}
+  .dot{width:6px;height:6px;border-radius:50%;background:#34d399;box-shadow:0 0 8px #34d399}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-top:22px}
   .card{
     position:relative;display:block;text-decoration:none;color:inherit;
     background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.01)),var(--card);
@@ -44,15 +50,25 @@
   .card:hover,.card:focus-visible{transform:translateY(-3px);border-color:var(--accent,#22d3ee);box-shadow:0 14px 34px -18px var(--accent,#22d3ee);outline:none}
   .card:hover::after,.card:focus-visible::after{opacity:1}
   .ico{font-size:34px;line-height:1;display:block;margin-bottom:12px}
-  .name{font-weight:700;font-size:17px;margin:0 0 6px;position:relative;z-index:1}
+  .name{font-weight:700;font-size:17px;margin:0 0 6px;position:relative;z-index:1;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
   .desc{color:var(--muted);font-size:13.5px;line-height:1.45;margin:0;position:relative;z-index:1}
   .tag{
-    position:absolute;top:14px;right:14px;font-size:11px;font-weight:700;letter-spacing:.4px;
-    padding:4px 9px;border-radius:999px;background:rgba(255,255,255,.06);
-    border:1px solid rgba(255,255,255,.12);color:var(--muted);z-index:2;
+    position:absolute;top:14px;right:14px;font-size:10.5px;font-weight:700;letter-spacing:.4px;
+    padding:4px 9px;border-radius:999px;background:rgba(255,255,255,.05);
+    border:1px solid rgba(255,255,255,.10);color:#94a3b8;z-index:2;font-variant-numeric:tabular-nums;
   }
   .tag.new{color:#04211b;background:linear-gradient(90deg,#34d399,#22d3ee);border:0}
-  footer{text-align:center;color:#64748b;font-size:12.5px;margin-top:34px;line-height:1.7}
+  .new{
+    font-style:normal;font-size:9.5px;font-weight:800;letter-spacing:.5px;color:#04211b;
+    background:linear-gradient(90deg,#34d399,#22d3ee);border-radius:99px;padding:2px 7px;
+  }
+  .notes{
+    margin-top:26px;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:16px;padding:16px 18px;
+  }
+  .notes h2{margin:0 0 8px;font-size:14px;color:#cbd5e1}
+  .notes ul{margin:0;padding-left:18px;color:var(--muted);font-size:13px;line-height:1.8}
+  .notes b{color:#e2e8f0}
+  footer{text-align:center;color:#64748b;font-size:12.5px;margin-top:26px;line-height:1.7}
   .kbd{background:#111c31;border:1px solid #24334d;border-radius:6px;padding:1px 6px;font-size:12px}
 </style>
 </head>
@@ -61,55 +77,100 @@
   <header>
     <h1>Jogos do Jhon</h1>
     <p class="sub">🎮 Arcade de bolso — abre no celular e no PC, sem instalar nada.</p>
+    <div class="version"><span class="dot"></span> Versão <b>v2.0</b> · atualizado em <b>22/11/2026</b></div>
   </header>
 
   <div class="grid">
+    <a class="card" href="games/2048.html" style="--accent:#fbbf24;--glow:rgba(251,191,36,.20)">
+      <span class="tag new">v1.0</span>
+      <span class="ico">🧩</span>
+      <p class="name">2048 <em class="new">NOVO</em></p>
+      <p class="desc">Junte os números iguais até chegar ao 2048. Tem desfazer.</p>
+    </a>
+
+    <a class="card" href="games/batalha-naval.html" style="--accent:#60a5fa;--glow:rgba(96,165,250,.20)">
+      <span class="tag new">v1.0</span>
+      <span class="ico">🚢</span>
+      <p class="name">Batalha Naval <em class="new">NOVO</em></p>
+      <p class="desc">Posicione a frota e afunde a IA antes que ela afunde você.</p>
+    </a>
+
+    <a class="card" href="games/banco-imobiliario.html" style="--accent:#34d399;--glow:rgba(52,211,153,.20)">
+      <span class="tag new">v1.0</span>
+      <span class="ico">🏠</span>
+      <p class="name">Banco Imobiliário <em class="new">NOVO</em></p>
+      <p class="desc">Compre, construa e cobre aluguel até quebrar a IA.</p>
+    </a>
+
+    <a class="card" href="games/detetive.html" style="--accent:#fbbf24;--glow:rgba(251,191,36,.18)">
+      <span class="tag new">v1.0</span>
+      <span class="ico">🕵️</span>
+      <p class="name">Detetive <em class="new">NOVO</em></p>
+      <p class="desc">Leia as pistas, elimine opções e acuse quem, com o quê e onde.</p>
+    </a>
+
+    <a class="card" href="games/corrida.html" style="--accent:#22d3ee;--glow:rgba(34,211,238,.20)">
+      <span class="tag new">v1.0</span>
+      <span class="ico">🏎️</span>
+      <p class="name">Corrida Infinita <em class="new">NOVO</em></p>
+      <p class="desc">Desvie dos carros, pegue moedas e bata seu recorde.</p>
+    </a>
+
     <a class="card" href="games/cobra.html" style="--accent:#34d399;--glow:rgba(52,211,153,.20)">
-      <span class="tag new">NOVO</span>
+      <span class="tag">v1.0</span>
       <span class="ico">🐍</span>
       <p class="name">Cobra Neon</p>
       <p class="desc">Coma, cresça e não bata na parede. Setas, deslize ou D-pad.</p>
     </a>
 
     <a class="card" href="games/memoria.html" style="--accent:#a78bfa;--glow:rgba(167,139,250,.20)">
-      <span class="tag new">NOVO</span>
+      <span class="tag">v1.1</span>
       <span class="ico">🧠</span>
       <p class="name">Jogo da Memória</p>
-      <p class="desc">Encontre os pares de emojis no menor número de jogadas.</p>
+      <p class="desc">Espiada, sons, recorde e confete. Encontre os pares.</p>
     </a>
 
     <a class="card" href="games/velha.html" style="--accent:#22d3ee;--glow:rgba(34,211,238,.20)">
-      <span class="tag new">NOVO</span>
+      <span class="tag">v1.0</span>
       <span class="ico">⭕</span>
       <p class="name">Jogo da Velha</p>
       <p class="desc">Contra amigo ou contra a IA em três níveis.</p>
     </a>
 
     <a class="card" href="games/campo-minado.html" style="--accent:#fbbf24;--glow:rgba(251,191,36,.20)">
-      <span class="tag new">NOVO</span>
+      <span class="tag">v1.0</span>
       <span class="ico">💣</span>
       <p class="name">Campo Minado</p>
       <p class="desc">Abra as casas sem pisar nas minas. Primeiro clique é seguro.</p>
     </a>
 
     <a class="card" href="games/forca.html" style="--accent:#fb7185;--glow:rgba(251,113,133,.20)">
-      <span class="tag new">NOVO</span>
+      <span class="tag">v1.0</span>
       <span class="ico">🔤</span>
       <p class="name">Forca</p>
       <p class="desc">Adivinhe a palavra com dica de categoria. 6 chances.</p>
     </a>
 
     <a class="card" href="ninja_forest_run_v4_10.html" style="--accent:#60a5fa;--glow:rgba(96,165,250,.20)">
-      <span class="tag">CLÁSSICO</span>
+      <span class="tag">v4.10</span>
       <span class="ico">🥷</span>
       <p class="name">Ninja Forest Run</p>
       <p class="desc">O jogo original do repositório — corra pela floresta.</p>
     </a>
   </div>
 
+  <div class="notes">
+    <h2>📝 Novidades da v2.0</h2>
+    <ul>
+      <li>5 jogos novos: <b>2048</b>, <b>Batalha Naval</b>, <b>Banco Imobiliário</b>, <b>Detetive</b> e <b>Corrida Infinita</b>.</li>
+      <li><b>Versão visível</b> em cada jogo e em cada card, para saber se a página atualizou.</li>
+      <li>Memória <b>v1.1</b>: espiada, sons, recorde e confete.</li>
+    </ul>
+  </div>
+
   <footer>
     Feito para jogar em <span class="kbd">jhoncorretor2025-blip.github.io/jogos</span><br>
-    Recordes ficam salvos neste navegador.
+    Recordes ficam salvos neste navegador. Se a versão não mudou, recarregue com <span class="kbd">Ctrl+F5</span>.
   </footer>
 </div>
 </body>
