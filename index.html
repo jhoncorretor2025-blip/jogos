@@ -221,14 +221,19 @@
 <script>
 (()=> {
  const grid=document.getElementById('gameGrid'), cards=[...grid.querySelectorAll('.card')];
- const KEY='jhonArcadeMenuV21', data=JSON.parse(localStorage.getItem(KEY)||'{}');
- data.favs=data.favs||[];data.recent=data.recent||[];data.plays=data.plays||0;data.counts=data.counts||{};
- const save=()=>localStorage.setItem(KEY,JSON.stringify(data));
+ const KEY='jhonArcadeMenuV21';
+ let data={};
+ try { data=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; } catch(e) { data={}; }
+ data.favs=Array.isArray(data.favs)?data.favs:[];
+ data.recent=Array.isArray(data.recent)?data.recent:[];
+ data.plays=Number.isFinite(data.plays)?data.plays:0;
+ data.counts=(data.counts&&typeof data.counts==='object'&&!Array.isArray(data.counts))?data.counts:{};
+ const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(data));}catch(e){console.warn('Não foi possível salvar os dados do arcade neste navegador.',e);}};
  const names=cards.map(c=>({href:c.getAttribute('href'),name:c.querySelector('.name').textContent.replace('NOVO','').trim(),icon:c.querySelector('.ico').textContent,cat:c.dataset.category||'arcade'}));
  cards.forEach(card=>{
   const href=card.getAttribute('href'),g=names.find(x=>x.href===href);
   const fav=document.createElement('button');fav.className='favbtn';fav.type='button';fav.title='Adicionar aos favoritos';fav.textContent=data.favs.includes(href)?'⭐':'☆';fav.classList.toggle('on',data.favs.includes(href));
-  fav.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(data.favs.includes(href))data.favs=data.favs.filter(x=>x!==href);else data.favs.push(href);save();fav.textContent=data.favs.includes(href)?'⭐':'☆';fav.classList.toggle('on',data.favs.includes(href));render();});
+  fav.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(data.favs.includes(href))data.favs=data.favs.filter(x=>x!==href);else data.favs.push(href);save();fav.textContent=data.favs.includes(href)?'⭐':'☆';fav.classList.toggle('on',data.favs.includes(href));meta.innerHTML='<span class="meta-pill">'+({puzzle:'🧠 Puzzle',action:'⚡ Ação',arcade:'🕹️ Arcade',strategy:'♟️ Estratégia',racing:'🏎️ Corrida'}[g.cat]||'🎮 Jogo')+'</span><span class="meta-pill">▶ '+(data.counts[href]||0)+'x jogado</span>'+(data.favs.includes(href)?'<span class="meta-pill">⭐ Favorito</span>':'');render();});
   card.appendChild(fav);
   const meta=document.createElement('div');meta.className='card-meta';meta.innerHTML='<span class="meta-pill">'+({puzzle:'🧠 Puzzle',action:'⚡ Ação',arcade:'🕹️ Arcade',strategy:'♟️ Estratégia',racing:'🏎️ Corrida'}[g.cat]||'🎮 Jogo')+'</span><span class="meta-pill">▶ '+(data.counts[href]||0)+'x jogado</span>'+(data.favs.includes(href)?'<span class="meta-pill">⭐ Favorito</span>':'');
   card.appendChild(meta);
