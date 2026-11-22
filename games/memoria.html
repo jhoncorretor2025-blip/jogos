@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#070b14">
+<title>Jogo da Memória — Jogos do Jhon</title>
+<style>
+  :root{--bg:#070b14;--card:#0f172a;--line:#1e293b;--txt:#e2e8f0;--muted:#94a3b8;--acc:#a78bfa}
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    min-height:100vh;background:radial-gradient(700px 420px at 50% -10%,rgba(167,139,250,.18),transparent 65%),var(--bg);
+    color:var(--txt);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    padding:14px 14px 30px;display:flex;flex-direction:column;align-items:center;
+    -webkit-tap-highlight-color:transparent;user-select:none;
+  }
+  .top{width:100%;max-width:560px;display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .back{color:var(--muted);text-decoration:none;font-size:22px;padding:6px 8px;border-radius:10px}
+  .back:hover{background:#111c31;color:var(--txt)}
+  h1{font-size:17px;margin:0;font-weight:700}
+  .bar{width:100%;max-width:560px;display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+  select,.btn{
+    font:inherit;font-size:14px;border-radius:11px;padding:10px 14px;border:1px solid var(--line);
+    background:#101a2e;color:var(--txt);cursor:pointer;
+  }
+  .btn{background:linear-gradient(90deg,#a78bfa,#818cf8);color:#1e1b4b;font-weight:700;border:0}
+  .btn:active,select:active{transform:scale(.98)}
+  .stats{width:100%;max-width:560px;display:flex;gap:8px;margin-bottom:14px}
+  .stat{flex:1;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 12px;text-align:center}
+  .stat span{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+  .stat b{font-size:19px;font-variant-numeric:tabular-nums}
+  #board{
+    width:100%;max-width:560px;display:grid;gap:8px;
+    grid-template-columns:repeat(var(--cols,4),minmax(0,1fr));
+  }
+  .card{aspect-ratio:1;perspective:800px;background:none;border:0;padding:0;cursor:pointer}
+  .inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .35s cubic-bezier(.2,.7,.3,1)}
+  .card.flipped .inner,.card.matched .inner{transform:rotateY(180deg)}
+  .face{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    border-radius:13px;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+    font-size:clamp(18px,6vw,30px);
+  }
+  .front{background:linear-gradient(160deg,#1e293b,#0f172a);border:1px solid #2a3a55;color:#475569;font-size:18px}
+  .front::after{content:"?";font-weight:800}
+  .back{transform:rotateY(180deg);background:linear-gradient(160deg,#312e81,#1e1b4b);border:1px solid #4c1d95}
+  .card.matched .back{background:linear-gradient(160deg,#065f46,#064e3b);border-color:#10b981}
+  .card.matched{animation:pop .3s ease}
+  @keyframes pop{50%{transform:scale(1.06)}}
+  #ov{
+    position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:22px;
+    background:rgba(4,8,16,.85);backdrop-filter:blur(4px);z-index:9;
+  }
+  #ov.show{display:flex}
+  .panel{
+    background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px 22px;
+    text-align:center;max-width:340px;width:100%;
+  }
+  .panel h2{margin:0 0 8px;font-size:23px}
+  .panel p{margin:0 0 4px;color:var(--muted);font-size:14.5px;line-height:1.6}
+  .panel .btn{margin-top:16px;width:100%;padding:13px}
+  .hint{color:#64748b;font-size:12.5px;margin:16px 0 0;text-align:center;max-width:520px}
+</style>
+</head>
+<body>
+  <div class="top">
+    <a class="back" href="../index.html" title="Voltar">←</a>
+    <h1>🧠 Jogo da Memória</h1>
+  </div>
+
+  <div class="bar">
+    <select id="size" aria-label="Dificuldade">
+      <option value="4x4">Fácil · 8 pares</option>
+      <option value="5x4" selected>Médio · 10 pares</option>
+      <option value="6x4">Difícil · 12 pares</option>
+    </select>
+    <button class="btn" id="new">Novo jogo</button>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><span>Jogadas</span><b id="moves">0</b></div>
+    <div class="stat"><span>Tempo</span><b id="time">0:00</b></div>
+    <div class="stat"><span>Pares</span><b id="pairs">0/10</b></div>
+  </div>
+
+  <div id="board"></div>
+  <p class="hint">Toque em duas cartas para encontrar o par. Quanto menos jogadas, melhor.</p>
+
+  <div id="ov">
+    <div class="panel">
+      <h2 id="ovTitle">Parabéns! 🎉</h2>
+      <p id="ovLine1"></p>
+      <p id="ovLine2"></p>
+      <button class="btn" id="ovBtn">Jogar de novo</button>
+    </div>
+  </div>
+
+<script>
+(function(){
+  const SYMBOLS = ['🍎','🚀','🐍','🎧','⚽','🌵','🍕','🐙','💎','🎲','🌈','🔥','🦊','🍩','🎯','🧩','🐳','🍀'];
+  const boardEl = document.getElementById('board');
+  const movesEl = document.getElementById('moves');
+  const timeEl = document.getElementById('time');
+  const pairsEl = document.getElementById('pairs');
+  const sizeSel = document.getElementById('size');
+  const ov = document.getElementById('ov');
+  const ovTitle = document.getElementById('ovTitle');
+  const ovLine1 = document.getElementById('ovLine1');
+  const ovLine2 = document.getElementById('ovLine2');
+
+  let cols = 5, rows = 4, deck = [], cards = [];
+  let first = null, lock = false, moves = 0, matched = 0;
+  let seconds = 0, timerId = null, started = false;
+
+  function fmt(s){
+    const m = Math.floor(s / 60), r = s % 60;
+    return m + ':' + String(r).padStart(2, '0');
+  }
+
+  function bestKey(){ return 'memoria.best.' + cols + 'x' + rows; }
+
+  function shuffle(a){
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function build(){
+    const parts = sizeSel.value.split('x');
+    cols = Number(parts[0]); rows = Number(parts[1]);
+    const total = cols * rows;
+    const pairCount = total / 2;
+    const picked = shuffle(SYMBOLS.slice()).slice(0, pairCount);
+    deck = shuffle(picked.concat(picked).map(function(sym, i){ return {sym: sym, id: i, done: false}; }));
+
+    first = null; lock = false; moves = 0; matched = 0; seconds = 0; started = false;
+    if (timerId) clearInterval(timerId);
+    timerId = null;
+
+    movesEl.textContent = '0';
+    timeEl.textContent = '0:00';
+    pairsEl.textContent = '0/' + pairCount;
+    ov.classList.remove('show');
+
+    boardEl.style.setProperty('--cols', cols);
+    boardEl.innerHTML = '';
+    cards = [];
+    deck.forEach(function(item, i){
+      const btn = document.createElement('button');
+      btn.className = 'card';
+      btn.type = 'button';
+      btn.setAttribute('aria-label', 'Carta ' + (i + 1));
+      btn.innerHTML = '<div class="inner"><div class="face front"></div><div class="face back">' + item.sym + '</div></div>';
+      btn.addEventListener('click', function(){ flip(i); });
+      boardEl.appendChild(btn);
+      cards.push(btn);
+    });
+  }
+
+  function startTimer(){
+    if (started) return;
+    started = true;
+    timerId = setInterval(function(){
+      seconds++;
+      timeEl.textContent = fmt(seconds);
+    }, 1000);
+  }
+
+  function flip(i){
+    const item = deck[i], card = cards[i];
+    if (lock || item.done || card.classList.contains('flipped')) return;
+    startTimer();
+    card.classList.add('flipped');
+
+    if (first === null) { first = i; return; }
+
+    const a = deck[first], b = item;
+    moves++;
+    movesEl.textContent = moves;
+
+    if (a.sym === b.sym) {
+      a.done = b.done = true;
+      cards[first].classList.add('matched');
+      card.classList.add('matched');
+      first = null;
+      matched++;
+      pairsEl.textContent = matched + '/' + (deck.length / 2);
+      if (matched === deck.length / 2) finish();
+    } else {
+      lock = true;
+      const prev = first;
+      first = null;
+      setTimeout(function(){
+        cards[prev].classList.remove('flipped');
+        card.classList.remove('flipped');
+        lock = false;
+      }, 780);
+    }
+  }
+
+  function finish(){
+    if (timerId) clearInterval(timerId);
+    timerId = null;
+    const key = bestKey();
+    const prev = Number(localStorage.getItem(key) || 0);
+    let record = false;
+    if (!prev || moves < prev) { localStorage.setItem(key, moves); record = true; }
+    ovTitle.textContent = record ? 'Novo recorde! 🏆' : 'Parabéns! 🎉';
+    ovLine1.innerHTML = 'Você terminou em <b>' + moves + '</b> jogadas e <b>' + fmt(seconds) + '</b>.';
+    ovLine2.textContent = record
+      ? 'Esse é o seu melhor resultado nesse nível.'
+      : 'Seu recorde nesse nível: ' + (prev ? prev + ' jogadas' : '—');
+    ov.classList.add('show');
+  }
+
+  sizeSel.addEventListener('change', build);
+  document.getElementById('new').addEventListener('click', build);
+  document.getElementById('ovBtn').addEventListener('click', build);
+
+  build();
+})();
+</script>
+</body>
+</html>

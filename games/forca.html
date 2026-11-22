@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#070b14">
+<title>Forca — Jogos do Jhon</title>
+<style>
+  :root{--bg:#070b14;--card:#0f172a;--line:#1e293b;--txt:#e2e8f0;--muted:#94a3b8;--acc:#fb7185}
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    min-height:100vh;background:radial-gradient(700px 420px at 50% -10%,rgba(251,113,133,.15),transparent 65%),var(--bg);
+    color:var(--txt);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    padding:14px 14px 30px;display:flex;flex-direction:column;align-items:center;
+    -webkit-tap-highlight-color:transparent;user-select:none;
+  }
+  .top{width:100%;max-width:560px;display:flex;align-items:center;gap:10px;margin-bottom:10px}
+  .back{color:var(--muted);text-decoration:none;font-size:22px;padding:6px 8px;border-radius:10px}
+  .back:hover{background:#111c31;color:var(--txt)}
+  h1{font-size:17px;margin:0;font-weight:700}
+  .hud{width:100%;max-width:560px;display:flex;gap:8px;margin-bottom:12px}
+  .stat{flex:1;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 12px;text-align:center}
+  .stat span{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+  .stat b{font-size:16px}
+  .stage{width:100%;max-width:560px;display:flex;gap:14px;align-items:center;margin-bottom:6px}
+  svg{width:130px;height:150px;flex:0 0 auto}
+  svg .part{opacity:0;transition:opacity .25s}
+  svg .part.on{opacity:1}
+  .side{flex:1;min-width:0}
+  .cat{font-size:12.5px;color:var(--muted);margin-bottom:6px}
+  .cat b{color:var(--acc)}
+  .hearts{font-size:17px;letter-spacing:2px}
+  #word{width:100%;max-width:560px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:10px 0 16px}
+  .slot{
+    min-width:30px;height:42px;display:flex;align-items:center;justify-content:center;
+    border-bottom:3px solid #334155;font-size:23px;font-weight:800;letter-spacing:1px;
+    color:var(--txt);padding:0 2px;
+  }
+  .slot.gap{border:0;min-width:14px}
+  .slot.miss{color:#fb7185;border-color:#7f1d1d}
+  #keys{width:100%;max-width:560px;display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+  .key{
+    aspect-ratio:1.15;border-radius:9px;border:1px solid var(--line);background:#131f36;color:var(--txt);
+    font-size:15px;font-weight:700;cursor:pointer;
+  }
+  .key:active{transform:scale(.96)}
+  .key.ok{background:#065f46;border-color:#10b981;color:#d1fae5}
+  .key.bad{background:#3f1d24;border-color:#7f1d1d;color:#fda4af}
+  .key:disabled{cursor:default}
+  .bar{width:100%;max-width:560px;display:flex;gap:8px;margin-top:16px}
+  .btn{
+    flex:1;font:inherit;font-size:14.5px;font-weight:700;border-radius:12px;padding:12px;border:0;cursor:pointer;
+    background:linear-gradient(90deg,#fb7185,#f59e0b);color:#2a0b10;
+  }
+  .btn.ghost{background:#101a2e;border:1px solid var(--line);color:var(--txt)}
+  .btn:active{transform:scale(.98)}
+  .msg{min-height:22px;margin-top:12px;font-size:14.5px;text-align:center;color:var(--muted)}
+  .msg b{color:var(--txt)}
+  .hint{color:#64748b;font-size:12.5px;margin:10px 0 0;text-align:center;max-width:460px}
+</style>
+</head>
+<body>
+  <div class="top">
+    <a class="back" href="../index.html" title="Voltar">←</a>
+    <h1>🔤 Forca</h1>
+  </div>
+
+  <div class="hud">
+    <div class="stat"><span>Rodada</span><b id="round">1</b></div>
+    <div class="stat"><span>Acertos</span><b id="wins">0</b></div>
+    <div class="stat"><span>Erros</span><b id="losses">0</b></div>
+  </div>
+
+  <div class="stage">
+    <svg viewBox="0 0 130 150" aria-hidden="true">
+      <line x1="14" y1="140" x2="78" y2="140" stroke="#475569" stroke-width="6" stroke-linecap="round"/>
+      <line x1="34" y1="140" x2="34" y2="16" stroke="#475569" stroke-width="6" stroke-linecap="round"/>
+      <line x1="34" y1="18" x2="92" y2="18" stroke="#475569" stroke-width="6" stroke-linecap="round"/>
+      <line x1="92" y1="18" x2="92" y2="34" stroke="#475569" stroke-width="4" stroke-linecap="round"/>
+      <g stroke="#fb7185" stroke-width="5" stroke-linecap="round" fill="none">
+        <circle class="part" data-part="1" cx="92" cy="47" r="12"/>
+        <line class="part" data-part="2" x1="92" y1="59" x2="92" y2="96"/>
+        <line class="part" data-part="3" x1="92" y1="68" x2="70" y2="84"/>
+        <line class="part" data-part="4" x1="92" y1="68" x2="114" y2="84"/>
+        <line class="part" data-part="5" x1="92" y1="96" x2="74" y2="122"/>
+        <line class="part" data-part="6" x1="92" y1="96" x2="110" y2="122"/>
+      </g>
+    </svg>
+    <div class="side">
+      <div class="cat">Dica: <b id="cat">—</b></div>
+      <div class="hearts" id="hearts">❤️❤️❤️❤️❤️❤️</div>
+    </div>
+  </div>
+
+  <div id="word"></div>
+  <div id="keys"></div>
+  <div class="msg" id="msg"></div>
+
+  <div class="bar">
+    <button class="btn" id="next">Nova palavra</button>
+    <button class="btn ghost" id="resetScore">Zerar placar</button>
+  </div>
+
+  <p class="hint">Acerte a palavra antes de completar o boneco. 6 erros e acabou.</p>
+
+<script>
+(function(){
+  const WORDS = [
+    {w:'apartamento', c:'Imóveis'}, {w:'aluguel', c:'Imóveis'}, {w:'condomínio', c:'Imóveis'},
+    {w:'imobiliária', c:'Imóveis'}, {w:'contrato', c:'Imóveis'}, {w:'vistoria', c:'Imóveis'},
+    {w:'inquilino', c:'Imóveis'}, {w:'fiador', c:'Imóveis'}, {w:'escritura', c:'Imóveis'},
+    {w:'cartório', c:'Imóveis'}, {w:'financiamento', c:'Imóveis'}, {w:'corretor', c:'Imóveis'},
+    {w:'garagem', c:'Imóveis'}, {w:'varanda', c:'Imóveis'}, {w:'reforma', c:'Imóveis'},
+    {w:'javascript', c:'Tecnologia'}, {w:'algoritmo', c:'Tecnologia'}, {w:'servidor', c:'Tecnologia'},
+    {w:'aplicativo', c:'Tecnologia'}, {w:'inteligência', c:'Tecnologia'}, {w:'automação', c:'Tecnologia'},
+    {w:'internet', c:'Tecnologia'}, {w:'senha', c:'Tecnologia'}, {w:'robô', c:'Tecnologia'},
+    {w:'planilha', c:'Tecnologia'}, {w:'navegador', c:'Tecnologia'}, {w:'memória', c:'Tecnologia'},
+    {w:'bicicleta', c:'Geral'}, {w:'cachorro', c:'Geral'}, {w:'floresta', c:'Geral'},
+    {w:'montanha', c:'Geral'}, {w:'chocolate', c:'Geral'}, {w:'guitarra', c:'Geral'},
+    {w:'oceano', c:'Geral'}, {w:'futebol', c:'Geral'}, {w:'pizza', c:'Geral'},
+    {w:'viagem', c:'Geral'}, {w:'saudade', c:'Geral'}, {w:'família', c:'Geral'},
+    {w:'música', c:'Geral'}, {w:'biblioteca', c:'Geral'}, {w:'passarinho', c:'Geral'},
+    {w:'guarda-chuva', c:'Geral'}, {w:'relâmpago', c:'Geral'}
+  ];
+  const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  const MAX_ERRORS = 6;
+
+  const wordEl = document.getElementById('word');
+  const keysEl = document.getElementById('keys');
+  const catEl = document.getElementById('cat');
+  const heartsEl = document.getElementById('hearts');
+  const msgEl = document.getElementById('msg');
+  const roundEl = document.getElementById('round');
+  const winsEl = document.getElementById('wins');
+  const lossesEl = document.getElementById('losses');
+  const parts = Array.prototype.slice.call(document.querySelectorAll('.part'));
+
+  let current, guessed, errors, over, wins = 0, losses = 0, round = 0;
+
+  function norm(s){
+    return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  }
+
+  function render(){
+    const nw = norm(current.w);
+    wordEl.innerHTML = '';
+    for (let i = 0; i < nw.length; i++) {
+      const ch = nw[i];
+      const slot = document.createElement('div');
+      if (ch === '-' || ch === ' ') {
+        slot.className = 'slot gap';
+        slot.textContent = ch === '-' ? '-' : '';
+        if (ch === '-') { slot.style.border = '0'; slot.style.color = '#64748b'; }
+      } else if (guessed.has(ch)) {
+        slot.className = 'slot';
+        slot.textContent = current.w[i];
+      } else {
+        slot.className = 'slot' + (over && errors >= MAX_ERRORS ? ' miss' : '');
+        slot.textContent = over && errors >= MAX_ERRORS ? current.w[i] : '';
+      }
+      wordEl.appendChild(slot);
+    }
+
+    keysEl.innerHTML = '';
+    LETTERS.forEach(function(L){
+      const k = L.toLowerCase();
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'key';
+      b.textContent = L;
+      if (guessed.has(k)) {
+        b.disabled = true;
+        b.classList.add(norm(current.w).indexOf(k) >= 0 ? 'ok' : 'bad');
+      }
+      b.addEventListener('click', function(){ guess(k); });
+      keysEl.appendChild(b);
+    });
+
+    catEl.textContent = current.c;
+    heartsEl.textContent = '❤️'.repeat(Math.max(0, MAX_ERRORS - errors)) + '🖤'.repeat(Math.min(errors, MAX_ERRORS));
+    parts.forEach(function(p){
+      p.classList.toggle('on', Number(p.dataset.part) <= errors);
+    });
+    roundEl.textContent = round;
+    winsEl.textContent = wins;
+    lossesEl.textContent = losses;
+  }
+
+  function newWord(){
+    let next;
+    do { next = WORDS[Math.floor(Math.random() * WORDS.length)]; }
+    while (WORDS.length > 1 && current && next.w === current.w);
+    current = next;
+    guessed = new Set();
+    errors = 0;
+    over = false;
+    round++;
+    msgEl.textContent = 'Escolha uma letra.';
+    render();
+  }
+
+  function guess(letter){
+    if (over || guessed.has(letter)) return;
+    guessed.add(letter);
+    const nw = norm(current.w);
+    if (nw.indexOf(letter) === -1) {
+      errors++;
+      if (errors >= MAX_ERRORS) {
+        over = true;
+        losses++;
+        msgEl.innerHTML = 'Sem vidas. A palavra era <b>' + current.w + '</b>.';
+        render();
+        return;
+      }
+    }
+    const allFound = nw.split('').every(function(ch){
+      return ch === '-' || guessed.has(ch);
+    });
+    if (allFound) {
+      over = true;
+      wins++;
+      msgEl.innerHTML = '🎉 Acertou: <b>' + current.w + '</b>!';
+    }
+    render();
+  }
+
+  document.getElementById('next').addEventListener('click', newWord);
+  document.getElementById('resetScore').addEventListener('click', function(){
+    wins = 0; losses = 0; round = 0;
+    newWord();
+  });
+
+  window.addEventListener('keydown', function(e){
+    if (e.key === 'Enter') { if (over) newWord(); return; }
+    if (!/^[a-zA-Z]$/.test(e.key)) return;
+    guess(e.key.toLowerCase());
+  });
+
+  newWord();
+})();
+</script>
+</body>
+</html>

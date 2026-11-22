@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#070b14">
+<title>Jogo da Velha — Jogos do Jhon</title>
+<style>
+  :root{--bg:#070b14;--card:#0f172a;--line:#1e293b;--txt:#e2e8f0;--muted:#94a3b8;--x:#22d3ee;--o:#f472b6}
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    min-height:100vh;background:radial-gradient(700px 420px at 50% -10%,rgba(34,211,238,.16),transparent 65%),var(--bg);
+    color:var(--txt);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    padding:14px 14px 30px;display:flex;flex-direction:column;align-items:center;
+    -webkit-tap-highlight-color:transparent;user-select:none;
+  }
+  .top{width:100%;max-width:420px;display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .back{color:var(--muted);text-decoration:none;font-size:22px;padding:6px 8px;border-radius:10px}
+  .back:hover{background:#111c31;color:var(--txt)}
+  h1{font-size:17px;margin:0;font-weight:700}
+  .bar{width:100%;max-width:420px;display:flex;gap:8px;margin-bottom:12px}
+  select,.btn{font:inherit;font-size:14px;border-radius:11px;padding:10px 14px;border:1px solid var(--line);background:#101a2e;color:var(--txt);cursor:pointer;flex:1}
+  .btn{background:linear-gradient(90deg,#22d3ee,#818cf8);color:#062028;font-weight:700;border:0;flex:0 0 auto}
+  .status{font-size:15px;color:var(--muted);margin:2px 0 14px;min-height:22px;text-align:center}
+  .status b{color:var(--txt)}
+  #board{width:100%;max-width:360px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .cell{
+    aspect-ratio:1;border-radius:16px;border:1px solid var(--line);background:linear-gradient(160deg,#131f36,#0d1526);
+    font-size:clamp(38px,12vw,58px);font-weight:800;line-height:1;color:var(--txt);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;transition:background .15s,transform .1s,border-color .15s;
+  }
+  .cell:active{transform:scale(.97)}
+  .cell.x{color:var(--x);text-shadow:0 0 18px rgba(34,211,238,.5)}
+  .cell.o{color:var(--o);text-shadow:0 0 18px rgba(244,114,182,.45)}
+  .cell.win{background:linear-gradient(160deg,#065f46,#064e3b);border-color:#10b981}
+  .cell:disabled{cursor:default}
+  .score{width:100%;max-width:360px;display:flex;gap:10px;margin-top:18px}
+  .sc{flex:1;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:9px;text-align:center}
+  .sc span{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+  .sc b{font-size:20px;font-variant-numeric:tabular-nums}
+  .hint{color:#64748b;font-size:12.5px;margin:16px 0 0;text-align:center;max-width:360px}
+</style>
+</head>
+<body>
+  <div class="top">
+    <a class="back" href="../index.html" title="Voltar">←</a>
+    <h1>⭕ Jogo da Velha</h1>
+  </div>
+
+  <div class="bar">
+    <select id="mode" aria-label="Modo de jogo">
+      <option value="hard" selected>IA · Difícil</option>
+      <option value="medium">IA · Médio</option>
+      <option value="easy">IA · Fácil</option>
+      <option value="pvp">2 jogadores</option>
+    </select>
+    <button class="btn" id="new">Novo</button>
+  </div>
+
+  <div class="status" id="status">Sua vez — você é o <b>X</b></div>
+  <div id="board"></div>
+
+  <div class="score">
+    <div class="sc"><span>X</span><b id="sx">0</b></div>
+    <div class="sc"><span>Empates</span><b id="sd">0</b></div>
+    <div class="sc"><span>O</span><b id="so">0</b></div>
+  </div>
+
+  <p class="hint" id="hint">No modo difícil a IA não perde. Empate já é vitória.</p>
+
+<script>
+(function(){
+  const LINES = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  const boardEl = document.getElementById('board');
+  const statusEl = document.getElementById('status');
+  const modeSel = document.getElementById('mode');
+  const hintEl = document.getElementById('hint');
+  const sxEl = document.getElementById('sx');
+  const soEl = document.getElementById('so');
+  const sdEl = document.getElementById('sd');
+
+  let board, turn, over, busy;
+  let score = {X: 0, O: 0, D: 0};
+
+  try {
+    const saved = JSON.parse(localStorage.getItem('velha.score') || 'null');
+    if (saved) score = saved;
+  } catch (e) {}
+
+  function renderScore(){
+    sxEl.textContent = score.X;
+    soEl.textContent = score.O;
+    sdEl.textContent = score.D;
+  }
+
+  function modeLabel(){
+    const m = modeSel.value;
+    if (m === 'pvp') return 'Dois jogadores';
+    return 'Você (X) vs IA (O)';
+  }
+
+  function result(b){
+    for (let i = 0; i < LINES.length; i++) {
+      const l = LINES[i];
+      if (b[l[0]] && b[l[0]] === b[l[1]] && b[l[1]] === b[l[2]]) return {p: b[l[0]], line: l};
+    }
+    return b.indexOf('') === -1 ? {p: 'D', line: null} : null;
+  }
+
+  function minimax(b, player, depth){
+    const r = result(b);
+    if (r) {
+      if (r.p === 'O') return {score: 10 - depth};
+      if (r.p === 'X') return {score: depth - 10};
+      return {score: 0};
+    }
+    let best = {score: player === 'O' ? -Infinity : Infinity, move: -1};
+    for (let i = 0; i < 9; i++) {
+      if (b[i]) continue;
+      b[i] = player;
+      const s = minimax(b, player === 'O' ? 'X' : 'O', depth + 1).score;
+      b[i] = '';
+      if (player === 'O' ? s > best.score : s < best.score) best = {score: s, move: i};
+    }
+    return best;
+  }
+
+  function aiMove(){
+    const mode = modeSel.value;
+    const free = board.map(function(v, i){ return v ? -1 : i; }).filter(function(i){ return i >= 0; });
+    if (!free.length) return -1;
+    if (mode === 'easy') return free[Math.floor(Math.random() * free.length)];
+    if (mode === 'medium' && Math.random() < 0.35) return free[Math.floor(Math.random() * free.length)];
+    const m = minimax(board.slice(), 'O', 0).move;
+    return m >= 0 ? m : free[Math.floor(Math.random() * free.length)];
+  }
+
+  function paint(){
+    boardEl.innerHTML = '';
+    board.forEach(function(v, i){
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'cell' + (v ? ' ' + v.toLowerCase() : '');
+      b.textContent = v;
+      b.disabled = !!v || over || busy;
+      b.addEventListener('click', function(){ play(i); });
+      boardEl.appendChild(b);
+    });
+  }
+
+  function finish(r){
+    over = true;
+    if (r.p === 'D') {
+      score.D++;
+      statusEl.innerHTML = 'Empate. Ninguém cedeu. 🤝';
+    } else if (r.p === 'X') {
+      score.X++;
+      statusEl.innerHTML = '<b>X</b> venceu! 🎉';
+    } else {
+      score.O++;
+      statusEl.innerHTML = '<b>O</b> venceu! 🤖';
+    }
+    localStorage.setItem('velha.score', JSON.stringify(score));
+    renderScore();
+    paint();
+    if (r.line) {
+      const cells = boardEl.querySelectorAll('.cell');
+      r.line.forEach(function(i){ cells[i].classList.add('win'); });
+    }
+  }
+
+  function play(i){
+    if (over || busy || board[i]) return;
+    board[i] = turn;
+    paint();
+    const r = result(board);
+    if (r) return finish(r);
+
+    if (modeSel.value !== 'pvp' && turn === 'X') {
+      turn = 'O';
+      busy = true;
+      statusEl.innerHTML = 'IA pensando…';
+      paint();
+      setTimeout(function(){
+        const m = aiMove();
+        if (m >= 0) board[m] = 'O';
+        busy = false;
+        const r2 = result(board);
+        if (r2) return finish(r2);
+        turn = 'X';
+        statusEl.innerHTML = 'Sua vez — você é o <b>X</b>';
+        paint();
+      }, 320);
+    } else {
+      turn = turn === 'X' ? 'O' : 'X';
+      statusEl.innerHTML = 'Vez do <b>' + turn + '</b>';
+      paint();
+    }
+  }
+
+  function reset(){
+    board = Array(9).fill('');
+    turn = 'X';
+    over = false;
+    busy = false;
+    statusEl.innerHTML = modeSel.value === 'pvp' ? 'Vez do <b>X</b>' : 'Sua vez — você é o <b>X</b>';
+    hintEl.textContent = modeSel.value === 'pvp'
+      ? 'Passem o celular: X começa e alterna com O.'
+      : modeSel.value === 'hard'
+        ? 'No modo difícil a IA não perde. Empate já é vitória.'
+        : 'A IA joga bem, mas escorrega de vez em quando.';
+    paint();
+  }
+
+  modeSel.addEventListener('change', reset);
+  document.getElementById('new').addEventListener('click', reset);
+  renderScore();
+  reset();
+})();
+</script>
+</body>
+</html>
