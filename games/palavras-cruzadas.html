@@ -58,4 +58,4 @@ $('check').onclick=check;$('hint').onclick=hint;$('reveal').onclick=reveal;$('cl
 window.addEventListener('keydown',e=>{if(e.ctrlKey||e.metaKey||e.altKey)return;if(/^[a-zA-Z]$/.test(e.key)){enter(e.key.toUpperCase());e.preventDefault()}else if(e.key==='Backspace'){backspace();e.preventDefault()}else if(e.key==='ArrowRight'||e.key==='ArrowDown'){advance();e.preventDefault()}else if(e.key===' '&&active){const opts=entriesAt(selected);if(opts.length>1){setActive(opts.find(x=>x.n!==active.n)||active,selected)}e.preventDefault()}});
 buildKeyboard();reset();
 })();
-</script></body></html>
+</script><script src="../arcade-common.js"></script></body></html>
