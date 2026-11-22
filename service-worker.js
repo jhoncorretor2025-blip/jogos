@@ -1,10 +1,15 @@
-const CACHE_NAME="jogos-do-jhon-v2.6";
+const CACHE_NAME="jogos-do-jhon-v2.6.1";
 const CORE=[
  "./",
  "./index.html",
  "./manifest.webmanifest",
  "./arcade-common.js",
  "./icons/arcade-icon.svg",
+ "./imagens/ninja.svg",
+ "./imagens/inimigo.svg",
+ "./imagens/carla.svg",
+ "./imagens/moeda.svg",
+ "./imagens/shuriken.svg",
  "./ninja_forest_run_v4_10.html",
  "./games/2048.html",
  "./games/batalha-naval.html",
