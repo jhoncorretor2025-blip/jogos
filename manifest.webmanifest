@@ -1,0 +1,21 @@
+{
+  "id": "./",
+  "name": "Jogos do Jhon — Arcade",
+  "short_name": "Jogos do Jhon",
+  "description": "Arcade de jogos do Jhon para celular e computador.",
+  "lang": "pt-BR",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#070b14",
+  "theme_color": "#070b14",
+  "icons": [
+    {
+      "src": "./icons/arcade-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
