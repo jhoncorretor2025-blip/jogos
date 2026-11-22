@@ -37,7 +37,7 @@
   .dot{width:6px;height:6px;border-radius:50%;background:#34d399;box-shadow:0 0 8px #34d399}
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-top:22px}
   .card{
-    position:relative;display:block;text-decoration:none;color:inherit;
+    position:relative;display:block;text-decoration:none;color:inherit;cursor:pointer;
     background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.01)),var(--card);
     border:1px solid var(--line); border-radius:18px; padding:20px 18px 18px;
     transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease;
@@ -126,82 +126,82 @@
     </div>
   </section>
   <div class="grid" id="gameGrid">
-    <a class="card" data-category="puzzle" href="games/2048.html" style="--accent:#fbbf24;--glow:rgba(251,191,36,.20)">
+    <div class="card" data-category="puzzle" data-href="games/2048.html" style="--accent:#fbbf24;--glow:rgba(251,191,36,.20)">
       <span class="tag new">v1.0</span>
       <span class="ico">🧩</span>
       <p class="name">2048 <em class="new">NOVO</em></p>
       <p class="desc">Junte os números iguais até chegar ao 2048. Tem desfazer.</p>
-    </a>
+    </div>
 
-    <a class="card" data-category="strategy" href="games/batalha-naval.html" style="--accent:#60a5fa;--glow:rgba(96,165,250,.20)">
+    <div class="card" data-category="strategy" data-href="games/batalha-naval.html" style="--accent:#60a5fa;--glow:rgba(96,165,250,.20)">
       <span class="tag new">v1.0</span>
       <span class="ico">🚢</span>
       <p class="name">Batalha Naval <em class="new">NOVO</em></p>
       <p class="desc">Posicione a frota e afunde a IA antes que ela afunde você.</p>
-    </a>
+    </div>
 
-    <a class="card" data-category="strategy" href="games/banco-imobiliario.html" style="--accent:#34d399;--glow:rgba(52,211,153,.20)">
+    <div class="card" data-category="strategy" data-href="games/banco-imobiliario.html" style="--accent:#34d399;--glow:rgba(52,211,153,.20)">
       <span class="tag new">v1.0</span>
       <span class="ico">🏠</span>
       <p class="name">Banco Imobiliário <em class="new">NOVO</em></p>
       <p class="desc">Compre, construa e cobre aluguel até quebrar a IA.</p>
-    </a>
+    </div>
 
-    <a class="card" data-category="puzzle" href="games/detetive.html" style="--accent:#fbbf24;--glow:rgba(251,191,36,.18)">
+    <div class="card" data-category="puzzle" data-href="games/detetive.html" style="--accent:#fbbf24;--glow:rgba(251,191,36,.18)">
       <span class="tag new">v1.0</span>
       <span class="ico">🕵️</span>
       <p class="name">Detetive <em class="new">NOVO</em></p>
       <p class="desc">Leia as pistas, elimine opções e acuse quem, com o quê e onde.</p>
-    </a>
+    </div>
 
-    <a class="card" data-category="racing" href="games/corrida.html" style="--accent:#22d3ee;--glow:rgba(34,211,238,.20)">
+    <div class="card" data-category="racing" data-href="games/corrida.html" style="--accent:#22d3ee;--glow:rgba(34,211,238,.20)">
       <span class="tag new">v1.0</span>
       <span class="ico">🏎️</span>
       <p class="name">Corrida Infinita <em class="new">NOVO</em></p>
       <p class="desc">Desvie dos carros, pegue moedas e bata seu recorde.</p>
-    </a>
+    </div>
 
-    <a class="card" data-category="arcade" href="games/cobra.html" style="--accent:#34d399;--glow:rgba(52,211,153,.20)">
+    <div class="card" data-category="arcade" data-href="games/cobra.html" style="--accent:#34d399;--glow:rgba(52,211,153,.20)">
       <span class="tag">v1.0</span>
       <span class="ico">🐍</span>
       <p class="name">Cobra Neon</p>
       <p class="desc">Coma, cresça e não bata na parede. Setas, deslize ou D-pad.</p>
-    </a>
+    </div>
 
-    <a class="card" data-category="puzzle" href="games/memoria.html" style="--accent:#a78bfa;--glow:rgba(167,139,250,.20)">
+    <div class="card" data-category="puzzle" data-href="games/memoria.html" style="--accent:#a78bfa;--glow:rgba(167,139,250,.20)">
       <span class="tag">v1.1</span>
       <span class="ico">🧠</span>
       <p class="name">Jogo da Memória</p>
       <p class="desc">Espiada, sons, recorde e confete. Encontre os pares.</p>
-    </a>
+    </div>
 
-    <a class="card" data-category="strategy" href="games/velha.html" style="--accent:#22d3ee;--glow:rgba(34,211,238,.20)">
+    <div class="card" data-category="strategy" data-href="games/velha.html" style="--accent:#22d3ee;--glow:rgba(34,211,238,.20)">
       <span class="tag">v1.0</span>
       <span class="ico">⭕</span>
       <p class="name">Jogo da Velha</p>
       <p class="desc">Contra amigo ou contra a IA em três níveis.</p>
-    </a>
+    </div>
 
-    <a class="card" data-category="puzzle" href="games/campo-minado.html" style="--accent:#fbbf24;--glow:rgba(251,191,36,.20)">
+    <div class="card" data-category="puzzle" data-href="games/campo-minado.html" style="--accent:#fbbf24;--glow:rgba(251,191,36,.20)">
       <span class="tag">v1.0</span>
       <span class="ico">💣</span>
       <p class="name">Campo Minado</p>
       <p class="desc">Abra as casas sem pisar nas minas. Primeiro clique é seguro.</p>
-    </a>
+    </div>
 
-    <a class="card" data-category="puzzle" href="games/forca.html" style="--accent:#fb7185;--glow:rgba(251,113,133,.20)">
+    <div class="card" data-category="puzzle" data-href="games/forca.html" style="--accent:#fb7185;--glow:rgba(251,113,133,.20)">
       <span class="tag">v1.0</span>
       <span class="ico">🔤</span>
       <p class="name">Forca</p>
       <p class="desc">Adivinhe a palavra com dica de categoria. 6 chances.</p>
-    </a>
+    </div>
 
-    <a class="card" data-category="action" href="ninja_forest_run_v4_10.html" style="--accent:#60a5fa;--glow:rgba(96,165,250,.20)">
+    <div class="card" data-category="action" data-href="ninja_forest_run_v4_10.html" style="--accent:#60a5fa;--glow:rgba(96,165,250,.20)">
       <span class="tag">v4.10</span>
       <span class="ico">🥷</span>
       <p class="name">Ninja Forest Run</p>
       <p class="desc">O jogo original do repositório — corra pela floresta.</p>
-    </a>
+    </div>
   </div>
 
   <div class="notes">
@@ -229,20 +229,22 @@
  data.plays=Number.isFinite(data.plays)?data.plays:0;
  data.counts=(data.counts&&typeof data.counts==='object'&&!Array.isArray(data.counts))?data.counts:{};
  const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(data));}catch(e){console.warn('Não foi possível salvar os dados do arcade neste navegador.',e);}};
- const names=cards.map(c=>({href:c.getAttribute('href'),name:c.querySelector('.name').textContent.replace('NOVO','').trim(),icon:c.querySelector('.ico').textContent,cat:c.dataset.category||'arcade'}));
+ const names=cards.map(c=>({href:c.getAttribute('data-href'),name:c.querySelector('.name').textContent.replace('NOVO','').trim(),icon:c.querySelector('.ico').textContent,cat:c.dataset.category||'arcade'}));
  cards.forEach(card=>{
-  const href=card.getAttribute('href'),g=names.find(x=>x.href===href);
+  const href=card.getAttribute('data-href'),g=names.find(x=>x.href===href);
   const fav=document.createElement('button');fav.className='favbtn';fav.type='button';fav.title='Adicionar aos favoritos';fav.textContent=data.favs.includes(href)?'⭐':'☆';fav.classList.toggle('on',data.favs.includes(href));
   fav.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(data.favs.includes(href))data.favs=data.favs.filter(x=>x!==href);else data.favs.push(href);save();fav.textContent=data.favs.includes(href)?'⭐':'☆';fav.classList.toggle('on',data.favs.includes(href));meta.innerHTML='<span class="meta-pill">'+({puzzle:'🧠 Puzzle',action:'⚡ Ação',arcade:'🕹️ Arcade',strategy:'♟️ Estratégia',racing:'🏎️ Corrida'}[g.cat]||'🎮 Jogo')+'</span><span class="meta-pill">▶ '+(data.counts[href]||0)+'x jogado</span>'+(data.favs.includes(href)?'<span class="meta-pill">⭐ Favorito</span>':'');render();});
   card.appendChild(fav);
   const meta=document.createElement('div');meta.className='card-meta';meta.innerHTML='<span class="meta-pill">'+({puzzle:'🧠 Puzzle',action:'⚡ Ação',arcade:'🕹️ Arcade',strategy:'♟️ Estratégia',racing:'🏎️ Corrida'}[g.cat]||'🎮 Jogo')+'</span><span class="meta-pill">▶ '+(data.counts[href]||0)+'x jogado</span>'+(data.favs.includes(href)?'<span class="meta-pill">⭐ Favorito</span>':'');
   card.appendChild(meta);
-  card.addEventListener('click',()=>{data.plays++;data.counts[href]=(data.counts[href]||0)+1;data.recent=[href,...data.recent.filter(x=>x!==href)].slice(0,5);save();});
+  card.setAttribute('role','link');card.setAttribute('tabindex','0');card.setAttribute('aria-label','Abrir '+g.name);
+  card.addEventListener('click',e=>{if(e.target.closest('.favbtn'))return;data.plays++;data.counts[href]=(data.counts[href]||0)+1;data.recent=[href,...data.recent.filter(x=>x!==href)].slice(0,5);save();window.location.href=href;});
+  card.addEventListener('keydown',e=>{if(e.target.closest('.favbtn'))return;if(e.key==='Enter'||e.key===' '){e.preventDefault();card.click();}});
  });
  const search=document.getElementById('gameSearch');let filter='all';
  function render(){
   const q=search.value.trim().toLowerCase();
-  cards.forEach(c=>{const href=c.getAttribute('href'),cat=c.dataset.category||'arcade',text=c.innerText.toLowerCase();const ok=(filter==='all'||(filter==='favorites'?data.favs.includes(href):cat===filter))&&text.includes(q);c.style.display=ok?'':'none';});
+  cards.forEach(c=>{const href=c.getAttribute('data-href'),cat=c.dataset.category||'arcade',text=c.innerText.toLowerCase();const ok=(filter==='all'||(filter==='favorites'?data.favs.includes(href):cat===filter))&&text.includes(q);c.style.display=ok?'':'none';});
   document.querySelectorAll('.filter').forEach(b=>b.classList.toggle('active',b.dataset.filter===filter));
   const recent=document.getElementById('recentGames');recent.innerHTML='';
   const recentGames=data.recent.map(h=>names.find(x=>x.href===h)).filter(Boolean);
