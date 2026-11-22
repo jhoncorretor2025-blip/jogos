@@ -49,4 +49,4 @@ document.querySelectorAll('[data-act]').forEach(b=>{const a=b.dataset.act;b.addE
 window.addEventListener('keydown',e=>{const k=e.key;if(['ArrowLeft','ArrowRight','ArrowDown','ArrowUp',' '].includes(k))e.preventDefault();if(k==='ArrowLeft'||k==='a')act('left');if(k==='ArrowRight'||k==='d')act('right');if(k==='ArrowDown'||k==='s')act('down');if(k==='ArrowUp'||k==='w')act('rotate');if(k===' ')act('drop');if(k.toLowerCase()==='p'||k==='Escape')pause();if(k.toLowerCase()==='r')newGame()});
 board=emptyBoard();bag=[];nextPiece=take();spawn();status='ready';draw();updateStats();
 })();
-</script></body></html>
+</script><script src="../arcade-common.js"></script></body></html>
