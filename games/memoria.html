@@ -10,32 +10,43 @@
   *{box-sizing:border-box}
   html,body{margin:0}
   body{
-    min-height:100vh;background:radial-gradient(700px 420px at 50% -10%,rgba(167,139,250,.18),transparent 65%),var(--bg);
+    min-height:100vh;min-height:100dvh;
+    background:radial-gradient(700px 420px at 50% -10%,rgba(167,139,250,.18),transparent 65%),var(--bg);
     color:var(--txt);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-    padding:14px 14px 30px;display:flex;flex-direction:column;align-items:center;
+    padding:12px 14px 20px;display:flex;flex-direction:column;align-items:center;
     -webkit-tap-highlight-color:transparent;user-select:none;
   }
-  .top{width:100%;max-width:560px;display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .top{width:100%;max-width:560px;display:flex;align-items:center;gap:10px;margin-bottom:10px}
   .back{color:var(--muted);text-decoration:none;font-size:22px;padding:6px 8px;border-radius:10px}
   .back:hover{background:#111c31;color:var(--txt)}
-  h1{font-size:17px;margin:0;font-weight:700}
-  .bar{width:100%;max-width:560px;display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+  h1{font-size:17px;margin:0;font-weight:700;flex:1}
+  .icon-btn{
+    border:1px solid var(--line);background:#101a2e;color:var(--txt);border-radius:10px;
+    width:42px;height:42px;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  }
+  .icon-btn[aria-pressed="true"]{background:#1b2b47}
+  .icon-btn:active{transform:scale(.96)}
+  .bar{width:100%;max-width:560px;display:flex;gap:8px;margin-bottom:8px}
   select,.btn{
     font:inherit;font-size:14px;border-radius:11px;padding:10px 14px;border:1px solid var(--line);
     background:#101a2e;color:var(--txt);cursor:pointer;
   }
   .btn{background:linear-gradient(90deg,#a78bfa,#818cf8);color:#1e1b4b;font-weight:700;border:0}
   .btn:active,select:active{transform:scale(.98)}
-  .stats{width:100%;max-width:560px;display:flex;gap:8px;margin-bottom:14px}
-  .stat{flex:1;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 12px;text-align:center}
-  .stat span{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
-  .stat b{font-size:19px;font-variant-numeric:tabular-nums}
+  .stats{width:100%;max-width:560px;display:flex;gap:8px;margin-bottom:8px}
+  .stat{flex:1;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:6px 8px;text-align:center;min-width:0}
+  .stat span{display:block;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+  .stat b{font-size:17px;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .stat b small{font-size:11px;color:var(--muted);font-weight:500}
+  .progress{width:100%;max-width:560px;height:6px;border-radius:99px;background:#16223a;overflow:hidden;margin-bottom:10px}
+  #fill{height:100%;width:0%;border-radius:99px;background:linear-gradient(90deg,#34d399,#a78bfa);transition:width .3s ease}
   #board{
-    width:100%;max-width:560px;display:grid;gap:8px;
+    width:100%;display:grid;gap:8px;
     grid-template-columns:repeat(var(--cols,4),minmax(0,1fr));
   }
-  .card{aspect-ratio:1;perspective:800px;background:none;border:0;padding:0;cursor:pointer}
-  .inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .35s cubic-bezier(.2,.7,.3,1)}
+  .card{aspect-ratio:1;perspective:800px;background:none;border:0;padding:0;cursor:pointer;border-radius:13px}
+  .card:focus-visible{outline:2px solid #a78bfa;outline-offset:2px}
+  .inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .34s cubic-bezier(.2,.7,.3,1)}
   .card.flipped .inner,.card.matched .inner{transform:rotateY(180deg)}
   .face{
     position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
@@ -46,8 +57,19 @@
   .front::after{content:"?";font-weight:800}
   .back{transform:rotateY(180deg);background:linear-gradient(160deg,#312e81,#1e1b4b);border:1px solid #4c1d95}
   .card.matched .back{background:linear-gradient(160deg,#065f46,#064e3b);border-color:#10b981}
-  .card.matched{animation:pop .3s ease}
+  .card.matched{animation:pop .32s ease}
+  .card.shake{animation:shake .3s ease}
   @keyframes pop{50%{transform:scale(1.06)}}
+  @keyframes shake{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+  .msg{
+    width:100%;max-width:560px;min-height:24px;margin-top:10px;font-size:14px;color:var(--muted);
+    text-align:center;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;
+  }
+  .msg b{color:var(--txt)}
+  .skip{
+    font:inherit;font-size:12.5px;font-weight:700;border-radius:99px;padding:5px 12px;cursor:pointer;
+    background:#1b2b47;color:var(--txt);border:1px solid #2f4468;
+  }
   #ov{
     position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:22px;
     background:rgba(4,8,16,.85);backdrop-filter:blur(4px);z-index:9;
@@ -55,18 +77,25 @@
   #ov.show{display:flex}
   .panel{
     background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px 22px;
-    text-align:center;max-width:340px;width:100%;
+    text-align:center;max-width:340px;width:100%;position:relative;z-index:2;
   }
   .panel h2{margin:0 0 8px;font-size:23px}
   .panel p{margin:0 0 4px;color:var(--muted);font-size:14.5px;line-height:1.6}
   .panel .btn{margin-top:16px;width:100%;padding:13px}
-  .hint{color:#64748b;font-size:12.5px;margin:16px 0 0;text-align:center;max-width:520px}
+  #fx{position:fixed;inset:0;pointer-events:none;z-index:1;display:none}
+  #fx.show{display:block}
+  @media (max-height:620px){
+    .stat span{font-size:9px}
+    .stat b{font-size:15px}
+    h1{font-size:15px}
+  }
 </style>
 </head>
 <body>
   <div class="top">
     <a class="back" href="../index.html" title="Voltar">←</a>
     <h1>🧠 Jogo da Memória</h1>
+    <button class="icon-btn" id="sound" aria-pressed="true" title="Som ligado" aria-label="Ligar ou desligar som">🔊</button>
   </div>
 
   <div class="bar">
@@ -82,10 +111,12 @@
     <div class="stat"><span>Jogadas</span><b id="moves">0</b></div>
     <div class="stat"><span>Tempo</span><b id="time">0:00</b></div>
     <div class="stat"><span>Pares</span><b id="pairs">0/10</b></div>
+    <div class="stat"><span>Recorde</span><b id="best">—</b></div>
   </div>
 
+  <div class="progress" aria-hidden="true"><div id="fill"></div></div>
   <div id="board"></div>
-  <p class="hint">Toque em duas cartas para encontrar o par. Quanto menos jogadas, melhor.</p>
+  <div class="msg" id="msg" aria-live="polite"></div>
 
   <div id="ov">
     <div class="panel">
@@ -95,6 +126,7 @@
       <button class="btn" id="ovBtn">Jogar de novo</button>
     </div>
   </div>
+  <canvas id="fx"></canvas>
 
 <script>
 (function(){
@@ -103,22 +135,84 @@
   const movesEl = document.getElementById('moves');
   const timeEl = document.getElementById('time');
   const pairsEl = document.getElementById('pairs');
+  const bestEl = document.getElementById('best');
+  const fillEl = document.getElementById('fill');
+  const msgEl = document.getElementById('msg');
   const sizeSel = document.getElementById('size');
+  const soundBtn = document.getElementById('sound');
   const ov = document.getElementById('ov');
   const ovTitle = document.getElementById('ovTitle');
   const ovLine1 = document.getElementById('ovLine1');
   const ovLine2 = document.getElementById('ovLine2');
+  const fx = document.getElementById('fx');
+  const fxc = fx.getContext('2d');
 
   let cols = 5, rows = 4, deck = [], cards = [];
   let first = null, lock = false, moves = 0, matched = 0;
   let seconds = 0, timerId = null, started = false;
+  let pending = null, peeking = false, peekId = null, peekLeft = 0;
+  let muted = localStorage.getItem('memoria.muted') === '1';
+
+  /* ---------- 1. SOM ---------- */
+  let actx = null;
+  function audio(){
+    if (!actx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      actx = new AC();
+    }
+    if (actx.state === 'suspended') actx.resume();
+    return actx;
+  }
+  function tone(freq, dur, type, vol, delay){
+    if (muted) return;
+    const a = audio();
+    if (!a) return;
+    const t0 = a.currentTime + (delay || 0);
+    const osc = a.createOscillator();
+    const gain = a.createGain();
+    osc.type = type || 'sine';
+    osc.frequency.setValueAtTime(freq, t0);
+    gain.gain.setValueAtTime(0, t0);
+    gain.gain.linearRampToValueAtTime(vol || .07, t0 + .01);
+    gain.gain.exponentialRampToValueAtTime(.0001, t0 + dur);
+    osc.connect(gain).connect(a.destination);
+    osc.start(t0); osc.stop(t0 + dur + .02);
+  }
+  const sfx = {
+    flip: function(){ tone(520, .09, 'triangle', .05); },
+    match: function(){ tone(660, .12, 'sine', .06); tone(880, .18, 'sine', .05, .1); },
+    miss: function(){ tone(190, .16, 'sawtooth', .035); },
+    win: function(){ [523,659,784,1047].forEach(function(f,i){ tone(f, .28, 'sine', .06, i*.12); }); },
+    peek: function(){ tone(420, .08, 'sine', .04); }
+  };
+  function paintSound(){
+    soundBtn.textContent = muted ? '🔇' : '🔊';
+    soundBtn.setAttribute('aria-pressed', String(!muted));
+    soundBtn.title = muted ? 'Som desligado' : 'Som ligado';
+  }
+  soundBtn.addEventListener('click', function(){
+    muted = !muted;
+    localStorage.setItem('memoria.muted', muted ? '1' : '0');
+    paintSound();
+    if (!muted) sfx.flip();
+  });
+
+  /* ---------- 2. TAMANHO ADAPTATIVO ---------- */
+  function fitBoard(){
+    const ratio = cols / rows;
+    const availH = Math.max(240, window.innerHeight - 250);
+    const maxW = Math.min(560, Math.floor(availH * ratio));
+    boardEl.style.maxWidth = maxW + 'px';
+  }
+  window.addEventListener('resize', fitBoard);
 
   function fmt(s){
     const m = Math.floor(s / 60), r = s % 60;
     return m + ':' + String(r).padStart(2, '0');
   }
-
   function bestKey(){ return 'memoria.best.' + cols + 'x' + rows; }
+  function timeKey(){ return 'memoria.time.' + cols + 'x' + rows; }
 
   function shuffle(a){
     for (let i = a.length - 1; i > 0; i--) {
@@ -128,22 +222,33 @@
     return a;
   }
 
+  function paintBest(){
+    const b = Number(localStorage.getItem(bestKey()) || 0);
+    const t = Number(localStorage.getItem(timeKey()) || 0);
+    bestEl.innerHTML = b ? b + '<small> jog · ' + fmt(t) + '</small>' : '—';
+  }
+
+  /* ---------- 3. CONSTRUÇÃO + ESPIADA ---------- */
   function build(){
     const parts = sizeSel.value.split('x');
     cols = Number(parts[0]); rows = Number(parts[1]);
     const total = cols * rows;
     const pairCount = total / 2;
     const picked = shuffle(SYMBOLS.slice()).slice(0, pairCount);
-    deck = shuffle(picked.concat(picked).map(function(sym, i){ return {sym: sym, id: i, done: false}; }));
+    deck = shuffle(picked.concat(picked).map(function(sym){ return {sym: sym, done: false}; }));
 
     first = null; lock = false; moves = 0; matched = 0; seconds = 0; started = false;
-    if (timerId) clearInterval(timerId);
-    timerId = null;
+    pending = null; peeking = false;
+    clearInterval(timerId); timerId = null;
+    clearInterval(peekId); peekId = null;
 
     movesEl.textContent = '0';
     timeEl.textContent = '0:00';
     pairsEl.textContent = '0/' + pairCount;
+    fillEl.style.width = '0%';
+    paintBest();
     ov.classList.remove('show');
+    fx.classList.remove('show');
 
     boardEl.style.setProperty('--cols', cols);
     boardEl.innerHTML = '';
@@ -152,14 +257,48 @@
       const btn = document.createElement('button');
       btn.className = 'card';
       btn.type = 'button';
-      btn.setAttribute('aria-label', 'Carta ' + (i + 1));
+      btn.setAttribute('aria-label', 'Carta ' + (i + 1) + ', virada para baixo');
       btn.innerHTML = '<div class="inner"><div class="face front"></div><div class="face back">' + item.sym + '</div></div>';
       btn.addEventListener('click', function(){ flip(i); });
       boardEl.appendChild(btn);
       cards.push(btn);
     });
+
+    fitBoard();
+    startPeek();
   }
 
+  function startPeek(){
+    peeking = true;
+    lock = true;
+    peekLeft = 3;
+    cards.forEach(function(c){ c.classList.add('flipped'); });
+    msgEl.innerHTML = '<span id="peekText">👀 Memorize! <b>3</b></span><button class="skip" id="skip">Pular</button>';
+    sfx.peek();
+    peekId = setInterval(function(){
+      peekLeft--;
+      if (peekLeft <= 0) { endPeek(); return; }
+      const t = document.getElementById('peekText');
+      if (t) t.innerHTML = '👀 Memorize! <b>' + peekLeft + '</b>';
+      sfx.peek();
+    }, 1000);
+  }
+
+  function endPeek(){
+    if (!peeking) return;
+    peeking = false;
+    clearInterval(peekId); peekId = null;
+    cards.forEach(function(c, i){ if (!deck[i].done) c.classList.remove('flipped'); });
+    lock = false;
+    msgEl.innerHTML = 'Valendo! Encontre os <b>' + (deck.length / 2) + ' pares</b>.';
+    startTimer();
+  }
+
+  msgEl.addEventListener('click', function(e){
+    if (e.target && e.target.id === 'skip') endPeek();
+  });
+
+  /* ---------- 4. JOGO ---------- */
   function startTimer(){
     if (started) return;
     started = true;
@@ -169,57 +308,140 @@
     }, 1000);
   }
 
+  function label(i){
+    const g = deck[i], c = cards[i];
+    const up = g.done || c.classList.contains('flipped');
+    c.setAttribute('aria-label', 'Carta ' + (i + 1) + ', ' + (up ? 'mostrando ' + g.sym : 'virada para baixo'));
+  }
+
   function flip(i){
+    if (peeking) { endPeek(); return; }
+    if (lock) { endMismatch(); return; }
+
     const item = deck[i], card = cards[i];
-    if (lock || item.done || card.classList.contains('flipped')) return;
+    if (item.done || card.classList.contains('flipped')) return;
+
     startTimer();
     card.classList.add('flipped');
+    label(i);
+    sfx.flip();
 
     if (first === null) { first = i; return; }
 
-    const a = deck[first], b = item;
+    const a = deck[first];
     moves++;
     movesEl.textContent = moves;
 
-    if (a.sym === b.sym) {
-      a.done = b.done = true;
+    if (a.sym === item.sym) {
+      a.done = item.done = true;
       cards[first].classList.add('matched');
       card.classList.add('matched');
+      cards[first].setAttribute('aria-label', 'Carta ' + (first + 1) + ', par encontrado ' + a.sym);
+      card.setAttribute('aria-label', 'Carta ' + (i + 1) + ', par encontrado ' + item.sym);
       first = null;
       matched++;
       pairsEl.textContent = matched + '/' + (deck.length / 2);
+      fillEl.style.width = (matched / (deck.length / 2) * 100) + '%';
+      sfx.match();
       if (matched === deck.length / 2) finish();
     } else {
       lock = true;
-      const prev = first;
+      pending = [first, i];
       first = null;
-      setTimeout(function(){
-        cards[prev].classList.remove('flipped');
-        card.classList.remove('flipped');
-        lock = false;
-      }, 780);
+      card.classList.add('shake');
+      sfx.miss();
+      setTimeout(endMismatch, 820);
     }
   }
 
+  function endMismatch(){
+    if (!pending) return;
+    pending.forEach(function(i){
+      if (!deck[i].done) {
+        cards[i].classList.remove('flipped', 'shake');
+        label(i);
+      }
+    });
+    pending = null;
+    lock = false;
+  }
+
+  /* ---------- 5. VITÓRIA + CONFETE ---------- */
   function finish(){
-    if (timerId) clearInterval(timerId);
-    timerId = null;
-    const key = bestKey();
-    const prev = Number(localStorage.getItem(key) || 0);
+    clearInterval(timerId); timerId = null;
+    const bKey = bestKey(), tKey = timeKey();
+    const prevMoves = Number(localStorage.getItem(bKey) || 0);
+    const prevTime = Number(localStorage.getItem(tKey) || 0);
     let record = false;
-    if (!prev || moves < prev) { localStorage.setItem(key, moves); record = true; }
+
+    if (!prevMoves || moves < prevMoves) {
+      localStorage.setItem(bKey, moves);
+      record = true;
+    }
+    if (!prevTime || seconds < prevTime) localStorage.setItem(tKey, seconds);
+
+    paintBest();
     ovTitle.textContent = record ? 'Novo recorde! 🏆' : 'Parabéns! 🎉';
     ovLine1.innerHTML = 'Você terminou em <b>' + moves + '</b> jogadas e <b>' + fmt(seconds) + '</b>.';
     ovLine2.textContent = record
       ? 'Esse é o seu melhor resultado nesse nível.'
-      : 'Seu recorde nesse nível: ' + (prev ? prev + ' jogadas' : '—');
+      : 'Seu recorde nesse nível: ' + (prevMoves ? prevMoves + ' jogadas em ' + fmt(prevTime) : '—');
     ov.classList.add('show');
+    sfx.win();
+    confetti();
+  }
+
+  function confetti(){
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    fx.width = Math.round(window.innerWidth * dpr);
+    fx.height = Math.round(window.innerHeight * dpr);
+    fxc.setTransform(dpr, 0, 0, dpr, 0, 0);
+    fx.classList.add('show');
+
+    const colors = ['#a78bfa', '#34d399', '#22d3ee', '#fbbf24', '#fb7185', '#60a5fa'];
+    const W = window.innerWidth, H = window.innerHeight;
+    const parts = [];
+    for (let i = 0; i < 90; i++) {
+      parts.push({
+        x: W / 2 + (Math.random() - .5) * 120,
+        y: H * .42 + (Math.random() - .5) * 60,
+        vx: (Math.random() - .5) * 11,
+        vy: -6 - Math.random() * 9,
+        s: 4 + Math.random() * 6,
+        r: Math.random() * Math.PI,
+        vr: (Math.random() - .5) * .3,
+        c: colors[Math.floor(Math.random() * colors.length)],
+        life: 1
+      });
+    }
+    const t0 = performance.now();
+    function frame(now){
+      const dt = Math.min((now - t0) / 1000, 3);
+      fxc.clearRect(0, 0, W, H);
+      parts.forEach(function(p){
+        p.vy += 22 * 0.016;
+        p.x += p.vx; p.y += p.vy; p.r += p.vr;
+        p.life = Math.max(0, 1 - dt / 2.4);
+        fxc.save();
+        fxc.globalAlpha = p.life;
+        fxc.translate(p.x, p.y);
+        fxc.rotate(p.r);
+        fxc.fillStyle = p.c;
+        fxc.fillRect(-p.s / 2, -p.s / 2, p.s, p.s * .6);
+        fxc.restore();
+      });
+      if (now - t0 < 2600) requestAnimationFrame(frame);
+      else { fxc.clearRect(0, 0, W, H); fx.classList.remove('show'); }
+    }
+    requestAnimationFrame(frame);
   }
 
   sizeSel.addEventListener('change', build);
   document.getElementById('new').addEventListener('click', build);
   document.getElementById('ovBtn').addEventListener('click', build);
 
+  paintSound();
   build();
 })();
 </script>
