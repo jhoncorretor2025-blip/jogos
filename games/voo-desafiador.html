@@ -25,7 +25,7 @@ function draw(){const sky=x.createLinearGradient(0,0,0,H);sky.addColorStop(0,'#0
  x.fillStyle='#134e4a';x.fillRect(0,H-48,W,48);x.fillStyle='#a3e635';for(let i=0;i<W;i+=25)x.fillRect((i-frame*2)%W,H-48,14,5);
  particles.forEach(p=>{x.globalAlpha=p.life/18;x.fillStyle='#fef08a';x.beginPath();x.arc(p.x,p.y,3,0,7);x.fill();x.globalAlpha=1});
  // passarinho
- x.save();x.translate(bird.x,bird.y);x.rotate(bird.rot);x.fillStyle='#facc15';x.strokeStyle='#854d0e';x.lineWidth=2;x.beginPath();x.ellipse(0,0,17,13,0,0,7);x.fill();x.stroke();x.fillStyle='#fb923c';x.beginPath();x.moveTo(13,-2);x.lineTo(26,2);x.lineTo(13,6);x.fill();x.fillStyle='#fff';x.beginPath();x.arc(7,-7,5,0,7);x.fill();x.fillStyle='#111827';x.beginPath();x.arc(9,-7,2,0,7);x.fill();x.fillStyle='#f59e0b';x.beginPath();x.ellipse(-7,7,-7,-4,Math.sin(frame*.5)*.5,0,7);x.fill();x.restore();
+ x.save();x.translate(bird.x,bird.y);x.rotate(bird.rot);x.fillStyle='#facc15';x.strokeStyle='#854d0e';x.lineWidth=2;x.beginPath();x.ellipse(0,0,17,13,0,0,7);x.fill();x.stroke();x.fillStyle='#fb923c';x.beginPath();x.moveTo(13,-2);x.lineTo(26,2);x.lineTo(13,6);x.fill();x.fillStyle='#fff';x.beginPath();x.arc(7,-7,5,0,7);x.fill();x.fillStyle='#111827';x.beginPath();x.arc(9,-7,2,0,7);x.fill();x.fillStyle='#f59e0b';x.beginPath();x.ellipse(-7,7,7,4,Math.sin(frame*.5)*.5,0,7);x.fill();x.restore();
  x.fillStyle='#fff';x.font='bold 24px system-ui';x.textAlign='center';x.shadowColor='#000';x.shadowBlur=6;x.fillText(String(score),W/2,48);x.shadowBlur=0;x.textAlign='left'}
 function loop(t){if(state!=='playing')return;const dt=Math.min(2.2,(t-last)/16.67);last=t;update(dt);draw();if(state==='playing')raf=requestAnimationFrame(loop)}
 function action(e){if(e)e.preventDefault();flap()}
