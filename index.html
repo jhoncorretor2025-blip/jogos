@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#070b14">
-<title>Jogos do Jhon · v2.0</title>
-<meta name="description" content="Arcade de jogos web do Jhon: 2048, batalha naval, banco imobiliário, detetive, corrida, cobra, memória, velha, campo minado e forca.">
+<title>Jogos do Jhon · v2.1</title>
+<meta name="description" content="Arcade de jogos web do Jhon com busca, favoritos, categorias, histórico e perfil gamer.">
 <style>
   :root{
     --bg:#070b14; --card:#0f172a; --line:#1e293b; --txt:#e2e8f0; --muted:#94a3b8;
@@ -62,6 +62,27 @@
     font-style:normal;font-size:9.5px;font-weight:800;letter-spacing:.5px;color:#04211b;
     background:linear-gradient(90deg,#34d399,#22d3ee);border-radius:99px;padding:2px 7px;
   }
+  .menu-tools{margin:20px 0 14px;display:grid;gap:12px}
+  .searchbox{width:100%;background:#0b1220;border:1px solid #263449;border-radius:12px;padding:13px 15px;color:var(--txt);font:inherit}
+  .toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .toolbtn,.filter{border:1px solid var(--line);background:#111b2d;color:var(--txt);padding:9px 12px;border-radius:10px;cursor:pointer;font:inherit;font-size:13px}
+  .toolbtn.active,.filter.active{border-color:var(--a1);background:rgba(34,211,238,.12);color:var(--a1)}
+  .section-title{font-size:14px;color:#cbd5e1;margin:18px 0 8px}
+  .recent{display:flex;flex-wrap:wrap;gap:8px}
+  .recent a{color:var(--txt);text-decoration:none;background:#111b2d;border:1px solid var(--line);border-radius:10px;padding:8px 11px;font-size:13px}
+  .profile{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0}
+  .stat{background:rgba(255,255,255,.035);border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
+  .stat b{display:block;font-size:19px;color:#e2e8f0}.stat span{font-size:11px;color:var(--muted)}
+  .card-meta{position:relative;z-index:2;display:flex;gap:6px;flex-wrap:wrap;margin-top:12px;color:#94a3b8;font-size:11px}
+  .meta-pill{border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.035);padding:3px 7px;border-radius:99px}
+  .favbtn{position:absolute;right:14px;top:44px;z-index:4;border:1px solid var(--line);background:#0b1220;border-radius:9px;color:#94a3b8;padding:5px 8px;cursor:pointer;font-size:15px}
+  .favbtn.on{color:#fbbf24;border-color:#fbbf24}
+  .grid.list{grid-template-columns:1fr}
+  .grid.list .card{display:grid;grid-template-columns:48px 1fr;column-gap:12px;align-items:start;padding:15px}
+  .grid.list .ico{grid-row:1/3;margin:2px 0;font-size:28px}
+  .grid.list .desc{grid-column:2}
+  .grid.list .card-meta{grid-column:2}
+  @media(max-width:560px){.profile{grid-template-columns:repeat(2,1fr)}.toolbar{gap:6px}.toolbtn,.filter{padding:8px 10px;font-size:12px}}
   .notes{
     margin-top:26px;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:16px;padding:16px 18px;
   }
@@ -77,81 +98,105 @@
   <header>
     <h1>Jogos do Jhon</h1>
     <p class="sub">🎮 Arcade de bolso — abre no celular e no PC, sem instalar nada.</p>
-    <div class="version"><span class="dot"></span> Versão <b>v2.0</b> · atualizado em <b>22/11/2026</b></div>
+    <div class="version"><span class="dot"></span> Versão <b>v2.1</b> · atualizado em <b>22/11/2026</b></div>
   </header>
 
-  <div class="grid">
-    <a class="card" href="games/2048.html" style="--accent:#fbbf24;--glow:rgba(251,191,36,.20)">
+  <section class="menu-tools" aria-label="Ferramentas do catálogo">
+    <input id="gameSearch" class="searchbox" type="search" placeholder="🔎 Buscar jogo pelo nome..." autocomplete="off">
+    <div class="toolbar" id="filters">
+      <button class="filter active" data-filter="all">🎮 Todos</button>
+      <button class="filter" data-filter="favorites">⭐ Favoritos</button>
+      <button class="filter" data-filter="puzzle">🧠 Puzzle</button>
+      <button class="filter" data-filter="action">⚡ Ação</button>
+      <button class="filter" data-filter="arcade">🕹️ Arcade</button>
+      <button class="filter" data-filter="strategy">♟️ Estratégia</button>
+      <button class="filter" data-filter="racing">🏎️ Corrida</button>
+      <button class="toolbtn" id="randomGame">🎲 Jogo aleatório</button>
+      <button class="toolbtn" id="viewToggle">☰ Lista</button>
+    </div>
+    <div>
+      <h2 class="section-title">🕐 Jogados recentemente</h2>
+      <div class="recent" id="recentGames"><span class="sub">Seus jogos recentes aparecerão aqui.</span></div>
+    </div>
+    <div class="profile" id="profileStats">
+      <div class="stat"><b id="playedCount">0</b><span>Jogos abertos</span></div>
+      <div class="stat"><b id="uniqueCount">0</b><span>Jogos diferentes</span></div>
+      <div class="stat"><b id="favoriteCount">0</b><span>Favoritos ⭐</span></div>
+      <div class="stat"><b id="recentCount">0</b><span>Recentes</span></div>
+    </div>
+  </section>
+  <div class="grid" id="gameGrid">
+    <a class="card" data-category="puzzle" href="games/2048.html" style="--accent:#fbbf24;--glow:rgba(251,191,36,.20)">
       <span class="tag new">v1.0</span>
       <span class="ico">🧩</span>
       <p class="name">2048 <em class="new">NOVO</em></p>
       <p class="desc">Junte os números iguais até chegar ao 2048. Tem desfazer.</p>
     </a>
 
-    <a class="card" href="games/batalha-naval.html" style="--accent:#60a5fa;--glow:rgba(96,165,250,.20)">
+    <a class="card" data-category="strategy" href="games/batalha-naval.html" style="--accent:#60a5fa;--glow:rgba(96,165,250,.20)">
       <span class="tag new">v1.0</span>
       <span class="ico">🚢</span>
       <p class="name">Batalha Naval <em class="new">NOVO</em></p>
       <p class="desc">Posicione a frota e afunde a IA antes que ela afunde você.</p>
     </a>
 
-    <a class="card" href="games/banco-imobiliario.html" style="--accent:#34d399;--glow:rgba(52,211,153,.20)">
+    <a class="card" data-category="strategy" href="games/banco-imobiliario.html" style="--accent:#34d399;--glow:rgba(52,211,153,.20)">
       <span class="tag new">v1.0</span>
       <span class="ico">🏠</span>
       <p class="name">Banco Imobiliário <em class="new">NOVO</em></p>
       <p class="desc">Compre, construa e cobre aluguel até quebrar a IA.</p>
     </a>
 
-    <a class="card" href="games/detetive.html" style="--accent:#fbbf24;--glow:rgba(251,191,36,.18)">
+    <a class="card" data-category="puzzle" href="games/detetive.html" style="--accent:#fbbf24;--glow:rgba(251,191,36,.18)">
       <span class="tag new">v1.0</span>
       <span class="ico">🕵️</span>
       <p class="name">Detetive <em class="new">NOVO</em></p>
       <p class="desc">Leia as pistas, elimine opções e acuse quem, com o quê e onde.</p>
     </a>
 
-    <a class="card" href="games/corrida.html" style="--accent:#22d3ee;--glow:rgba(34,211,238,.20)">
+    <a class="card" data-category="racing" href="games/corrida.html" style="--accent:#22d3ee;--glow:rgba(34,211,238,.20)">
       <span class="tag new">v1.0</span>
       <span class="ico">🏎️</span>
       <p class="name">Corrida Infinita <em class="new">NOVO</em></p>
       <p class="desc">Desvie dos carros, pegue moedas e bata seu recorde.</p>
     </a>
 
-    <a class="card" href="games/cobra.html" style="--accent:#34d399;--glow:rgba(52,211,153,.20)">
+    <a class="card" data-category="arcade" href="games/cobra.html" style="--accent:#34d399;--glow:rgba(52,211,153,.20)">
       <span class="tag">v1.0</span>
       <span class="ico">🐍</span>
       <p class="name">Cobra Neon</p>
       <p class="desc">Coma, cresça e não bata na parede. Setas, deslize ou D-pad.</p>
     </a>
 
-    <a class="card" href="games/memoria.html" style="--accent:#a78bfa;--glow:rgba(167,139,250,.20)">
+    <a class="card" data-category="puzzle" href="games/memoria.html" style="--accent:#a78bfa;--glow:rgba(167,139,250,.20)">
       <span class="tag">v1.1</span>
       <span class="ico">🧠</span>
       <p class="name">Jogo da Memória</p>
       <p class="desc">Espiada, sons, recorde e confete. Encontre os pares.</p>
     </a>
 
-    <a class="card" href="games/velha.html" style="--accent:#22d3ee;--glow:rgba(34,211,238,.20)">
+    <a class="card" data-category="strategy" href="games/velha.html" style="--accent:#22d3ee;--glow:rgba(34,211,238,.20)">
       <span class="tag">v1.0</span>
       <span class="ico">⭕</span>
       <p class="name">Jogo da Velha</p>
       <p class="desc">Contra amigo ou contra a IA em três níveis.</p>
     </a>
 
-    <a class="card" href="games/campo-minado.html" style="--accent:#fbbf24;--glow:rgba(251,191,36,.20)">
+    <a class="card" data-category="puzzle" href="games/campo-minado.html" style="--accent:#fbbf24;--glow:rgba(251,191,36,.20)">
       <span class="tag">v1.0</span>
       <span class="ico">💣</span>
       <p class="name">Campo Minado</p>
       <p class="desc">Abra as casas sem pisar nas minas. Primeiro clique é seguro.</p>
     </a>
 
-    <a class="card" href="games/forca.html" style="--accent:#fb7185;--glow:rgba(251,113,133,.20)">
+    <a class="card" data-category="puzzle" href="games/forca.html" style="--accent:#fb7185;--glow:rgba(251,113,133,.20)">
       <span class="tag">v1.0</span>
       <span class="ico">🔤</span>
       <p class="name">Forca</p>
       <p class="desc">Adivinhe a palavra com dica de categoria. 6 chances.</p>
     </a>
 
-    <a class="card" href="ninja_forest_run_v4_10.html" style="--accent:#60a5fa;--glow:rgba(96,165,250,.20)">
+    <a class="card" data-category="action" href="ninja_forest_run_v4_10.html" style="--accent:#60a5fa;--glow:rgba(96,165,250,.20)">
       <span class="tag">v4.10</span>
       <span class="ico">🥷</span>
       <p class="name">Ninja Forest Run</p>
@@ -160,9 +205,9 @@
   </div>
 
   <div class="notes">
-    <h2>📝 Novidades da v2.0</h2>
+    <h2>📝 Novidades da v2.1</h2>
     <ul>
-      <li>5 jogos novos: <b>2048</b>, <b>Batalha Naval</b>, <b>Banco Imobiliário</b>, <b>Detetive</b> e <b>Corrida Infinita</b>.</li>
+      <li>Menu atualizado com busca, favoritos, histórico recente, categorias, informações nos cards, visual em lista e perfil gamer.</li><li>Filtros por categoria e botão para abrir um jogo aleatório.</li>
       <li><b>Versão visível</b> em cada jogo e em cada card, para saber se a página atualizou.</li>
       <li>Memória <b>v1.1</b>: espiada, sons, recorde e confete.</li>
     </ul>
@@ -173,5 +218,41 @@
     Recordes ficam salvos neste navegador. Se a versão não mudou, recarregue com <span class="kbd">Ctrl+F5</span>.
   </footer>
 </div>
-</body>
+<script>
+(()=> {
+ const grid=document.getElementById('gameGrid'), cards=[...grid.querySelectorAll('.card')];
+ const KEY='jhonArcadeMenuV21', data=JSON.parse(localStorage.getItem(KEY)||'{}');
+ data.favs=data.favs||[];data.recent=data.recent||[];data.plays=data.plays||0;data.counts=data.counts||{};
+ const save=()=>localStorage.setItem(KEY,JSON.stringify(data));
+ const names=cards.map(c=>({href:c.getAttribute('href'),name:c.querySelector('.name').textContent.replace('NOVO','').trim(),icon:c.querySelector('.ico').textContent,cat:c.dataset.category||'arcade'}));
+ cards.forEach(card=>{
+  const href=card.getAttribute('href'),g=names.find(x=>x.href===href);
+  const fav=document.createElement('button');fav.className='favbtn';fav.type='button';fav.title='Adicionar aos favoritos';fav.textContent=data.favs.includes(href)?'⭐':'☆';fav.classList.toggle('on',data.favs.includes(href));
+  fav.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(data.favs.includes(href))data.favs=data.favs.filter(x=>x!==href);else data.favs.push(href);save();fav.textContent=data.favs.includes(href)?'⭐':'☆';fav.classList.toggle('on',data.favs.includes(href));render();});
+  card.appendChild(fav);
+  const meta=document.createElement('div');meta.className='card-meta';meta.innerHTML='<span class="meta-pill">'+({puzzle:'🧠 Puzzle',action:'⚡ Ação',arcade:'🕹️ Arcade',strategy:'♟️ Estratégia',racing:'🏎️ Corrida'}[g.cat]||'🎮 Jogo')+'</span><span class="meta-pill">▶ '+(data.counts[href]||0)+'x jogado</span>'+(data.favs.includes(href)?'<span class="meta-pill">⭐ Favorito</span>':'');
+  card.appendChild(meta);
+  card.addEventListener('click',()=>{data.plays++;data.counts[href]=(data.counts[href]||0)+1;data.recent=[href,...data.recent.filter(x=>x!==href)].slice(0,5);save();});
+ });
+ const search=document.getElementById('gameSearch');let filter='all';
+ function render(){
+  const q=search.value.trim().toLowerCase();
+  cards.forEach(c=>{const href=c.getAttribute('href'),cat=c.dataset.category||'arcade',text=c.innerText.toLowerCase();const ok=(filter==='all'||(filter==='favorites'?data.favs.includes(href):cat===filter))&&text.includes(q);c.style.display=ok?'':'none';});
+  document.querySelectorAll('.filter').forEach(b=>b.classList.toggle('active',b.dataset.filter===filter));
+  const recent=document.getElementById('recentGames');recent.innerHTML='';
+  const recentGames=data.recent.map(h=>names.find(x=>x.href===h)).filter(Boolean);
+  if(!recentGames.length)recent.innerHTML='<span class="sub">Seus jogos recentes aparecerão aqui.</span>';
+  recentGames.forEach(g=>{const a=document.createElement('a');a.href=g.href;a.textContent=g.icon+' '+g.name;a.addEventListener('click',()=>{data.plays++;data.counts[g.href]=(data.counts[g.href]||0)+1;data.recent=[g.href,...data.recent.filter(x=>x!==g.href)].slice(0,5);save();});recent.appendChild(a);});
+  document.getElementById('playedCount').textContent=data.plays;
+  document.getElementById('uniqueCount').textContent=Object.keys(data.counts).length;
+  document.getElementById('favoriteCount').textContent=data.favs.length;
+  document.getElementById('recentCount').textContent=recentGames.length;
+ }
+ search.addEventListener('input',render);
+ document.querySelectorAll('.filter').forEach(b=>b.addEventListener('click',()=>{filter=b.dataset.filter;render();}));
+ document.getElementById('randomGame').addEventListener('click',()=>{const visible=cards.filter(c=>c.style.display!=='none');const pool=visible.length?visible:cards;pool[Math.floor(Math.random()*pool.length)].click();});
+ document.getElementById('viewToggle').addEventListener('click',()=>{grid.classList.toggle('list');const on=grid.classList.contains('list');document.getElementById('viewToggle').textContent=on?'▦ Grade':'☰ Lista';});
+ render();
+})();
+</script></body>
 </html>
