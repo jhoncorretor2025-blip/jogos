@@ -31,4 +31,4 @@ function loop(t){if(state!=='playing')return;const dt=Math.min(2.2,(t-last)/16.6
 function action(e){if(e)e.preventDefault();flap()}
 $('go').onclick=start;$('flap').addEventListener('pointerdown',action);c.addEventListener('pointerdown',action);$('restart').onclick=start;window.addEventListener('keydown',e=>{if([' ','ArrowUp','w','W'].includes(e.key)){e.preventDefault();action(e)}});reset();
 })();
-</script></body></html>
+</script><script src="../arcade-common.js"></script></body></html>
