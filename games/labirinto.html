@@ -37,4 +37,4 @@ $('go').onclick=()=>{if(status==='paused')pause();else newGame()};$('again').onc
 window.addEventListener('keydown',e=>{const mapKey={ArrowUp:'up',w:'up',ArrowRight:'right',d:'right',ArrowDown:'down',s:'down',ArrowLeft:'left',a:'left'};const d=mapKey[e.key];if(d){e.preventDefault();setDir(({up:{x:0,y:-1},right:{x:1,y:0},down:{x:0,y:1},left:{x:-1,y:0}})[d])}if(e.key==='Escape'||e.key.toLowerCase()==='p')pause()});
 generate();player={x:1,y:1};ghosts=[];draw();update();
 })();
-</script></body></html>
+</script><script src="../arcade-common.js"></script></body></html>
