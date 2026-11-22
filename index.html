@@ -260,7 +260,7 @@
     </div>
 
     <div class="card" data-category="action" data-href="ninja_forest_run_v4_10.html" style="--accent:#60a5fa;--glow:rgba(96,165,250,.20)">
-      <span class="tag">v4.12</span>
+      <span class="tag">v4.13</span>
       <span class="ico">🥷</span>
       <p class="name">Ninja Forest Rescue</p>
       <p class="desc">Seja Jhon, um ninja das sombras: enfrente inimigos, resgate Carla e escape pela floresta.</p>
@@ -323,6 +323,7 @@
     Recordes ficam salvos neste navegador. Se a versão não mudou, recarregue com <span class="kbd">Ctrl+F5</span>.
   </footer>
 </div>
+<script src="./arcade-common.js"></script>
 <script>
 (()=>{'use strict';
 const grid=document.getElementById('gameGrid'),cards=[...grid.querySelectorAll('.card')],OLD_KEY='jhonArcadeMenuV21',FAMILY_KEY='jhonArcadeFamilyV1',SETTINGS_KEY='jhonArcadeSettingsV1';
@@ -397,6 +398,7 @@ function renderCards(){
  refreshCardMeta();
 }
 function renderAll(){renderProfiles();renderCards();renderRecent();renderAchievements();applySettings();syncSettingsUI()}
+function playUi(){if(window.ArcadeCommon)window.ArcadeCommon.playUi()}
 function launch(href){
  const p=active();p.plays++;p.counts[href]=(p.counts[href]||0)+1;p.recent=[href,...p.recent.filter(x=>x!==href)].slice(0,5);save();renderAll();playUi();window.location.href=href;
 }
