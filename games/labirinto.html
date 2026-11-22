@@ -15,7 +15,7 @@ function generate(){map=Array.from({length:ROWS},()=>Array(COLS).fill(1));const 
  for(let i=0;i<38;i++){const x=1+Math.floor(Math.random()*(COLS-2)),y=1+Math.floor(Math.random()*(ROWS-2));if(map[y][x]===1&&((!wall(x-1,y)&&!wall(x+1,y))||(!wall(x,y-1)&&!wall(x,y+1))))map[y][x]=0}
  map[1][1]=0;const openings=[];for(let y=1;y<ROWS-1;y++)for(let x=1;x<COLS-1;x++)if(map[y][x]===0)openings.push({x,y});
  pellets=0;for(const p of openings){if(p.x===1&&p.y===1)continue;map[p.y][p.x]=2;pellets++}
- const powers=shuffle(openings.filter(p=>(p.x===1&&p.y===ROWS-2)||(p.x===COLS-2&&p.y===1)||(p.x===COLS-2&&p.y===ROWS-2)||(p.x===Math.floor(COLS/2)&&p.y===1))).slice(0,4);powers.forEach(p=>{if(map[p.y][p.x]===2){map[p.y][p.x]=3;pellets++}});
+ const powers=shuffle(openings.filter(p=>(p.x===1&&p.y===ROWS-2)||(p.x===COLS-2&&p.y===1)||(p.x===COLS-2&&p.y===ROWS-2)||(p.x===Math.floor(COLS/2)&&p.y===1))).slice(0,4);powers.forEach(p=>{if(map[p.y][p.x]===2){map[p.y][p.x]=3}});
 }
 function openCells(){const a=[];for(let y=1;y<ROWS-1;y++)for(let x=1;x<COLS-1;x++)if(map[y][x]!==1)a.push({x,y});return a}
 function newGame(){generate();player={x:1,y:1};const cells=shuffle(openCells().filter(p=>p.x>COLS/2&&p.y>ROWS/2));ghosts=[{...cells[0],color:'#fb7185'},{...cells[1],color:'#38bdf8'},{...cells[2],color:'#c084fc'}];score=0;lives=3;power=0;dir={x:0,y:0};wanted={x:0,y:0};stepP=stepG=0;status='playing';update();$('overlay').classList.add('hidden');last=performance.now();cancelAnimationFrame(raf);raf=requestAnimationFrame(loop)}
