@@ -4,7 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#070b14">
-<title>Jogos do Jhon · v2.5</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icons/arcade-icon.svg" type="image/svg+xml">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Jogos do Jhon">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Jogos do Jhon · v2.6</title>
 <meta name="description" content="Arcade de jogos web do Jhon com busca, favoritos, categorias, histórico e perfil gamer.">
 <style>
   :root{
@@ -91,6 +96,41 @@
   .notes b{color:#e2e8f0}
   footer{text-align:center;color:#64748b;font-size:12.5px;margin-top:26px;line-height:1.7}
   .kbd{background:#111c31;border:1px solid #24334d;border-radius:6px;padding:1px 6px;font-size:12px}
+ 
+  .family-panel,.feature-panel{margin:14px 0;background:rgba(255,255,255,.035);border:1px solid var(--line);border-radius:16px;padding:13px 15px}
+  .family-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+  .family-head h2,.feature-panel summary{margin:0;color:#cbd5e1;font-size:14px;font-weight:800}
+  .profile-choices{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}
+  .profile-choice{border:1px solid var(--line);background:#111b2d;color:var(--txt);border-radius:12px;padding:9px 13px;cursor:pointer;font:inherit;font-size:13px}
+  .profile-choice.active{border-color:var(--a1);background:rgba(34,211,238,.13);box-shadow:0 0 0 1px var(--a1) inset}
+  .feature-panel summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .feature-panel summary::-webkit-details-marker{display:none}
+  .feature-panel summary::after{content:"＋";color:var(--a1);font-size:18px}
+  .feature-panel[open] summary::after{content:"−"}
+  .feature-content{margin-top:13px}
+  .achievement-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px}
+  .achievement{border:1px solid var(--line);border-radius:11px;padding:10px;background:#111b2d;display:flex;gap:9px;align-items:center;min-height:65px}
+  .achievement.locked{opacity:.52;filter:grayscale(.7)}
+  .achievement .medal{font-size:25px}
+  .achievement b{display:block;font-size:12px}
+  .achievement small{display:block;color:var(--muted);font-size:10px;line-height:1.35;margin-top:2px}
+  .settings-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .setting{display:grid;gap:5px;background:#111b2d;border:1px solid var(--line);border-radius:10px;padding:10px}
+  .setting label,.setting-title{font-size:12px;color:#cbd5e1;font-weight:700}
+  .setting select{width:100%;background:#0b1220;color:var(--txt);border:1px solid #334155;border-radius:8px;padding:8px;font:inherit;font-size:12px}
+  .setting input[type=range]{width:100%;accent-color:var(--a1)}
+  .setting .checkline{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--txt);font-weight:600}
+  .setting input[type=checkbox]{accent-color:var(--a1);width:17px;height:17px}
+  .settings-note,.install-note{color:var(--muted);font-size:11px;line-height:1.5;margin:10px 0 0}
+  body[data-theme="retro"]{--bg:#170e08;--card:#2b1b0f;--line:#77512e;--txt:#fff0cf;--muted:#e2c49c;--a1:#fb923c;--a2:#facc15;--a3:#a3e635;--a4:#fbbf24;--a5:#fb7185;--a6:#60a5fa}
+  body[data-theme="minimal"]{--bg:#111827;--card:#1f2937;--line:#4b5563;--txt:#f9fafb;--muted:#cbd5e1;--a1:#e5e7eb;--a2:#9ca3af;--a3:#d1d5db;--a4:#f3f4f6;--a5:#9ca3af;--a6:#cbd5e1}
+  body[data-theme="colorful"]{--bg:#160d2a;--card:#251442;--line:#68449a;--txt:#fff7ff;--muted:#e9d5ff;--a1:#22d3ee;--a2:#f0abfc;--a3:#86efac;--a4:#fde047;--a5:#fb7185;--a6:#93c5fd}
+  body.arcade-high-contrast{--bg:#000!important;--card:#080808!important;--line:#fff!important;--txt:#fff!important;--muted:#fff!important}
+  body.arcade-high-contrast .card,body.arcade-high-contrast .family-panel,body.arcade-high-contrast .feature-panel,body.arcade-high-contrast .setting,body.arcade-high-contrast .achievement{border:2px solid #fff!important;background:#000!important;color:#fff!important}
+  body.arcade-large-text{font-size:118%}
+  body.arcade-large-text .desc,body.arcade-large-text .sub,body.arcade-large-text .filter,body.arcade-large-text .toolbtn,body.arcade-large-text .recent a{font-size:1.12em}
+  body.arcade-reduced-motion *,body.arcade-reduced-motion *::before,body.arcade-reduced-motion *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  @media(max-width:560px){.settings-grid{grid-template-columns:1fr}.family-head{align-items:flex-start}.achievement-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 </head>
 <body>
@@ -98,7 +138,7 @@
   <header>
     <h1>Jogos do Jhon</h1>
     <p class="sub">🎮 Arcade de bolso — abre no celular e no PC, sem instalar nada.</p>
-    <div class="version"><span class="dot"></span> Versão <b>v2.5</b> · atualizado em <b>22/11/2026</b></div>
+    <div class="version"><span class="dot"></span> Versão <b>v2.6</b> · atualizado em <b>22/11/2026</b></div>
   </header>
 
   <section class="menu-tools" aria-label="Ferramentas do catálogo">
@@ -113,6 +153,7 @@
       <button class="filter" data-filter="racing">🏎️ Corrida</button>
       <button class="toolbtn" id="randomGame">🎲 Jogo aleatório</button>
       <button class="toolbtn" id="viewToggle">☰ Lista</button>
+      <button class="toolbtn" id="installApp">📲 Instalar app</button>
     </div>
     <div>
       <h2 class="section-title">🕐 Jogados recentemente</h2>
@@ -125,6 +166,28 @@
       <div class="stat"><b id="recentCount">0</b><span>Recentes</span></div>
     </div>
   </section>
+  <section class="family-panel" aria-label="Perfis de jogadores">
+    <div class="family-head"><h2>👨‍👩‍👧 Quem está jogando?</h2><button class="toolbtn" id="addProfile">＋ Novo perfil</button></div>
+    <div class="profile-choices" id="profileChoices"></div>
+  </section>
+  <details class="feature-panel" id="achievementsPanel">
+    <summary>🏆 Conquistas <span id="achievementCount">0/8 desbloqueadas</span></summary>
+    <div class="feature-content"><div class="achievement-grid" id="achievementGrid"></div><p class="settings-note">As conquistas são individuais por perfil e acompanham os jogos abertos e os favoritos neste dispositivo.</p></div>
+  </details>
+  <details class="feature-panel" id="settingsPanel">
+    <summary>⚙️ Configurações de experiência</summary>
+    <div class="feature-content">
+      <div class="settings-grid">
+        <div class="setting"><label for="themeSetting">🎨 Tema visual</label><select id="themeSetting"><option value="neon">Neon (padrão)</option><option value="retro">Retrô</option><option value="minimal">Minimalista</option><option value="colorful">Colorido</option></select></div>
+        <div class="setting"><label for="textSetting">🔎 Tamanho dos textos</label><select id="textSetting"><option value="normal">Normal</option><option value="large">Maior</option></select></div>
+        <div class="setting"><label for="controlsSetting">📱 Controles nos jogos</label><select id="controlsSetting"><option value="auto">Automático (recomendado)</option><option value="show">Sempre mostrar</option><option value="hide">Ocultar controles táteis</option></select></div>
+        <div class="setting"><label for="volumeSetting">🔊 Volume dos sons: <span id="volumeValue">45%</span></label><input id="volumeSetting" type="range" min="0" max="100" step="5" value="45"></div>
+        <div class="setting"><label class="checkline"><input type="checkbox" id="soundSetting" checked> Ativar sons</label><label class="checkline"><input type="checkbox" id="contrastSetting"> Alto contraste</label></div>
+        <div class="setting"><label class="checkline"><input type="checkbox" id="motionSetting"> Reduzir animações</label><span class="settings-note">As preferências ficam salvas neste navegador.</span></div>
+      </div>
+      <p class="settings-note">As opções de contraste, texto, animações e controles táteis também são aplicadas às páginas de jogos compatíveis. Os sons dependem de cada jogo oferecer efeitos sonoros.</p>
+    </div>
+  </details>
   <div class="grid" id="gameGrid">
     <div class="card" data-category="puzzle" data-href="games/2048.html" style="--accent:#fbbf24;--glow:rgba(251,191,36,.20)">
       <span class="tag new">v1.0</span>
@@ -247,9 +310,9 @@
   </div>
 
   <div class="notes">
-    <h2>📝 Novidades da v2.5</h2>
+    <h2>📝 Novidades da v2.6</h2>
     <ul>
-      <li>Menu com busca, favoritos, histórico recente, categorias, informações nos cards, visual em lista e perfil gamer.</li><li>5 novos jogos adicionados: <b>Tetris Neon</b>, <b>Voo Desafiador</b>, <b>Labirinto Fantasma</b>, <b>Sudoku</b> e <b>Xadrez</b>.</li><li><b>Palavras Cruzadas v1.0:</b> novo passatempo com 16 palavras, pistas horizontais e verticais, dicas e conferência.</li><li><b>Ninja Forest Rescue v4.12:</b> mais vidas, proteção após dano e checkpoints que recuperam vida.</li><li>Filtros por categoria e botão para abrir um jogo aleatório.</li>
+      <li>Menu com busca, favoritos, histórico recente, categorias, visual em lista, perfis familiares e conquistas individuais.</li><li>Instalação como aplicativo (PWA), suporte offline, quatro temas e configurações de acessibilidade e controles.</li><li>5 novos jogos adicionados: <b>Tetris Neon</b>, <b>Voo Desafiador</b>, <b>Labirinto Fantasma</b>, <b>Sudoku</b> e <b>Xadrez</b>.</li><li><b>Palavras Cruzadas v1.0:</b> novo passatempo com 16 palavras, pistas horizontais e verticais, dicas e conferência.</li><li><b>Ninja Forest Rescue v4.12:</b> mais vidas, proteção após dano e checkpoints que recuperam vida.</li><li>Filtros por categoria e botão para abrir um jogo aleatório.</li>
       <li><b>Versão visível</b> em cada jogo e em cada card, para saber se a página atualizou.</li>
       <li>Memória <b>v1.1</b>: espiada, sons, recorde e confete.</li>
     </ul>
@@ -261,47 +324,114 @@
   </footer>
 </div>
 <script>
-(()=> {
- const grid=document.getElementById('gameGrid'), cards=[...grid.querySelectorAll('.card')];
- const KEY='jhonArcadeMenuV21';
- let data={};
- try { data=JSON.parse(localStorage.getItem(KEY)||'{}')||{}; } catch(e) { data={}; }
- data.favs=Array.isArray(data.favs)?data.favs:[];
- data.recent=Array.isArray(data.recent)?data.recent:[];
- data.plays=Number.isFinite(data.plays)?data.plays:0;
- data.counts=(data.counts&&typeof data.counts==='object'&&!Array.isArray(data.counts))?data.counts:{};
- const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(data));}catch(e){console.warn('Não foi possível salvar os dados do arcade neste navegador.',e);}};
- const names=cards.map(c=>({href:c.getAttribute('data-href'),name:c.querySelector('.name').textContent.replace('NOVO','').trim(),icon:c.querySelector('.ico').textContent,cat:c.dataset.category||'arcade'}));
+(()=>{'use strict';
+const grid=document.getElementById('gameGrid'),cards=[...grid.querySelectorAll('.card')],OLD_KEY='jhonArcadeMenuV21',FAMILY_KEY='jhonArcadeFamilyV1',SETTINGS_KEY='jhonArcadeSettingsV1';
+const defaultSettings={theme:'neon',sound:true,volume:45,contrast:false,textSize:'normal',reducedMotion:false,touchControls:'auto'};
+const makeProfile=(id,name,emoji)=>({id,name,emoji,plays:0,counts:{},favs:[],recent:[],achievements:[]});
+let family={activeId:'jhon',profiles:[makeProfile('pai','Pai','👨'),makeProfile('irma','Irmã','👩'),makeProfile('jhon','Jhon','🧑')],settings:{...defaultSettings}};
+let familyExists=false;
+try{const saved=JSON.parse(localStorage.getItem(FAMILY_KEY)||'null');if(saved&&Array.isArray(saved.profiles)&&saved.profiles.length){family=Object.assign(family,saved);familyExists=true}}catch(e){}
+family.settings=Object.assign({},defaultSettings,family.settings||{});
+family.profiles=family.profiles.map(p=>Object.assign(makeProfile(p.id,p.name,p.emoji||'🧑'),p));
+if(!family.profiles.some(p=>p.id===family.activeId))family.activeId=family.profiles[0].id;
+if(!familyExists){try{const old=JSON.parse(localStorage.getItem(OLD_KEY)||'{}');const j=family.profiles.find(p=>p.id==='jhon');if(j){j.plays=Number(old.plays)||0;j.counts=old.counts&&typeof old.counts==='object'?old.counts:{};j.favs=Array.isArray(old.favs)?old.favs:[];j.recent=Array.isArray(old.recent)?old.recent:[]}}catch(e){}}
+const active=()=>family.profiles.find(p=>p.id===family.activeId)||family.profiles[0];
+const save=()=>{try{localStorage.setItem(FAMILY_KEY,JSON.stringify(family));localStorage.setItem(SETTINGS_KEY,JSON.stringify(family.settings))}catch(e){console.warn('Não foi possível salvar os dados do Arcade.',e)}};
+const names=cards.map(c=>({href:c.dataset.href,name:c.querySelector('.name').textContent.replace('NOVO','').trim(),icon:c.querySelector('.ico').textContent,cat:c.dataset.category||'arcade'}));
+const categories={puzzle:'🧠 Puzzle',action:'⚡ Ação',arcade:'🕹️ Arcade',strategy:'♟️ Estratégia',racing:'🏎️ Corrida'};
+const achievements=[
+ {id:'first',icon:'🌱',name:'Primeiro passo',desc:'Abra seu primeiro jogo.',ok:p=>p.plays>=1},
+ {id:'five',icon:'🧭',name:'Explorador',desc:'Experimente 5 jogos diferentes.',ok:p=>Object.keys(p.counts).length>=5},
+ {id:'ten',icon:'🗺️',name:'Grande explorador',desc:'Experimente 10 jogos diferentes.',ok:p=>Object.keys(p.counts).length>=10},
+ {id:'all',icon:'👑',name:'Mestre do Arcade',desc:'Abra todos os 17 jogos.',ok:p=>names.every(g=>(p.counts[g.href]||0)>0)},
+ {id:'plays10',icon:'🎮',name:'Jogador frequente',desc:'Abra jogos 10 vezes.',ok:p=>p.plays>=10},
+ {id:'plays30',icon:'🔥',name:'Maratonista',desc:'Abra jogos 30 vezes.',ok:p=>p.plays>=30},
+ {id:'favs3',icon:'⭐',name:'Colecionador',desc:'Salve 3 jogos favoritos.',ok:p=>p.favs.length>=3},
+ {id:'favs8',icon:'💎',name:'Super fã',desc:'Salve 8 jogos favoritos.',ok:p=>p.favs.length>=8}
+];
+function applySettings(){
+ const s=family.settings,b=document.body;
+ b.dataset.theme=s.theme||'neon';
+ b.classList.toggle('arcade-high-contrast',!!s.contrast);
+ b.classList.toggle('arcade-large-text',s.textSize==='large');
+ b.classList.toggle('arcade-reduced-motion',!!s.reducedMotion);
+ if(window.ArcadeCommon)window.ArcadeCommon.apply();
+}
+function renderProfiles(){
+ const box=document.getElementById('profileChoices');box.innerHTML='';
+ family.profiles.forEach(p=>{const b=document.createElement('button');b.className='profile-choice'+(p.id===family.activeId?' active':'');b.textContent=p.emoji+' '+p.name;b.setAttribute('aria-pressed',p.id===family.activeId?'true':'false');b.onclick=()=>{family.activeId=p.id;save();renderAll()};box.appendChild(b)});
+}
+function renderAchievements(){
+ const p=active();let newly=[];
+ achievements.forEach(a=>{if(a.ok(p)&&!p.achievements.includes(a.id)){p.achievements.push(a.id);newly.push(a)}});
+ if(newly.length)save();
+ const box=document.getElementById('achievementGrid');box.innerHTML='';
+ achievements.forEach(a=>{const unlocked=p.achievements.includes(a.id);const card=document.createElement('div');card.className='achievement'+(unlocked?'':' locked');card.innerHTML='<span class="medal">'+(unlocked?a.icon:'🔒')+'</span><span><b>'+a.name+'</b><small>'+a.desc+'</small></span>';box.appendChild(card)});
+ document.getElementById('achievementCount').textContent=p.achievements.length+'/'+achievements.length+' desbloqueadas';
+ if(newly.length){document.getElementById('achievementsPanel').open=true;document.getElementById('achievementCount').textContent=p.achievements.length+'/'+achievements.length+' · nova conquista!'}
+}
+function renderRecent(){
+ const p=active(),box=document.getElementById('recentGames');box.innerHTML='';
+ const recent=p.recent.map(h=>names.find(x=>x.href===h)).filter(Boolean);
+ if(!recent.length)box.innerHTML='<span class="sub">Os jogos recentes de '+p.name+' aparecerão aqui.</span>';
+ recent.forEach(g=>{const a=document.createElement('a');a.href=g.href;a.textContent=g.icon+' '+g.name;a.addEventListener('click',e=>{e.preventDefault();launch(g.href)});box.appendChild(a)});
+ document.getElementById('playedCount').textContent=p.plays;
+ document.getElementById('uniqueCount').textContent=Object.keys(p.counts).length;
+ document.getElementById('favoriteCount').textContent=p.favs.length;
+ document.getElementById('recentCount').textContent=recent.length;
+}
+function refreshCardMeta(){
+ const p=active();
  cards.forEach(card=>{
-  const href=card.getAttribute('data-href'),g=names.find(x=>x.href===href);
-  const fav=document.createElement('button');fav.className='favbtn';fav.type='button';fav.title='Adicionar aos favoritos';fav.textContent=data.favs.includes(href)?'⭐':'☆';fav.classList.toggle('on',data.favs.includes(href));
-  fav.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(data.favs.includes(href))data.favs=data.favs.filter(x=>x!==href);else data.favs.push(href);save();fav.textContent=data.favs.includes(href)?'⭐':'☆';fav.classList.toggle('on',data.favs.includes(href));meta.innerHTML='<span class="meta-pill">'+({puzzle:'🧠 Puzzle',action:'⚡ Ação',arcade:'🕹️ Arcade',strategy:'♟️ Estratégia',racing:'🏎️ Corrida'}[g.cat]||'🎮 Jogo')+'</span><span class="meta-pill">▶ '+(data.counts[href]||0)+'x jogado</span>'+(data.favs.includes(href)?'<span class="meta-pill">⭐ Favorito</span>':'');render();});
-  card.appendChild(fav);
-  const meta=document.createElement('div');meta.className='card-meta';meta.innerHTML='<span class="meta-pill">'+({puzzle:'🧠 Puzzle',action:'⚡ Ação',arcade:'🕹️ Arcade',strategy:'♟️ Estratégia',racing:'🏎️ Corrida'}[g.cat]||'🎮 Jogo')+'</span><span class="meta-pill">▶ '+(data.counts[href]||0)+'x jogado</span>'+(data.favs.includes(href)?'<span class="meta-pill">⭐ Favorito</span>':'');
-  card.appendChild(meta);
-  card.setAttribute('role','link');card.setAttribute('tabindex','0');card.setAttribute('aria-label','Abrir '+g.name);
-  card.addEventListener('click',e=>{if(e.target.closest('.favbtn'))return;data.plays++;data.counts[href]=(data.counts[href]||0)+1;data.recent=[href,...data.recent.filter(x=>x!==href)].slice(0,5);save();window.location.href=href;});
-  card.addEventListener('keydown',e=>{if(e.target.closest('.favbtn'))return;if(e.key==='Enter'||e.key===' '){e.preventDefault();card.click();}});
+  const href=card.dataset.href,g=names.find(x=>x.href===href),isFav=p.favs.includes(href);
+  const fav=card.querySelector('.favbtn'),meta=card.querySelector('.card-meta');
+  if(fav){fav.textContent=isFav?'⭐':'☆';fav.classList.toggle('on',isFav);fav.title=isFav?'Remover dos favoritos':'Adicionar aos favoritos';fav.setAttribute('aria-label',fav.title)}
+  if(meta)meta.innerHTML='<span class="meta-pill">'+(categories[g.cat]||'🎮 Jogo')+'</span><span class="meta-pill">▶ '+(p.counts[href]||0)+'x aberto</span>'+(isFav?'<span class="meta-pill">⭐ Favorito</span>':'');
  });
- const search=document.getElementById('gameSearch');let filter='all';
- function render(){
-  const q=search.value.trim().toLowerCase();
-  cards.forEach(c=>{const href=c.getAttribute('data-href'),cat=c.dataset.category||'arcade',text=c.innerText.toLowerCase();const ok=(filter==='all'||(filter==='favorites'?data.favs.includes(href):cat===filter))&&text.includes(q);c.style.display=ok?'':'none';});
-  document.querySelectorAll('.filter').forEach(b=>b.classList.toggle('active',b.dataset.filter===filter));
-  const recent=document.getElementById('recentGames');recent.innerHTML='';
-  const recentGames=data.recent.map(h=>names.find(x=>x.href===h)).filter(Boolean);
-  if(!recentGames.length)recent.innerHTML='<span class="sub">Seus jogos recentes aparecerão aqui.</span>';
-  recentGames.forEach(g=>{const a=document.createElement('a');a.href=g.href;a.textContent=g.icon+' '+g.name;a.addEventListener('click',()=>{data.plays++;data.counts[g.href]=(data.counts[g.href]||0)+1;data.recent=[g.href,...data.recent.filter(x=>x!==g.href)].slice(0,5);save();});recent.appendChild(a);});
-  document.getElementById('playedCount').textContent=data.plays;
-  document.getElementById('uniqueCount').textContent=Object.keys(data.counts).length;
-  document.getElementById('favoriteCount').textContent=data.favs.length;
-  document.getElementById('recentCount').textContent=recentGames.length;
- }
- search.addEventListener('input',render);
- document.querySelectorAll('.filter').forEach(b=>b.addEventListener('click',()=>{filter=b.dataset.filter;render();}));
- document.getElementById('randomGame').addEventListener('click',()=>{const visible=cards.filter(c=>c.style.display!=='none');const pool=visible.length?visible:cards;pool[Math.floor(Math.random()*pool.length)].click();});
- document.getElementById('viewToggle').addEventListener('click',()=>{grid.classList.toggle('list');const on=grid.classList.contains('list');document.getElementById('viewToggle').textContent=on?'▦ Grade':'☰ Lista';});
- render();
+}
+let filter='all';
+function renderCards(){
+ const p=active(),q=document.getElementById('gameSearch').value.trim().toLowerCase();
+ cards.forEach(c=>{const href=c.dataset.href,cat=c.dataset.category||'arcade',text=c.innerText.toLowerCase();const ok=(filter==='all'||(filter==='favorites'?p.favs.includes(href):cat===filter))&&text.includes(q);c.style.display=ok?'':'none'});
+ document.querySelectorAll('.filter').forEach(b=>b.classList.toggle('active',b.dataset.filter===filter));
+ refreshCardMeta();
+}
+function renderAll(){renderProfiles();renderCards();renderRecent();renderAchievements();applySettings();syncSettingsUI()}
+function launch(href){
+ const p=active();p.plays++;p.counts[href]=(p.counts[href]||0)+1;p.recent=[href,...p.recent.filter(x=>x!==href)].slice(0,5);save();renderAll();playUi();window.location.href=href;
+}
+function toggleFavorite(href){const p=active();if(p.favs.includes(href))p.favs=p.favs.filter(x=>x!==href);else p.favs.push(href);save();renderAll();playUi()}
+cards.forEach(card=>{
+ const href=card.dataset.href,g=names.find(x=>x.href===href);
+ const fav=document.createElement('button');fav.className='favbtn';fav.type='button';fav.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();toggleFavorite(href)});card.appendChild(fav);
+ const meta=document.createElement('div');meta.className='card-meta';card.appendChild(meta);
+ card.setAttribute('role','link');card.setAttribute('tabindex','0');card.setAttribute('aria-label','Abrir '+g.name);
+ card.addEventListener('click',e=>{if(e.target.closest('.favbtn'))return;launch(href)});
+ card.addEventListener('keydown',e=>{if(e.target.closest('.favbtn'))return;if(e.key==='Enter'||e.key===' '){e.preventDefault();launch(href)}});
+});
+document.getElementById('gameSearch').addEventListener('input',renderCards);
+document.querySelectorAll('.filter').forEach(b=>b.addEventListener('click',()=>{filter=b.dataset.filter;renderCards();playUi()}));
+document.getElementById('randomGame').addEventListener('click',()=>{const visible=cards.filter(c=>c.style.display!=='none'),pool=visible.length?visible:cards;launch(pool[Math.floor(Math.random()*pool.length)].dataset.href)});
+document.getElementById('viewToggle').addEventListener('click',()=>{grid.classList.toggle('list');const on=grid.classList.contains('list');document.getElementById('viewToggle').textContent=on?'▦ Grade':'☰ Lista';playUi()});
+document.getElementById('addProfile').addEventListener('click',()=>{if(family.profiles.length>=10){alert('O Arcade permite até 10 perfis neste dispositivo.');return}const name=prompt('Qual é o nome do novo jogador?');if(!name||!name.trim())return;const id='player-'+Date.now();family.profiles.push(makeProfile(id,name.trim().slice(0,24),'🧑'));family.activeId=id;save();renderAll()});
+function syncSettingsUI(){const s=family.settings;document.getElementById('themeSetting').value=s.theme;document.getElementById('textSetting').value=s.textSize;document.getElementById('controlsSetting').value=s.touchControls;document.getElementById('volumeSetting').value=s.volume;document.getElementById('volumeValue').textContent=s.volume+'%';document.getElementById('soundSetting').checked=s.sound;document.getElementById('contrastSetting').checked=s.contrast;document.getElementById('motionSetting').checked=s.reducedMotion}
+function updateSetting(key,value){family.settings[key]=value;save();applySettings();syncSettingsUI()}
+document.getElementById('themeSetting').addEventListener('change',e=>updateSetting('theme',e.target.value));
+document.getElementById('textSetting').addEventListener('change',e=>updateSetting('textSize',e.target.value));
+document.getElementById('controlsSetting').addEventListener('change',e=>updateSetting('touchControls',e.target.value));
+document.getElementById('volumeSetting').addEventListener('input',e=>updateSetting('volume',Number(e.target.value)));
+document.getElementById('soundSetting').addEventListener('change',e=>updateSetting('sound',e.target.checked));
+document.getElementById('contrastSetting').addEventListener('change',e=>updateSetting('contrast',e.target.checked));
+document.getElementById('motionSetting').addEventListener('change',e=>updateSetting('reducedMotion',e.target.checked));
+let deferredInstall=null;const installBtn=document.getElementById('installApp');
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;installBtn.textContent='📲 Instalar aplicativo';});
+window.addEventListener('appinstalled',()=>{deferredInstall=null;installBtn.textContent='✅ Aplicativo instalado';installBtn.disabled=true});
+installBtn.addEventListener('click',async()=>{
+ if(deferredInstall){deferredInstall.prompt();const choice=await deferredInstall.userChoice;deferredInstall=null;installBtn.textContent=choice.outcome==='accepted'?'✅ Instalação solicitada':'📲 Instalar app';}
+ else alert('Para instalar no celular:\n\nAndroid: abra o menu do navegador e escolha “Instalar aplicativo” ou “Adicionar à tela inicial”.\niPhone/iPad: no Safari, toque em Compartilhar e depois em “Adicionar à Tela de Início”.\n\nA opção aparece quando o navegador oferece suporte à instalação.');
+});
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js',{scope:'./'}).catch(e=>console.warn('PWA: não foi possível registrar o modo offline.',e)))}
+renderAll();
 })();
 </script></body>
 </html>
