@@ -35,7 +35,13 @@ const CORE=[
  "./games/pinball.html",
  "./games/bubble-shooter.html",
  "./games/travessia-maluca.html",
- "./games/resta-um.html"
+ "./games/resta-um.html",
+ "./games/classicos-arcade.html?game=domino",
+ "./games/classicos-arcade.html?game=paciencia",
+ "./games/classicos-arcade.html?game=pinball",
+ "./games/classicos-arcade.html?game=bolhas",
+ "./games/classicos-arcade.html?game=frogger",
+ "./games/classicos-arcade.html?game=resta"
 ];
 self.addEventListener("install",event=>{
  event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting()));
