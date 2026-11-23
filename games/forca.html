@@ -216,7 +216,7 @@
 
     catEl.textContent = current.c;
     catIconEl.textContent=categoryIcons[current.c]||'🧩';
-    hintEl.textContent = clues[norm(current.w)] || 'Pense em exemplos da categoria: ' + current.c + '.';
+    hintEl.textContent = clues[current.w] || 'Pense em exemplos da categoria: ' + current.c + '.';
     heartsEl.textContent = '❤️'.repeat(Math.max(0, MAX_ERRORS - errors)) + '🖤'.repeat(Math.min(errors, MAX_ERRORS));
     parts.forEach(function(p){
       p.classList.toggle('on', Number(p.dataset.part) <= errors);
