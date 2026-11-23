@@ -1,4 +1,4 @@
-const CACHE_NAME="jogos-do-jhon-v2.7";
+const CACHE_NAME="jogos-do-jhon-v2.8";
 const CORE=[
  "./",
  "./index.html",
@@ -27,7 +27,8 @@ const CORE=[
  "./games/sudoku.html",
  "./games/xadrez.html",
  "./games/palavras-cruzadas.html",
- "./games/stop.html"
+ "./games/stop.html",
+ "./games/galaxia-invasora.html"
 ];
 self.addEventListener("install",event=>{
  event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(CORE)).then(()=>self.skipWaiting()));
