@@ -158,7 +158,8 @@
 
   const wordEl = document.getElementById('word');
   const keysEl = document.getElementById('keys');
-  const catEl = document.getElementById('cat');\n  const hintEl = document.getElementById('hintline');
+  const catEl = document.getElementById('cat');
+  const hintEl = document.getElementById('hintline');
   const heartsEl = document.getElementById('hearts');
   const msgEl = document.getElementById('msg');
   const roundEl = document.getElementById('round');
@@ -207,7 +208,8 @@
       keysEl.appendChild(b);
     });
 
-    catEl.textContent = current.c;\n    hintEl.textContent = 'Pense em algo que pertence a esta categoria.';
+    catEl.textContent = current.c;
+    hintEl.textContent = 'Pense em algo que pertence a esta categoria.';
     heartsEl.textContent = '❤️'.repeat(Math.max(0, MAX_ERRORS - errors)) + '🖤'.repeat(Math.min(errors, MAX_ERRORS));
     parts.forEach(function(p){
       p.classList.toggle('on', Number(p.dataset.part) <= errors);
