@@ -12,7 +12,7 @@
 </style></head><body>
 <main class="wrap">
 <div class="top"><a class="back" href="../index.html">← Voltar ao Arcade</a><span class="version">STOP! · v1.0</span></div>
-<header class="hero"><div class="logo">S<span>T</span>OP!</div><p class="tagline">Adedonha, Stop ou Cidade Dorme? Aqui é hora de pensar rápido! 🧠</p></header>
+<header class="hero"><div class="logo">S<span>T</span>OP!</div><p class="tagline">Adedonha: pense rápido e complete as categorias antes do STOP! 🧠</p></header>
 <section id="homeScreen">
 <div class="menuStats">
  <div class="stat"><small>PARTIDAS</small><b id="homeGames">0</b></div>
@@ -108,7 +108,7 @@ function showScreen(id){['homeScreen','gameScreen','resultScreen','finalScreen']
 function sound(type='tap'){let prefs={};try{prefs=JSON.parse(localStorage.getItem('jhonArcadeSettingsV1')||'{}')}catch(e){}if(prefs.sound===false||config.sound===false)return;if(window.ArcadeCommon&&!window.ArcadeCommon.soundAllowed())return;try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;const ctx=new AC(),o=ctx.createOscillator(),g=ctx.createGain(),vol=(window.ArcadeCommon?.volume?.()??.35);o.type='sine';o.frequency.value=type==='stop'?170:type==='good'?720:470;g.gain.value=.045*vol;o.connect(g);g.connect(ctx.destination);o.start();o.stop(ctx.currentTime+(type==='stop'?.24:.09));o.onended=()=>ctx.close()}catch(e){}}
 function randomLetter(){let letters=config.hard?'ABCDEFGHIJKLMNOPQRSTUVWXYZ':'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.replace(/[KWYXZQ]/g,'');if(match&&match.usedLetters.length<letters.length)letters=letters.split('').filter(x=>!match.usedLetters.includes(x)).join('');if(!letters)letters=config.hard?'ABCDEFGHIJKLMNOPQRSTUVWXYZ':'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.replace(/[KWYXZQ]/g,'');const letter=letters[Math.floor(Math.random()*letters.length)];if(match)match.usedLetters.push(letter);return letter}
 function startMatch(quick=false){
- if(quick){config.mode='solo';config.preset='classic';config.time=60;config.rounds=5;config.hard=false;chosen=PRESETS.classic.slice();$('preset').value='classic';$('timeLimit').value='60';$('roundCount').value='5';$('hardLetters').checked=false;document.querySelector('[data-mode="solo"]').classList.add('active');document.querySelector('[data-mode="family"]').classList.remove('active');$('playersInput').value='Jhon'}
+ if(quick){config.mode='solo';config.preset='classic';config.time=60;config.rounds=5;config.hard=false;chosen=PRESETS.classic.slice();$('preset').value='classic';$('timeLimit').value='60';$('roundCount').value='5';$('hardLetters').checked=false;document.querySelector('[data-mode="solo"]').classList.add('active');document.querySelector('[data-mode="family"]').classList.remove('active');$('playersInput').value='Jhon';$('playersField').classList.add('hidden')}
  else{
   config.mode=document.querySelector('[data-mode].active')?.dataset.mode||'solo';config.preset=$('preset').value;config.time=Number($('timeLimit').value);config.rounds=Number($('roundCount').value);config.hard=$('hardLetters').checked;
  }
@@ -146,7 +146,7 @@ function submitTurn(timeout=false){
  else{scoreRound();showResults()}
 }
 function scoreRound(){
- const normalizedByCategory=match.categories.map((cat,i)=>match.responses.map(res=>norm(res.answers[i])).filter(Boolean));
+ const normalizedByCategory=match.categories.map((cat,i)=>match.responses.filter(res=>!res.invalid.includes(i)&&norm(res.answers[i]).startsWith(match.letter)).map(res=>norm(res.answers[i])).filter(Boolean));
  match.roundScores=match.responses.map(res=>({playerId:res.playerId,score:0,details:[]}));
  match.responses.forEach((res,ri)=>{let total=0;res.answers.forEach((answer,ci)=>{const clean=norm(answer),starts=clean.startsWith(match.letter),manualInvalid=res.invalid.includes(ci);let points=0,reason='Em branco';if(clean){if(!starts)reason='Letra incorreta';else if(manualInvalid)reason='Marcada como inválida';else{const count=normalizedByCategory[ci].filter(x=>x===clean).length;points=count>1?5:10;reason=count>1?'Repetida':'Válida'}}total+=points;match.roundScores[ri].details.push({answer,points,reason,valid:points>0})});match.roundScores[ri].score=total;match.players[res.playerId].score+=total;match.players[res.playerId].rounds++});
 }
@@ -195,7 +195,7 @@ function init(){
  $('rankingBtn').onclick=showRanking;$('statsBtn').onclick=showStats;$('settingsBtn').onclick=showSettings;$('howBtn').onclick=showHow;
  $('onlineBtn').onclick=()=>modal('🌐 Multiplayer online','<p class="help">O modo online ainda não está ativado. Para jogar em dispositivos diferentes, o STOP precisa de um servidor/backend para criar salas, sincronizar letras, cronômetros e respostas. Não vamos simular uma conexão online usando apenas o navegador.</p>');
  $('closeModal').onclick=closeModal;$('modal').addEventListener('click',e=>{if(e.target===$('modal'))closeModal()});
- window.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('modal').classList.contains('hidden'))closeModal();if(e.key===' '&&$('gameScreen').classList.contains('hidden')===false&&!['INPUT','TEXTAREA'].includes(document.activeElement.tagName)){e.preventDefault();submitTurn(false)}});
+ window.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('modal').classList.contains('hidden'))closeModal();if((e.key===' '&&!['INPUT','TEXTAREA'].includes(document.activeElement.tagName))||(e.ctrlKey&&e.key==='Enter')){if(!$('gameScreen').classList.contains('hidden')){e.preventDefault();submitTurn(false)}}});
  if(config.light)document.body.classList.add('light');
  renderHomeStats();
 }
