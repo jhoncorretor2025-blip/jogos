@@ -224,51 +224,6 @@
       <span class="catalog-count" id="resultsLabel">25 jogos disponíveis</span>
     </div>
   </section>
-  <details class="feature-panel player-panel" id="playerPanel">
-    <summary>👤 Painel do jogador <span>Estatísticas, favoritos, perfis e conquistas</span></summary>
-    <div class="feature-content">
-    <div>
-      <h2 class="section-title">🕐 Jogados recentemente</h2>
-      <div class="recent" id="recentGames"><span class="sub">Seus jogos recentes aparecerão aqui.</span></div>
-    </div>
-    <div class="profile" id="profileStats">
-      <div class="stat"><b id="playedCount">0</b><span>Jogos abertos</span></div>
-      <div class="stat"><b id="uniqueCount">0</b><span>Jogos diferentes</span></div>
-      <div class="stat"><b id="favoriteCount">0</b><span>Favoritos ⭐</span></div>
-      <div class="stat"><b id="recentCount">0</b><span>Recentes</span></div>
-    </div>
-    <div class="collection-progress">
-      <div class="collection-progress-head"><span>🏆 Progresso da coleção</span><b id="collectionPercent">0%</b></div>
-      <div class="collection-track"><div class="collection-fill" id="collectionFill"></div></div>
-    </div>
-  <section class="favorite-section" id="favoriteSection" hidden>
-    <div class="section-head"><div><h2>⭐ Seus favoritos</h2><p id="favoriteCaption">Seus jogos escolhidos, prontos para continuar.</p></div><button class="toolbtn" id="seeAllFavorites" type="button">Ver todos</button></div>
-    <div class="favorite-rail" id="favoriteRail"></div>
-  </section>
-  <section class="family-panel" aria-label="Perfis de jogadores">
-    <div class="family-head"><h2>👨‍👩‍👧 Quem está jogando?</h2><button class="toolbtn" id="addProfile">＋ Novo perfil</button></div>
-    <div class="profile-choices" id="profileChoices"></div>
-  </section>
-  <details class="feature-panel" id="achievementsPanel">
-    <summary>🏆 Conquistas <span id="achievementCount">0/8 desbloqueadas</span></summary>
-    <div class="feature-content"><div class="achievement-grid" id="achievementGrid"></div><p class="settings-note">As conquistas são individuais por perfil e acompanham os jogos abertos e os favoritos neste dispositivo.</p></div>
-  </details>
-    </div>
-  </details>
-  <details class="feature-panel" id="settingsPanel">
-    <summary>⚙️ Configurações de experiência</summary>
-    <div class="feature-content">
-      <div class="settings-grid">
-        <div class="setting"><label for="themeSetting">🎨 Tema visual</label><select id="themeSetting"><option value="neon">Neon (padrão)</option><option value="retro">Retrô</option><option value="minimal">Minimalista</option><option value="colorful">Colorido</option></select></div>
-        <div class="setting"><label for="textSetting">🔎 Tamanho dos textos</label><select id="textSetting"><option value="normal">Normal</option><option value="large">Maior</option></select></div>
-        <div class="setting"><label for="controlsSetting">📱 Controles nos jogos</label><select id="controlsSetting"><option value="auto">Automático (recomendado)</option><option value="show">Sempre mostrar</option><option value="hide">Ocultar controles táteis</option></select></div>
-        <div class="setting"><label for="volumeSetting">🔊 Volume dos sons: <span id="volumeValue">45%</span></label><input id="volumeSetting" type="range" min="0" max="100" step="5" value="45"></div>
-        <div class="setting"><label class="checkline"><input type="checkbox" id="soundSetting" checked> Ativar sons</label><label class="checkline"><input type="checkbox" id="contrastSetting"> Alto contraste</label></div>
-        <div class="setting"><label class="checkline"><input type="checkbox" id="motionSetting"> Reduzir animações</label><span class="settings-note">As preferências ficam salvas neste navegador.</span></div>
-      </div>
-      <p class="settings-note">As opções de contraste, texto, animações e controles táteis também são aplicadas às páginas de jogos compatíveis. Os sons dependem de cada jogo oferecer efeitos sonoros.</p>
-    </div>
-  </details>
   <div class="catalog-head" id="catalogStart"><div><h2 class="catalog-title">🎮 Todos os jogos</h2><p class="catalog-sub">Sua biblioteca completa, com 25 experiências.</p></div><span class="catalog-count" id="sortLabel">Ordem padrão</span></div>
   <div class="grid" id="gameGrid">
     <div class="card" data-category="puzzle" data-href="games/2048.html" style="--accent:#fbbf24;--glow:rgba(251,191,36,.20)">
@@ -412,6 +367,51 @@
     <div class="card" data-category="puzzle" data-href="games/resta-um.html" style="--accent:#38bdf8;--glow:rgba(56,189,248,.20)"><span class="tag new">v1.0</span><span class="ico">🔵</span><p class="name">Resta Um <em class="new">NOVO</em></p><p class="desc">Salte sobre as peças vizinhas até deixar apenas uma no tabuleiro.</p></div>
   </div>
 
+  <details class="feature-panel player-panel" id="playerPanel">
+    <summary>👤 Painel do jogador <span>Estatísticas, favoritos, perfis e conquistas</span></summary>
+    <div class="feature-content">
+    <div>
+      <h2 class="section-title">🕐 Jogados recentemente</h2>
+      <div class="recent" id="recentGames"><span class="sub">Seus jogos recentes aparecerão aqui.</span></div>
+    </div>
+    <div class="profile" id="profileStats">
+      <div class="stat"><b id="playedCount">0</b><span>Jogos abertos</span></div>
+      <div class="stat"><b id="uniqueCount">0</b><span>Jogos diferentes</span></div>
+      <div class="stat"><b id="favoriteCount">0</b><span>Favoritos ⭐</span></div>
+      <div class="stat"><b id="recentCount">0</b><span>Recentes</span></div>
+    </div>
+    <div class="collection-progress">
+      <div class="collection-progress-head"><span>🏆 Progresso da coleção</span><b id="collectionPercent">0%</b></div>
+      <div class="collection-track"><div class="collection-fill" id="collectionFill"></div></div>
+    </div>
+  <section class="favorite-section" id="favoriteSection" hidden>
+    <div class="section-head"><div><h2>⭐ Seus favoritos</h2><p id="favoriteCaption">Seus jogos escolhidos, prontos para continuar.</p></div><button class="toolbtn" id="seeAllFavorites" type="button">Ver todos</button></div>
+    <div class="favorite-rail" id="favoriteRail"></div>
+  </section>
+  <section class="family-panel" aria-label="Perfis de jogadores">
+    <div class="family-head"><h2>👨‍👩‍👧 Quem está jogando?</h2><button class="toolbtn" id="addProfile">＋ Novo perfil</button></div>
+    <div class="profile-choices" id="profileChoices"></div>
+  </section>
+  <details class="feature-panel" id="achievementsPanel">
+    <summary>🏆 Conquistas <span id="achievementCount">0/8 desbloqueadas</span></summary>
+    <div class="feature-content"><div class="achievement-grid" id="achievementGrid"></div><p class="settings-note">As conquistas são individuais por perfil e acompanham os jogos abertos e os favoritos neste dispositivo.</p></div>
+  </details>
+    </div>
+  </details>
+  <details class="feature-panel" id="settingsPanel">
+    <summary>⚙️ Configurações de experiência</summary>
+    <div class="feature-content">
+      <div class="settings-grid">
+        <div class="setting"><label for="themeSetting">🎨 Tema visual</label><select id="themeSetting"><option value="neon">Neon (padrão)</option><option value="retro">Retrô</option><option value="minimal">Minimalista</option><option value="colorful">Colorido</option></select></div>
+        <div class="setting"><label for="textSetting">🔎 Tamanho dos textos</label><select id="textSetting"><option value="normal">Normal</option><option value="large">Maior</option></select></div>
+        <div class="setting"><label for="controlsSetting">📱 Controles nos jogos</label><select id="controlsSetting"><option value="auto">Automático (recomendado)</option><option value="show">Sempre mostrar</option><option value="hide">Ocultar controles táteis</option></select></div>
+        <div class="setting"><label for="volumeSetting">🔊 Volume dos sons: <span id="volumeValue">45%</span></label><input id="volumeSetting" type="range" min="0" max="100" step="5" value="45"></div>
+        <div class="setting"><label class="checkline"><input type="checkbox" id="soundSetting" checked> Ativar sons</label><label class="checkline"><input type="checkbox" id="contrastSetting"> Alto contraste</label></div>
+        <div class="setting"><label class="checkline"><input type="checkbox" id="motionSetting"> Reduzir animações</label><span class="settings-note">As preferências ficam salvas neste navegador.</span></div>
+      </div>
+      <p class="settings-note">As opções de contraste, texto, animações e controles táteis também são aplicadas às páginas de jogos compatíveis. Os sons dependem de cada jogo oferecer efeitos sonoros.</p>
+    </div>
+  </details>
   <div class="notes">
     <h2>📝 Novidades da v3.5</h2>
     <ul>
