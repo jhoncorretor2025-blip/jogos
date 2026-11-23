@@ -215,6 +215,12 @@ body{min-height:100vh;min-height:100dvh;padding:16px 12px 28px;display:flex;flex
 .space.moving-token{outline:4px solid #fff3a0;box-shadow:0 0 0 5px #f2c94c88,0 0 20px #ffdf7a}
 @keyframes moneyFloat{0%{opacity:0;transform:translate(-50%,10px) scale(.75)}15%{opacity:1;transform:translate(-50%,0) scale(1.12)}100%{opacity:0;transform:translate(-50%,-70px) scale(.94)}}
 @media(max-width:480px){.deed-grid{gap:6px}.deed-stat{padding:8px}.deed-stat b{font-size:14px}.deed-hero{height:92px}.deed-hero>span{font-size:47px}.toolbar .btn{font-size:9px;padding:8px 4px}.portfolio-summary{gap:6px}.portfolio-player{padding:8px}.portfolio-player b{font-size:16px}.auction-price b{font-size:26px}.event-card{top:10px;padding:10px}.event-art{width:46px;height:46px;flex-basis:46px;font-size:28px}}
+
+.center-groups{position:relative;z-index:1;display:flex;justify-content:center;gap:3px;flex-wrap:wrap;max-width:100%}
+.center-group{font-size:clamp(5px,.75vw,7px);font-weight:950;letter-spacing:.1px;color:#3d4b31;background:color-mix(in srgb,var(--group) 35%,#f7e8bb);border:1px solid color-mix(in srgb,var(--group) 70%,#fff);border-radius:99px;padding:2px 4px;white-space:nowrap}
+.center[data-time="night"] .center-group{color:#fff1cc;background:#263e59;border-color:#738fb3}
+.building.city-upgraded{background:linear-gradient(90deg,#e2c176,#9e773e);border-color:#f0d38e;box-shadow:0 0 10px #f5d68b66,inset 2px 0 #fff7}
+.building.city-upgraded:after{background:repeating-linear-gradient(0deg,transparent 0 6px,#fff0ae 6px 9px),repeating-linear-gradient(90deg,transparent 0 5px,#fff0ae 5px 7px);filter:drop-shadow(0 0 3px #ffdf89)}
 </style>
 </head>
 <body>
@@ -268,7 +274,6 @@ body{min-height:100vh;min-height:100dvh;padding:16px 12px 28px;display:flex;flex
   <div id="eventCard" class="event-card" aria-live="polite">
     <div class="event-art" id="eventArt">🎴</div><div class="event-copy"><small id="eventKicker">CARTA DE SORTE</small><b id="eventTitle">Oportunidade</b><span id="eventDescription"></span></div>
   </div>
-  <div id="toast" role="status" aria-live="polite"></div>
   <div id="sheet">
     <div class="sheet-head"><span id="sheetLabel">OPORTUNIDADE IMOBILIÁRIA</span><span class="sheet-badge">DECISÃO</span></div>
     <div class="sheet-property"><div class="sheet-icon" id="sheetIcon">🏡</div><p id="sheetText"></p></div>
