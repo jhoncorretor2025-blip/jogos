@@ -29,7 +29,7 @@
   svg .part.on{opacity:1}
   .side{flex:1;min-width:0}
   .cat{font-size:12.5px;color:var(--muted);margin-bottom:6px}
-  .cat b{color:var(--acc)}
+  .cat b{color:var(--acc)}\n  .hintline{font-size:12px;color:#cbd5e1;margin-top:5px;line-height:1.35}
   .hearts{font-size:17px;letter-spacing:2px}
   #word{width:100%;max-width:560px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:10px 0 16px}
   .slot{
@@ -89,7 +89,7 @@
       </g>
     </svg>
     <div class="side">
-      <div class="cat">Dica: <b id="cat">—</b></div>
+      <div class="cat">Categoria: <b id="cat">—</b></div><div class="hintline" id="hintline">Descubra a palavra!</div>
       <div class="hearts" id="hearts">❤️❤️❤️❤️❤️❤️</div>
     </div>
   </div>
@@ -104,7 +104,7 @@
   </div>
 
   <p class="hint">Acerte a palavra antes de completar o boneco. 6 erros e acabou.</p>
-  <div class="ver">v1.0 · 22/11/2026</div>
+  <div class="ver">v1.1 · 22/11/2026</div>
 
 <script>
 (function(){
@@ -118,19 +118,47 @@
     {w:'aplicativo', c:'Tecnologia'}, {w:'inteligência', c:'Tecnologia'}, {w:'automação', c:'Tecnologia'},
     {w:'internet', c:'Tecnologia'}, {w:'senha', c:'Tecnologia'}, {w:'robô', c:'Tecnologia'},
     {w:'planilha', c:'Tecnologia'}, {w:'navegador', c:'Tecnologia'}, {w:'memória', c:'Tecnologia'},
-    {w:'bicicleta', c:'Geral'}, {w:'cachorro', c:'Geral'}, {w:'floresta', c:'Geral'},
-    {w:'montanha', c:'Geral'}, {w:'chocolate', c:'Geral'}, {w:'guitarra', c:'Geral'},
-    {w:'oceano', c:'Geral'}, {w:'futebol', c:'Geral'}, {w:'pizza', c:'Geral'},
-    {w:'viagem', c:'Geral'}, {w:'saudade', c:'Geral'}, {w:'família', c:'Geral'},
-    {w:'música', c:'Geral'}, {w:'biblioteca', c:'Geral'}, {w:'passarinho', c:'Geral'},
-    {w:'guarda-chuva', c:'Geral'}, {w:'relâmpago', c:'Geral'}
+    {w:'bicicleta', c:'Transportes'}, {w:'cachorro', c:'Animais'}, {w:'floresta', c:'Natureza'},
+    {w:'montanha', c:'Natureza'}, {w:'chocolate', c:'Alimentos'}, {w:'guitarra', c:'Instrumentos musicais'},
+    {w:'oceano', c:'Natureza'}, {w:'futebol', c:'Esportes'}, {w:'pizza', c:'Alimentos'},
+    {w:'viagem', c:'Viagens'}, {w:'saudade', c:'Sentimentos'}, {w:'família', c:'Pessoas e relações'},
+    {w:'música', c:'Arte e cultura'}, {w:'biblioteca', c:'Lugares'}, {w:'passarinho', c:'Animais'},
+    {w:'guarda-chuva', c:'Objetos'}, {w:'relâmpago', c:'Natureza'},
+    {w:'vegetal', c:'Alimentos · Vegetais'}, {w:'violão', c:'Instrumentos musicais'},
+    {w:'bateria', c:'Instrumentos musicais'}, {w:'piano', c:'Instrumentos musicais'},
+    {w:'trompete', c:'Instrumentos musicais'}, {w:'cenoura', c:'Alimentos · Vegetais'},
+    {w:'brócolis', c:'Alimentos · Vegetais'}, {w:'abóbora', c:'Alimentos · Vegetais'},
+    {w:'tomate', c:'Alimentos · Vegetais'}, {w:'alface', c:'Alimentos · Vegetais'},
+    {w:'martelo', c:'Ferramentas'}, {w:'tesoura', c:'Ferramentas e objetos'},
+    {w:'avião', c:'Transportes'}, {w:'ônibus', c:'Transportes'},
+    {w:'navio', c:'Transportes'}, {w:'astronauta', c:'Profissões'},
+    {w:'professor', c:'Profissões'}, {w:'médico', c:'Profissões'},
+    {w:'dentista', c:'Profissões'}, {w:'enfermeira', c:'Profissões'},
+    {w:'campeonato', c:'Esportes'}, {w:'basquete', c:'Esportes'},
+    {w:'voleibol', c:'Esportes'}, {w:'xadrez', c:'Jogos'},
+    {w:'dominó', c:'Jogos'}, {w:'pintura', c:'Arte e cultura'},
+    {w:'cinema', c:'Arte e cultura'}, {w:'teatro', c:'Arte e cultura'},
+    {w:'fotografia', c:'Arte e cultura'}, {w:'relógio', c:'Objetos'},
+    {w:'telefone', c:'Tecnologia'}, {w:'televisão', c:'Tecnologia'},
+    {w:'computador', c:'Tecnologia'}, {w:'microfone', c:'Tecnologia · Áudio'},
+    {w:'fone', c:'Tecnologia · Áudio'}, {w:'montagem', c:'Construção'},
+    {w:'parafuso', c:'Ferramentas'}, {w:'escada', c:'Objetos'},
+    {w:'travesseiro', c:'Casa'}, {w:'geladeira', c:'Casa'},
+    {w:'fogão', c:'Casa'}, {w:'chuveiro', c:'Casa'},
+    {w:'borboleta', c:'Animais'}, {w:'elefante', c:'Animais'},
+    {w:'girafa', c:'Animais'}, {w:'tartaruga', c:'Animais'},
+    {w:'pinguim', c:'Animais'}, {w:'abelha', c:'Animais'},
+    {w:'deserto', c:'Natureza'}, {w:'vulcão', c:'Natureza'},
+    {w:'cachoeira', c:'Natureza'}, {w:'arco-íris', c:'Natureza'},
+    {w:'planeta', c:'Espaço'}, {w:'galáxia', c:'Espaço'},
+    {w:'cometa', c:'Espaço'}, {w:'satélite', c:'Espaço'}
   ];
   const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
   const MAX_ERRORS = 6;
 
   const wordEl = document.getElementById('word');
   const keysEl = document.getElementById('keys');
-  const catEl = document.getElementById('cat');
+  const catEl = document.getElementById('cat');\n  const hintEl = document.getElementById('hintline');
   const heartsEl = document.getElementById('hearts');
   const msgEl = document.getElementById('msg');
   const roundEl = document.getElementById('round');
@@ -179,7 +207,7 @@
       keysEl.appendChild(b);
     });
 
-    catEl.textContent = current.c;
+    catEl.textContent = current.c;\n    hintEl.textContent = 'Pense em algo que pertence a esta categoria.';
     heartsEl.textContent = '❤️'.repeat(Math.max(0, MAX_ERRORS - errors)) + '🖤'.repeat(Math.min(errors, MAX_ERRORS));
     parts.forEach(function(p){
       p.classList.toggle('on', Number(p.dataset.part) <= errors);
