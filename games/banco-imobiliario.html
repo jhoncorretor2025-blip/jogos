@@ -480,7 +480,7 @@ function scheduleAIAuctionBid(){
  auctionBidTimer=setTimeout(()=>{
   if(!auction||auction.leader===1||auction.aiBids>=3)return;
   const s=spaces[auction.index],favorites=['Centro','Avenida','Jardim','Colina'];
-  const score=s.rent/s.price+(favorites.includes(s.name)?.05:0),next=auction.price+50;
+  const score=s.rent/s.price+(favorites.includes(s.name) ? 0.05 : 0),next=auction.price+50;
   const limit=Math.round(s.price*(score>=.22?1.45:1.05));
   if(players[1].cash-next>=reserveForAI()&&next<=limit){
    auction.price=next;auction.leader=1;auction.aiBids++;auction.seconds=6;
@@ -603,7 +603,7 @@ function resolve(i,fromCard){
   if(fromCard){setMessage('🎴 O movimento terminou em Sorte. Siga para a próxima rodada.');nextTurn();return}
   drawChance();return;
  }
- if(s.type==='start'){players[idx].cash+=300;showToast('+R$ 300',false);logEvent(who+' parou exatamente no Início e recebeu R$ 300.','gain');setMessage('🏁 Parada no Início: bônus de '+money(300)+'.');render();nextTurn();return}
+ if(s.type==='start'){logEvent(who+' concluiu o movimento no Início; o bônus já foi creditado durante o percurso.');setMessage('🏁 Início: bônus já creditado durante o movimento.');render();nextTurn();return}
  if(s.type==='rest'){players[idx].cash+=75;showToast('+R$ 75',false);logEvent(who+' descansou e recebeu R$ 75 de recuperação.','gain');setMessage('☕ Descanso: '+who+' recebeu R$ 75 de recuperação financeira.');render();nextTurn();return}
 }
 function offerBuy(i){
@@ -613,8 +613,8 @@ function offerBuy(i){
   const score=s.rent/s.price+(favorites.includes(s.name) ? .05 : 0);
   const buy=p.cash-s.price>=reserve&&score>=.22;
   if(buy){p.cash-=s.price;s.owner=1;logEvent('IA comprou '+s.name+' por '+money(s.price)+'.');showToast('IA comprou '+s.name,false);render()}
-  else{logEvent('IA decidiu não comprar '+s.name+' para preservar caixa.');setMessage('🤖 A IA avaliou '+s.name+' e preferiu guardar dinheiro.')}
-  nextTurn();return;
+  else{logEvent('IA decidiu não comprar '+s.name+' e colocou o imóvel em leilão.');setMessage('🤖 A IA não comprou '+s.name+'. O imóvel foi a leilão.');startAuction(i)}
+  if(buy)nextTurn();return;
  }
  if(p.cash<s.price){setMessage('Saldo insuficiente para comprar '+s.name+'. Você pode negociar ou hipotecar outro imóvel.');managerFinishTurn=true;openManager(false);return}
  pendingAction={type:'buy',index:i};
@@ -760,7 +760,7 @@ function handleManagerClick(e){
 }
 function finishBankruptcy(){if(!pendingDebt)return;const loser=pendingDebt.idx,winner=1-loser;pendingDebt=null;endGame('bankruptcy',winner)}
 function endGame(reason,winner){
- over=true;busy=true;started=false;sheet.classList.remove('show');managerOv.classList.remove('show');
+ over=true;busy=true;started=false;recordWealth();sheet.classList.remove('show');managerOv.classList.remove('show');$('deedOv').classList.remove('show');$('portfolioOv').classList.remove('show');$('auctionOv').classList.remove('show');if(auctionTimer)clearInterval(auctionTimer);if(auctionBidTimer)clearTimeout(auctionBidTimer);auction=null;
  const values=[assetValue(0),assetValue(1)];
  if(winner===undefined)winner=values[0]>=values[1]?0:1;
  const title=winner===0?'🏆 Você venceu!':'🤖 A IA venceu!';
@@ -790,12 +790,26 @@ function init(){
 }
 $('startGameBtn').addEventListener('click',startGame);
 $('restartBtn').addEventListener('click',showSetup);
+$('portfolioBtn').addEventListener('click',()=>{if(started&&!over)openPortfolio()});
+$('portfolioClose').addEventListener('click',()=>$('portfolioOv').classList.remove('show'));
+$('deedClose').addEventListener('click',()=>$('deedOv').classList.remove('show'));
+$('deedManage').addEventListener('click',()=>{$('deedOv').classList.remove('show');openManager(false)});
+$('auctionBid').addEventListener('click',placeAuctionBid);
+$('auctionPass').addEventListener('click',finishAuction);
+$('deedOv').addEventListener('click',e=>{if(e.target===$('deedOv'))$('deedOv').classList.remove('show')});
+$('portfolioOv').addEventListener('click',e=>{if(e.target===$('portfolioOv'))$('portfolioOv').classList.remove('show')});
+$('auctionOv').addEventListener('click',e=>{if(e.target===$('auctionOv'))finishAuction()});
 $('manageBtn').addEventListener('click',()=>{if(started&&!over)openManager(false)});
 $('historyBtn').addEventListener('click',()=>{$('historyBox').open=!$('historyBox').open});
 $('managerBody').addEventListener('click',handleManagerClick);
 $('managerCloseBtn').addEventListener('click',()=>{if(!pendingDebt){managerOv.classList.remove('show');if(managerFinishTurn){managerFinishTurn=false;nextTurn()}}});
 $('sheetYes').addEventListener('click',performPending);
-$('sheetNo').addEventListener('click',()=>{if(!pendingAction)return;const a=pendingAction;logEvent(a.type==='buy'?'Você decidiu não comprar '+spaces[a.index].name+'.':'Você adiou a melhoria em '+spaces[a.index].name+'.');pendingAction=null;sheet.classList.remove('show');nextTurn()});
+$('sheetNo').addEventListener('click',()=>{
+ if(!pendingAction)return;
+ const a=pendingAction;pendingAction=null;sheet.classList.remove('show');
+ if(a.type==='buy'){logEvent('Você decidiu não comprar '+spaces[a.index].name+'. O imóvel foi a leilão.');startAuction(a.index);return}
+ logEvent('Você adiou a melhoria em '+spaces[a.index].name+'.');nextTurn();
+});
 $('ovBtn').addEventListener('click',showSetup);
 $('managerOv').addEventListener('click',e=>{if(e.target===managerOv&&!pendingDebt){managerOv.classList.remove('show');if(managerFinishTurn){managerFinishTurn=false;nextTurn()}}});
 $('ov').addEventListener('click',e=>{if(e.target===ov)showSetup()});
@@ -805,6 +819,7 @@ const originalOpenManager=openManager;
 openManager=function(emergency){originalOpenManager(emergency);$('declareBtn').style.display=emergency?'block':'none'};
 window.addEventListener('keydown',e=>{if(e.key==='Enter'&&started&&!busy&&!over&&turn===0)roll(false);if(e.key==='Escape'&&!pendingDebt){managerOv.classList.remove('show');if(managerFinishTurn){managerFinishTurn=false;nextTurn()}if(sheet.classList.contains('show')){sheet.classList.remove('show');pendingAction=null;nextTurn()}}});
 init();
+setInterval(animateDayNight,45000);
 })();
 </script>
 <script src="../arcade-common.js"></script></body>
