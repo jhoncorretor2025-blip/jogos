@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Jogos do Jhon">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Jogos do Jhon · v3.13</title>
+<title>Jogos do Jhon · v3.14</title>
 <meta name="description" content="Arcade de jogos web do Jhon com busca, favoritos, categorias, histórico e perfil gamer.">
 <style>
   :root{
@@ -204,7 +204,7 @@
   <header>
     <h1>Jogos do Jhon</h1>
     <p class="sub">🎮 Arcade de bolso — abre no celular e no PC, sem instalar nada.</p>
-    <div class="version"><span class="dot"></span> Versão <b>v3.13</b> · atualizado em <b>22/11/2026</b></div>
+    <div class="version"><span class="dot"></span> Versão <b>v3.14</b> · atualizado em <b>22/11/2026</b></div>
   </header>
 
   <section class="category-section" aria-label="Navegação por categoria">
@@ -221,7 +221,7 @@
       <button class="toolbtn" id="randomGame">🎲 Jogo aleatório</button>
       <button class="toolbtn" id="viewToggle">▦ Grade</button>
       <button class="toolbtn" id="installApp">📲 Instalar app</button>
-      <span class="catalog-count" id="resultsLabel">25 jogos disponíveis</span>
+      <span class="catalog-count" id="resultsLabel">28 jogos disponíveis</span>
     </div>
   </section>
   <div class="catalog-head" id="catalogStart"><div><h2 class="catalog-title">🎮 Todos os jogos</h2><p class="catalog-sub">Sua biblioteca completa, com 25 experiências.</p></div><span class="catalog-count" id="sortLabel">Ordem padrão</span></div>
@@ -365,6 +365,10 @@
     <div class="card" data-category="arcade" data-href="games/bubble-shooter.html" style="--accent:#a78bfa;--glow:rgba(167,139,250,.20)"><span class="tag new">v1.0</span><span class="ico">🫧</span><p class="name">Bubble Shooter <em class="new">NOVO</em></p><p class="desc">Mire, combine três bolhas da mesma cor e limpe o campo.</p></div>
     <div class="card" data-category="arcade" data-href="games/travessia-maluca.html" style="--accent:#34d399;--glow:rgba(52,211,153,.20)"><span class="tag new">v1.0</span><span class="ico">🐸</span><p class="name">Travessia Maluca <em class="new">NOVO</em></p><p class="desc">Atravesse pistas e rios sem ser atingido. Leve o sapinho até as chegadas.</p></div>
     <div class="card" data-category="puzzle" data-href="games/resta-um.html" style="--accent:#38bdf8;--glow:rgba(56,189,248,.20)"><span class="tag new">v1.0</span><span class="ico">🔵</span><p class="name">Resta Um <em class="new">NOVO</em></p><p class="desc">Salte sobre as peças vizinhas até deixar apenas uma no tabuleiro.</p></div>
+
+    <div class="card" data-category="arcade" data-href="games/duelo-reflexos.html" style="--accent:#22d3ee;--glow:rgba(34,211,238,.20)"><span class="tag new">v1.0</span><span class="ico">⚡</span><p class="name">Duelo de Reflexos <em class="new">NOVO</em></p><p class="desc">Dois jogadores disputam quem reage mais rápido. Cuidado com a falsa largada!</p></div>
+    <div class="card" data-category="strategy" data-href="games/conecte-pontos.html" style="--accent:#a78bfa;--glow:rgba(167,139,250,.20)"><span class="tag new">v1.0</span><span class="ico">🔵</span><p class="name">Conecte os Pontos <em class="new">NOVO</em></p><p class="desc">Feche quadrados, conquiste territórios e jogue novamente quando pontuar.</p></div>
+    <div class="card" data-category="puzzle" data-href="games/acerte-numero.html" style="--accent:#fbbf24;--glow:rgba(251,191,36,.20)"><span class="tag new">v1.0</span><span class="ico">🔢</span><p class="name">Acerte o Número <em class="new">NOVO</em></p><p class="desc">Um jogador escolhe o número secreto e o outro tenta descobrir com dicas de maior ou menor.</p></div>
   </div>
 
   <details class="feature-panel player-panel" id="playerPanel">
@@ -413,7 +417,7 @@
     </div>
   </details>
   <div class="notes">
-    <h2>📝 Novidades da v3.13</h2>
+    <h2>📝 Novidades da v3.14</h2>
     <ul>
       <li><b>Batalha Naval v1.1:</b> corrigido e reforçado o posicionamento automático da frota para garantir que todos os navios sejam colocados.</li>
       <li><b>Forca v2.3:</b> corrigida tela preta na inicialização e adicionados ícones para categorias em inglês.</li>
@@ -460,7 +464,7 @@ const achievements=[
  {id:'first',icon:'🌱',name:'Primeiro passo',desc:'Abra seu primeiro jogo.',ok:p=>p.plays>=1},
  {id:'five',icon:'🧭',name:'Explorador',desc:'Experimente 5 jogos diferentes.',ok:p=>Object.keys(p.counts).length>=5},
  {id:'ten',icon:'🗺️',name:'Grande explorador',desc:'Experimente 10 jogos diferentes.',ok:p=>Object.keys(p.counts).length>=10},
- {id:'all',icon:'👑',name:'Mestre do Arcade',desc:'Abra todos os 25 jogos.',ok:p=>names.every(g=>(p.counts[g.href]||0)>0)},
+ {id:'all',icon:'👑',name:'Mestre do Arcade',desc:'Abra todos os 28 jogos.',ok:p=>names.every(g=>(p.counts[g.href]||0)>0)},
  {id:'plays10',icon:'🎮',name:'Jogador frequente',desc:'Abra jogos 10 vezes.',ok:p=>p.plays>=10},
  {id:'plays30',icon:'🔥',name:'Maratonista',desc:'Abra jogos 30 vezes.',ok:p=>p.plays>=30},
  {id:'favs3',icon:'⭐',name:'Colecionador',desc:'Salve 3 jogos favoritos.',ok:p=>p.favs.length>=3},
