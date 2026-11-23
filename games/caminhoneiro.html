@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0b1725">
-<title>Caminhoneiro · Entrega na Estrada · Jogos do Jhon · v1.3</title>
+<title>Caminhoneiro · Entrega na Estrada · Jogos do Jhon · v1.4</title>
 <style>
 :root{color-scheme:dark;--bg:#091522;--panel:#122235;--line:#2a435c;--txt:#ecf5fa;--muted:#9bb0c2;--mint:#64e2b0;--gold:#f6c96a}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,system-ui,Arial,sans-serif;background:radial-gradient(1000px 500px at 50% -10%,#193b56,#091522 72%);color:var(--txt)}
@@ -19,7 +19,8 @@ body{padding:16px 12px 25px}.wrap{width:min(1050px,100%);margin:auto}header{text
 .footer-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.footer-actions .btn{flex:1}.help{color:var(--muted);font-size:11px;line-height:1.55;margin:10px 0 0}
 @media(max-width:700px){body{padding:11px 7px 20px}.panel{padding:8px}.hud{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.stat b{font-size:14px}.progress-row{grid-template-columns:1fr}.controls{grid-template-columns:1fr 1fr}.drive-actions{grid-column:1/-1;grid-row:1}.steer{grid-column:1/-1}.jobs{grid-template-columns:1fr}.btn{min-height:50px}.footer-actions{display:grid;grid-template-columns:1fr 1fr}}
 
-/* v1.3 — painel de viagem, garagem e feedback visual */
+/* v1.4 — painel de viagem, garagem e feedback visual */
+.hud{grid-template-columns:repeat(6,minmax(0,1fr))}
 .settings-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:0 0 11px}
 .setting{background:#091522;border:1px solid #29445a;border-radius:11px;padding:8px;min-width:0}
 .setting label{display:block;color:#a9c0d1;font-size:10px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
@@ -44,7 +45,7 @@ body{padding:16px 12px 25px}.wrap{width:min(1050px,100%);margin:auto}header{text
 </style>
 </head>
 <body><main class="wrap">
-<header><h1>🚛 Caminhoneiro — Entrega na Estrada</h1><p>Carregue, dirija com cuidado e entregue no prazo. Cada frete é uma nova missão!</p><span class="version">Jogos do Jhon · v1.3</span></header>
+<header><h1>🚛 Caminhoneiro — Entrega na Estrada</h1><p>Carregue, dirija com cuidado e entregue no prazo. Cada frete é uma nova missão!</p><span class="version">Jogos do Jhon · v1.4</span></header>
 <section class="panel">
 
 <div class="settings-grid" aria-label="Configurações da viagem">
@@ -139,7 +140,7 @@ function updateHud(){
  $('speed').textContent=Math.round(speed*13)+' km/h';$('money').textContent='R$ '+money.toLocaleString('pt-BR');
  $('deliveries').textContent=deliveries;$('best').textContent='R$ '+best.toLocaleString('pt-BR');
  $('streak').textContent=streak+' x';$('streak').className=streak>=5?'good':streak>=2?'warn':'';
- $('fuelText').textContent=Math.round(fuel)+' / '+maxFuel+'%';$('cargoText').textContent=Math.round(cargo)+'%';
+ $('fuelText').textContent=Math.round(fuel/maxFuel*100)+'% ('+Math.round(fuel)+'/'+maxFuel+')';$('cargoText').textContent=Math.round(cargo)+'%';
  $('fuelFill').style.width=(fuel/maxFuel*100)+'%';$('cargoFill').style.width=cargo+'%';
  $('fuelFill').style.background=fuel<maxFuel*.25?'linear-gradient(90deg,#ef4444,#f97316)':'linear-gradient(90deg,#32c48d,#a3e635)';
  $('cargoFill').style.background=cargo<40?'linear-gradient(90deg,#ef4444,#f97316)':'linear-gradient(90deg,#32c48d,#a3e635)';
