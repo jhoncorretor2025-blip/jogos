@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Jogos do Jhon">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Jogos do Jhon · v3.36</title>
+<title>Jogos do Jhon · v3.37</title>
 <meta name="description" content="Arcade de jogos web do Jhon com busca, favoritos, categorias, histórico e perfil gamer.">
 <style>
   :root{
@@ -305,7 +305,7 @@
     <span class="hero-kicker">ARCADE PESSOAL</span>
     <h1>Jogos do Jhon</h1>
     <p class="sub">🎮 Seu cantinho de diversão: escolha um jogo e comece a jogar no celular ou no PC.</p>
-    <div class="version"><span class="dot"></span> Versão <b>v3.36</b> · atualizado em <b>23/11/2026</b></div>
+    <div class="version"><span class="dot"></span> Versão <b>v3.37</b> · atualizado em <b>23/11/2026</b></div>
     <div class="home-hero-actions">
       <a class="primary-cta" href="#catalogStart">🎮 Explorar jogos <span aria-hidden="true">↓</span></a>
       <span class="hero-count" id="heroGameCount">30 jogos no catálogo</span>
@@ -583,8 +583,9 @@
     </div>
   </details>
   <div class="notes">
-    <h2>📝 Novidades da tela inicial · v3.36</h2>
+    <h2>📝 Novidades da tela inicial · v3.37</h2>
     <ul>
+      <li><b>v3.37 — Ordem dos jogos:</b> preservados os 10 primeiros cards; Forca, Xadrez, STOP!, Dominó e Sinuca 8-Ball organizados nas posições 11 a 15. Os favoritos continuam disponíveis na seção e no filtro próprios.</li>
       <li><b>v3.36 — Filtros da tela inicial:</b> correção da montagem dos filtros e atalhos visíveis para Melhor Idade, Tabuleiro, Cartas e Favoritos.</li>
       <li><b>v3.35 — Clássicos & Tranquilos:</b> filtro dedicado para jogos de tabuleiro, cartas, lógica e experiências mais calmas, com seleção curada de 16 jogos.</li>
       <li><b>Novos jogos v3.34:</b> Sinuca 8-Ball e Caminhoneiro – Entrega na Estrada, com controles para celular e computador, novas missões e recordes.</li>
@@ -729,7 +730,7 @@ function refreshCardMeta(){
   if(meta)meta.innerHTML='<span class="meta-pill">'+(categories[g.cat]||'🎮 Jogo')+'</span><span class="meta-pill">▶ '+(p.counts[href]||0)+'x aberto</span>'+(isFav?'<span class="meta-pill">⭐ Favorito</span>':'');
  });
 }
-const defaultOrder=['games/cobra.html','games/memoria.html','games/velha.html','games/tetris.html','games/palavras-cruzadas.html','games/bubble-shooter.html','games/galaxia-invasora.html','games/2048.html'];
+const catalogOrder=['games/cobra.html','games/memoria.html','games/velha.html','games/tetris.html','games/palavras-cruzadas.html','games/bubble-shooter.html','games/galaxia-invasora.html','games/2048.html','games/batalha-naval.html','games/banco-imobiliario.html','games/forca.html','games/xadrez.html','games/stop.html','games/domino.html','games/sinuca.html','games/detetive.html','games/corrida.html','games/caminhoneiro.html','games/campo-minado.html','ninja_forest_run_v4_10.html','games/voo-desafiador.html','games/labirinto.html','games/sudoku.html','games/paciencia.html','games/pinball.html','games/travessia-maluca.html','games/resta-um.html','games/duelo-reflexos.html','games/conecte-pontos.html','games/acerte-numero.html'];
 let filter='all';
 const VIEW_KEY='jhonArcadeViewV1';
 let viewMode='grid';
@@ -815,7 +816,7 @@ function renderCards(){
   const matches=filter==='all'||(filter==='favorites'&&p.favs.includes(href))||((filter==='senior'||filter==='classics')&&classics.has(href))||(filter==='board'&&boardGames.has(href))||(filter==='cards'&&cardGames.has(href))||(['puzzle','strategy','arcade','action','racing'].includes(filter)&&cat===filter);
   const ok=matches&&(!q||hay.includes(q));c.style.display=ok?'':'none';if(ok)shown++;
  });
- const ordered=cards.slice().sort((a,b)=>{const af=p.favs.includes(a.dataset.href),bf=p.favs.includes(b.dataset.href);if(af!==bf)return Number(bf)-Number(af);const ai=defaultOrder.indexOf(a.dataset.href),bi=defaultOrder.indexOf(b.dataset.href);return (ai<0?999:ai)-(bi<0?999:bi)});
+ const ordered=cards.slice().sort((a,b)=>{const ai=catalogOrder.indexOf(a.dataset.href),bi=catalogOrder.indexOf(b.dataset.href);return (ai<0?999:ai)-(bi<0?999:bi)});
  ordered.forEach(card=>grid.appendChild(card));
  document.getElementById('resultsLabel').textContent=shown+' de '+names.length+' jogos';
  document.getElementById('heroGameCount').textContent=names.length+' jogos no catálogo';
@@ -823,7 +824,7 @@ function renderCards(){
  document.getElementById('catalogDescription').textContent=descriptions[filter]||(filter==='all'?'Sua biblioteca completa, com '+names.length+' jogos para explorar.':'Explore os jogos desta categoria.');
  const title=filter==='all'?'🎮 Todos os jogos':filter==='senior'?'🧓 Jogos para Melhor Idade':filter==='board'?'🎲 Jogos de Tabuleiro':filter==='cards'?'🃏 Jogos de Cartas':filter==='favorites'?'⭐ Seus Favoritos':'🎮 '+(categories[filter]||'Jogos');
  document.getElementById('catalogStart').querySelector('.catalog-title').textContent=title;
- document.getElementById('sortLabel').textContent=p.favs.length?'⭐ Favoritos personalizados primeiro':'Ordem padrão';
+ document.getElementById('sortLabel').textContent='📚 Ordem fixa do catálogo · Favoritos na seção própria';
  document.querySelectorAll('.category-chip').forEach(btn=>{const selected=btn.dataset.filter===filter;btn.classList.toggle('active',selected);btn.setAttribute('aria-pressed',String(selected))});
  const empty=document.getElementById('emptyState');grid.hidden=shown===0;empty.hidden=shown!==0;
  if(shown===0){if(filter==='favorites'&&!q){document.getElementById('emptyTitle').textContent='Você ainda não salvou favoritos';document.getElementById('emptyMessage').textContent='Marque a estrela de um jogo para encontrá-lo aqui depois.';document.getElementById('emptyReset').textContent='Explorar todos os jogos'}else{document.getElementById('emptyTitle').textContent='Nenhum jogo encontrado';document.getElementById('emptyMessage').textContent=q?'Não encontramos um jogo com esse termo. Experimente outra palavra ou limpe a busca.':'Não há jogos nesta seleção. Volte para ver o catálogo completo.';document.getElementById('emptyReset').textContent='Ver todos os jogos'}}
@@ -979,7 +980,7 @@ function validateBackup(raw){
 }
 function exportBackup(){
  try{
-  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v3.36',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
+  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v3.37',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
   const content=JSON.stringify(backup,null,2),blob=new Blob([content],{type:'application/json'});
   if(blob.size>MAX_BACKUP_BYTES)throw new Error('O backup ultrapassa 2 MB.');
   const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='jogos-do-jhon-backup-'+new Date().toISOString().slice(0,10)+'.json';
