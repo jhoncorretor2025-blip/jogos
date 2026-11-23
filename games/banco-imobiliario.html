@@ -223,7 +223,7 @@ const boardEl=$('board'),msgEl=$('msg'),sheet=$('sheet'),sheetText=$('sheetText'
 const setupOv=$('setupOv'),managerOv=$('managerOv'),ov=$('ov'),toast=$('toast');
 const cashEls=[$('cash0'),$('cash1')],playerEls=[$('player0'),$('player1')],assetEls=[$('assets0'),$('assets1')],turnTags=[$('turnTag0'),$('turnTag1')];
 let spaces=[],players=[],turn=0,busy=true,over=false,started=false,dice='',diceFaces=[],diceRolling=false,pendingAction=null,pendingDebt=null;
-let startingCash=1000,roundLimit=30,rounds=0,history=[],tradeOffer=null,toastTimer=null;
+let startingCash=1000,roundLimit=30,rounds=0,history=[],tradeOffer=null,toastTimer=null,managerFinishTurn=false;
 const DICE=['','⚀','⚁','⚂','⚃','⚄','⚅'];
 function money(v){return 'R$ '+Math.round(v).toLocaleString('pt-BR')}
 function accentFor(s){const map={Centro:'#60a5fa',Praia:'#38bdf8','Vila Nova':'#fb923c',Jardim:'#4ade80',Alameda:'#a78bfa',Colina:'#facc15',Periferia:'#f87171',Avenida:'#e879f9'};return map[s.name]||'#8eaf8a'}
@@ -274,7 +274,7 @@ function render(){
 }
 function showSetup(){setupOv.classList.add('show');managerOv.classList.remove('show');ov.classList.remove('show')}
 function startGame(){
- startingCash=Number($('startingCash').value)||1000;roundLimit=Number($('roundLimit').value)||0;rounds=0;history=[];pendingDebt=null;pendingAction=null;
+ startingCash=Number($('startingCash').value)||1000;roundLimit=Number($('roundLimit').value)||0;rounds=0;history=[];pendingDebt=null;pendingAction=null;managerFinishTurn=false;
  spaces=START_SPACES.map(s=>Object.assign({},s,{owner:-1,buildings:0,mortgaged:false}));
  players=[{cash:startingCash,pos:0},{cash:startingCash,pos:0}];turn=0;busy=false;over=false;started=true;dice='';diceFaces=[];diceRolling=false;
  $('historyCount').textContent='0';$('historyList').innerHTML='<li>A partida começou.</li>';
@@ -326,13 +326,14 @@ function resolve(i,fromCard){
 function offerBuy(i){
  const s=spaces[i],p=players[turn];
  if(turn===1){
-  const reserve=reserveForAI(),yieldRate=s.rent/s.price;
-  const buy=p.cash-s.price>=reserve&&yieldRate>=.14;
+  const reserve=reserveForAI(),favorites=['Centro','Avenida','Jardim','Colina'];
+  const score=s.rent/s.price+(favorites.includes(s.name)?.05:0);
+  const buy=p.cash-s.price>=reserve&&score>=.22;
   if(buy){p.cash-=s.price;s.owner=1;logEvent('IA comprou '+s.name+' por '+money(s.price)+'.');showToast('IA comprou '+s.name,false);render()}
   else{logEvent('IA decidiu não comprar '+s.name+' para preservar caixa.');setMessage('🤖 A IA avaliou '+s.name+' e preferiu guardar dinheiro.')}
   nextTurn();return;
  }
- if(p.cash<s.price){setMessage('Saldo insuficiente para comprar '+s.name+'. Você pode negociar ou hipotecar outro imóvel.');openManager(false);return}
+ if(p.cash<s.price){setMessage('Saldo insuficiente para comprar '+s.name+'. Você pode negociar ou hipotecar outro imóvel.');managerFinishTurn=true;openManager(false);return}
  pendingAction={type:'buy',index:i};
  $('sheetIcon').textContent=iconFor(s);$('sheetLabel').textContent='OPORTUNIDADE · COMPRA';
  sheetText.innerHTML='<b>'+s.name+'</b> está à venda por <b>'+money(s.price)+'</b>.<br>Aluguel base: <b>'+money(s.rent)+'</b>. Com melhorias pode chegar a <b>'+money(s.rent*8)+'</b>.';
@@ -418,17 +419,17 @@ function sellBuildings(i){
 function tradeWithAI(i,mode){
  const s=spaces[i],ai=players[1],reserve=reserveForAI();
  if(mode==='sell'){
-  const price=Math.round(s.price*.9);
+  const price=Math.round((s.price+investmentInBuildings(s))*.9);
   if(s.owner!==0||s.mortgaged)return;
   if(ai.cash-price>=reserve&&s.rent/s.price>=.13){
-   ai.cash-=price;players[0].cash+=price;s.owner=1;s.buildings=0;
+   ai.cash-=price;players[0].cash+=price;s.owner=1;
    logEvent('A IA aceitou sua proposta e comprou '+s.name+' por '+money(price)+'.','gain');showToast('Venda concluída +'+money(price),false);
   }else{logEvent('A IA recusou a proposta de venda de '+s.name+'.');setMessage('🤖 A IA recusou a proposta: prefere guardar caixa ou não vê valor suficiente.')}
  }else{
-  const price=Math.round(s.price*1.25);
-  if(s.owner!==1||s.mortgaged)return;
+  const price=Math.round(s.price*1.25+investmentInBuildings(s)*.8);
+  if(s.owner!==1||s.mortgaged||players[0].cash<price)return;
   if(ai.cash<reserve||price>=s.price*1.5){
-   players[0].cash-=price;ai.cash+=price;s.owner=0;s.buildings=0;
+   players[0].cash-=price;ai.cash+=price;s.owner=0;
    logEvent('A IA aceitou vender '+s.name+' por '+money(price)+'.','gain');showToast('Compra negociada',false);
   }else{logEvent('A IA recusou a oferta de compra por '+money(price)+'.');setMessage('🤖 A IA recusou a oferta. Tente um valor maior ou espere uma situação de caixa mais apertada.')}
  }
@@ -452,7 +453,7 @@ function openManager(emergency){
    if(!s.mortgaged)actions+='<button class="btn secondary" data-act="selltoai" data-i="'+i+'">Oferecer à IA · 90%</button>';
    rows.push('<div class="property-row"><div class="property-head"><div class="property-emoji">'+iconFor(s)+'</div><div class="property-meta"><b>'+s.name+(s.mortgaged?' · HIPOTECADO':'')+'</b><small>Aluguel: '+money(rentFor(s))+' · '+(s.buildings===4?'Hotel':s.buildings+' casa(s)')+' · Valor: '+money(s.price)+'</small></div></div><div class="property-actions">'+actions+'</div></div>');
   }else if(s.owner===1&&!s.mortgaged){
-   const price=Math.round(s.price*1.25);
+   const price=Math.round(s.price*1.25+investmentInBuildings(s)*.8);
    rows.push('<div class="property-row"><div class="property-head"><div class="property-emoji">'+iconFor(s)+'</div><div class="property-meta"><b>'+s.name+' · propriedade da IA</b><small>Aluguel: '+money(rentFor(s))+' · Oferta para comprar: '+money(price)+'</small></div></div><div class="property-actions"><button class="btn secondary" data-act="buyfromai" data-i="'+i+'" '+(players[0].cash<price?'disabled':'')+'>Oferecer compra · 125%</button></div></div>');
   }
  });
@@ -505,7 +506,7 @@ $('restartBtn').addEventListener('click',showSetup);
 $('manageBtn').addEventListener('click',()=>{if(started&&!over)openManager(false)});
 $('historyBtn').addEventListener('click',()=>{$('historyBox').open=!$('historyBox').open});
 $('managerBody').addEventListener('click',handleManagerClick);
-$('managerCloseBtn').addEventListener('click',()=>{if(!pendingDebt)managerOv.classList.remove('show')});
+$('managerCloseBtn').addEventListener('click',()=>{if(!pendingDebt){managerOv.classList.remove('show');if(managerFinishTurn){managerFinishTurn=false;nextTurn()}}});
 $('sheetYes').addEventListener('click',performPending);
 $('sheetNo').addEventListener('click',()=>{if(!pendingAction)return;const a=pendingAction;logEvent(a.type==='buy'?'Você decidiu não comprar '+spaces[a.index].name+'.':'Você adiou a melhoria em '+spaces[a.index].name+'.');pendingAction=null;sheet.classList.remove('show');nextTurn()});
 $('ovBtn').addEventListener('click',showSetup);
