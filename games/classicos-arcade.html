@@ -30,7 +30,9 @@ const info={
  paciencia:['🃏','Paciência','Organize as cartas em sequência e complete os quatro naipes.','Toque numa carta para selecioná-la e depois toque no destino. Monte em ordem decrescente e cores alternadas.'],
  pinball:['🎱','Pinball Neon','Acione as palhetas, acerte os alvos e tente bater seu recorde.','Use ◀ e ▶, as teclas A/D ou as setas. Toque em LANÇAR para iniciar.'],
  bolhas:['🫧','Bubble Shooter','Mire, combine três bolhas da mesma cor e limpe o campo.','Toque no tabuleiro para mirar e solte/toque em ATIRAR.'],
- frogger:['🐸','Travessia Maluca','Atravesse pistas e rios sem ser atingido. Leve function domino(){
+ frogger:['🐸','Travessia Maluca','Atravesse pistas e rios sem ser atingido.','Use as setas ou os botões para atravessar ruas e rios.']
+};
+function domino(){
 shellStats(stat('Pontos','score')+stat('Suas peças','mine')+stat('Peças da IA','ai'));
 $('stage').innerHTML='<div class="domino-top"><div class="dom-avatar"><div class="avatar-face">😎</div><b>Você</b><small id="playerCount">7 peças</small></div><div class="domino-status" id="domStatus">Sua vez</div><div class="dom-avatar ai-avatar"><div class="avatar-face">🤖</div><b>IA</b><small id="aiCount">7 peças</small></div></div><div class="dom-theme-row"><span>🎨 Mesa</span><select id="domTheme"><option value="green">Clássica verde</option><option value="wood">Madeira</option><option value="blue">Azul moderna</option><option value="dark">Escura</option><option value="casino">Cassino</option></select></div><div class="ends"><span id="leftEnd">⬅️ Ponta: —</span><span id="rightEnd">Ponta: — ➡️</span></div><div class="domboard" id="domboard">O tabuleiro começa aqui</div><h3 style="font-size:15px;margin:14px 0 3px">🀄 Sua mão <span id="handHint" class="handhint"></span></h3><div class="hand" id="hand"></div><div class="dom-actions" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">'+btn('draw','🛒 Comprar peça')+btn('pass','⏭️ Passar')+'</div>';
 buttons(btn('new','🔄 Nova partida','btn primary'));
