@@ -793,8 +793,8 @@ function validateBackup(raw){
  if(!raw||typeof raw!=='object'||raw.format!==BACKUP_FORMAT||raw.schemaVersion!==BACKUP_SCHEMA||!raw.payload)throw new Error('Arquivo incompatível. Selecione um backup válido do Jogos do Jhon.');
  const source=raw.payload.family;
  if(!source||typeof source!=='object'||!Array.isArray(source.profiles)||source.profiles.length<1||source.profiles.length>10)throw new Error('O backup precisa conter de 1 a 10 perfis.');
- const profiles=source.profiles.map(sanitizeBackupProfile),ids=new Set(),profileNames=new Set();
- profiles.forEach(p=>{const normalized=normalizeText(p.name);if(ids.has(p.id)||profileNames.has(normalized))throw new Error('O backup contém perfis duplicados. Nenhum dado foi alterado.');ids.add(p.id);profileNames.add(normalized)});
+ const profiles=source.profiles.map(sanitizeBackupProfile),ids=new Set();
+ profiles.forEach(p=>{if(ids.has(p.id))throw new Error('O backup contém IDs de perfil duplicados. Nenhum dado foi alterado.');ids.add(p.id)});
  const activeId=profiles.some(p=>p.id===source.activeId)?source.activeId:profiles[0].id;
  return {family:{activeId,profiles,settings:sanitizeBackupSettings(source.settings)},viewMode:['grid','compact','list'].includes(raw.payload.viewMode)?raw.payload.viewMode:'grid'};
 }
@@ -826,7 +826,7 @@ function applyImportedBackup(imported,mode){
  const previousFamily=JSON.parse(JSON.stringify(family));
  let added=0,merged=0,skipped=0;
  imported.family.profiles.forEach(source=>{
-  const target=family.profiles.find(p=>p.id===source.id||normalizeText(p.name)===normalizeText(source.name));
+  const target=family.profiles.find(p=>p.id===source.id);
   if(target){mergeProfile(target,source);merged++}
   else if(family.profiles.length<10){family.profiles.push({...source,counts:{...source.counts},favs:[...source.favs],recent:[...source.recent],achievements:[...source.achievements]});added++}
   else skipped++;
