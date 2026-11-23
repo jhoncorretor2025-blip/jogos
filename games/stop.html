@@ -69,7 +69,7 @@
 (()=>{'use strict';
 const $=id=>document.getElementById(id),DATA_KEY='jhonStopDataV1',CFG_KEY='jhonStopConfigV1';
 const BASE=[
- ['Nome','👤'],['Animal','🐶'],['Fruta','🍎'],['Cidade','🌎'],['País','🏳️'],['Cor','🎨'],['Comida','🍔'],['Profissão','👔'],['Objeto','💧'],['Esporte','⚽'],['Filme','🎬'],['Série','📺'],['Marca','🚗'],['Planta','🌿'],['Música','🎵'],['Parte do corpo','🧍'],['Lugar','🏠'],['Brinquedo','🧸'],['Aplicativo','📱'],['Personagem','🦸'],['Cantor','🎤'],['Banda','🎸'],['Desenho animado','📺'],['Jogo','🎮'],['Tecnologia','💻'],['Doce','🍬'],['Bebida','🥤'],['Profissão diferente','🧑‍🔬'],['Coisa da cozinha','🍳'],['Coisa que dá medo','👻'],['Algo que levaria para uma ilha','🏝️'],['Algo que compraria','🛍️']
+ ['Nome','👤'],['Animal','🐶'],['Fruta','🍎'],['Cidade','🌎'],['País','🏳️'],['Cor','🎨'],['Comida','🍔'],['Profissão','👔'],['Objeto','💧'],['Esporte','⚽'],['Filme','🎬'],['Série','📺'],['Marca','🚗'],['Planta','🌿'],['Música','🎵'],['Parte do corpo','🧍'],['Lugar','🏠'],['Brinquedo','🧸'],['Aplicativo','📱'],['Personagem','🦸'],['Super-herói','🦸'],['Vilão','😈'],['Anime','🎌'],['Celebridade','🌟'],['Instrumento musical','🎹'],['Cantor','🎤'],['Banda','🎸'],['Desenho animado','📺'],['Jogo','🎮'],['Tecnologia','💻'],['Marca de roupa','👕'],['Doce','🍬'],['Bebida','🥤'],['Profissão diferente','🧑‍🔬'],['Coisa da cozinha','🍳'],['Coisa que dá medo','👻'],['Coisa que faz rir','😂'],['Coisa que existe em casa','🏠'],['Algo que não gostaria de encontrar','😱'],['Algo que levaria para uma ilha','🏝️'],['Algo que não pode faltar numa viagem','🧳'],['Algo que compraria','🛍️']
 ];
 const PRESETS={
  classic:['Nome','Animal','Fruta','Cidade','País','Cor','Comida','Profissão'],
@@ -106,7 +106,7 @@ function modal(title,html){$('modalTitle').textContent=title;$('modalBody').inne
 function closeModal(){$('modal').classList.add('hidden')}
 function showScreen(id){['homeScreen','gameScreen','resultScreen','finalScreen'].forEach(x=>$(x).classList.toggle('hidden',x!==id));}
 function sound(type='tap'){let prefs={};try{prefs=JSON.parse(localStorage.getItem('jhonArcadeSettingsV1')||'{}')}catch(e){}if(prefs.sound===false||config.sound===false)return;if(window.ArcadeCommon&&!window.ArcadeCommon.soundAllowed())return;try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;const ctx=new AC(),o=ctx.createOscillator(),g=ctx.createGain(),vol=(window.ArcadeCommon?.volume?.()??.35);o.type='sine';o.frequency.value=type==='stop'?170:type==='good'?720:470;g.gain.value=.045*vol;o.connect(g);g.connect(ctx.destination);o.start();o.stop(ctx.currentTime+(type==='stop'?.24:.09));o.onended=()=>ctx.close()}catch(e){}}
-function randomLetter(){let letters='ABCDEFGHIJKLMNOPQRSTUV';if(config.hard)letters+='WXYZKQY';else letters='ABCDEFGHIJKLMNOPQRSTUV';if(match&&match.usedLetters.length<letters.length)letters=letters.split('').filter(x=>!match.usedLetters.includes(x)).join('');if(!letters)letters=config.hard?'ABCDEFGHIJKLMNOPQRSTUVWXYZ':'ABCDEFGHIJKLMNOPQRSTUV';const letter=letters[Math.floor(Math.random()*letters.length)];if(match)match.usedLetters.push(letter);return letter}
+function randomLetter(){let letters=config.hard?'ABCDEFGHIJKLMNOPQRSTUVWXYZ':'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.replace(/[KWYXZQ]/g,'');if(match&&match.usedLetters.length<letters.length)letters=letters.split('').filter(x=>!match.usedLetters.includes(x)).join('');if(!letters)letters=config.hard?'ABCDEFGHIJKLMNOPQRSTUVWXYZ':'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.replace(/[KWYXZQ]/g,'');const letter=letters[Math.floor(Math.random()*letters.length)];if(match)match.usedLetters.push(letter);return letter}
 function startMatch(quick=false){
  if(quick){config.mode='solo';config.preset='classic';config.time=60;config.rounds=5;config.hard=false;chosen=PRESETS.classic.slice();$('preset').value='classic';$('timeLimit').value='60';$('roundCount').value='5';$('hardLetters').checked=false;document.querySelector('[data-mode="solo"]').classList.add('active');document.querySelector('[data-mode="family"]').classList.remove('active');$('playersInput').value='Jhon'}
  else{
@@ -159,15 +159,9 @@ function renderRoundResults(){
  const ranking=[...match.players].sort((a,b)=>b.score-a.score);$('roundTotals').textContent='Placar acumulado: '+ranking.map((p,i)=>(i+1)+'º '+p.name+' ('+p.score+' pts)').join(' · ');
 }
 function recalculateRound(){
- // Recalcula a rodada atual após revisão manual, substituindo os pontos que foram somados inicialmente.
- match.players.forEach(p=>p.score-=match.roundScores.find(x=>x.playerId===p.id)?.score||0);
- const invalids=match.responses.map(r=>r.invalid.slice());match.responses.forEach(r=>r.invalid=[]);scoreRound();
- match.responses.forEach((r,i)=>r.invalid=invalids[i]);
- // Refaz a pontuação com as invalidações preservadas.
- match.players.forEach(p=>p.score-=match.roundScores.find(x=>x.playerId===p.id)?.score||0);
- match.responses.forEach(r=>r.invalid=invalids[match.responses.indexOf(r)]);
- let normBy=match.categories.map((_,ci)=>match.responses.map(r=>norm(r.answers[ci])).filter(Boolean));
- match.responses.forEach((r,ri)=>{let sum=0;r.answers.forEach((a,ci)=>{const v=norm(a);let pts=0;if(v&&v.startsWith(match.letter)&&!r.invalid.includes(ci))pts=normBy[ci].filter(x=>x===v).length>1?5:10;sum+=pts});match.players[r.playerId].score+=sum;match.roundScores[ri].score=sum;match.roundScores[ri].details=r.answers.map((a,ci)=>{const v=norm(a),pts=v&&v.startsWith(match.letter)&&!r.invalid.includes(ci)?(normBy[ci].filter(x=>x===v).length>1?5:10):0;return{answer:a,points:pts,reason:pts?(pts===5?'Repetida':'Válida'):(v?'Inválida':'Em branco'),valid:!!pts}})});
+ const previous=match.roundScores||[];
+ previous.forEach(item=>{const player=match.players[item.playerId];if(player)player.score-=item.score});
+ scoreRound();
 }
 function nextRound(){match.round++;beginRound()}
 function finishMatch(){
@@ -186,8 +180,9 @@ function showSettings(){modal('⚙️ Configurações','<label class="category">
 function showHow(){modal('📖 Como jogar STOP','<ol style="color:#dbeafe;line-height:1.8;font-size:13px"><li>Escolha as categorias e o tempo.</li><li>O jogo sorteia uma letra.</li><li>Preencha cada categoria com uma palavra que começa com essa letra.</li><li>Quando terminar, pressione <b>STOP!</b> ou espere o cronômetro.</li><li>No modo família, passe o celular para cada jogador responder.</li><li>Confira as respostas e some os pontos.</li></ol><div class="status"><b>Pontuação:</b> resposta válida e única = 10 pontos; resposta repetida = 5; resposta em branco ou com letra errada = 0. A categoria é revisada pelos jogadores.</div>')}
 function startNext(){if(match.round<match.roundsTotal)nextRound();else finishMatch()}
 function init(){
- $('playersField').classList.toggle('hidden',config.mode!=='family');renderPresetChips();renderCategoryGrid();renderHomeStats();$('preset').value='classic';applyPreset('classic');
- document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{config.mode=b.dataset.mode;document.querySelectorAll('[data-mode]').forEach(x=>x.classList.toggle('active',x===b));$('playersField').classList.toggle('hidden',config.mode!=='family');save()}));
+ $('playersField').classList.toggle('hidden',config.mode!=='family');document.querySelectorAll('[data-mode]').forEach(x=>x.classList.toggle('active',x.dataset.mode===config.mode));renderPresetChips();renderHomeStats();
+ const presetName=PRESETS[config.preset]?config.preset:'classic';chosen=Array.isArray(config.categories)&&config.categories.length?config.categories.filter(x=>BASE.some(b=>b[0]===x)||customCats.includes(x)):PRESETS[presetName].slice();if(chosen.length<4)chosen=PRESETS[presetName].slice();$('preset').value=PRESETS[config.preset]?config.preset:'custom';renderCategoryGrid();if(config.mode==='family')$('playersInput').value='Pai, Irmã, Jhon';else $('playersInput').value='Jhon';
+ document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{config.mode=b.dataset.mode;document.querySelectorAll('[data-mode]').forEach(x=>x.classList.toggle('active',x===b));$('playersField').classList.toggle('hidden',config.mode!=='family');if(config.mode==='family'&&!$('playersInput').value.includes(','))$('playersInput').value='Pai, Irmã, Jhon';else if(config.mode==='solo'&&$('playersInput').value.includes(','))$('playersInput').value='Jhon';save()}));
  $('preset').addEventListener('change',e=>applyPreset(e.target.value));
  $('timeLimit').addEventListener('change',e=>config.time=Number(e.target.value));
  $('roundCount').addEventListener('change',e=>config.rounds=Number(e.target.value));
