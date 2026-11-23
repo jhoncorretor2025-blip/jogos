@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Jogos do Jhon">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Jogos do Jhon · v3.30</title>
+<title>Jogos do Jhon · v3.31</title>
 <meta name="description" content="Arcade de jogos web do Jhon com busca, favoritos, categorias, histórico e perfil gamer.">
 <style>
   :root{
@@ -243,6 +243,23 @@
   .setting .checkline{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--txt);font-weight:600}
   .setting input[type=checkbox]{accent-color:var(--a1);width:17px;height:17px}
   .settings-note,.install-note{color:var(--muted);font-size:11px;line-height:1.5;margin:10px 0 0}
+  .data-panel{margin:14px 0}
+  .data-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:12px}
+  .data-btn{display:flex;align-items:center;justify-content:center;gap:7px;min-height:43px;padding:10px 12px;border:1px solid #334155;border-radius:11px;background:#111b2d;color:var(--txt);font:inherit;font-size:12px;font-weight:750;cursor:pointer;text-align:center}
+  .data-btn:hover{border-color:var(--a1);background:rgba(34,211,238,.09)}
+  .data-btn.primary{border-color:rgba(34,211,238,.5);background:rgba(34,211,238,.11);color:#a5f3fc}
+  .data-btn.danger{border-color:rgba(251,113,133,.4);color:#fda4af}
+  .data-btn:focus-visible{outline:3px solid rgba(34,211,238,.9);outline-offset:3px}
+  .data-feedback{min-height:38px;margin:11px 0 0;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.025);color:var(--muted);font-size:12px;line-height:1.5}
+  .data-feedback[data-state="success"]{border-color:rgba(52,211,153,.4);color:#6ee7b7}
+  .data-feedback[data-state="error"]{border-color:rgba(251,113,133,.45);color:#fda4af}
+  .data-info{margin-top:13px;padding:12px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.025)}
+  .data-info summary{cursor:pointer;color:#cbd5e1;font-size:12px;font-weight:800}
+  .data-info p{margin:9px 0 0;color:var(--muted);font-size:12px;line-height:1.6}
+  .data-info b{color:#e2e8f0}
+  .data-actions .wide{grid-column:1/-1}
+  @media(max-width:560px){.data-actions{grid-template-columns:1fr}.data-actions .wide{grid-column:auto}.data-btn{min-height:46px;font-size:13px}}
+
   body[data-theme="retro"]{--bg:#170e08;--card:#2b1b0f;--line:#77512e;--txt:#fff0cf;--muted:#e2c49c;--a1:#fb923c;--a2:#facc15;--a3:#a3e635;--a4:#fbbf24;--a5:#fb7185;--a6:#60a5fa}
   body[data-theme="minimal"]{--bg:#111827;--card:#1f2937;--line:#4b5563;--txt:#f9fafb;--muted:#cbd5e1;--a1:#e5e7eb;--a2:#9ca3af;--a3:#d1d5db;--a4:#f3f4f6;--a5:#9ca3af;--a6:#cbd5e1}
   body[data-theme="colorful"]{--bg:#160d2a;--card:#251442;--line:#68449a;--txt:#fff7ff;--muted:#e9d5ff;--a1:#22d3ee;--a2:#f0abfc;--a3:#86efac;--a4:#fde047;--a5:#fb7185;--a6:#93c5fd}
@@ -260,7 +277,7 @@
     <span class="hero-kicker">ARCADE PESSOAL</span>
     <h1>Jogos do Jhon</h1>
     <p class="sub">🎮 Seu cantinho de diversão: escolha um jogo e comece a jogar no celular ou no PC.</p>
-    <div class="version"><span class="dot"></span> Versão <b>v3.30</b> · atualizado em <b>23/11/2026</b></div>
+    <div class="version"><span class="dot"></span> Versão <b>v3.31</b> · atualizado em <b>23/11/2026</b></div>
     <div class="home-hero-actions">
       <a class="primary-cta" href="#catalogStart">🎮 Explorar jogos <span aria-hidden="true">↓</span></a>
       <span class="hero-count" id="heroGameCount">28 jogos no catálogo</span>
@@ -476,9 +493,38 @@
       <p class="settings-note">As opções de contraste, texto, animações e controles táteis também são aplicadas às páginas de jogos compatíveis. Os sons dependem de cada jogo oferecer efeitos sonoros.</p>
     </div>
   </details>
+  <details class="feature-panel data-panel" id="dataPanel">
+    <summary>🛡️ Dados, backup e ajuda <span>Proteja seu progresso</span></summary>
+    <div class="feature-content">
+      <p class="settings-note">Faça uma cópia dos seus perfis e do progresso registrado pelo menu do Arcade. O backup é um arquivo JSON salvo no seu dispositivo.</p>
+      <div class="data-actions">
+        <button class="data-btn primary" type="button" id="exportBackup">⬇️ Baixar backup</button>
+        <button class="data-btn" type="button" id="importMerge">↔️ Mesclar backup</button>
+        <button class="data-btn danger wide" type="button" id="importReplace">⚠️ Substituir dados pelo backup</button>
+        <button class="data-btn wide" type="button" id="checkStorage">🔍 Verificar armazenamento</button>
+        <button class="data-btn wide" type="button" id="resetPreferences">↩️ Restaurar preferências padrão</button>
+      </div>
+      <input id="backupFile" type="file" accept=".json,application/json" hidden aria-label="Selecionar arquivo de backup do Jogos do Jhon">
+      <p class="data-feedback" id="backupFeedback" role="status" aria-live="polite" aria-atomic="true">Backup recomendado antes de trocar de navegador ou limpar os dados do site.</p>
+      <details class="data-info">
+        <summary>🔐 Privacidade: onde ficam meus dados?</summary>
+        <p>Os perfis, favoritos, histórico, contagens de jogos, conquistas e preferências deste menu ficam no <b>armazenamento local do navegador</b>, neste dispositivo. O site não cria uma conta nem sincroniza esses dados automaticamente com a nuvem.</p>
+        <p>O backup desta tela inclui esses dados do menu do Arcade e o modo de visualização. <b>Não inclui recordes, partidas salvas ou configurações que cada jogo grave em armazenamento próprio</b>, nem o cache offline do aplicativo. Esses dados podem exigir cópias específicas de cada jogo.</p>
+        <p>O arquivo de backup contém nomes de perfis e o progresso exportado. Guarde-o em local privado. Ele não deve conter senhas, tokens ou chaves secretas.</p>
+      </details>
+      <details class="data-info">
+        <summary>❔ Ajuda e diagnóstico</summary>
+        <p><b>Mesclar backup:</b> combina perfis e progresso sem somar novamente partidas já importadas; mantém as preferências atuais. Perfis repetidos são identificados e combinados, sem criar cópias iguais.</p>
+        <p><b>Substituir dados:</b> troca os perfis, progresso e preferências atuais pelos dados do arquivo. Exige confirmação adicional e não pode ser desfeito sem outro backup.</p>
+        <p><b>Restaurar preferências:</b> volta tema, som, volume, contraste, tamanho do texto, animações e visualização ao padrão. Não apaga perfis, favoritos ou histórico.</p>
+        <p><b>Notificações, sincronização e provedores de IA:</b> não são recursos deste catálogo; não há opções fictícias para eles.</p>
+      </details>
+    </div>
+  </details>
   <div class="notes">
-    <h2>📝 Novidades da tela inicial · v3.30</h2>
+    <h2>📝 Novidades da tela inicial · v3.31</h2>
     <ul>
+      <li><b>Dados e segurança v3.31:</b> backup JSON dos perfis, favoritos, histórico, conquistas e preferências do Arcade; importação com mesclagem ou substituição confirmada; restauração das configurações e diagnóstico do armazenamento local.</li>
       <li><b>Tela inicial v3.30:</b> destaque para explorar o catálogo, navegação por categoria mais direta, busca que respeita os filtros e melhorias de acessibilidade e uso no celular.</li>
       <li><b>Batalha Naval v1.1:</b> corrigido e reforçado o posicionamento automático da frota para garantir que todos os navios sejam colocados.</li>
       <li><b>Forca v2.3:</b> corrigida tela preta na inicialização e adicionados ícones para categorias em inglês.</li>
@@ -694,6 +740,127 @@ document.querySelectorAll('.mobile-nav button').forEach(b=>b.addEventListener('c
 document.getElementById('addProfile').addEventListener('click',()=>{if(family.profiles.length>=10){alert('O Arcade permite até 10 perfis neste dispositivo.');return}const name=prompt('Qual é o nome do novo jogador?');if(!name||!name.trim())return;const id='player-'+Date.now();family.profiles.push(makeProfile(id,name.trim().slice(0,24),'🧑'));family.activeId=id;save();renderAll()});
 function syncSettingsUI(){const s=family.settings;document.getElementById('themeSetting').value=s.theme;document.getElementById('textSetting').value=s.textSize;document.getElementById('controlsSetting').value=s.touchControls;document.getElementById('volumeSetting').value=s.volume;document.getElementById('volumeValue').textContent=s.volume+'%';document.getElementById('soundSetting').checked=s.sound;document.getElementById('contrastSetting').checked=s.contrast;document.getElementById('motionSetting').checked=s.reducedMotion}
 function updateSetting(key,value){family.settings[key]=value;save();applySettings();syncSettingsUI()}
+const BACKUP_FORMAT='jogos-do-jhon-backup',BACKUP_SCHEMA=1,MAX_BACKUP_BYTES=1024*1024;
+const knownGameHrefs=new Set(names.map(g=>g.href));
+const knownAchievementIds=new Set(achievements.map(a=>a.id));
+function setBackupFeedback(message,state='info'){
+ const box=document.getElementById('backupFeedback');box.textContent=message;box.dataset.state=state;
+}
+function sanitizeBackupSettings(raw){
+ const s=raw&&typeof raw==='object'?raw:{};
+ return {
+  theme:['neon','retro','minimal','colorful'].includes(s.theme)?s.theme:defaultSettings.theme,
+  sound:typeof s.sound==='boolean'?s.sound:defaultSettings.sound,
+  volume:Number.isFinite(Number(s.volume))?Math.max(0,Math.min(100,Math.round(Number(s.volume)))):defaultSettings.volume,
+  contrast:typeof s.contrast==='boolean'?s.contrast:defaultSettings.contrast,
+  textSize:['normal','large'].includes(s.textSize)?s.textSize:defaultSettings.textSize,
+  reducedMotion:typeof s.reducedMotion==='boolean'?s.reducedMotion:defaultSettings.reducedMotion,
+  touchControls:['auto','show','hide'].includes(s.touchControls)?s.touchControls:defaultSettings.touchControls
+ };
+}
+function sanitizeBackupProfile(raw){
+ if(!raw||typeof raw!=='object'||Array.isArray(raw))throw new Error('Um perfil do backup está inválido.');
+ const id=String(raw.id||'').trim().slice(0,64),name=String(raw.name||'').trim().slice(0,24);
+ if(!id||!name)throw new Error('Há um perfil sem identificador ou nome válido.');
+ const counts={};
+ if(raw.counts&&typeof raw.counts==='object'&&!Array.isArray(raw.counts)){
+  Object.entries(raw.counts).forEach(([href,value])=>{
+   const n=Number(value);if(knownGameHrefs.has(href)&&Number.isFinite(n)&&n>=0)counts[href]=Math.min(10000000,Math.floor(n));
+  });
+ }
+ const uniqueKnown=list=>Array.isArray(list)?[...new Set(list.filter(v=>typeof v==='string'&&knownGameHrefs.has(v)))]:[];
+ const unlocked=Array.isArray(raw.achievements)?[...new Set(raw.achievements.filter(v=>typeof v==='string'&&knownAchievementIds.has(v)))]:[];
+ return {id,name,emoji:String(raw.emoji||'🧑').slice(0,8),
+  plays:Number.isFinite(Number(raw.plays))?Math.max(0,Math.min(10000000,Math.floor(Number(raw.plays)))):0,
+  counts,favs:uniqueKnown(raw.favs),recent:uniqueKnown(raw.recent).slice(0,5),achievements:unlocked};
+}
+function validateBackup(raw){
+ if(!raw||typeof raw!=='object'||raw.format!==BACKUP_FORMAT||raw.schemaVersion!==BACKUP_SCHEMA||!raw.payload)throw new Error('Arquivo incompatível. Selecione um backup válido do Jogos do Jhon.');
+ const source=raw.payload.family;
+ if(!source||typeof source!=='object'||!Array.isArray(source.profiles)||source.profiles.length<1||source.profiles.length>10)throw new Error('O backup precisa conter de 1 a 10 perfis.');
+ const profiles=source.profiles.map(sanitizeBackupProfile),ids=new Set(),profileNames=new Set();
+ profiles.forEach(p=>{const normalized=normalizeText(p.name);if(ids.has(p.id)||profileNames.has(normalized))throw new Error('O backup contém perfis duplicados. Nenhum dado foi alterado.');ids.add(p.id);profileNames.add(normalized)});
+ const activeId=profiles.some(p=>p.id===source.activeId)?source.activeId:profiles[0].id;
+ return {family:{activeId,profiles,settings:sanitizeBackupSettings(source.settings)},viewMode:['grid','compact','list'].includes(raw.payload.viewMode)?raw.payload.viewMode:'grid'};
+}
+function exportBackup(){
+ try{
+  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v3.31',createdAt:new Date().toISOString(),
+   payload:{family:JSON.parse(JSON.stringify(family)),viewMode}};
+  const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;
+  a.download='jogos-do-jhon-backup-'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+  setBackupFeedback('Backup gerado. Inclui '+family.profiles.length+' perfil(is), favoritos, histórico, conquistas e preferências do menu.','success');
+ }catch(error){setBackupFeedback('Não foi possível gerar o backup: '+error.message,'error')}
+}
+function mergeProfile(existing,incoming){
+ existing.plays=Math.max(existing.plays,incoming.plays);
+ Object.entries(incoming.counts).forEach(([href,n])=>{existing.counts[href]=Math.max(Number(existing.counts[href])||0,n)});
+ existing.favs=[...new Set([...existing.favs,...incoming.favs])];
+ existing.recent=[...new Set([...incoming.recent,...existing.recent])].slice(0,5);
+ existing.achievements=[...new Set([...existing.achievements,...incoming.achievements])];
+}
+function applyImportedBackup(imported,mode){
+ if(mode==='replace'){
+  family=imported.family;save();setView(imported.viewMode);renderAll();
+  setBackupFeedback('Backup restaurado. Perfis, progresso e preferências foram substituídos pelos dados do arquivo.','success');return;
+ }
+ let added=0,merged=0,skipped=0;
+ imported.family.profiles.forEach(source=>{
+  const target=family.profiles.find(p=>p.id===source.id||normalizeText(p.name)===normalizeText(source.name));
+  if(target){mergeProfile(target,source);merged++}
+  else if(family.profiles.length<10){family.profiles.push({...source,counts:{...source.counts},favs:[...source.favs],recent:[...source.recent],achievements:[...source.achievements]});added++}
+  else skipped++;
+ });
+ save();renderAll();
+ setBackupFeedback('Backup mesclado: '+added+' perfil(is) novo(s), '+merged+' combinado(s)'+(skipped?', '+skipped+' ignorado(s) pelo limite de 10 perfis':'')+'. Preferências atuais mantidas.','success');
+}
+function beginBackupImport(mode){const input=document.getElementById('backupFile');input.dataset.mode=mode;input.value='';input.click()}
+document.getElementById('exportBackup').addEventListener('click',exportBackup);
+document.getElementById('importMerge').addEventListener('click',()=>beginBackupImport('merge'));
+document.getElementById('importReplace').addEventListener('click',()=>beginBackupImport('replace'));
+document.getElementById('backupFile').addEventListener('change',event=>{
+ const file=event.target.files&&event.target.files[0];if(!file)return;
+ const mode=event.target.dataset.mode==='replace'?'replace':'merge';
+ if(file.size>MAX_BACKUP_BYTES){setBackupFeedback('Arquivo muito grande. O limite para este backup é 1 MB.','error');event.target.value='';return}
+ const reader=new FileReader();
+ reader.onerror=()=>setBackupFeedback('Não foi possível ler o arquivo selecionado.','error');
+ reader.onload=()=>{
+  try{
+   const imported=validateBackup(JSON.parse(String(reader.result||'')));
+   if(mode==='replace'){
+    if(!confirm('ATENÇÃO: substituirá todos os perfis, favoritos, histórico, conquistas e preferências atuais pelos dados deste backup.'))return;
+    if(prompt('Para confirmar, digite SUBSTITUIR. Essa ação não pode ser desfeita sem outro backup.')!=='SUBSTITUIR'){
+     setBackupFeedback('Substituição cancelada. Seus dados atuais foram mantidos.');return;
+    }
+   }
+   applyImportedBackup(imported,mode);
+  }catch(error){setBackupFeedback('Backup não importado: '+error.message,'error')}
+  finally{event.target.value=''}
+ };
+ reader.readAsText(file);
+});
+document.getElementById('resetPreferences').addEventListener('click',()=>{
+ if(!confirm('Restaurar somente as preferências padrão? Perfis, favoritos, histórico e conquistas serão mantidos.'))return;
+ family.settings={...defaultSettings};save();setView('grid');applySettings();syncSettingsUI();renderAll();
+ setBackupFeedback('Preferências restauradas. Seus perfis e progresso continuam salvos.','success');
+});
+document.getElementById('checkStorage').addEventListener('click',async()=>{
+ try{
+  const key='__jhonArcadeStorageCheck__';localStorage.setItem(key,'ok');
+  const available=localStorage.getItem(key)==='ok';localStorage.removeItem(key);
+  if(!available)throw new Error('O navegador não confirmou a gravação local.');
+  const stored=JSON.parse(localStorage.getItem(FAMILY_KEY)||'null');
+  if(stored&&(!Array.isArray(stored.profiles)||!stored.profiles.length))throw new Error('Os dados de perfil precisam ser conferidos.');
+  let extra='';
+  if(navigator.storage&&navigator.storage.estimate){
+   const estimate=await navigator.storage.estimate();
+   if(Number.isFinite(estimate.quota)&&estimate.quota>0)extra=' Espaço utilizado: '+Math.round((estimate.usage||0)/1024)+' KB de '+Math.round(estimate.quota/1024/1024)+' MB estimados.';
+  }
+  setBackupFeedback('Armazenamento local disponível. O navegador conseguiu gravar e ler os dados do Arcade.'+extra,'success');
+ }catch(error){setBackupFeedback('Não foi possível confirmar o armazenamento local. Verifique as permissões e faça um backup se os dados ainda estiverem acessíveis. '+error.message,'error')}
+});
 document.getElementById('themeSetting').addEventListener('change',e=>updateSetting('theme',e.target.value));
 document.getElementById('textSetting').addEventListener('change',e=>updateSetting('textSize',e.target.value));
 document.getElementById('controlsSetting').addEventListener('change',e=>updateSetting('touchControls',e.target.value));
