@@ -1,4 +1,4 @@
-const CACHE_NAME="jogos-do-jhon-v3.0";
+const CACHE_NAME="jogos-do-jhon-v3.1";
 const CORE=[
  "./",
  "./index.html",
