@@ -564,7 +564,21 @@ family.profiles=family.profiles.map(p=>Object.assign(makeProfile(p.id,p.name,p.e
 if(!family.profiles.some(p=>p.id===family.activeId))family.activeId=family.profiles[0].id;
 if(!familyExists){try{const old=JSON.parse(localStorage.getItem(OLD_KEY)||'{}');const j=family.profiles.find(p=>p.id==='jhon');if(j){j.plays=Number(old.plays)||0;j.counts=old.counts&&typeof old.counts==='object'?old.counts:{};j.favs=Array.isArray(old.favs)?old.favs:[];j.recent=Array.isArray(old.recent)?old.recent:[]}}catch(e){}}
 const active=()=>family.profiles.find(p=>p.id===family.activeId)||family.profiles[0];
-const save=()=>{try{localStorage.setItem(FAMILY_KEY,JSON.stringify(family));localStorage.setItem(SETTINGS_KEY,JSON.stringify(family.settings))}catch(e){console.warn('Não foi possível salvar os dados do Arcade.',e)}};
+const save=()=>{
+ let oldFamily=null,oldSettings=null,readReady=false;
+ try{
+  oldFamily=localStorage.getItem(FAMILY_KEY);oldSettings=localStorage.getItem(SETTINGS_KEY);readReady=true;
+  localStorage.setItem(FAMILY_KEY,JSON.stringify(family));
+  localStorage.setItem(SETTINGS_KEY,JSON.stringify(family.settings));
+  return true;
+ }catch(e){
+  if(readReady){
+   try{if(oldFamily===null)localStorage.removeItem(FAMILY_KEY);else localStorage.setItem(FAMILY_KEY,oldFamily);
+    if(oldSettings===null)localStorage.removeItem(SETTINGS_KEY);else localStorage.setItem(SETTINGS_KEY,oldSettings)}catch(rollbackError){console.warn('Não foi possível reverter uma gravação parcial.',rollbackError)}
+  }
+  console.warn('Não foi possível salvar os dados do Arcade.',e);return false;
+ }
+};
 const names=cards.map(c=>({href:c.dataset.href,name:c.querySelector('.name').textContent.replace('NOVO','').trim(),icon:c.querySelector('.ico').textContent,cat:c.dataset.category||'arcade'}));
 const categories={puzzle:'🧠 Puzzle',action:'⚡ Ação',arcade:'🕹️ Arcade',strategy:'♟️ Estratégia',racing:'🏎️ Corrida'};
 const achievements=[
@@ -674,10 +688,11 @@ function renderSuggestions(){
 }
 function setView(mode){
  grid.classList.remove('compact','list');if(mode!=='grid')grid.classList.add(mode);
- viewMode=mode;try{localStorage.setItem(VIEW_KEY,mode)}catch(e){}
+ viewMode=mode;let saved=true;try{localStorage.setItem(VIEW_KEY,mode)}catch(e){saved=false}
  const labels={grid:'▦ Grade',compact:'▤ Compacta',list:'☰ Lista'};
  document.getElementById('viewToggle').textContent=labels[mode];
  document.getElementById('viewToggle').title='Visualização: '+labels[mode];
+ return saved;
 }
 function renderCards(){
  const p=active(),raw=document.getElementById('gameSearch').value.trim(),q=normalizeText(raw);let shown=0;
@@ -790,7 +805,7 @@ function exportBackup(){
   const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
   const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;
   a.download='jogos-do-jhon-backup-'+new Date().toISOString().slice(0,10)+'.json';
-  document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
   setBackupFeedback('Backup gerado. Inclui '+family.profiles.length+' perfil(is), favoritos, histórico, conquistas e preferências do menu.','success');
  }catch(error){setBackupFeedback('Não foi possível gerar o backup: '+error.message,'error')}
 }
@@ -803,9 +818,12 @@ function mergeProfile(existing,incoming){
 }
 function applyImportedBackup(imported,mode){
  if(mode==='replace'){
-  family=imported.family;save();setView(imported.viewMode);renderAll();
-  setBackupFeedback('Backup restaurado. Perfis, progresso e preferências foram substituídos pelos dados do arquivo.','success');return;
+  const previousFamily=family;family=imported.family;
+  if(!save()){family=previousFamily;renderAll();setBackupFeedback('Não foi possível gravar o backup. Seus dados anteriores foram mantidos.','error');return}
+  const viewSaved=setView(imported.viewMode);renderAll();
+  setBackupFeedback(viewSaved?'Backup restaurado. Perfis, progresso e preferências foram substituídos pelos dados do arquivo.':'Backup restaurado, mas o modo de visualização não pôde ser salvo pelo navegador.','success');return;
  }
+ const previousFamily=JSON.parse(JSON.stringify(family));
  let added=0,merged=0,skipped=0;
  imported.family.profiles.forEach(source=>{
   const target=family.profiles.find(p=>p.id===source.id||normalizeText(p.name)===normalizeText(source.name));
@@ -813,7 +831,8 @@ function applyImportedBackup(imported,mode){
   else if(family.profiles.length<10){family.profiles.push({...source,counts:{...source.counts},favs:[...source.favs],recent:[...source.recent],achievements:[...source.achievements]});added++}
   else skipped++;
  });
- save();renderAll();
+ if(!save()){family=previousFamily;renderAll();setBackupFeedback('Não foi possível gravar os dados mesclados. Seus dados anteriores foram mantidos.','error');return}
+ renderAll();
  setBackupFeedback('Backup mesclado: '+added+' perfil(is) novo(s), '+merged+' combinado(s)'+(skipped?', '+skipped+' ignorado(s) pelo limite de 10 perfis':'')+'. Preferências atuais mantidas.','success');
 }
 function beginBackupImport(mode){const input=document.getElementById('backupFile');input.dataset.mode=mode;input.value='';input.click()}
@@ -843,8 +862,10 @@ document.getElementById('backupFile').addEventListener('change',event=>{
 });
 document.getElementById('resetPreferences').addEventListener('click',()=>{
  if(!confirm('Restaurar somente as preferências padrão? Perfis, favoritos, histórico e conquistas serão mantidos.'))return;
- family.settings={...defaultSettings};save();setView('grid');applySettings();syncSettingsUI();renderAll();
- setBackupFeedback('Preferências restauradas. Seus perfis e progresso continuam salvos.','success');
+ const previousSettings=family.settings;family.settings={...defaultSettings};
+ if(!save()){family.settings=previousSettings;renderAll();setBackupFeedback('Não foi possível salvar as preferências padrão. Suas configurações anteriores foram mantidas.','error');return}
+ const viewSaved=setView('grid');applySettings();syncSettingsUI();renderAll();
+ setBackupFeedback(viewSaved?'Preferências restauradas. Seus perfis e progresso continuam salvos.':'Preferências restauradas; o modo de visualização não pôde ser salvo.','success');
 });
 document.getElementById('checkStorage').addEventListener('click',async()=>{
  try{
@@ -855,8 +876,9 @@ document.getElementById('checkStorage').addEventListener('click',async()=>{
   if(stored&&(!Array.isArray(stored.profiles)||!stored.profiles.length))throw new Error('Os dados de perfil precisam ser conferidos.');
   let extra='';
   if(navigator.storage&&navigator.storage.estimate){
-   const estimate=await navigator.storage.estimate();
-   if(Number.isFinite(estimate.quota)&&estimate.quota>0)extra=' Espaço utilizado: '+Math.round((estimate.usage||0)/1024)+' KB de '+Math.round(estimate.quota/1024/1024)+' MB estimados.';
+   try{const estimate=await navigator.storage.estimate();
+    if(Number.isFinite(estimate.quota)&&estimate.quota>0)extra=' Espaço utilizado: '+Math.round((estimate.usage||0)/1024)+' KB de '+Math.round(estimate.quota/1024/1024)+' MB estimados.';
+   }catch(estimateError){console.info('Estimativa de espaço indisponível.',estimateError)}
   }
   setBackupFeedback('Armazenamento local disponível. O navegador conseguiu gravar e ler os dados do Arcade.'+extra,'success');
  }catch(error){setBackupFeedback('Não foi possível confirmar o armazenamento local. Verifique as permissões e faça um backup se os dados ainda estiverem acessíveis. '+error.message,'error')}
