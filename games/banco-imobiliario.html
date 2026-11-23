@@ -436,15 +436,44 @@ function startGame(){
  logEvent('Partida iniciada com '+money(startingCash)+' por jogador e '+(roundLimit?roundLimit+' rodadas':'sem limite de rodadas')+'.');
  recordWealth();render();
 }
+function animatePlayerMove(idx,steps,done){
+ const seq=++moveSequenceId,dir=steps>=0?1:-1,total=Math.abs(steps),start=players[idx].pos;
+ let moved=0,crossedStart=false;
+ function tick(){
+  if(seq!==moveSequenceId||!started||over)return;
+  const previous=players[idx].pos;
+  players[idx].pos=(previous+dir+spaces.length)%spaces.length;
+  if(dir>0&&previous===spaces.length-1)crossedStart=true;
+  moved++;render();
+  const current=boardEl.querySelector('[data-index="'+players[idx].pos+'"]');
+  if(current){current.classList.add('moving-token');setTimeout(()=>current.classList.remove('moving-token'),145)}
+  if(moved>=total){
+   let bonus=0;
+   if(dir>0&&crossedStart){bonus=players[idx].pos===0?300:200;players[idx].cash+=bonus;logEvent((idx===0?'Você':'IA')+(bonus===300?' parou no Início e recebeu ':' passou pelo Início e recebeu ')+money(bonus)+'.','gain');showToast('+'+money(bonus),false,idx)}
+   render();done({bonus,from:start,to:players[idx].pos});return;
+  }
+  setTimeout(tick,115);
+ }
+ if(total===0){done({bonus:0,from:start,to:start});return}
+ tick();
+}
 function roll(isAI){
  if(!started||busy||over||(turn===1&&!isAI))return;
  busy=true;const d1=1+Math.floor(Math.random()*6),d2=1+Math.floor(Math.random()*6);diceFaces=[d1,d2];dice=d1+d2;diceRolling=true;
- const p=players[turn],from=p.pos,raw=from+dice,to=raw%spaces.length;
- if(raw>spaces.length){const bonus=200;p.cash+=bonus;logEvent((turn===0?'Você':'IA')+' recebeu '+money(bonus)+' no Início.', 'gain');showToast('+'+money(bonus),false)}
- p.pos=to;setMessage((turn===0?'Você':'IA')+' lançou '+d1+' + '+d2+' = <b>'+dice+'</b> e avançou para <b>'+spaces[to].name+'</b>.');
- logEvent((turn===0?'Você':'IA')+' rolou '+d1+' e '+d2+' (total '+dice+'), chegando em '+spaces[to].name+'.');
+ const idx=turn;setMessage((idx===0?'Você':'IA')+' lançou '+d1+' + '+d2+' = <b>'+dice+'</b>. A peça está percorrendo o tabuleiro…');
+ logEvent((idx===0?'Você':'IA')+' rolou '+d1+' e '+d2+' (total '+dice+').');
  render();
- setTimeout(()=>{if(!started||over)return;diceRolling=false;render();resolve(to,false)},520);
+ setTimeout(()=>{
+  if(!started||over)return;
+  diceRolling=false;render();
+  animatePlayerMove(idx,dice,result=>{
+   if(!started||over)return;
+   const dest=result.to;
+   setMessage((idx===0?'Você':'IA')+' avançou para <b>'+spaces[dest].name+'</b>.'+(result.bonus?' Bônus de Início: '+money(result.bonus)+'.':''));
+   logEvent((idx===0?'Você':'IA')+' chegou em '+spaces[dest].name+'.');
+   resolve(dest,false);
+  });
+ },520);
 }
 function nextTurn(){
  sheet.classList.remove('show');pendingAction=null;
@@ -452,7 +481,7 @@ function nextTurn(){
  if(turn===0){
   turn=1;busy=true;render();setTimeout(()=>{if(started&&!over)roll(true)},720);
  }else{
-  rounds++;
+  rounds++;recordWealth();
   if(roundLimit&&rounds>=roundLimit){endGame('rounds');return}
   turn=0;busy=false;render();setMessage('Sua vez! Escolha sua próxima jogada.');
  }
@@ -503,18 +532,22 @@ function offerUpgrade(i){
 function aiShouldBuild(s){const cost=upgradeCost(s),reserve=reserveForAI(),newRent=s.rent*RENT_MULTIPLIERS[Math.min(4,s.buildings+1)],increase=newRent-rentFor(s);return !s.mortgaged&&s.buildings<4&&players[1].cash-cost>=reserve&&increase>=cost*.12}
 function drawChance(){
  const card=CARDS[Math.floor(Math.random()*CARDS.length)],idx=turn,who=idx===0?'Você':'IA';
+ showIllustratedEvent(card);
  logEvent('Carta de Sorte: '+who+' — '+card.text+'.');
  if(card.type==='cash'){
-  if(card.value>=0){players[idx].cash+=card.value;showToast('+'+money(card.value),false);setMessage('🎴 '+card.text+' <b>+'+money(card.value)+'</b>.');render();nextTurn()}
+  if(card.value>=0){players[idx].cash+=card.value;showToast('+'+money(card.value),false,idx);setMessage('🎴 '+card.text+' <b>+'+money(card.value)+'</b>.');render();nextTurn()}
   else{setMessage('🎴 '+card.text+' <b>-'+money(-card.value)+'</b>.');charge(idx,-card.value,'Carta de Sorte',null)}
  }else if(card.type==='move'){
-  const old=players[idx].pos,raw=old+card.steps,total=spaces.length;
-  if(raw>total){const bonus=200;players[idx].cash+=bonus;showToast('+'+money(bonus),false);logEvent(who+' passou pelo Início pela carta e ganhou '+money(bonus)+'.','gain')}
-  players[idx].pos=(raw%total+total)%total;const dest=players[idx].pos;setMessage('🎴 '+card.text+' Destino: <b>'+spaces[dest].name+'</b>.');render();setTimeout(()=>{if(started&&!over)resolve(dest,true)},250);
+  setMessage('🎴 '+card.text+' A peça está se deslocando…');
+  animatePlayerMove(idx,card.steps,result=>{
+   if(!started||over)return;
+   const dest=result.to;setMessage('🎴 '+card.text+' Destino: <b>'+spaces[dest].name+'</b>.'+(result.bonus?' Bônus de Início: '+money(result.bonus)+'.':''));
+   render();resolve(dest,true);
+  });
  }else if(card.type==='portfolio'){
   const count=spaces.filter(s=>s.owner===idx).length,amount=count*card.value;
-  if(amount){players[idx].cash+=amount;showToast('+'+money(amount),false);setMessage('🎴 '+card.text+' <b>+'+money(amount)+'</b>.');logEvent(who+' recebeu '+money(amount)+' em dividendos de imóveis.','gain');render();nextTurn()}
-  else{players[idx].cash+=50;setMessage('🎴 Sem imóveis para receber dividendos: bônus de R$ 50.');logEvent(who+' recebeu bônus inicial de R$ 50.','gain');render();nextTurn()}
+  if(amount){players[idx].cash+=amount;showToast('+'+money(amount),false,idx);setMessage('🎴 '+card.text+' <b>+'+money(amount)+'</b>.');logEvent(who+' recebeu '+money(amount)+' em dividendos de imóveis.','gain');render();nextTurn()}
+  else{players[idx].cash+=50;showToast('+R$ 50',false,idx);setMessage('🎴 Sem imóveis para receber dividendos: bônus de R$ 50.');logEvent(who+' recebeu bônus inicial de R$ 50.','gain');render();nextTurn()}
  }else if(card.type==='maintenance'){
   const levels=spaces.filter(s=>s.owner===idx).reduce((n,s)=>n+s.buildings,0),amount=levels*card.value;
   if(!amount){setMessage('🎴 '+card.text+' Você não tem construções, então não há cobrança.');nextTurn()}
