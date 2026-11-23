@@ -272,7 +272,7 @@ function render(){
  boardEl.appendChild(center);$('rollBtn').addEventListener('click',()=>roll(false));
  updateHud();
 }
-function showSetup(){setupOv.classList.add('show');managerOv.classList.remove('show');ov.classList.remove('show')}
+function showSetup(){started=false;busy=true;pendingDebt=null;pendingAction=null;managerFinishTurn=false;sheet.classList.remove('show');setupOv.classList.add('show');managerOv.classList.remove('show');ov.classList.remove('show')}
 function startGame(){
  startingCash=Number($('startingCash').value)||1000;roundLimit=Number($('roundLimit').value)||0;rounds=0;history=[];pendingDebt=null;pendingAction=null;managerFinishTurn=false;
  spaces=START_SPACES.map(s=>Object.assign({},s,{owner:-1,buildings:0,mortgaged:false}));
@@ -287,17 +287,17 @@ function roll(isAI){
  if(!started||busy||over||(turn===1&&!isAI))return;
  busy=true;const d1=1+Math.floor(Math.random()*6),d2=1+Math.floor(Math.random()*6);diceFaces=[d1,d2];dice=d1+d2;diceRolling=true;
  const p=players[turn],from=p.pos,raw=from+dice,to=raw%spaces.length;
- if(raw>=spaces.length){const bonus=raw===spaces.length?300:200;p.cash+=bonus;logEvent((turn===0?'Você':'IA')+' recebeu '+money(bonus)+' no Início.', 'gain');showToast('+'+money(bonus),false)}
+ if(raw>spaces.length){const bonus=200;p.cash+=bonus;logEvent((turn===0?'Você':'IA')+' recebeu '+money(bonus)+' no Início.', 'gain');showToast('+'+money(bonus),false)}
  p.pos=to;setMessage((turn===0?'Você':'IA')+' lançou '+d1+' + '+d2+' = <b>'+dice+'</b> e avançou para <b>'+spaces[to].name+'</b>.');
  logEvent((turn===0?'Você':'IA')+' rolou '+d1+' e '+d2+' (total '+dice+'), chegando em '+spaces[to].name+'.');
  render();
- setTimeout(()=>{diceRolling=false;render();resolve(to,false)},520);
+ setTimeout(()=>{if(!started||over)return;diceRolling=false;render();resolve(to,false)},520);
 }
 function nextTurn(){
  sheet.classList.remove('show');pendingAction=null;
  if(over)return;
  if(turn===0){
-  turn=1;busy=true;render();setTimeout(()=>{if(!over)roll(true)},720);
+  turn=1;busy=true;render();setTimeout(()=>{if(started&&!over)roll(true)},720);
  }else{
   rounds++;
   if(roundLimit&&rounds>=roundLimit){endGame('rounds');return}
@@ -356,8 +356,8 @@ function drawChance(){
   else{setMessage('🎴 '+card.text+' <b>-'+money(-card.value)+'</b>.');charge(idx,-card.value,'Carta de Sorte',null)}
  }else if(card.type==='move'){
   const old=players[idx].pos,raw=old+card.steps,total=spaces.length;
-  if(raw>=total){const bonus=raw===total?300:200;players[idx].cash+=bonus;showToast('+'+money(bonus),false);logEvent(who+' passou pelo Início pela carta e ganhou '+money(bonus)+'.','gain')}
-  players[idx].pos=(raw%total+total)%total;const dest=players[idx].pos;setMessage('🎴 '+card.text+' Destino: <b>'+spaces[dest].name+'</b>.');render();setTimeout(()=>resolve(dest,true),250);
+  if(raw>total){const bonus=200;players[idx].cash+=bonus;showToast('+'+money(bonus),false);logEvent(who+' passou pelo Início pela carta e ganhou '+money(bonus)+'.','gain')}
+  players[idx].pos=(raw%total+total)%total;const dest=players[idx].pos;setMessage('🎴 '+card.text+' Destino: <b>'+spaces[dest].name+'</b>.');render();setTimeout(()=>{if(started&&!over)resolve(dest,true)},250);
  }else if(card.type==='portfolio'){
   const count=spaces.filter(s=>s.owner===idx).length,amount=count*card.value;
   if(amount){players[idx].cash+=amount;showToast('+'+money(amount),false);setMessage('🎴 '+card.text+' <b>+'+money(amount)+'</b>.');logEvent(who+' recebeu '+money(amount)+' em dividendos de imóveis.','gain');render();nextTurn()}
