@@ -167,7 +167,7 @@ body{min-height:100vh;min-height:100dvh;padding:16px 12px 28px;display:flex;flex
   <div id="setupOv" class="modal-cover show">
     <div class="modal-card">
       <h2>🏦 Prepare sua partida</h2>
-      <p class="intro">Escolha o tamanho do caixa e a duração. A partida termina por falência ou, quando definido, pelo limite de rodadas. No final, vence quem tiver o maior patrimônio total.</p>
+      <p class="intro">Escolha o tamanho do caixa e a duração. Uma rodada equivale a uma jogada sua e uma da IA. A partida termina por falência ou pelo limite escolhido; nesse caso, vence quem tiver o maior patrimônio total.</p>
       <div class="form-row">
         <div class="form-field"><label for="startingCash">💰 Saldo inicial</label><select id="startingCash"><option value="800">R$ 800 · Rápida</option><option value="1000" selected>R$ 1.000 · Clássica</option><option value="1500">R$ 1.500 · Longa</option><option value="2000">R$ 2.000 · Investidor</option></select></div>
         <div class="form-field"><label for="roundLimit">🔄 Limite de rodadas</label><select id="roundLimit"><option value="20">20 rodadas</option><option value="30" selected>30 rodadas</option><option value="50">50 rodadas</option><option value="0">Sem limite · até falência</option></select></div>
@@ -438,7 +438,7 @@ function tradeWithAI(i,mode){
 }
 function openManager(emergency){
  $('managerTitle').textContent=emergency?'🆘 Caixa em emergência':'🏘️ Gestão imobiliária';
- $('managerIntro').textContent=emergency?'Use as opções abaixo para levantar dinheiro e quitar a obrigação. Imóveis hipotecados não recebem aluguel.':'Construa casas e hotéis, hipoteque para obter liquidez ou negocie propriedades com a IA. Perfil da IA: reserva pelo menos 22% do caixa (mínimo R$ 220) e prioriza Centro, Avenida, Jardim e Colina.';
+ $('managerIntro').textContent=emergency?'Use as opções abaixo para levantar dinheiro e quitar a obrigação. Imóveis hipotecados não recebem aluguel.':'Cada imóvel pode receber até 3 casas e depois 1 hotel. O aluguel cresce de 1× para 2×, 3,5×, 5× e 8×. Cada casa custa 35% do imóvel; o hotel custa 75%. Hipoteca rende 50% do preço e o resgate custa 65%. Você também pode negociar propriedades com a IA, que reserva pelo menos 22% do caixa (mínimo R$ 220) e prioriza Centro, Avenida, Jardim e Colina.';
  $('emergencyBox').innerHTML=emergency?'<div class="emergency">Você precisa de '+money(pendingDebt.amount)+' para '+pendingDebt.reason+'. Saldo disponível: '+money(players[0].cash)+'. Levante recursos antes de declarar falência.</div>':'';
  const rows=[];
  spaces.forEach((s,i)=>{
