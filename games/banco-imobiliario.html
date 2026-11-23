@@ -335,6 +335,7 @@ const setupOv=$('setupOv'),managerOv=$('managerOv'),ov=$('ov'),toast=$('toast');
 const cashEls=[$('cash0'),$('cash1')],playerEls=[$('player0'),$('player1')],assetEls=[$('assets0'),$('assets1')],turnTags=[$('turnTag0'),$('turnTag1')];
 let spaces=[],players=[],turn=0,busy=true,over=false,started=false,dice='',diceFaces=[],diceRolling=false,pendingAction=null,pendingDebt=null;
 let startingCash=1000,roundLimit=30,rounds=0,history=[],tradeOffer=null,toastTimer=null,managerFinishTurn=false;
+let wealthHistory=[],auction=null,auctionTimer=null,auctionBidTimer=null,eventCardTimer=null,nightMode=false,moveSequenceId=0;
 const DICE=['','⚀','⚁','⚂','⚃','⚄','⚅'];
 function money(v){return 'R$ '+Math.round(v).toLocaleString('pt-BR')}
 function accentFor(s){const map={Centro:'#60a5fa',Praia:'#38bdf8','Vila Nova':'#fb923c',Jardim:'#4ade80',Alameda:'#a78bfa',Colina:'#facc15',Periferia:'#f87171',Avenida:'#e879f9'};return map[s.name]||'#8eaf8a'}
@@ -343,8 +344,44 @@ function kindFor(s){return s.type==='prop'?'IMÓVEL':s.type==='start'?'INÍCIO':
 function sideFor(i){return i<=4?'top':i<=8?'right':i<=12?'bottom':'left'}
 function cellPos(i){if(i<=4)return{r:1,c:i+1};if(i<=8)return{r:i-3,c:5};if(i<=12)return{r:5,c:13-i};return{r:17-i,c:1}}
 function logEvent(text,type){history.unshift({text:text,type:type||''});history=history.slice(0,24);$('historyCount').textContent=history.length;$('historyList').innerHTML=history.slice(0,8).map(x=>'<li class="'+x.type+'">'+x.text+'</li>').join('')}
-function showToast(text,loss){toast.textContent=text;toast.classList.toggle('loss',!!loss);toast.classList.add('show');if(toastTimer)clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),1500);try{if(navigator.vibrate)navigator.vibrate(loss?[70,35,70]:35)}catch(e){}}
+function showToast(text,loss,playerIndex){
+ toast.textContent=text;toast.classList.toggle('loss',!!loss);toast.classList.add('show');
+ if(toastTimer)clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),1500);
+ const idx=playerIndex===0||playerIndex===1?playerIndex:turn,anchor=playerEls[idx];
+ if(anchor){const rect=anchor.getBoundingClientRect(),pop=document.createElement('div');pop.className='money-float '+(loss?'loss':'gain');pop.textContent=text;pop.style.left=(rect.left+rect.width/2)+'px';pop.style.top=(rect.top+rect.height*.2)+'px';document.body.appendChild(pop);setTimeout(()=>pop.remove(),1200)}
+ try{if(navigator.vibrate)navigator.vibrate(loss?[70,35,70]:35)}catch(e){}
+}
 function setMessage(text){msgEl.innerHTML=text}
+const PROPERTY_GROUPS=[
+ {id:'nobre',name:'Nobre',color:'#e8bc58',members:['Centro','Avenida']},
+ {id:'litoral',name:'Litoral',color:'#43b8d4',members:['Praia','Alameda']},
+ {id:'residencial',name:'Residencial',color:'#61b879',members:['Vila Nova','Jardim']},
+ {id:'expansao',name:'Expansão',color:'#b28ce6',members:['Colina','Periferia']}
+];
+function groupFor(s){return PROPERTY_GROUPS.find(g=>g.members.includes(s.name))||null}
+function ownsGroup(owner,group){return !!group&&owner>=0&&group.members.every(name=>spaces.some(s=>s.name===name&&s.owner===owner))}
+function groupProgress(owner,group){return group.members.filter(name=>spaces.some(s=>s.name===name&&s.owner===owner)).length}
+function renderBuildings(s){
+ if(!s.buildings)return '';
+ if(s.buildings===4)return '<div class="buildings-3d"><span class="hotel-3d" title="Hotel"></span></div>';
+ return '<div class="buildings-3d">'+Array.from({length:s.buildings},()=>'<span class="house-3d" title="Casa"></span>').join('')+'</div>';
+}
+function renderCityArt(){
+ const owned=spaces.filter(s=>s.owner!==-1).length,level=spaces.reduce((n,s)=>n+(s.buildings||0),0);
+ const heights=[46,66,53,77,58,86,63,72],upgraded=Math.min(8,Math.floor(level/2)+Math.floor(owned/2));
+ return '<div class="city-art">'+heights.map((h,i)=>'<span class="building b'+(i%4+1)+(i<upgraded?' city-upgraded':'')+'" style="height:'+Math.min(100,h+(i<upgraded?16:0))+'%"></span>').join('')+'</div>';
+}
+function recordWealth(){
+ if(!players.length||!spaces.length)return;
+ wealthHistory.push({round:rounds,you:assetValue(0),ai:assetValue(1)});
+ wealthHistory=wealthHistory.slice(-32);
+}
+function showIllustratedEvent(card){
+ const icons={cash:card.value>=0?'💰':'🧾',move:card.steps>=0?'🚀':'↩️',portfolio:'🏘️',maintenance:'🛠️'};
+ $('eventArt').textContent=icons[card.type]||'🎴';$('eventTitle').textContent=card.text.split(/[.!?]/)[0];
+ $('eventDescription').textContent=card.text;$('eventKicker').textContent=card.type==='move'?'MOVIMENTAÇÃO NO TABULEIRO':'EVENTO DE SORTE';
+ const box=$('eventCard');box.classList.add('show');if(eventCardTimer)clearTimeout(eventCardTimer);eventCardTimer=setTimeout(()=>box.classList.remove('show'),1900);
+}
 function rentFor(s){if(s.mortgaged)return 0;return Math.round(s.rent*RENT_MULTIPLIERS[Math.min(4,s.buildings||0)])}
 function houseCost(s){return Math.ceil(s.price*.35)}
 function hotelCost(s){return Math.ceil(s.price*.75)}
@@ -366,33 +403,38 @@ function updateHud(){
 function render(){
  boardEl.innerHTML='';
  spaces.forEach((s,i)=>{
-  const p=cellPos(i),at0=players[0].pos===i,at1=players[1].pos===i,d=document.createElement('div');
-  d.className='space space-'+sideFor(i)+(s.owner===0?' own0':s.owner===1?' own1':'')+(at0||at1?' here':'')+(s.mortgaged?' mortgaged':'');
-  d.dataset.type=s.type;d.style.setProperty('--accent',accentFor(s));d.style.gridRow=p.r;d.style.gridColumn=p.c;
+  const p=cellPos(i),at0=players[0].pos===i,at1=players[1].pos===i,group=groupFor(s),complete=group&&ownsGroup(s.owner,group),d=document.createElement('div');
+  d.className='space space-'+sideFor(i)+(s.owner===0?' own0':s.owner===1?' own1':'')+(at0||at1?' here':'')+(s.mortgaged?' mortgaged':'')+(complete?' group-complete':'');
+  d.dataset.type=s.type;d.dataset.index=i;d.style.setProperty('--accent',group?group.color:accentFor(s));d.style.gridRow=p.r;d.style.gridColumn=p.c;
+  d.setAttribute('role','button');d.setAttribute('tabindex','0');d.setAttribute('aria-label',s.name+(s.type==='prop'?', aluguel '+money(rentFor(s)):''));
   const owners=s.owner===0?'SEU':s.owner===1?'IA':'';
   const pawns=(at0?'<span class="pawn pawn-you" title="Você">🚙</span>':'')+(at1?'<span class="pawn pawn-ia" title="IA">🤖</span>':'');
   const value=s.type==='prop'?'<span>COMPRA</span> <strong>'+money(s.price)+'</strong>':'';
   const rent=s.type==='prop'?'<div class="rentline">ALUG. '+money(rentFor(s))+'</div>':'';
-  const buildings=s.type==='prop'&&s.buildings?'<div class="houses">'+(s.buildings===4?'🏨':'🏠'.repeat(s.buildings))+'</div>':'';
-  d.innerHTML='<div class="space-band"></div><div class="space-header"><span class="space-icon">'+iconFor(s)+'</span><span class="space-kind">'+kindFor(s)+'</span></div><div class="nm">'+s.name+'</div><div class="pr">'+value+'</div>'+rent+(owners?'<div class="space-kind">'+owners+(s.mortgaged?' · HIPOTECADO':'')+'</div>':'')+buildings+(pawns?'<div class="pawns">'+pawns+'</div>':'');
+  const groupFlag=complete?'<div class="group-flag">BAIRRO COMPLETO</div>':'';
+  d.innerHTML='<div class="space-band"></div><div class="space-header"><span class="space-icon">'+iconFor(s)+'</span><span class="space-kind">'+kindFor(s)+'</span></div><div class="nm">'+s.name+'</div><div class="pr">'+value+'</div>'+rent+(owners?'<div class="space-kind">'+owners+(s.mortgaged?' · HIPOTECADO':'')+'</div>':'')+groupFlag+renderBuildings(s)+(pawns?'<div class="pawns">'+pawns+'</div>':'');
+  d.addEventListener('click',()=>showDeed(i));d.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();showDeed(i)}});
   boardEl.appendChild(d);
  });
- const center=document.createElement('div');center.className='center';
+ const center=document.createElement('div');center.className='center';center.dataset.time=nightMode?'night':'day';
+ const propertyCount=spaces.filter(s=>s.owner!==-1).length,buildingCount=spaces.reduce((n,s)=>n+s.buildings,0);
+ center.dataset.cityLevel=(propertyCount>=5||buildingCount>=3)?'high':'low';
  const f1=diceFaces.length?DICE[diceFaces[0]]:'⚄',f2=diceFaces.length?DICE[diceFaces[1]]:'⚄';
- center.innerHTML='<div class="center-kicker">CLUBE DOS INVESTIDORES</div><div class="round-pill">RODADA '+Math.min(rounds+1,roundLimit||rounds+1)+(roundLimit?' / '+roundLimit:'')+'</div><div class="city-art"><span class="building b1"></span><span class="building b2"></span><span class="building b3"></span><span class="building b4"></span><span class="building b2"></span></div><div class="center-logo">BANCO <em>IMOBILIÁRIO</em></div><div class="turn-chip">VEZ DE '+(turn===0?'VOCÊ 🚙':'IA 🤖')+'</div><div class="dice-tray'+(diceRolling?' rolling':'')+'"><span class="dice-cube">'+f1+'</span><span class="dice-cube">'+f2+'</span><span class="dice-total">'+(dice?'= '+dice:'')+'</span></div><button class="btn" id="rollBtn"'+(busy||over||!started||turn===1?' disabled':'')+'>🎲 LANÇAR DADOS</button>';
+ const groupsMarkup=PROPERTY_GROUPS.map(g=>'<span class="center-group" style="--group:'+g.color+'">'+g.name+' '+Math.max(groupProgress(0,g),groupProgress(1,g))+'/2</span>').join('');
+ center.innerHTML='<div class="center-kicker">CLUBE DOS INVESTIDORES · '+(nightMode?'CIDADE À NOITE':'CIDADE DE DIA')+'</div><div class="round-pill">RODADA '+Math.min(rounds+1,roundLimit||rounds+1)+(roundLimit?' / '+roundLimit:'')+'</div>'+renderCityArt()+'<div class="center-logo">BANCO <em>IMOBILIÁRIO</em></div><div class="center-groups">'+groupsMarkup+'</div><div class="turn-chip">VEZ DE '+(turn===0?'VOCÊ 🚙':'IA 🤖')+'</div><div class="dice-tray'+(diceRolling?' rolling':'')+'"><span class="dice-cube">'+f1+'</span><span class="dice-cube">'+f2+'</span><span class="dice-total">'+(dice?'= '+dice:'')+'</span></div><button class="btn" id="rollBtn"'+(busy||over||!started||turn===1?' disabled':'')+'>🎲 LANÇAR DADOS</button>';
  boardEl.appendChild(center);$('rollBtn').addEventListener('click',()=>roll(false));
  updateHud();
 }
-function showSetup(){started=false;busy=true;pendingDebt=null;pendingAction=null;managerFinishTurn=false;sheet.classList.remove('show');setupOv.classList.add('show');managerOv.classList.remove('show');ov.classList.remove('show')}
+function showSetup(){started=false;busy=true;pendingDebt=null;pendingAction=null;managerFinishTurn=false;moveSequenceId++;if(auctionTimer)clearInterval(auctionTimer);if(auctionBidTimer)clearTimeout(auctionBidTimer);auction=null;$('auctionOv').classList.remove('show');$('deedOv').classList.remove('show');$('portfolioOv').classList.remove('show');sheet.classList.remove('show');setupOv.classList.add('show');managerOv.classList.remove('show');ov.classList.remove('show')}
 function startGame(){
- startingCash=Number($('startingCash').value)||1000;roundLimit=Number($('roundLimit').value)||0;rounds=0;history=[];pendingDebt=null;pendingAction=null;managerFinishTurn=false;
+ startingCash=Number($('startingCash').value)||1000;roundLimit=Number($('roundLimit').value)||0;rounds=0;history=[];wealthHistory=[];pendingDebt=null;pendingAction=null;managerFinishTurn=false;auction=null;
  spaces=START_SPACES.map(s=>Object.assign({},s,{owner:-1,buildings:0,mortgaged:false}));
  players=[{cash:startingCash,pos:0},{cash:startingCash,pos:0}];turn=0;busy=false;over=false;started=true;dice='';diceFaces=[];diceRolling=false;
  $('historyCount').textContent='0';$('historyList').innerHTML='<li>A partida começou.</li>';
  setupOv.classList.remove('show');managerOv.classList.remove('show');ov.classList.remove('show');sheet.classList.remove('show');
  setMessage('🏁 <b>Partida iniciada!</b> Você começa. Ao passar pelo Início recebe R$ 200; ao parar exatamente nele, recebe R$ 300.');
  logEvent('Partida iniciada com '+money(startingCash)+' por jogador e '+(roundLimit?roundLimit+' rodadas':'sem limite de rodadas')+'.');
- render();
+ recordWealth();render();
 }
 function roll(isAI){
  if(!started||busy||over||(turn===1&&!isAI))return;
