@@ -22,6 +22,13 @@
   .bar{width:100%;max-width:520px;display:flex;gap:8px;margin-bottom:12px}
   select,.btn{font:inherit;font-size:14px;border-radius:11px;padding:10px 12px;border:1px solid var(--line);background:#101a2e;color:var(--txt);cursor:pointer;flex:1}
   .btn{flex:0 0 auto;font-weight:700}
+  .rules-overlay{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:18px;z-index:1000}
+  .rules-overlay.show{display:flex}
+  .rules-box{width:100%;max-width:480px;max-height:85vh;overflow:auto;background:#111c2e;border:1px solid #334155;border-radius:18px;padding:18px;box-shadow:0 20px 60px #0009}
+  .rules-box h2{margin:0 0 12px;font-size:19px}
+  .rules-box p,.rules-box li{font-size:14px;line-height:1.55;color:#cbd5e1}
+  .rules-box ul{padding-left:22px}
+  .rules-close{display:block;width:100%;margin-top:12px;background:#1e293b;color:#e2e8f0;border:1px solid #334155;border-radius:10px;padding:10px;font:inherit;font-weight:700;cursor:pointer}
   .btn.flag{background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#3b2500;border:0}
   .btn:active,select:active{transform:scale(.98)}
   .hud{width:100%;max-width:520px;display:flex;gap:8px;margin-bottom:12px}
@@ -64,10 +71,16 @@
       <option value="10,10,18" selected>Médio · 10×10</option>
       <option value="12,12,30">Difícil · 12×12</option>
     </select>
-    <button class="btn" id="new">Novo</button>
+    <button class="btn" id="rules">📖 Regras</button><button class="btn" id="new">Novo</button>
     <button class="btn flag" id="flagMode" aria-pressed="false" title="Modo bandeira">🚩</button>
   </div>
 
+  <div class="rules-overlay" id="rulesOverlay" role="dialog" aria-modal="true" aria-labelledby="rulesTitle">
+    <div class="rules-box"><h2 id="rulesTitle">📖 Como jogar Campo Minado</h2>
+    <p><b>🎯 Objetivo:</b> abrir todas as casas que não têm minas, sem explodir nenhuma.</p>
+    <ul><li>Os números indicam quantas minas existem nas 8 casas ao redor daquela casa.</li><li>Uma casa vazia (sem número) significa que não há minas por perto e o jogo abre automaticamente as casas vizinhas.</li><li>O primeiro toque é sempre seguro.</li><li>Use 🚩 para marcar onde você acha que há uma mina. Ative o botão bandeira e toque na casa; no computador, clique com o botão direito. No celular, também pode manter pressionado.</li><li>Escolha Fácil, Médio ou Difícil para mudar o tamanho do campo e quantidade de minas.</li></ul>
+    <p><b>🏆 Você vence</b> quando abrir todas as casas seguras. Não precisa marcar todas as minas.</p><button class="rules-close" id="closeRules">Entendi!</button></div>
+  </div>
   <div class="hud">
     <div class="stat"><span>Minas</span><b id="mines">18</b></div>
     <div class="stat"><span>Tempo</span><b id="time">0:00</b></div>
@@ -77,7 +90,7 @@
   <div id="board"></div>
   <div class="msg" id="msg">Toque para abrir. O primeiro toque é sempre seguro.</div>
   <p class="hint">🚩 Toque no botão bandeira e depois na casa para marcar. No PC: clique direito também marca.</p>
-  <div class="ver">v1.0 · 22/11/2026</div>
+  <div class="ver">v1.1 · 22/11/2026</div>
 
 <script>
 (function(){
@@ -270,6 +283,11 @@
       : 'Toque para abrir. O primeiro toque é sempre seguro.';
   });
 
+  const rulesOverlay = document.getElementById('rulesOverlay');
+  document.getElementById('rules').addEventListener('click', function(){ rulesOverlay.classList.add('show'); });
+  document.getElementById('closeRules').addEventListener('click', function(){ rulesOverlay.classList.remove('show'); });
+  rulesOverlay.addEventListener('click', function(e){ if(e.target===rulesOverlay) rulesOverlay.classList.remove('show'); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') rulesOverlay.classList.remove('show'); });
   document.getElementById('new').addEventListener('click', build);
   levelSel.addEventListener('change', build);
   build();
