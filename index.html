@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Jogos do Jhon">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Jogos do Jhon · v3.31</title>
+<title>Jogos do Jhon · v3.32</title>
 <meta name="description" content="Arcade de jogos web do Jhon com busca, favoritos, categorias, histórico e perfil gamer.">
 <style>
   :root{
@@ -83,10 +83,6 @@
   .favbtn{position:absolute;right:14px;top:44px;z-index:4;border:1px solid var(--line);background:#0b1220;border-radius:9px;color:#94a3b8;padding:5px 8px;cursor:pointer;font-size:15px}
   .favbtn.on{color:#fbbf24;border-color:#fbbf24}
   .grid.list{grid-template-columns:1fr}
-  .grid.list .card{display:grid;grid-template-columns:48px 1fr;column-gap:12px;align-items:start;padding:15px}
-  .grid.list .ico{grid-row:1/3;margin:2px 0;font-size:28px}
-  .grid.list .desc{grid-column:2}
-  .grid.list .card-meta{grid-column:2}
   @media(max-width:560px){.profile{grid-template-columns:repeat(2,1fr)}.toolbar{gap:6px}.toolbtn,.filter{padding:8px 10px;font-size:12px}}
 
   .category-section{margin:18px 0 14px}
@@ -104,6 +100,37 @@
   .search-clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:32px;height:32px;border:0;border-radius:9px;background:#1e293b;color:#cbd5e1;font-size:17px;display:none;cursor:pointer}
   .search-suggestions{position:absolute;z-index:30;left:0;right:0;top:calc(100% + 5px);display:none;background:#111c2e;border:1px solid #334155;border-radius:13px;box-shadow:0 18px 34px #0009;padding:6px;max-height:280px;overflow:auto}
   .search-suggestions.show{display:block}
+  .skip-link{position:absolute;left:12px;top:-60px;z-index:200;padding:10px 14px;border-radius:10px;background:#e0f2fe;color:#082f49;font-weight:800;text-decoration:none}
+  .skip-link:focus{top:12px;outline:3px solid #22d3ee;outline-offset:3px}
+  .save-feedback{margin:10px 0 14px;padding:10px 12px;border:1px solid rgba(251,113,133,.5);border-radius:11px;background:rgba(127,29,29,.18);color:#fda4af;font-size:12px;line-height:1.5}
+  .save-feedback[hidden]{display:none}
+  .card-link{position:relative;z-index:1;display:block;min-width:0;color:inherit;text-decoration:none}
+  .card-link:focus-visible{outline:3px solid var(--a1);outline-offset:4px;border-radius:8px}
+  .card:hover,.card:focus-within{transform:translateY(-3px);border-color:var(--accent,#22d3ee);box-shadow:0 14px 34px -18px var(--accent,#22d3ee);outline:none}
+  .card:hover::after,.card:focus-within::after{opacity:1}
+  .grid.list .card{display:block;padding:15px}
+  .grid.list .card-link{display:grid;grid-template-columns:48px 1fr;column-gap:12px;align-items:start}
+  .grid.list .card-link .ico{grid-row:1/3;margin:2px 0;font-size:28px}
+  .grid.list .card-link .desc{grid-column:2}
+  .grid.list .card-meta{margin-left:60px}
+  .empty-state{margin:16px 0;padding:28px 18px;text-align:center;border:1px dashed #475569;border-radius:17px;background:rgba(255,255,255,.025)}
+  .empty-state[hidden]{display:none}
+  .empty-icon{display:block;font-size:34px;margin-bottom:8px}
+  .empty-state h3{margin:0 0 7px;font-size:17px;color:#e2e8f0}
+  .empty-state p{margin:0 auto 14px;max-width:420px;color:var(--muted);font-size:13px;line-height:1.5}
+  .profile-item{display:flex;align-items:stretch;gap:5px;flex:1 1 205px;min-width:0;padding:4px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.025)}
+  .profile-item .profile-choice{flex:1;min-width:0;border:0;background:transparent;text-align:left}
+  .profile-item .profile-choice.active{background:rgba(34,211,238,.10);box-shadow:none}
+  .profile-actions{display:flex;gap:4px;align-items:center}
+  .profile-action{min-width:36px;min-height:36px;border:1px solid var(--line);border-radius:9px;background:#0b1220;color:#cbd5e1;cursor:pointer;font:inherit}
+  .profile-action:hover{border-color:var(--a1);color:#67e8f9}
+  .profile-action.delete:hover{border-color:#fb7185;color:#fda4af}
+  .profile-help{margin:10px 0 0;color:var(--muted);font-size:11px;line-height:1.5}
+  .search-suggestions [role="option"][aria-selected="true"]{background:#1e293b;outline:2px solid rgba(34,211,238,.45)}
+  .search-suggestions [role="status"]{padding:10px;color:var(--muted);font-size:12px}
+  .category-chip[aria-pressed="true"]{border-color:var(--a1);background:rgba(34,211,238,.11)}
+  #mainContent{scroll-margin-top:12px}
+
   .suggestion{width:100%;display:flex;align-items:center;gap:10px;text-align:left;padding:9px 10px;border:0;border-radius:9px;background:transparent;color:var(--txt);cursor:pointer}
   .suggestion:hover,.suggestion:focus{background:#1e293b;outline:none}
   .suggestion .s-ico{font-size:20px}.suggestion small{display:block;color:var(--muted);font-size:10px}
@@ -273,24 +300,26 @@
 </head>
 <body>
 <div class="wrap">
+  <a class="skip-link" href="#mainContent">Pular para o conteúdo</a>
   <header class="home-hero">
     <span class="hero-kicker">ARCADE PESSOAL</span>
     <h1>Jogos do Jhon</h1>
     <p class="sub">🎮 Seu cantinho de diversão: escolha um jogo e comece a jogar no celular ou no PC.</p>
-    <div class="version"><span class="dot"></span> Versão <b>v3.31</b> · atualizado em <b>23/11/2026</b></div>
+    <div class="version"><span class="dot"></span> Versão <b>v3.32</b> · atualizado em <b>23/11/2026</b></div>
     <div class="home-hero-actions">
       <a class="primary-cta" href="#catalogStart">🎮 Explorar jogos <span aria-hidden="true">↓</span></a>
       <span class="hero-count" id="heroGameCount">28 jogos no catálogo</span>
     </div>
   </header>
-
+  <main id="mainContent">
+    <p class="save-feedback" id="profileSaveFeedback" hidden role="status" aria-live="polite" aria-atomic="true"></p>
   <section class="category-section" aria-label="Navegação por categoria">
     <div class="section-head"><div><h2>Explore por categoria</h2><p>Escolha um estilo e encontre seu próximo jogo.</p></div></div>
-    <div class="category-nav" id="categoryNav"></div>
+    <div class="category-nav" id="categoryNav" role="group" aria-label="Filtrar por categoria"></div>
   </section>
   <section class="menu-tools" aria-label="Ferramentas do catálogo">
     <div class="search-shell">
-      <input id="gameSearch" class="searchbox" type="search" placeholder="🔎 Buscar jogo, estilo ou palavra..." autocomplete="off" aria-label="Buscar jogos" aria-controls="searchSuggestions" aria-autocomplete="list" aria-expanded="false">
+      <input id="gameSearch" class="searchbox" type="search" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="searchSuggestions" aria-autocomplete="list" placeholder="🔎 Buscar jogo, estilo ou palavra..." autocomplete="off" aria-label="Buscar jogos">
       <button class="search-clear" id="searchClear" type="button" aria-label="Limpar busca">×</button>
       <div class="search-suggestions" id="searchSuggestions" role="listbox"></div>
     </div>
@@ -447,7 +476,12 @@
     <div class="card" data-category="strategy" data-href="games/conecte-pontos.html" style="--accent:#a78bfa;--glow:rgba(167,139,250,.20)"><span class="tag new">v1.0</span><span class="ico">🔵</span><p class="name">Conecte os Pontos <em class="new">NOVO</em></p><p class="desc">Feche quadrados, conquiste territórios e jogue novamente quando pontuar.</p></div>
     <div class="card" data-category="puzzle" data-href="games/acerte-numero.html" style="--accent:#fbbf24;--glow:rgba(251,191,36,.20)"><span class="tag new">v1.0</span><span class="ico">🔢</span><p class="name">Acerte o Número <em class="new">NOVO</em></p><p class="desc">Um jogador escolhe o número secreto e o outro tenta descobrir com dicas de maior ou menor.</p></div>
   </div>
-
+  <section class="empty-state" id="emptyState" hidden aria-live="polite" aria-atomic="true">
+    <span class="empty-icon" aria-hidden="true">🔎</span>
+    <h3 id="emptyTitle">Nenhum jogo encontrado</h3>
+    <p id="emptyMessage">Tente outra palavra ou limpe a busca para ver todos os jogos.</p>
+    <button class="toolbtn" type="button" id="emptyReset">Ver todos os jogos</button>
+  </section>
   <details class="feature-panel player-panel" id="playerPanel">
     <summary>👤 Painel do jogador <span>Estatísticas, favoritos, perfis e conquistas</span></summary>
     <div class="feature-content">
@@ -472,6 +506,7 @@
   <section class="family-panel" aria-label="Perfis de jogadores">
     <div class="family-head"><h2>👨‍👩‍👧 Quem está jogando?</h2><button class="toolbtn" id="addProfile">＋ Novo perfil</button></div>
     <div class="profile-choices" id="profileChoices"></div>
+    <p class="profile-help">Selecione um perfil para carregar seu progresso. Use ✏️ para editar ou × para excluir.</p>
   </section>
   <details class="feature-panel" id="achievementsPanel">
     <summary>🏆 Conquistas <span id="achievementCount">0/8 desbloqueadas</span></summary>
@@ -496,7 +531,15 @@
   <details class="feature-panel data-panel" id="dataPanel">
     <summary>🛡️ Dados, backup e ajuda <span>Proteja seu progresso</span></summary>
     <div class="feature-content">
-      <p class="settings-note">Faça uma cópia dos seus perfis e do progresso registrado pelo menu do Arcade. O backup é um arquivo JSON salvo no seu dispositivo.</p>
+      <p class="settings-note">Faça uma cópia dos perfis, estatísticas e dados de progresso reconhecidos dos jogos. O backup JSON é salvo no seu dispositivo.</p>
+      <div class="setting" style="margin:12px 0 0">
+        <label for="dataConflictStrategy">⚖️ Como resolver conflitos na mesclagem</label>
+        <select id="dataConflictStrategy">
+          <option value="smart">Melhor resultado (recomendado)</option>
+          <option value="current">Manter os dados deste dispositivo</option>
+          <option value="backup">Usar os dados do backup</option>
+        </select>
+      </div>
       <div class="data-actions">
         <button class="data-btn primary" type="button" id="exportBackup">⬇️ Baixar backup</button>
         <button class="data-btn" type="button" id="importMerge">↔️ Mesclar backup</button>
@@ -509,12 +552,12 @@
       <details class="data-info">
         <summary>🔐 Privacidade: onde ficam meus dados?</summary>
         <p>Os perfis, favoritos, histórico, contagens de jogos, conquistas e preferências deste menu ficam no <b>armazenamento local do navegador</b>, neste dispositivo. O site não cria uma conta nem sincroniza esses dados automaticamente com a nuvem.</p>
-        <p>O backup desta tela inclui esses dados do menu do Arcade e o modo de visualização. <b>Não inclui recordes, partidas salvas ou configurações que cada jogo grave em armazenamento próprio</b>, nem o cache offline do aplicativo. Esses dados podem exigir cópias específicas de cada jogo.</p>
-        <p>O arquivo de backup contém nomes de perfis e o progresso exportado. Guarde-o em local privado. Ele não deve conter senhas, tokens ou chaves secretas.</p>
+        <p>O backup também inclui recordes, preferências e progressos reconhecidos que os jogos gravam no armazenamento local do navegador. <b>Não inclui partidas em andamento, dados temporários que existam apenas na memória da página, nem o cache offline do aplicativo.</b></p>
+        <p>O backup contém nomes de perfis, progresso e recordes locais reconhecidos. Guarde-o em local privado. Não inclui senhas, tokens ou chaves secretas.</p>
       </details>
       <details class="data-info">
         <summary>❔ Ajuda e diagnóstico</summary>
-        <p><b>Mesclar backup:</b> combina perfis e progresso sem somar novamente partidas já importadas; mantém as preferências atuais. Perfis repetidos são identificados e combinados, sem criar cópias iguais.</p>
+        <p><b>Mesclar backup:</b> combina perfis e dados dos jogos. No modo recomendado, recordes são comparados, resultados melhores são preservados e preferências conflitantes permanecem com este dispositivo. Também é possível escolher manter tudo deste dispositivo ou usar os valores do arquivo.</p>
         <p><b>Substituir dados:</b> troca os perfis, progresso e preferências atuais pelos dados do arquivo. Exige confirmação adicional e não pode ser desfeito sem outro backup.</p>
         <p><b>Restaurar preferências:</b> volta tema, som, volume, contraste, tamanho do texto, animações e visualização ao padrão. Não apaga perfis, favoritos ou histórico.</p>
         <p><b>Notificações, sincronização e provedores de IA:</b> não são recursos deste catálogo; não há opções fictícias para eles.</p>
@@ -522,8 +565,9 @@
     </div>
   </details>
   <div class="notes">
-    <h2>📝 Novidades da tela inicial · v3.31</h2>
+    <h2>📝 Novidades da tela inicial · v3.32</h2>
     <ul>
+      <li><b>Tela inicial v3.32:</b> links reais para os jogos, gerenciamento de perfis, estados vazios, backup dos dados reconhecidos dos jogos, importação com conflitos configuráveis e melhorias de navegação e acessibilidade.</li>
       <li><b>Dados e segurança v3.31:</b> backup JSON dos perfis, favoritos, histórico, conquistas e preferências do Arcade; importação com mesclagem ou substituição confirmada; restauração das configurações e diagnóstico do armazenamento local.</li>
       <li><b>Tela inicial v3.30:</b> destaque para explorar o catálogo, navegação por categoria mais direta, busca que respeita os filtros e melhorias de acessibilidade e uso no celular.</li>
       <li><b>Batalha Naval v1.1:</b> corrigido e reforçado o posicionamento automático da frota para garantir que todos os navios sejam colocados.</li>
@@ -539,6 +583,7 @@
     </ul>
   </div>
 
+  </main>
   <footer>
     Feito para jogar em <span class="kbd">jhoncorretor2025-blip.github.io/jogos</span><br>
     Recordes ficam salvos neste navegador. Se a versão não mudou, recarregue com <span class="kbd">Ctrl+F5</span>.
@@ -565,17 +610,15 @@ if(!family.profiles.some(p=>p.id===family.activeId))family.activeId=family.profi
 if(!familyExists){try{const old=JSON.parse(localStorage.getItem(OLD_KEY)||'{}');const j=family.profiles.find(p=>p.id==='jhon');if(j){j.plays=Number(old.plays)||0;j.counts=old.counts&&typeof old.counts==='object'?old.counts:{};j.favs=Array.isArray(old.favs)?old.favs:[];j.recent=Array.isArray(old.recent)?old.recent:[]}}catch(e){}}
 const active=()=>family.profiles.find(p=>p.id===family.activeId)||family.profiles[0];
 const save=()=>{
- let oldFamily=null,oldSettings=null,readReady=false;
+ let oldFamily=null,oldSettings=null,readReady=false;const feedback=document.getElementById('profileSaveFeedback');
  try{
   oldFamily=localStorage.getItem(FAMILY_KEY);oldSettings=localStorage.getItem(SETTINGS_KEY);readReady=true;
-  localStorage.setItem(FAMILY_KEY,JSON.stringify(family));
-  localStorage.setItem(SETTINGS_KEY,JSON.stringify(family.settings));
-  return true;
+  localStorage.setItem(FAMILY_KEY,JSON.stringify(family));localStorage.setItem(SETTINGS_KEY,JSON.stringify(family.settings));
+  if(feedback){feedback.hidden=true;feedback.textContent=''}return true;
  }catch(e){
-  if(readReady){
-   try{if(oldFamily===null)localStorage.removeItem(FAMILY_KEY);else localStorage.setItem(FAMILY_KEY,oldFamily);
-    if(oldSettings===null)localStorage.removeItem(SETTINGS_KEY);else localStorage.setItem(SETTINGS_KEY,oldSettings)}catch(rollbackError){console.warn('Não foi possível reverter uma gravação parcial.',rollbackError)}
-  }
+  if(readReady){try{if(oldFamily===null)localStorage.removeItem(FAMILY_KEY);else localStorage.setItem(FAMILY_KEY,oldFamily);
+   if(oldSettings===null)localStorage.removeItem(SETTINGS_KEY);else localStorage.setItem(SETTINGS_KEY,oldSettings)}catch(rollbackError){console.warn('Não foi possível reverter uma gravação parcial.',rollbackError)}}
+  if(feedback){feedback.textContent='⚠️ Não foi possível salvar suas alterações neste navegador. Libere espaço, confira as permissões e faça um backup.';feedback.hidden=false}
   console.warn('Não foi possível salvar os dados do Arcade.',e);return false;
  }
 };
@@ -601,7 +644,32 @@ function applySettings(){
 }
 function renderProfiles(){
  const box=document.getElementById('profileChoices');box.innerHTML='';
- family.profiles.forEach(p=>{const b=document.createElement('button');b.className='profile-choice'+(p.id===family.activeId?' active':'');b.textContent=p.emoji+' '+p.name;b.setAttribute('aria-pressed',p.id===family.activeId?'true':'false');b.onclick=()=>{family.activeId=p.id;save();renderAll()};box.appendChild(b)});
+ family.profiles.forEach(p=>{
+  const item=document.createElement('div');item.className='profile-item';
+  const choose=document.createElement('button');choose.type='button';choose.className='profile-choice'+(p.id===family.activeId?' active':'');
+  choose.textContent=p.emoji+' '+p.name;choose.setAttribute('aria-pressed',String(p.id===family.activeId));
+  choose.addEventListener('click',()=>{const previous=family.activeId;family.activeId=p.id;if(!save())family.activeId=previous;renderAll()});
+  const actions=document.createElement('div');actions.className='profile-actions';
+  const edit=document.createElement('button');edit.type='button';edit.className='profile-action';edit.textContent='✏️';edit.title='Editar perfil '+p.name;edit.setAttribute('aria-label','Editar perfil '+p.name);edit.addEventListener('click',()=>editProfile(p.id));
+  const remove=document.createElement('button');remove.type='button';remove.className='profile-action delete';remove.textContent='×';remove.title='Excluir perfil '+p.name;remove.setAttribute('aria-label','Excluir perfil '+p.name);remove.addEventListener('click',()=>deleteProfile(p.id));
+  actions.append(edit,remove);item.append(choose,actions);box.appendChild(item);
+ });
+}
+function editProfile(id){
+ const p=family.profiles.find(x=>x.id===id);if(!p)return;
+ const nextName=prompt('Nome do perfil (até 24 caracteres):',p.name);if(nextName===null)return;
+ const name=nextName.trim().slice(0,24);if(!name){alert('O nome do perfil não pode ficar vazio.');return}
+ const nextEmoji=prompt('Emoji do perfil (opcional):',p.emoji);if(nextEmoji===null)return;
+ const emoji=nextEmoji.trim().slice(0,8)||'🧑',previous=JSON.parse(JSON.stringify(family));p.name=name;p.emoji=emoji;
+ if(!save()){family=previous;renderAll();return}renderAll();
+}
+function deleteProfile(id){
+ const p=family.profiles.find(x=>x.id===id);if(!p)return;
+ if(family.profiles.length<=1){alert('O Arcade precisa manter pelo menos um perfil.');return}
+ if(!confirm('Excluir o perfil '+p.name+' e o progresso dele neste navegador? Essa ação não pode ser desfeita sem backup.'))return;
+ const previous=JSON.parse(JSON.stringify(family));family.profiles=family.profiles.filter(x=>x.id!==id);
+ if(family.activeId===id)family.activeId=family.profiles[0].id;
+ if(!save()){family=previous;renderAll();return}renderAll();
 }
 function renderAchievements(){
  const p=active();let newly=[];
@@ -648,7 +716,8 @@ function renderCategoryNav(){
  defs.forEach(([key,icon,label])=>{
   const count=key==='all'?names.length:names.filter(g=>g.cat===key).length;
   const b=document.createElement('button');b.type='button';b.className='category-chip'+(filter===key?' active':'');
-  b.dataset.filter=key;b.innerHTML='<span class="cat-icon">'+icon+'</span><span><b>'+label+'</b><small>'+count+' jogos</small></span>';
+  b.dataset.filter=key;b.setAttribute('aria-pressed',String(filter===key));
+  b.innerHTML='<span class="cat-icon">'+icon+'</span><span><b>'+label+'</b><small>'+count+' '+(count===1?'jogo':'jogos')+'</small></span>';
   b.addEventListener('click',()=>{filter=key;renderCards();document.getElementById('catalogStart').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});playUi()});box.appendChild(b);
  });
 }
@@ -673,16 +742,32 @@ function getMatches(query){
  return cards.map(c=>({card:c,game:names.find(g=>g.href===c.dataset.href),hay:normalizeText(c.innerText+' '+(categories[c.dataset.category]||''))}))
   .filter(x=>x.game&&x.hay.includes(q)).slice(0,6);
 }
+let activeSuggestionIndex=-1;
+function closeSuggestions(){
+ const input=document.getElementById('gameSearch'),box=document.getElementById('searchSuggestions');
+ box.classList.remove('show');input.setAttribute('aria-expanded','false');input.removeAttribute('aria-activedescendant');activeSuggestionIndex=-1;
+ box.querySelectorAll('[role="option"]').forEach(option=>option.setAttribute('aria-selected','false'));
+}
+function setActiveSuggestion(index){
+ const input=document.getElementById('gameSearch'),box=document.getElementById('searchSuggestions'),options=[...box.querySelectorAll('[role="option"]')];
+ if(!options.length)return;activeSuggestionIndex=(index+options.length)%options.length;
+ options.forEach((option,i)=>option.setAttribute('aria-selected',String(i===activeSuggestionIndex)));
+ input.setAttribute('aria-activedescendant',options[activeSuggestionIndex].id);options[activeSuggestionIndex].scrollIntoView({block:'nearest'});
+}
+function chooseSearchSuggestion(game){
+ const input=document.getElementById('gameSearch');input.value=game.name;filter='all';renderCategoryNav();renderCards();closeSuggestions();
+ document.getElementById('catalogStart').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
+}
 function renderSuggestions(){
  const input=document.getElementById('gameSearch'),box=document.getElementById('searchSuggestions'),clear=document.getElementById('searchClear'),q=input.value.trim();
- clear.style.display=q?'block':'none';box.innerHTML='';
- if(!q){box.classList.remove('show');input.setAttribute('aria-expanded','false');return}
+ clear.style.display=q?'block':'none';box.innerHTML='';activeSuggestionIndex=-1;input.removeAttribute('aria-activedescendant');
+ if(!q){closeSuggestions();return}
  const matches=getMatches(q);
- if(!matches.length){box.innerHTML='<div class="suggestion"><span class="s-ico">🔎</span><span>Nenhum jogo encontrado</span></div>'}
- else matches.forEach(({game})=>{
-  const b=document.createElement('button');b.type='button';b.className='suggestion';b.innerHTML='<span class="s-ico">'+game.icon+'</span><span><b>'+game.name+'</b><small>'+(categories[game.cat]||'Jogo')+'</small></span>';
-  b.addEventListener('click',()=>{input.value=game.name;filter='all';renderCategoryNav();renderCards();box.classList.remove('show');input.setAttribute('aria-expanded','false');document.getElementById('catalogStart').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'})});
-  box.appendChild(b);
+ if(!matches.length){box.innerHTML='<div class="suggestion" role="status"><span class="s-ico">🔎</span><span>Nenhum jogo encontrado</span></div>'}
+ else matches.forEach(({game},i)=>{
+  const b=document.createElement('button');b.type='button';b.className='suggestion';b.id='game-suggestion-'+i;b.dataset.href=game.href;b.setAttribute('role','option');b.setAttribute('aria-selected','false');
+  b.innerHTML='<span class="s-ico">'+game.icon+'</span><span><b>'+game.name+'</b><small>'+(categories[game.cat]||'Jogo')+'</small></span>';
+  b.addEventListener('click',()=>chooseSearchSuggestion(game));box.appendChild(b);
  });
  box.classList.add('show');input.setAttribute('aria-expanded','true');
 }
@@ -701,7 +786,6 @@ function renderCards(){
   const ok=(filter==='all'||(filter==='favorites'?p.favs.includes(href):cat===filter))&&(!q||hay.includes(q));
   c.style.display=ok?'':'none';if(ok)shown++;
  });
- // Favoritos personalizados vêm primeiro; sem personalização, mantém a ordem padrão dos oito escolhidos.
  const ordered=cards.slice().sort((a,b)=>{
   const af=p.favs.includes(a.dataset.href),bf=p.favs.includes(b.dataset.href);
   if(af!==bf)return Number(bf)-Number(af);
@@ -713,7 +797,19 @@ function renderCards(){
  document.getElementById('heroGameCount').textContent=names.length+' jogos no catálogo';
  document.getElementById('catalogDescription').textContent='Sua biblioteca completa, com '+names.length+' jogos para explorar.';
  document.getElementById('sortLabel').textContent=p.favs.length?'⭐ Favoritos personalizados primeiro':'Ordem padrão';
- document.querySelectorAll('.category-chip').forEach(b=>b.classList.toggle('active',b.dataset.filter===filter));
+ document.querySelectorAll('.category-chip').forEach(b=>{const selected=b.dataset.filter===filter;b.classList.toggle('active',selected);b.setAttribute('aria-pressed',String(selected))});
+ const empty=document.getElementById('emptyState');grid.hidden=shown===0;empty.hidden=shown!==0;
+ if(shown===0){
+  if(filter==='favorites'&&!q){
+   document.getElementById('emptyTitle').textContent='Você ainda não salvou favoritos';
+   document.getElementById('emptyMessage').textContent='Marque a estrela de um jogo para encontrá-lo aqui depois.';
+   document.getElementById('emptyReset').textContent='Explorar todos os jogos';
+  }else{
+   document.getElementById('emptyTitle').textContent='Nenhum jogo encontrado';
+   document.getElementById('emptyMessage').textContent=q?'Não encontramos um jogo com esse termo. Experimente outra palavra ou limpe a busca.':'Não há jogos nesta seleção. Volte para ver o catálogo completo.';
+   document.getElementById('emptyReset').textContent='Ver todos os jogos';
+  }
+ }
  refreshCardMeta();
 }
 function renderAll(){renderProfiles();renderCategoryNav();renderCards();renderRecent();renderAchievements();applySettings();syncSettingsUI();setView(viewMode)}
@@ -724,89 +820,151 @@ function launch(href){
 function toggleFavorite(href){const p=active();if(p.favs.includes(href))p.favs=p.favs.filter(x=>x!==href);else p.favs.push(href);save();renderAll();playUi()}
 cards.forEach(card=>{
  const href=card.dataset.href,g=names.find(x=>x.href===href);
- const fav=document.createElement('button');fav.className='favbtn';fav.type='button';fav.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();toggleFavorite(href)});card.appendChild(fav);
+ const link=document.createElement('a');link.className='card-link';link.href=href;link.setAttribute('aria-label','Abrir '+g.name);
+ [...card.children].filter(node=>!node.classList.contains('favbtn')&&!node.classList.contains('card-meta')).forEach(node=>link.appendChild(node));
+ link.addEventListener('click',e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();launch(href)});
+ card.prepend(link);
+ const fav=document.createElement('button');fav.className='favbtn';fav.type='button';fav.setAttribute('aria-label','Adicionar aos favoritos');fav.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();toggleFavorite(href)});card.appendChild(fav);
  const meta=document.createElement('div');meta.className='card-meta';card.appendChild(meta);
- card.setAttribute('role','link');card.setAttribute('tabindex','0');card.setAttribute('aria-label','Abrir '+g.name);
- card.addEventListener('click',e=>{if(e.target.closest('.favbtn'))return;launch(href)});
- card.addEventListener('keydown',e=>{if(e.target.closest('.favbtn'))return;if(e.key==='Enter'||e.key===' '){e.preventDefault();launch(href)}});
+ card.setAttribute('data-game-card','true');
 });
 const searchInput=document.getElementById('gameSearch');
 searchInput.addEventListener('input',()=>{renderCards();renderSuggestions()});
 searchInput.addEventListener('focus',renderSuggestions);
 searchInput.addEventListener('keydown',e=>{
- if(e.key==='Escape'){searchInput.value='';renderCards();renderSuggestions()}
- if(e.key==='Enter'){const first=getMatches(searchInput.value)[0];if(first){e.preventDefault();launch(first.game.href)}}
+ const options=[...document.querySelectorAll('#searchSuggestions [role="option"]')];
+ if(e.key==='ArrowDown'&&options.length){e.preventDefault();setActiveSuggestion(activeSuggestionIndex+1);return}
+ if(e.key==='ArrowUp'&&options.length){e.preventDefault();setActiveSuggestion(activeSuggestionIndex<0?options.length-1:activeSuggestionIndex-1);return}
+ if(e.key==='Escape'){closeSuggestions();return}
+ if(e.key==='Tab'){closeSuggestions();return}
+ if(e.key==='Enter'){const selected=activeSuggestionIndex>=0?options[activeSuggestionIndex]:options[0];if(selected){e.preventDefault();launch(selected.dataset.href)}}
 });
 document.getElementById('searchClear').addEventListener('click',()=>{searchInput.value='';renderCards();renderSuggestions();searchInput.focus()});
-document.addEventListener('click',e=>{if(!e.target.closest('.search-shell')){document.getElementById('searchSuggestions').classList.remove('show');searchInput.setAttribute('aria-expanded','false')}});
-document.getElementById('seeAllFavorites').addEventListener('click',()=>{filter='favorites';renderCards();document.getElementById('catalogStart').scrollIntoView({behavior:'smooth'})});
+document.getElementById('emptyReset').addEventListener('click',()=>{filter='all';searchInput.value='';renderCategoryNav();renderCards();renderSuggestions();searchInput.focus()});
+document.addEventListener('click',e=>{if(!e.target.closest('.search-shell'))closeSuggestions()});
+document.getElementById('seeAllFavorites').addEventListener('click',()=>{filter='favorites';renderCards();document.getElementById('playerPanel').open=true;document.getElementById('favoriteSection').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})});
 document.querySelectorAll('.filter').forEach(b=>b.addEventListener('click',()=>{filter=b.dataset.filter;renderCards();playUi()}));
 document.getElementById('randomGame').addEventListener('click',()=>{const visible=cards.filter(c=>c.style.display!=='none'),pool=visible.length?visible:cards;launch(pool[Math.floor(Math.random()*pool.length)].dataset.href)});
 document.getElementById('viewToggle').addEventListener('click',()=>{const modes=['grid','compact','list'];setView(modes[(modes.indexOf(viewMode)+1)%modes.length]);playUi()});
+function setMobileNavActive(action){
+ document.querySelectorAll('.mobile-nav button').forEach(x=>{const selected=x.dataset.nav===action;x.classList.toggle('active',selected);if(selected)x.setAttribute('aria-current','page');else x.removeAttribute('aria-current')});
+}
+function scrollToSection(element){if(element)element.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'})}
+function syncMobileNavFromScroll(){
+ const threshold=window.innerHeight*.32,hero=document.querySelector('.home-hero'),favorites=document.getElementById('favoriteSection'),player=document.getElementById('playerPanel'),records=document.getElementById('achievementsPanel');
+ let action='home';if(hero&&hero.getBoundingClientRect().bottom<=threshold)action='games';
+ if(player.open&&filter==='favorites'&&favorites.hidden&&player.getBoundingClientRect().top<=threshold)action='favorites';
+ if(!favorites.hidden&&player.open&&favorites.getBoundingClientRect().top<=threshold)action='favorites';
+ if(player.open&&records.getBoundingClientRect().top<=threshold)action='records';
+ if(window.scrollY<70)action='home';setMobileNavActive(action);
+}
+let navScrollQueued=false;
+window.addEventListener('scroll',()=>{if(navScrollQueued)return;navScrollQueued=true;requestAnimationFrame(()=>{navScrollQueued=false;syncMobileNavFromScroll()})},{passive:true});
 document.querySelectorAll('.mobile-nav button').forEach(b=>b.addEventListener('click',()=>{
- const action=b.dataset.nav;
- document.querySelectorAll('.mobile-nav button').forEach(x=>{const selected=x===b;x.classList.toggle('active',selected);if(selected)x.setAttribute('aria-current','page');else x.removeAttribute('aria-current')});
- if(action==='home'){filter='all';searchInput.value='';renderCards();window.scrollTo({top:0,behavior:'smooth'})}
- if(action==='games'){filter='all';searchInput.value='';renderCategoryNav();renderCards();document.getElementById('catalogStart').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}
- if(action==='favorites'){filter='favorites';renderCards();if(active().favs.length)document.getElementById('favoriteSection').scrollIntoView({behavior:'smooth'})}
- if(action==='records'){document.getElementById('achievementsPanel').open=true;document.getElementById('achievementsPanel').scrollIntoView({behavior:'smooth'})}
+ const action=b.dataset.nav;setMobileNavActive(action);
+ if(action==='home'){filter='all';searchInput.value='';renderCategoryNav();renderCards();window.scrollTo({top:0,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}
+ if(action==='games'){filter='all';searchInput.value='';renderCategoryNav();renderCards();scrollToSection(document.getElementById('catalogStart'))}
+ if(action==='favorites'){filter='favorites';renderCards();playerPanel.open=true;scrollToSection(active().favs.length?document.getElementById('favoriteSection'):playerPanel)}
+ if(action==='records'){playerPanel.open=true;records.open=true;scrollToSection(records)}
  playUi();
 }));
-document.getElementById('addProfile').addEventListener('click',()=>{if(family.profiles.length>=10){alert('O Arcade permite até 10 perfis neste dispositivo.');return}const name=prompt('Qual é o nome do novo jogador?');if(!name||!name.trim())return;const id='player-'+Date.now();family.profiles.push(makeProfile(id,name.trim().slice(0,24),'🧑'));family.activeId=id;save();renderAll()});
+document.getElementById('addProfile').addEventListener('click',()=>{
+ if(family.profiles.length>=10){alert('O Arcade permite até 10 perfis neste dispositivo.');return}
+ const name=prompt('Qual é o nome do novo jogador?');if(!name||!name.trim())return;
+ const previous=JSON.parse(JSON.stringify(family)),id='player-'+Date.now()+'-'+Math.random().toString(36).slice(2,8);
+ family.profiles.push(makeProfile(id,name.trim().slice(0,24),'🧑'));family.activeId=id;
+ if(!save()){family=previous;renderAll();return}renderAll();
+});
 function syncSettingsUI(){const s=family.settings;document.getElementById('themeSetting').value=s.theme;document.getElementById('textSetting').value=s.textSize;document.getElementById('controlsSetting').value=s.touchControls;document.getElementById('volumeSetting').value=s.volume;document.getElementById('volumeValue').textContent=s.volume+'%';document.getElementById('soundSetting').checked=s.sound;document.getElementById('contrastSetting').checked=s.contrast;document.getElementById('motionSetting').checked=s.reducedMotion}
 function updateSetting(key,value){family.settings[key]=value;save();applySettings();syncSettingsUI()}
-const BACKUP_FORMAT='jogos-do-jhon-backup',BACKUP_SCHEMA=1,MAX_BACKUP_BYTES=1024*1024;
-const knownGameHrefs=new Set(names.map(g=>g.href));
-const knownAchievementIds=new Set(achievements.map(a=>a.id));
-function setBackupFeedback(message,state='info'){
- const box=document.getElementById('backupFeedback');box.textContent=message;box.dataset.state=state;
-}
+const BACKUP_FORMAT='jogos-do-jhon-backup',BACKUP_SCHEMA=2,MAX_BACKUP_BYTES=2*1024*1024,MAX_GAME_STORAGE_BYTES=1500000;
+const GAME_STORAGE_KEYS=new Set(['g2048.best','corrida.best','cobra.best','memoria.muted','velha.score','jhon_v5_save','jhon_tetris_best','jhon_voo_best','jhon_labirinto_best','crosswordStatsV2','bubble_sound','bubble_achievements','bubble_theme','bubble_skin']);
+const GAME_STORAGE_PREFIXES=['memoria.best.','memoria.time.','crosswordDaily_','arcade_best_'];
+const knownGameHrefs=new Set(names.map(g=>g.href)),knownAchievementIds=new Set(achievements.map(a=>a.id));
+function isGameStorageKey(key){return GAME_STORAGE_KEYS.has(key)||GAME_STORAGE_PREFIXES.some(prefix=>key.startsWith(prefix))}
+function setBackupFeedback(message,state='info'){const box=document.getElementById('backupFeedback');box.textContent=message;box.dataset.state=state}
 function sanitizeBackupSettings(raw){
  const s=raw&&typeof raw==='object'?raw:{};
- return {
-  theme:['neon','retro','minimal','colorful'].includes(s.theme)?s.theme:defaultSettings.theme,
-  sound:typeof s.sound==='boolean'?s.sound:defaultSettings.sound,
-  volume:Number.isFinite(Number(s.volume))?Math.max(0,Math.min(100,Math.round(Number(s.volume)))):defaultSettings.volume,
-  contrast:typeof s.contrast==='boolean'?s.contrast:defaultSettings.contrast,
-  textSize:['normal','large'].includes(s.textSize)?s.textSize:defaultSettings.textSize,
-  reducedMotion:typeof s.reducedMotion==='boolean'?s.reducedMotion:defaultSettings.reducedMotion,
-  touchControls:['auto','show','hide'].includes(s.touchControls)?s.touchControls:defaultSettings.touchControls
- };
+ return {theme:['neon','retro','minimal','colorful'].includes(s.theme)?s.theme:defaultSettings.theme,
+ sound:typeof s.sound==='boolean'?s.sound:defaultSettings.sound,
+ volume:Number.isFinite(Number(s.volume))?Math.max(0,Math.min(100,Math.round(Number(s.volume)))):defaultSettings.volume,
+ contrast:typeof s.contrast==='boolean'?s.contrast:defaultSettings.contrast,
+ textSize:['normal','large'].includes(s.textSize)?s.textSize:defaultSettings.textSize,
+ reducedMotion:typeof s.reducedMotion==='boolean'?s.reducedMotion:defaultSettings.reducedMotion,
+ touchControls:['auto','show','hide'].includes(s.touchControls)?s.touchControls:defaultSettings.touchControls};
 }
 function sanitizeBackupProfile(raw){
  if(!raw||typeof raw!=='object'||Array.isArray(raw))throw new Error('Um perfil do backup está inválido.');
  const id=String(raw.id||'').trim().slice(0,64),name=String(raw.name||'').trim().slice(0,24);
  if(!id||!name)throw new Error('Há um perfil sem identificador ou nome válido.');
  const counts={};
- if(raw.counts&&typeof raw.counts==='object'&&!Array.isArray(raw.counts)){
-  Object.entries(raw.counts).forEach(([href,value])=>{
-   const n=Number(value);if(knownGameHrefs.has(href)&&Number.isFinite(n)&&n>=0)counts[href]=Math.min(10000000,Math.floor(n));
-  });
- }
- const uniqueKnown=list=>Array.isArray(list)?[...new Set(list.filter(v=>typeof v==='string'&&knownGameHrefs.has(v)))]:[];
+ if(raw.counts&&typeof raw.counts==='object'&&!Array.isArray(raw.counts))Object.entries(raw.counts).forEach(([href,value])=>{const n=Number(value);if(knownGameHrefs.has(href)&&Number.isFinite(n)&&n>=0)counts[href]=Math.min(10000000,Math.floor(n))});
+ const validGames=list=>Array.isArray(list)?[...new Set(list.filter(v=>typeof v==='string'&&knownGameHrefs.has(v)))]:[];
  const unlocked=Array.isArray(raw.achievements)?[...new Set(raw.achievements.filter(v=>typeof v==='string'&&knownAchievementIds.has(v)))]:[];
- return {id,name,emoji:String(raw.emoji||'🧑').slice(0,8),
-  plays:Number.isFinite(Number(raw.plays))?Math.max(0,Math.min(10000000,Math.floor(Number(raw.plays)))):0,
-  counts,favs:uniqueKnown(raw.favs),recent:uniqueKnown(raw.recent).slice(0,5),achievements:unlocked};
+ return {id,name,emoji:String(raw.emoji||'🧑').slice(0,8),plays:Number.isFinite(Number(raw.plays))?Math.max(0,Math.min(10000000,Math.floor(Number(raw.plays)))):0,counts,favs:validGames(raw.favs),recent:validGames(raw.recent).slice(0,5),achievements:unlocked};
+}
+function parseStoredObject(value){try{const x=JSON.parse(String(value));return x&&typeof x==='object'&&!Array.isArray(x)?x:null}catch(e){return null}}
+function sanitizeGameStorageValue(key,value){
+ if(typeof value!=='string'||value.length>300000)return null;
+ const numericKey=(GAME_STORAGE_PREFIXES.some(p=>p!=='crosswordDaily_'&&key.startsWith(p)))||['g2048.best','corrida.best','cobra.best','jhon_tetris_best','jhon_voo_best','jhon_labirinto_best'].includes(key)||key.startsWith('arcade_best_');
+ if(numericKey){const n=Number(value);return Number.isFinite(n)&&n>=0?String(Math.min(100000000,Math.floor(n))):null}
+ if(key==='memoria.muted')return ['0','1'].includes(value)?value:null;
+ if(key==='bubble_sound')return ['on','off'].includes(value)?value:null;
+ if(key==='bubble_theme'||key==='bubble_skin'){const n=Number(value);return Number.isInteger(n)&&n>=0&&n<=20?String(n):null}
+ if(key.startsWith('crosswordDaily_'))return /^crosswordDaily_\d{4}-\d{2}-\d{2}$/.test(key)&&value==='1'?'1':null;
+ if(key==='velha.score'){
+  const o=parseStoredObject(value);if(!o)return null;const out={};['X','O','D'].forEach(k=>{const n=Number(o[k]);out[k]=Number.isFinite(n)&&n>=0?Math.min(10000000,Math.floor(n)):0});return JSON.stringify(out);
+ }
+ if(key==='crosswordStatsV2'){
+  const o=parseStoredObject(value);if(!o)return null;const n=Number(o.record),achievements=Array.isArray(o.achievements)?[...new Set(o.achievements.filter(x=>typeof x==='string').map(x=>x.slice(0,100)))].slice(0,100):[];
+  return JSON.stringify({record:Number.isFinite(n)&&n>=0?Math.min(100000000,Math.floor(n)):0,achievements});
+ }
+ if(key==='jhon_v5_save'){
+  const o=parseStoredObject(value);if(!o)return null;
+  const levels=(source,max)=>{const out={};if(source&&typeof source==='object'&&!Array.isArray(source))Object.entries(source).forEach(([k,v])=>{if(/^[1-4]$/.test(k)){const n=Number(v);if(Number.isFinite(n)&&n>=0)out[k]=Math.min(max,Math.floor(n))}});return out};
+  const unlocked=Number(o.unlocked);return JSON.stringify({unlocked:Number.isFinite(unlocked)?Math.max(1,Math.min(4,Math.floor(unlocked))):1,stars:levels(o.stars,3),best:levels(o.best,100000000)});
+ }
+ if(key==='bubble_achievements'){
+  const o=parseStoredObject(value);if(!o)return null;const out={};Object.entries(o).slice(0,200).forEach(([k,v])=>{if(/^[\w-]{1,80}$/.test(k)&&v===true)out[k]=true});return JSON.stringify(out);
+ }
+ return null;
+}
+function collectGameStorage(){
+ const out={};let total=0;
+ for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);if(!key||!isGameStorageKey(key))continue;
+  const value=localStorage.getItem(key);if(typeof value!=='string')continue;
+  if(value.length>300000)throw new Error('Um dado de jogo é grande demais para exportar: '+key);
+  total+=key.length+value.length;if(total>MAX_GAME_STORAGE_BYTES)throw new Error('Os dados dos jogos ultrapassam o limite de 1,5 MB deste backup.');
+  out[key]=value;
+ }
+ return out;
+}
+function sanitizeGameStorage(raw){
+ if(!raw||typeof raw!=='object'||Array.isArray(raw))throw new Error('A seção de dados dos jogos está inválida.');
+ const out={};let total=0;
+ Object.entries(raw).forEach(([key,value])=>{if(!isGameStorageKey(key))return;const safe=sanitizeGameStorageValue(key,value);if(safe===null)return;
+  total+=key.length+safe.length;if(total>MAX_GAME_STORAGE_BYTES)throw new Error('Os dados dos jogos ultrapassam o limite permitido.');out[key]=safe;
+ });
+ return out;
 }
 function validateBackup(raw){
- if(!raw||typeof raw!=='object'||raw.format!==BACKUP_FORMAT||raw.schemaVersion!==BACKUP_SCHEMA||!raw.payload)throw new Error('Arquivo incompatível. Selecione um backup válido do Jogos do Jhon.');
+ if(!raw||typeof raw!=='object'||raw.format!==BACKUP_FORMAT||![1,BACKUP_SCHEMA].includes(raw.schemaVersion)||!raw.payload)throw new Error('Arquivo incompatível. Selecione um backup válido do Jogos do Jhon.');
  const source=raw.payload.family;
  if(!source||typeof source!=='object'||!Array.isArray(source.profiles)||source.profiles.length<1||source.profiles.length>10)throw new Error('O backup precisa conter de 1 a 10 perfis.');
  const profiles=source.profiles.map(sanitizeBackupProfile),ids=new Set();
- profiles.forEach(p=>{if(ids.has(p.id))throw new Error('O backup contém IDs de perfil duplicados. Nenhum dado foi alterado.');ids.add(p.id)});
- const activeId=profiles.some(p=>p.id===source.activeId)?source.activeId:profiles[0].id;
- return {family:{activeId,profiles,settings:sanitizeBackupSettings(source.settings)},viewMode:['grid','compact','list'].includes(raw.payload.viewMode)?raw.payload.viewMode:'grid'};
+ profiles.forEach(p=>{if(ids.has(p.id))throw new Error('O backup contém IDs de perfil duplicados.');ids.add(p.id)});
+ const activeId=profiles.some(p=>p.id===source.activeId)?source.activeId:profiles[0].id,hasGameStorage=raw.schemaVersion>=2;
+ if(hasGameStorage&&!Object.prototype.hasOwnProperty.call(raw.payload,'gameStorage'))throw new Error('Backup v2 incompleto: falta a seção de dados dos jogos.');
+ return {family:{activeId,profiles,settings:sanitizeBackupSettings(source.settings)},viewMode:['grid','compact','list'].includes(raw.payload.viewMode)?raw.payload.viewMode:'grid',gameStorage:hasGameStorage?sanitizeGameStorage(raw.payload.gameStorage):{},hasGameStorage};
 }
 function exportBackup(){
  try{
-  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v3.31',createdAt:new Date().toISOString(),
-   payload:{family:JSON.parse(JSON.stringify(family)),viewMode}};
-  const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
-  const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;
-  a.download='jogos-do-jhon-backup-'+new Date().toISOString().slice(0,10)+'.json';
+  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v3.32',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
+  const content=JSON.stringify(backup,null,2),blob=new Blob([content],{type:'application/json'});
+  if(blob.size>MAX_BACKUP_BYTES)throw new Error('O backup ultrapassa 2 MB.');
+  const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='jogos-do-jhon-backup-'+new Date().toISOString().slice(0,10)+'.json';
   document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
-  setBackupFeedback('Backup gerado. Inclui '+family.profiles.length+' perfil(is), favoritos, histórico, conquistas e preferências do menu.','success');
+  setBackupFeedback('Backup gerado: '+family.profiles.length+' perfil(is), dados do menu e '+Object.keys(backup.payload.gameStorage).length+' chave(s) de recordes/progresso dos jogos.','success');
  }catch(error){setBackupFeedback('Não foi possível gerar o backup: '+error.message,'error')}
 }
 function mergeProfile(existing,incoming){
@@ -816,14 +974,69 @@ function mergeProfile(existing,incoming){
  existing.recent=[...new Set([...incoming.recent,...existing.recent])].slice(0,5);
  existing.achievements=[...new Set([...existing.achievements,...incoming.achievements])];
 }
-function applyImportedBackup(imported,mode){
- if(mode==='replace'){
-  const previousFamily=family;family=imported.family;
-  if(!save()){family=previousFamily;renderAll();setBackupFeedback('Não foi possível gravar o backup. Seus dados anteriores foram mantidos.','error');return}
-  const viewSaved=setView(imported.viewMode);renderAll();
-  setBackupFeedback(viewSaved?'Backup restaurado. Perfis, progresso e preferências foram substituídos pelos dados do arquivo.':'Backup restaurado, mas o modo de visualização não pôde ser salvo pelo navegador.','success');return;
+function captureGameStorage(){
+ const snapshot={};for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);if(key&&isGameStorageKey(key))snapshot[key]=localStorage.getItem(key)}return snapshot;
+}
+function restoreGameStorage(snapshot){
+ try{
+  const keys=[];for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i);if(key&&isGameStorageKey(key))keys.push(key)}
+  keys.forEach(key=>localStorage.removeItem(key));Object.entries(snapshot||{}).forEach(([key,value])=>{if(isGameStorageKey(key))localStorage.setItem(key,value)});return true;
+ }catch(error){console.error('Falha ao reverter dados dos jogos.',error);return false}
+}
+function writeGameStorage(data,replace){
+ const snapshot=captureGameStorage();
+ try{
+  if(replace)Object.keys(snapshot).forEach(key=>localStorage.removeItem(key));
+  Object.entries(data||{}).forEach(([key,value])=>{if(isGameStorageKey(key)&&typeof value==='string')localStorage.setItem(key,value)});
+  return snapshot;
+ }catch(error){restoreGameStorage(snapshot);throw error}
+}
+function mergeNumberMap(a,b,keys){
+ const out={...(a||{})};keys.forEach(k=>{const av=Number(out[k])||0,bv=Number(b?.[k])||0;if(bv>av)out[k]=bv});return out;
+}
+function mergeGameStorageValue(key,current,incoming,strategy){
+ if(current===undefined)return incoming;if(current===incoming)return current;
+ if(strategy==='current')return current;if(strategy==='backup')return incoming;
+ if(key==='velha.score'){
+  const a=parseStoredObject(current)||{},b=parseStoredObject(incoming)||{};
+  return JSON.stringify({X:Math.max(Number(a.X)||0,Number(b.X)||0),O:Math.max(Number(a.O)||0,Number(b.O)||0),D:Math.max(Number(a.D)||0,Number(b.D)||0)});
  }
- const previousFamily=JSON.parse(JSON.stringify(family));
+ if(key==='crosswordStatsV2'){
+  const a=parseStoredObject(current)||{},b=parseStoredObject(incoming)||{};
+  return JSON.stringify({record:Math.max(Number(a.record)||0,Number(b.record)||0),achievements:[...new Set([...(Array.isArray(a.achievements)?a.achievements:[]),...(Array.isArray(b.achievements)?b.achievements:[])])]});
+ }
+ if(key==='jhon_v5_save'){
+  const a=parseStoredObject(current)||{},b=parseStoredObject(incoming)||{};
+  return JSON.stringify({unlocked:Math.max(Number(a.unlocked)||1,Number(b.unlocked)||1),stars:mergeNumberMap(a.stars,b.stars,['1','2','3','4']),best:mergeNumberMap(a.best,b.best,['1','2','3','4'])});
+ }
+ if(key==='bubble_achievements')return JSON.stringify({...parseStoredObject(current),...parseStoredObject(incoming)});
+ if(key.startsWith('crosswordDaily_'))return current==='1'||incoming==='1'?'1':current;
+ if(key.startsWith('memoria.best.')||key.startsWith('memoria.time.')){
+  const a=Number(current),b=Number(incoming);if(!Number.isFinite(a)||a<=0)return incoming;if(!Number.isFinite(b)||b<=0)return current;return String(Math.min(a,b));
+ }
+ if(/(^|[._])best($|[._])/.test(key)||key.startsWith('arcade_best_')){
+  const a=Number(current),b=Number(incoming);if(Number.isFinite(a)&&Number.isFinite(b))return String(Math.max(a,b));
+ }
+ return current;
+}
+function mergeGameStorage(incoming,strategy){
+ const current=captureGameStorage(),data={...current};let conflicts=0;
+ Object.entries(incoming||{}).forEach(([key,value])=>{if(!isGameStorageKey(key))return;if(Object.prototype.hasOwnProperty.call(current,key)&&current[key]!==value)conflicts++;data[key]=mergeGameStorageValue(key,current[key],value,strategy)});
+ return {data,conflicts};
+}
+function applyImportedBackup(imported,mode){
+ const previousFamily=JSON.parse(JSON.stringify(family)),previousGameStorage=captureGameStorage();
+ if(mode==='replace'){
+  family=imported.family;
+  try{
+   if(imported.hasGameStorage)writeGameStorage(imported.gameStorage,true);
+   if(!save())throw new Error('O navegador recusou salvar os perfis e preferências.');
+   const viewSaved=setView(imported.viewMode);renderAll();
+   setBackupFeedback('Backup restaurado: dados do menu'+(imported.hasGameStorage?' e dados reconhecidos dos jogos':'')+' foram substituídos.'+(viewSaved?'':' O modo de visualização não pôde ser salvo.'),'success');
+  }catch(error){family=previousFamily;restoreGameStorage(previousGameStorage);renderAll();setBackupFeedback('Falha ao restaurar. Os dados anteriores foram recuperados. '+error.message,'error')}
+  return;
+ }
+ const strategy=document.getElementById('dataConflictStrategy').value||'smart',mergedGame=mergeGameStorage(imported.gameStorage,strategy);
  let added=0,merged=0,skipped=0;
  imported.family.profiles.forEach(source=>{
   const target=family.profiles.find(p=>p.id===source.id);
@@ -831,9 +1044,11 @@ function applyImportedBackup(imported,mode){
   else if(family.profiles.length<10){family.profiles.push({...source,counts:{...source.counts},favs:[...source.favs],recent:[...source.recent],achievements:[...source.achievements]});added++}
   else skipped++;
  });
- if(!save()){family=previousFamily;renderAll();setBackupFeedback('Não foi possível gravar os dados mesclados. Seus dados anteriores foram mantidos.','error');return}
- renderAll();
- setBackupFeedback('Backup mesclado: '+added+' perfil(is) novo(s), '+merged+' combinado(s)'+(skipped?', '+skipped+' ignorado(s) pelo limite de 10 perfis':'')+'. Preferências atuais mantidas.','success');
+ try{
+  writeGameStorage(mergedGame.data,false);if(!save())throw new Error('O navegador recusou salvar os perfis e preferências.');
+  renderAll();const label={smart:'melhor resultado',current:'dados deste dispositivo',backup:'dados do backup'}[strategy];
+  setBackupFeedback('Backup mesclado: '+added+' perfil(is) novo(s), '+merged+' combinado(s)'+(skipped?', '+skipped+' ignorado(s) pelo limite de 10 perfis':'')+'. '+mergedGame.conflicts+' conflito(s) dos jogos resolvido(s) por '+label+'.','success');
+ }catch(error){family=previousFamily;restoreGameStorage(previousGameStorage);renderAll();setBackupFeedback('A mesclagem falhou. Os dados anteriores foram recuperados. '+error.message,'error')}
 }
 function beginBackupImport(mode){const input=document.getElementById('backupFile');input.dataset.mode=mode;input.value='';input.click()}
 document.getElementById('exportBackup').addEventListener('click',exportBackup);
@@ -842,17 +1057,14 @@ document.getElementById('importReplace').addEventListener('click',()=>beginBacku
 document.getElementById('backupFile').addEventListener('change',event=>{
  const file=event.target.files&&event.target.files[0];if(!file)return;
  const mode=event.target.dataset.mode==='replace'?'replace':'merge';
- if(file.size>MAX_BACKUP_BYTES){setBackupFeedback('Arquivo muito grande. O limite para este backup é 1 MB.','error');event.target.value='';return}
- const reader=new FileReader();
- reader.onerror=()=>setBackupFeedback('Não foi possível ler o arquivo selecionado.','error');
+ if(file.size>MAX_BACKUP_BYTES){setBackupFeedback('Arquivo muito grande. O limite para este backup é 2 MB.','error');event.target.value='';return}
+ const reader=new FileReader();reader.onerror=()=>setBackupFeedback('Não foi possível ler o arquivo selecionado.','error');
  reader.onload=()=>{
   try{
    const imported=validateBackup(JSON.parse(String(reader.result||'')));
    if(mode==='replace'){
-    if(!confirm('ATENÇÃO: substituirá todos os perfis, favoritos, histórico, conquistas e preferências atuais pelos dados deste backup.'))return;
-    if(prompt('Para confirmar, digite SUBSTITUIR. Essa ação não pode ser desfeita sem outro backup.')!=='SUBSTITUIR'){
-     setBackupFeedback('Substituição cancelada. Seus dados atuais foram mantidos.');return;
-    }
+    if(!confirm('ATENÇÃO: substituirá perfis, favoritos, histórico, conquistas, preferências e os dados dos jogos incluídos no backup.'))return;
+    if(prompt('Para confirmar, digite SUBSTITUIR. Essa ação não pode ser desfeita sem outro backup.')!=='SUBSTITUIR'){setBackupFeedback('Substituição cancelada. Seus dados atuais foram mantidos.');return}
    }
    applyImportedBackup(imported,mode);
   }catch(error){setBackupFeedback('Backup não importado: '+error.message,'error')}
