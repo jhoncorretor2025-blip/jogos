@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Jogos do Jhon">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Jogos do Jhon · v3.3</title>
+<title>Jogos do Jhon · v3.4</title>
 <meta name="description" content="Arcade de jogos web do Jhon com busca, favoritos, categorias, histórico e perfil gamer.">
 <style>
   :root{
@@ -88,6 +88,64 @@
   .grid.list .desc{grid-column:2}
   .grid.list .card-meta{grid-column:2}
   @media(max-width:560px){.profile{grid-template-columns:repeat(2,1fr)}.toolbar{gap:6px}.toolbtn,.filter{padding:8px 10px;font-size:12px}}
+
+  .category-section{margin:18px 0 14px}
+  .section-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:10px}
+  .section-head h2,.catalog-title{font-size:16px;margin:0;color:#e2e8f0}
+  .section-head p,.catalog-sub{font-size:12px;color:var(--muted);margin:4px 0 0}
+  .category-nav{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px}
+  .category-chip{min-width:0;display:flex;align-items:center;gap:9px;text-align:left;padding:11px 12px;border:1px solid var(--line);border-radius:13px;background:linear-gradient(145deg,#142238,#0d1728);color:var(--txt);cursor:pointer;transition:.16s ease}
+  .category-chip:hover,.category-chip.active{border-color:var(--a1);background:rgba(34,211,238,.11);transform:translateY(-2px)}
+  .category-chip .cat-icon{font-size:23px;line-height:1}
+  .category-chip b{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .category-chip small{display:block;color:var(--muted);font-size:10px;margin-top:2px}
+  .search-shell{position:relative}
+  .search-shell .searchbox{padding-right:48px}
+  .search-clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:32px;height:32px;border:0;border-radius:9px;background:#1e293b;color:#cbd5e1;font-size:17px;display:none;cursor:pointer}
+  .search-suggestions{position:absolute;z-index:30;left:0;right:0;top:calc(100% + 5px);display:none;background:#111c2e;border:1px solid #334155;border-radius:13px;box-shadow:0 18px 34px #0009;padding:6px;max-height:280px;overflow:auto}
+  .search-suggestions.show{display:block}
+  .suggestion{width:100%;display:flex;align-items:center;gap:10px;text-align:left;padding:9px 10px;border:0;border-radius:9px;background:transparent;color:var(--txt);cursor:pointer}
+  .suggestion:hover,.suggestion:focus{background:#1e293b;outline:none}
+  .suggestion .s-ico{font-size:20px}.suggestion small{display:block;color:var(--muted);font-size:10px}
+  .favorite-section{margin:20px 0 24px;padding:15px;border:1px solid rgba(251,191,36,.22);border-radius:17px;background:linear-gradient(120deg,rgba(251,191,36,.06),rgba(34,211,238,.035))}
+  .favorite-section[hidden]{display:none}
+  .favorite-rail{display:flex;gap:10px;overflow-x:auto;padding:3px 2px 9px;scroll-snap-type:x mandatory;scrollbar-width:thin}
+  .favorite-tile{flex:0 0 190px;scroll-snap-align:start;position:relative;min-height:125px;padding:13px;border:1px solid #4b4229;border-radius:14px;background:linear-gradient(145deg,#222034,#111827);cursor:pointer}
+  .favorite-tile:hover{border-color:#fbbf24;transform:translateY(-2px)}
+  .favorite-tile .fav-icon{font-size:27px;display:block;margin-bottom:9px}
+  .favorite-tile b{display:block;font-size:13px;padding-right:20px}
+  .favorite-tile small{display:block;color:var(--muted);font-size:10px;margin-top:5px}
+  .favorite-remove{position:absolute;right:8px;top:8px;background:#0b1220;border:1px solid #51452a;color:#fbbf24;border-radius:8px;padding:4px 7px;cursor:pointer}
+  .catalog-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-top:24px}
+  .catalog-count{font-size:12px;color:var(--muted)}
+  .collection-progress{margin-top:10px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.025)}
+  .collection-progress-head{display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-size:11px;margin-bottom:7px}
+  .collection-track{height:7px;border-radius:99px;background:#1e293b;overflow:hidden}
+  .collection-fill{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--a1),var(--a2),var(--a3));transition:width .25s ease}
+  .grid.compact{grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:9px}
+  .grid.compact .card{padding:13px 12px;min-height:112px;border-radius:14px}
+  .grid.compact .ico{font-size:25px;margin-bottom:8px}
+  .grid.compact .name{font-size:13px;margin:0;padding-right:22px}
+  .grid.compact .desc,.grid.compact .card-meta{display:none}
+  .grid.compact .tag{top:9px;right:9px;font-size:9px;padding:3px 6px}
+  .grid.compact .favbtn{top:38px;right:9px;padding:3px 6px;font-size:12px}
+  .mobile-nav{display:none}
+  @media(max-width:850px){.category-nav{grid-template-columns:repeat(3,minmax(0,1fr))}}
+  @media(max-width:560px){
+    body{padding-bottom:92px}
+    .category-nav{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+    .category-chip{display:grid;gap:4px;padding:9px 7px;text-align:center;justify-items:center}
+    .category-chip .cat-icon{font-size:21px}.category-chip b{font-size:10px}.category-chip small{font-size:9px}
+    .favorite-section{padding:12px;margin:16px 0}.favorite-tile{flex-basis:158px;min-height:115px}
+    .grid.compact{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .catalog-head{align-items:start}
+    .mobile-nav{position:fixed;z-index:100;left:10px;right:10px;bottom:max(9px,env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:7px;border:1px solid #334155;border-radius:17px;background:rgba(8,15,28,.94);backdrop-filter:blur(16px);box-shadow:0 10px 34px #0009}
+    .mobile-nav button{display:grid;justify-items:center;gap:2px;padding:5px 2px;border:0;border-radius:10px;background:transparent;color:#94a3b8;font-size:10px;cursor:pointer}
+    .mobile-nav button span{font-size:19px;line-height:1.2}
+    .mobile-nav button.active{background:rgba(34,211,238,.12);color:#67e8f9}
+  }
+  @media(min-width:561px){.grid.compact{grid-template-columns:repeat(auto-fill,minmax(175px,1fr))}}
+
   .notes{
     margin-top:26px;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:16px;padding:16px 18px;
   }
@@ -138,22 +196,24 @@
   <header>
     <h1>Jogos do Jhon</h1>
     <p class="sub">🎮 Arcade de bolso — abre no celular e no PC, sem instalar nada.</p>
-    <div class="version"><span class="dot"></span> Versão <b>v3.3</b> · atualizado em <b>22/11/2026</b></div>
+    <div class="version"><span class="dot"></span> Versão <b>v3.4</b> · atualizado em <b>22/11/2026</b></div>
   </header>
 
+  <section class="category-section" aria-label="Navegação por categoria">
+    <div class="section-head"><div><h2>Explore por categoria</h2><p>Escolha um estilo e encontre seu próximo jogo.</p></div></div>
+    <div class="category-nav" id="categoryNav"></div>
+  </section>
   <section class="menu-tools" aria-label="Ferramentas do catálogo">
-    <input id="gameSearch" class="searchbox" type="search" placeholder="🔎 Buscar jogo pelo nome..." autocomplete="off">
+    <div class="search-shell">
+      <input id="gameSearch" class="searchbox" type="search" placeholder="🔎 Buscar jogo, estilo ou palavra..." autocomplete="off" aria-label="Buscar jogos">
+      <button class="search-clear" id="searchClear" type="button" aria-label="Limpar busca">×</button>
+      <div class="search-suggestions" id="searchSuggestions" role="listbox"></div>
+    </div>
     <div class="toolbar" id="filters">
-      <button class="filter active" data-filter="all">🎮 Todos</button>
-      <button class="filter" data-filter="favorites">⭐ Favoritos</button>
-      <button class="filter" data-filter="puzzle">🧠 Puzzle</button>
-      <button class="filter" data-filter="action">⚡ Ação</button>
-      <button class="filter" data-filter="arcade">🕹️ Arcade</button>
-      <button class="filter" data-filter="strategy">♟️ Estratégia</button>
-      <button class="filter" data-filter="racing">🏎️ Corrida</button>
       <button class="toolbtn" id="randomGame">🎲 Jogo aleatório</button>
-      <button class="toolbtn" id="viewToggle">☰ Lista</button>
+      <button class="toolbtn" id="viewToggle">▦ Grade</button>
       <button class="toolbtn" id="installApp">📲 Instalar app</button>
+      <span class="catalog-count" id="resultsLabel">25 jogos disponíveis</span>
     </div>
     <div>
       <h2 class="section-title">🕐 Jogados recentemente</h2>
@@ -165,6 +225,14 @@
       <div class="stat"><b id="favoriteCount">0</b><span>Favoritos ⭐</span></div>
       <div class="stat"><b id="recentCount">0</b><span>Recentes</span></div>
     </div>
+    <div class="collection-progress">
+      <div class="collection-progress-head"><span>🏆 Progresso da coleção</span><b id="collectionPercent">0%</b></div>
+      <div class="collection-track"><div class="collection-fill" id="collectionFill"></div></div>
+    </div>
+  </section>
+  <section class="favorite-section" id="favoriteSection" hidden>
+    <div class="section-head"><div><h2>⭐ Seus favoritos</h2><p id="favoriteCaption">Seus jogos escolhidos, prontos para continuar.</p></div><button class="toolbtn" id="seeAllFavorites" type="button">Ver todos</button></div>
+    <div class="favorite-rail" id="favoriteRail"></div>
   </section>
   <section class="family-panel" aria-label="Perfis de jogadores">
     <div class="family-head"><h2>👨‍👩‍👧 Quem está jogando?</h2><button class="toolbtn" id="addProfile">＋ Novo perfil</button></div>
@@ -188,6 +256,7 @@
       <p class="settings-note">As opções de contraste, texto, animações e controles táteis também são aplicadas às páginas de jogos compatíveis. Os sons dependem de cada jogo oferecer efeitos sonoros.</p>
     </div>
   </details>
+  <div class="catalog-head" id="catalogStart"><div><h2 class="catalog-title">🎮 Todos os jogos</h2><p class="catalog-sub">Sua biblioteca completa, com 25 experiências.</p></div><span class="catalog-count" id="sortLabel">Ordem padrão</span></div>
   <div class="grid" id="gameGrid">
     <div class="card" data-category="puzzle" data-href="games/2048.html" style="--accent:#fbbf24;--glow:rgba(251,191,36,.20)">
       <span class="tag new">v1.0</span>
@@ -331,8 +400,9 @@
   </div>
 
   <div class="notes">
-    <h2>📝 Novidades da v3.3</h2>
+    <h2>📝 Novidades da v3.4</h2>
     <ul>
+      <li><b>Navegação v3.4:</b> categorias visuais, busca com sugestões, carrossel de favoritos, progresso da coleção, menu inferior no celular e visualização em grade, compacta ou lista.</li>
       <li><b>Favoritos primeiro:</b> jogos marcados com ⭐ ficam no topo, respeitando o perfil ativo. Sem favoritos, a ordem padrão começa com Cobra Neon, Jogo da Memória, Jogo da Velha, Tetris Neon, Palavras Cruzadas, STOP!, Galáxia Invasora e 2048.</li><li><b>Banco Imobiliário v4.0:</b> peças percorrem o tabuleiro, miniaturas 3D de casas e hotéis, escrituras interativas, moedas animadas, cidade central evolutiva, cartas ilustradas, gráfico de patrimônio, bairros destacados, ciclo dia/noite e leilões com lances da pessoa e da IA.</li><li>Menu com busca, favoritos, histórico recente, categorias, visual em lista, perfis familiares e conquistas individuais.</li><li>Instalação como aplicativo (PWA), suporte offline, quatro temas e configurações de acessibilidade e controles.</li><li><b>6 jogos clássicos novos:</b> Dominó, Paciência, Pinball Neon, Bubble Shooter, Travessia Maluca e Resta Um.</li><li><b>STOP! v1.0:</b> novo jogo de Adedonha com modo solo, passa o celular, categorias configuráveis, cronômetro, pontuação e ranking local.</li><li><b>Galáxia Invasora v1.0:</b> shooter espacial inspirado nos arcades de 1979, com formação inimiga, mergulhos, disparos, ondas e recordes.</li><li>5 novos jogos adicionados: <b>Tetris Neon</b>, <b>Voo Desafiador</b>, <b>Labirinto Fantasma</b>, <b>Sudoku</b> e <b>Xadrez</b>.</li><li><b>Palavras Cruzadas v1.0:</b> novo passatempo com 16 palavras, pistas horizontais e verticais, dicas e conferência.</li><li><b>Ninja Forest Rescue v4.12:</b> mais vidas, proteção após dano e checkpoints que recuperam vida.</li><li>Filtros por categoria e botão para abrir um jogo aleatório.</li>
       <li><b>Versão visível</b> em cada jogo e em cada card, para saber se a página atualizou.</li>
       <li>Memória <b>v1.1</b>: espiada, sons, recorde e confete.</li>
@@ -344,6 +414,12 @@
     Recordes ficam salvos neste navegador. Se a versão não mudou, recarregue com <span class="kbd">Ctrl+F5</span>.
   </footer>
 </div>
+<nav class="mobile-nav" id="mobileNav" aria-label="Navegação principal">
+  <button type="button" data-nav="home" class="active"><span>🏠</span>Início</button>
+  <button type="button" data-nav="games"><span>🎮</span>Jogos</button>
+  <button type="button" data-nav="favorites"><span>⭐</span>Favoritos</button>
+  <button type="button" data-nav="records"><span>🏆</span>Recordes</button>
+</nav>
 <script src="./arcade-common.js"></script>
 <script>
 (()=>{'use strict';
@@ -397,10 +473,15 @@ function renderRecent(){
  const recent=p.recent.map(h=>names.find(x=>x.href===h)).filter(Boolean);
  if(!recent.length)box.innerHTML='<span class="sub">Os jogos recentes de '+p.name+' aparecerão aqui.</span>';
  recent.forEach(g=>{const a=document.createElement('a');a.href=g.href;a.textContent=g.icon+' '+g.name;a.addEventListener('click',e=>{e.preventDefault();launch(g.href)});box.appendChild(a)});
+ const explored=Object.keys(p.counts).filter(h=>names.some(g=>g.href===h)).length;
  document.getElementById('playedCount').textContent=p.plays;
- document.getElementById('uniqueCount').textContent=Object.keys(p.counts).length;
+ document.getElementById('uniqueCount').textContent=explored;
  document.getElementById('favoriteCount').textContent=p.favs.length;
  document.getElementById('recentCount').textContent=recent.length;
+ const pct=Math.round(explored/Math.max(1,names.length)*100);
+ document.getElementById('collectionPercent').textContent=pct+'%';
+ document.getElementById('collectionFill').style.width=pct+'%';
+ renderFavorites();
 }
 function refreshCardMeta(){
  const p=active();
@@ -413,10 +494,69 @@ function refreshCardMeta(){
 }
 const defaultOrder=['games/cobra.html','games/memoria.html','games/velha.html','games/tetris.html','games/palavras-cruzadas.html','games/stop.html','games/galaxia-invasora.html','games/2048.html'];
 let filter='all';
+const VIEW_KEY='jhonArcadeViewV1';
+let viewMode='grid';
+try{const savedView=localStorage.getItem(VIEW_KEY);if(['grid','compact','list'].includes(savedView))viewMode=savedView}catch(e){}
+function renderCategoryNav(){
+ const box=document.getElementById('categoryNav');
+ const defs=[['all','🎮','Todos'],['arcade','🕹️','Arcade'],['puzzle','🧩','Puzzle'],['strategy','♟️','Estratégia'],['action','⚡','Ação'],['racing','🏎️','Corrida']];
+ box.innerHTML='';
+ defs.forEach(([key,icon,label])=>{
+  const count=key==='all'?names.length:names.filter(g=>g.cat===key).length;
+  const b=document.createElement('button');b.type='button';b.className='category-chip'+(filter===key?' active':'');
+  b.dataset.filter=key;b.innerHTML='<span class="cat-icon">'+icon+'</span><span><b>'+label+'</b><small>'+count+' jogos</small></span>';
+  b.addEventListener('click',()=>{filter=key;renderCards();playUi()});box.appendChild(b);
+ });
+}
+function renderFavorites(){
+ const p=active(),section=document.getElementById('favoriteSection'),rail=document.getElementById('favoriteRail');
+ const favs=p.favs.map(h=>names.find(g=>g.href===h)).filter(Boolean);
+ section.hidden=!favs.length;rail.innerHTML='';
+ document.getElementById('favoriteCaption').textContent=favs.length+' jogo'+(favs.length===1?' favorito salvo':'s favoritos salvos')+' neste perfil.';
+ favs.forEach(g=>{
+  const card=document.createElement('div');card.className='favorite-tile';card.tabIndex=0;card.setAttribute('role','link');
+  card.innerHTML='<span class="fav-icon">'+g.icon+'</span><b>'+g.name+'</b><small>▶ '+(p.counts[g.href]||0)+' partidas abertas</small>';
+  const remove=document.createElement('button');remove.type='button';remove.className='favorite-remove';remove.textContent='★';remove.title='Remover dos favoritos';
+  remove.addEventListener('click',e=>{e.stopPropagation();toggleFavorite(g.href)});
+  card.appendChild(remove);card.addEventListener('click',e=>{if(e.target.closest('.favorite-remove'))return;launch(g.href)});
+  card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();launch(g.href)}});
+  rail.appendChild(card);
+ });
+}
+function normalizeText(v){return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()}
+function getMatches(query){
+ const q=normalizeText(query);if(!q)return [];
+ return cards.map(c=>({card:c,game:names.find(g=>g.href===c.dataset.href),hay:normalizeText(c.innerText+' '+(categories[c.dataset.category]||''))}))
+  .filter(x=>x.game&&x.hay.includes(q)).slice(0,6);
+}
+function renderSuggestions(){
+ const input=document.getElementById('gameSearch'),box=document.getElementById('searchSuggestions'),clear=document.getElementById('searchClear'),q=input.value.trim();
+ clear.style.display=q?'block':'none';box.innerHTML='';
+ if(!q){box.classList.remove('show');return}
+ const matches=getMatches(q);
+ if(!matches.length){box.innerHTML='<div class="suggestion"><span class="s-ico">🔎</span><span>Nenhum jogo encontrado</span></div>'}
+ else matches.forEach(({game})=>{
+  const b=document.createElement('button');b.type='button';b.className='suggestion';b.innerHTML='<span class="s-ico">'+game.icon+'</span><span><b>'+game.name+'</b><small>'+(categories[game.cat]||'Jogo')+'</small></span>';
+  b.addEventListener('click',()=>{input.value=game.name;renderCards();box.classList.remove('show');document.getElementById('catalogStart').scrollIntoView({behavior:'smooth',block:'start'})});
+  box.appendChild(b);
+ });
+ box.classList.add('show');
+}
+function setView(mode){
+ grid.classList.remove('compact','list');if(mode!=='grid')grid.classList.add(mode);
+ viewMode=mode;try{localStorage.setItem(VIEW_KEY,mode)}catch(e){}
+ const labels={grid:'▦ Grade',compact:'▤ Compacta',list:'☰ Lista'};
+ document.getElementById('viewToggle').textContent=labels[mode];
+ document.getElementById('viewToggle').title='Visualização: '+labels[mode];
+}
 function renderCards(){
- const p=active(),q=document.getElementById('gameSearch').value.trim().toLowerCase();
- cards.forEach(c=>{const href=c.dataset.href,cat=c.dataset.category||'arcade',text=c.innerText.toLowerCase();const ok=(filter==='all'||(filter==='favorites'?p.favs.includes(href):cat===filter))&&text.includes(q);c.style.display=ok?'':'none'});
- // Mantém os favoritos deste perfil no início da grade, sem alterar a ordem dos demais jogos.
+ const p=active(),raw=document.getElementById('gameSearch').value.trim(),q=normalizeText(raw);let shown=0;
+ cards.forEach(c=>{
+  const href=c.dataset.href,cat=c.dataset.category||'arcade',hay=normalizeText(c.innerText+' '+(categories[cat]||''));
+  const ok=(filter==='all'||(filter==='favorites'?p.favs.includes(href):cat===filter))&&(!q||hay.includes(q));
+  c.style.display=ok?'':'none';if(ok)shown++;
+ });
+ // Favoritos personalizados vêm primeiro; sem personalização, mantém a ordem padrão dos oito escolhidos.
  const ordered=cards.slice().sort((a,b)=>{
   const af=p.favs.includes(a.dataset.href),bf=p.favs.includes(b.dataset.href);
   if(af!==bf)return Number(bf)-Number(af);
@@ -424,10 +564,12 @@ function renderCards(){
   return (ai<0?999:ai)-(bi<0?999:bi);
  });
  ordered.forEach(card=>grid.appendChild(card));
- document.querySelectorAll('.filter').forEach(b=>b.classList.toggle('active',b.dataset.filter===filter));
+ document.getElementById('resultsLabel').textContent=shown+' de '+names.length+' jogos';
+ document.getElementById('sortLabel').textContent=p.favs.length?'⭐ Favoritos personalizados primeiro':'Ordem padrão';
+ document.querySelectorAll('.category-chip').forEach(b=>b.classList.toggle('active',b.dataset.filter===filter));
  refreshCardMeta();
 }
-function renderAll(){renderProfiles();renderCards();renderRecent();renderAchievements();applySettings();syncSettingsUI()}
+function renderAll(){renderProfiles();renderCategoryNav();renderCards();renderRecent();renderAchievements();applySettings();syncSettingsUI();setView(viewMode)}
 function playUi(){if(window.ArcadeCommon)window.ArcadeCommon.playUi()}
 function launch(href){
  const p=active();p.plays++;p.counts[href]=(p.counts[href]||0)+1;p.recent=[href,...p.recent.filter(x=>x!==href)].slice(0,5);save();renderAll();playUi();window.location.href=href;
@@ -441,10 +583,28 @@ cards.forEach(card=>{
  card.addEventListener('click',e=>{if(e.target.closest('.favbtn'))return;launch(href)});
  card.addEventListener('keydown',e=>{if(e.target.closest('.favbtn'))return;if(e.key==='Enter'||e.key===' '){e.preventDefault();launch(href)}});
 });
-document.getElementById('gameSearch').addEventListener('input',renderCards);
+const searchInput=document.getElementById('gameSearch');
+searchInput.addEventListener('input',()=>{renderCards();renderSuggestions()});
+searchInput.addEventListener('focus',renderSuggestions);
+searchInput.addEventListener('keydown',e=>{
+ if(e.key==='Escape'){searchInput.value='';renderCards();renderSuggestions()}
+ if(e.key==='Enter'){const first=getMatches(searchInput.value)[0];if(first){e.preventDefault();launch(first.game.href)}}
+});
+document.getElementById('searchClear').addEventListener('click',()=>{searchInput.value='';renderCards();renderSuggestions();searchInput.focus()});
+document.addEventListener('click',e=>{if(!e.target.closest('.search-shell'))document.getElementById('searchSuggestions').classList.remove('show')});
+document.getElementById('seeAllFavorites').addEventListener('click',()=>{filter='favorites';renderCards();document.getElementById('catalogStart').scrollIntoView({behavior:'smooth'})});
 document.querySelectorAll('.filter').forEach(b=>b.addEventListener('click',()=>{filter=b.dataset.filter;renderCards();playUi()}));
 document.getElementById('randomGame').addEventListener('click',()=>{const visible=cards.filter(c=>c.style.display!=='none'),pool=visible.length?visible:cards;launch(pool[Math.floor(Math.random()*pool.length)].dataset.href)});
-document.getElementById('viewToggle').addEventListener('click',()=>{grid.classList.toggle('list');const on=grid.classList.contains('list');document.getElementById('viewToggle').textContent=on?'▦ Grade':'☰ Lista';playUi()});
+document.getElementById('viewToggle').addEventListener('click',()=>{const modes=['grid','compact','list'];setView(modes[(modes.indexOf(viewMode)+1)%modes.length]);playUi()});
+document.querySelectorAll('.mobile-nav button').forEach(b=>b.addEventListener('click',()=>{
+ document.querySelectorAll('.mobile-nav button').forEach(x=>x.classList.toggle('active',x===b));
+ const action=b.dataset.nav;
+ if(action==='home'){filter='all';searchInput.value='';renderCards();window.scrollTo({top:0,behavior:'smooth'})}
+ if(action==='games'){filter='all';renderCards();document.getElementById('catalogStart').scrollIntoView({behavior:'smooth'})}
+ if(action==='favorites'){filter='favorites';renderCards();if(active().favs.length)document.getElementById('favoriteSection').scrollIntoView({behavior:'smooth'})}
+ if(action==='records'){document.getElementById('achievementsPanel').open=true;document.getElementById('achievementsPanel').scrollIntoView({behavior:'smooth'})}
+ playUi();
+}));
 document.getElementById('addProfile').addEventListener('click',()=>{if(family.profiles.length>=10){alert('O Arcade permite até 10 perfis neste dispositivo.');return}const name=prompt('Qual é o nome do novo jogador?');if(!name||!name.trim())return;const id='player-'+Date.now();family.profiles.push(makeProfile(id,name.trim().slice(0,24),'🧑'));family.activeId=id;save();renderAll()});
 function syncSettingsUI(){const s=family.settings;document.getElementById('themeSetting').value=s.theme;document.getElementById('textSetting').value=s.textSize;document.getElementById('controlsSetting').value=s.touchControls;document.getElementById('volumeSetting').value=s.volume;document.getElementById('volumeValue').textContent=s.volume+'%';document.getElementById('soundSetting').checked=s.sound;document.getElementById('contrastSetting').checked=s.contrast;document.getElementById('motionSetting').checked=s.reducedMotion}
 function updateSetting(key,value){family.settings[key]=value;save();applySettings();syncSettingsUI()}
