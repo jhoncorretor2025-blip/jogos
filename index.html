@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Jogos do Jhon">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Jogos do Jhon · v3.34</title>
+<title>Jogos do Jhon · v3.35</title>
 <meta name="description" content="Arcade de jogos web do Jhon com busca, favoritos, categorias, histórico e perfil gamer.">
 <style>
   :root{
@@ -305,7 +305,7 @@
     <span class="hero-kicker">ARCADE PESSOAL</span>
     <h1>Jogos do Jhon</h1>
     <p class="sub">🎮 Seu cantinho de diversão: escolha um jogo e comece a jogar no celular ou no PC.</p>
-    <div class="version"><span class="dot"></span> Versão <b>v3.34</b> · atualizado em <b>23/11/2026</b></div>
+    <div class="version"><span class="dot"></span> Versão <b>v3.35</b> · atualizado em <b>23/11/2026</b></div>
     <div class="home-hero-actions">
       <a class="primary-cta" href="#catalogStart">🎮 Explorar jogos <span aria-hidden="true">↓</span></a>
       <span class="hero-count" id="heroGameCount">30 jogos no catálogo</span>
@@ -314,7 +314,7 @@
   <main id="mainContent">
     <p class="save-feedback" id="profileSaveFeedback" hidden role="status" aria-live="polite" aria-atomic="true"></p>
   <section class="category-section" aria-label="Navegação por categoria">
-    <div class="section-head"><div><h2>Explore por categoria</h2><p>Escolha um estilo e encontre seu próximo jogo.</p></div></div>
+    <div class="section-head"><div><h2>Explore por categoria</h2><p>Escolha um estilo e encontre seu próximo jogo — incluindo uma seleção de clássicos e jogos tranquilos.</p></div></div>
     <div class="category-nav" id="categoryNav" role="group" aria-label="Filtrar por categoria"></div>
   </section>
   <section class="menu-tools" aria-label="Ferramentas do catálogo">
@@ -572,9 +572,9 @@
     </div>
   </details>
   <div class="notes">
-    <h2>📝 Novidades da tela inicial · v3.34</h2>
+    <h2>📝 Novidades da tela inicial · v3.35</h2>
     <ul>
-      <li><b>Novos jogos v3.34:</b> Sinuca 8-Ball e Caminhoneiro – Entrega na Estrada, com controles para celular e computador, novas missões e recordes.</li>
+      <li><b>Novos jogos v3.35:</b> Sinuca 8-Ball e Caminhoneiro – Entrega na Estrada, com controles para celular e computador, novas missões e recordes.</li>
       <li><b>Correção v3.33:</b> corrigidos os alvos do menu inferior para abrir Favoritos e Recordes sem erro.</li>
       <li><b>Tela inicial v3.32:</b> links reais para os jogos, gerenciamento de perfis, estados vazios, backup dos dados reconhecidos dos jogos, importação com conflitos configuráveis e melhorias de navegação e acessibilidade.</li>
       <li><b>Dados e segurança v3.31:</b> backup JSON dos perfis, favoritos, histórico, conquistas e preferências do Arcade; importação com mesclagem ou substituição confirmada; restauração das configurações e diagnóstico do armazenamento local.</li>
@@ -632,7 +632,7 @@ const save=()=>{
  }
 };
 const names=cards.map(c=>({href:c.dataset.href,name:c.querySelector('.name').textContent.replace('NOVO','').trim(),icon:c.querySelector('.ico').textContent,cat:c.dataset.category||'arcade'}));
-const categories={puzzle:'🧠 Puzzle',action:'⚡ Ação',arcade:'🕹️ Arcade',strategy:'♟️ Estratégia',racing:'🏎️ Corrida'};
+const categories={puzzle:'🧠 Puzzle',action:'⚡ Ação',arcade:'🕹️ Arcade',strategy:'♟️ Estratégia',racing:'🏎️ Corrida',classics:'🧠 Clássicos & Tranquilos'};\nconst classics=new Set(['games/2048.html','games/memoria.html','games/velha.html','games/campo-minado.html','games/forca.html','games/sudoku.html','games/xadrez.html','games/palavras-cruzadas.html','games/stop.html','games/domino.html','games/paciencia.html','games/resta-um.html','games/conecte-pontos.html','games/acerte-numero.html','games/detetive.html','games/banco-imobiliario.html']);
 const achievements=[
  {id:'first',icon:'🌱',name:'Primeiro passo',desc:'Abra seu primeiro jogo.',ok:p=>p.plays>=1},
  {id:'five',icon:'🧭',name:'Explorador',desc:'Experimente 5 jogos diferentes.',ok:p=>Object.keys(p.counts).length>=5},
@@ -720,10 +720,10 @@ let viewMode='grid';
 try{const savedView=localStorage.getItem(VIEW_KEY);if(['grid','compact','list'].includes(savedView))viewMode=savedView}catch(e){}
 function renderCategoryNav(){
  const box=document.getElementById('categoryNav');
- const defs=[['all','🎮','Todos'],['arcade','🕹️','Arcade'],['puzzle','🧩','Puzzle'],['strategy','♟️','Estratégia'],['action','⚡','Ação'],['racing','🏎️','Corrida']];
+ const defs=[['all','🎮','Todos'],['classics','🧠','Clássicos & Tranquilos'],['arcade','🕹️','Arcade'],['puzzle','🧩','Puzzle'],['strategy','♟️','Estratégia'],['action','⚡','Ação'],['racing','🏎️','Corrida']];
  box.innerHTML='';
  defs.forEach(([key,icon,label])=>{
-  const count=key==='all'?names.length:names.filter(g=>g.cat===key).length;
+  const count=key==='all'?names.length:key==='classics'?names.filter(g=>classics.has(g.href)).length:names.filter(g=>g.cat===key).length;
   const b=document.createElement('button');b.type='button';b.className='category-chip'+(filter===key?' active':'');
   b.dataset.filter=key;b.setAttribute('aria-pressed',String(filter===key));
   b.innerHTML='<span class="cat-icon">'+icon+'</span><span><b>'+label+'</b><small>'+count+' '+(count===1?'jogo':'jogos')+'</small></span>';
@@ -792,7 +792,7 @@ function renderCards(){
  const p=active(),raw=document.getElementById('gameSearch').value.trim(),q=normalizeText(raw);let shown=0;
  cards.forEach(c=>{
   const href=c.dataset.href,cat=c.dataset.category||'arcade',hay=normalizeText(c.innerText+' '+(categories[cat]||''));
-  const ok=(filter==='all'||(filter==='favorites'?p.favs.includes(href):cat===filter))&&(!q||hay.includes(q));
+  const ok=(filter==='all'||(filter==='favorites'?p.favs.includes(href):filter==='classics'?classics.has(href):cat===filter))&&(!q||hay.includes(q));
   c.style.display=ok?'':'none';if(ok)shown++;
  });
  const ordered=cards.slice().sort((a,b)=>{
@@ -804,7 +804,7 @@ function renderCards(){
  ordered.forEach(card=>grid.appendChild(card));
  document.getElementById('resultsLabel').textContent=shown+' de '+names.length+' jogos';
  document.getElementById('heroGameCount').textContent=names.length+' jogos no catálogo';
- document.getElementById('catalogDescription').textContent='Sua biblioteca completa, com '+names.length+' jogos para explorar.';
+ document.getElementById('catalogDescription').textContent=filter==='classics'?'Jogos clássicos, de raciocínio e tranquilos — com controles simples e sem pressa.':filter==='all'?'Sua biblioteca completa, com '+names.length+' jogos para explorar.':'Explore os jogos desta categoria.';
  document.getElementById('sortLabel').textContent=p.favs.length?'⭐ Favoritos personalizados primeiro':'Ordem padrão';
  document.querySelectorAll('.category-chip').forEach(b=>{const selected=b.dataset.filter===filter;b.classList.toggle('active',selected);b.setAttribute('aria-pressed',String(selected))});
  const empty=document.getElementById('emptyState');grid.hidden=shown===0;empty.hidden=shown!==0;
@@ -971,7 +971,7 @@ function validateBackup(raw){
 }
 function exportBackup(){
  try{
-  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v3.34',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
+  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v3.35',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
   const content=JSON.stringify(backup,null,2),blob=new Blob([content],{type:'application/json'});
   if(blob.size>MAX_BACKUP_BYTES)throw new Error('O backup ultrapassa 2 MB.');
   const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='jogos-do-jhon-backup-'+new Date().toISOString().slice(0,10)+'.json';
