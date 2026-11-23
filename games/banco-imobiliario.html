@@ -150,7 +150,7 @@ body{min-height:100vh;min-height:100dvh;padding:16px 12px 28px;display:flex;flex
   </header>
   <section class="hud" aria-label="Patrimônio dos jogadores">
     <div class="pcard you active" id="player0"><div class="avatar">🚙</div><div class="player-info"><div class="player-name">VOCÊ <span class="turn-tag" id="turnTag0">SUA VEZ</span></div><b id="cash0">R$ 1.000</b><small id="assets0">Caixa inicial · sem imóveis</small></div></div>
-    <div class="pcard ia" id="player1"><div class="avatar">🤖</div><div class="player-info"><div class="player-name">IA <span class="turn-tag" id="turnTag1">AGUARDANDO</span></div><b id="cash1">R$ 1.000</b><small id="assets1">Caixa inicial · sem imóveis</small></div></div>
+    <div class="pcard ia" id="player1"><div class="avatar">🤖</div><div class="player-info"><div class="player-name">IA · ESTRATÉGICA <span class="turn-tag" id="turnTag1">AGUARDANDO</span></div><b id="cash1">R$ 1.000</b><small id="assets1">Caixa inicial · sem imóveis</small></div></div>
   </section>
   <section class="board-frame" aria-label="Tabuleiro do Banco Imobiliário"><div id="board"></div></section>
   <div class="activity-bar"><span class="activity-icon">📣</span><div class="msg" id="msg">Configure sua partida para começar.</div></div>
@@ -327,7 +327,7 @@ function offerBuy(i){
  const s=spaces[i],p=players[turn];
  if(turn===1){
   const reserve=reserveForAI(),favorites=['Centro','Avenida','Jardim','Colina'];
-  const score=s.rent/s.price+(favorites.includes(s.name)?.05:0);
+  const score=s.rent/s.price+(favorites.includes(s.name) ? .05 : 0);
   const buy=p.cash-s.price>=reserve&&score>=.22;
   if(buy){p.cash-=s.price;s.owner=1;logEvent('IA comprou '+s.name+' por '+money(s.price)+'.');showToast('IA comprou '+s.name,false);render()}
   else{logEvent('IA decidiu não comprar '+s.name+' para preservar caixa.');setMessage('🤖 A IA avaliou '+s.name+' e preferiu guardar dinheiro.')}
@@ -438,16 +438,16 @@ function tradeWithAI(i,mode){
 }
 function openManager(emergency){
  $('managerTitle').textContent=emergency?'🆘 Caixa em emergência':'🏘️ Gestão imobiliária';
- $('managerIntro').textContent=emergency?'Use as opções abaixo para levantar dinheiro e quitar a obrigação. Imóveis hipotecados não recebem aluguel.':'Construa casas e hotéis, hipoteque para obter liquidez ou negocie propriedades com a IA.';
+ $('managerIntro').textContent=emergency?'Use as opções abaixo para levantar dinheiro e quitar a obrigação. Imóveis hipotecados não recebem aluguel.':'Construa casas e hotéis, hipoteque para obter liquidez ou negocie propriedades com a IA. Perfil da IA: reserva pelo menos 22% do caixa (mínimo R$ 220) e prioriza Centro, Avenida, Jardim e Colina.';
  $('emergencyBox').innerHTML=emergency?'<div class="emergency">Você precisa de '+money(pendingDebt.amount)+' para '+pendingDebt.reason+'. Saldo disponível: '+money(players[0].cash)+'. Levante recursos antes de declarar falência.</div>':'';
  const rows=[];
  spaces.forEach((s,i)=>{
   if(s.type!=='prop')return;
   if(s.owner===0){
-   const cost=upgradeCost(s),canBuild=!s.mortgaged&&s.buildings<4&&players[0].cash>=cost;
+   const cost=upgradeCost(s),canBuild=!pendingDebt&&!s.mortgaged&&s.buildings<4&&players[0].cash>=cost;
    let actions='';
    if(s.buildings>0)actions+='<button class="btn secondary" data-act="sell" data-i="'+i+'">Vender melhorias +'+money(Math.round(investmentInBuildings(s)*.45))+'</button>';
-   if(s.mortgaged)actions+='<button class="btn" data-act="redeem" data-i="'+i+'" '+(players[0].cash<Math.ceil(s.price*.65)?'disabled':'')+'>Resgatar '+money(Math.ceil(s.price*.65))+'</button>';
+   if(s.mortgaged)actions+='<button class="btn" data-act="redeem" data-i="'+i+'" '+(players[0].cash<Math.ceil(s.price*.65)||pendingDebt?'disabled':'')+'>Resgatar '+money(Math.ceil(s.price*.65))+'</button>';
    else actions+='<button class="btn" data-act="mortgage" data-i="'+i+'" '+(s.buildings>0?'disabled':'')+'>Hipotecar +'+money(Math.round(s.price*.5))+'</button>';
    if(!s.mortgaged&&s.buildings<4)actions+='<button class="btn" data-act="build" data-i="'+i+'" '+(!canBuild?'disabled':'')+'>'+(s.buildings===3?'🏨 Hotel':'🏠 Casa')+' · '+money(cost)+'</button>';
    if(!s.mortgaged)actions+='<button class="btn secondary" data-act="selltoai" data-i="'+i+'">Oferecer à IA · 90%</button>';
