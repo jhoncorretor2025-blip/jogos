@@ -32,6 +32,23 @@ const info={
  bolhas:['🫧','Bubble Shooter','Mire, combine três bolhas da mesma cor e limpe o campo.','Toque no tabuleiro para mirar e solte/toque em ATIRAR.'],
  frogger:['🐸','Travessia Maluca','Atravesse pistas e rios sem ser atingido.','Use as setas ou os botões para atravessar ruas e rios.']
 };
+function stat(label,id){return '<div class="stat"><small>'+label+'</small><b id="'+id+'">0</b></div>'}
+function shellStats(html){$('stats').innerHTML=html}
+function btn(id,label,cls='btn'){return '<button class="'+cls+'" id="'+id+'">'+label+'</button>'}
+function buttons(html){$('controls').innerHTML=html}
+function on(id,fn){const el=$(id);if(el)el.addEventListener('click',fn)}
+function setMsg(text){$('message').textContent=text}
+function best(key){return Number(localStorage.getItem('arcade_best_'+key)||0)}
+function saveBest(key,value){if(value>best(key))localStorage.setItem('arcade_best_'+key,String(value))}
+function start(){const titles=info[mode]||info.domino;$('logo').textContent=titles[0];$('title').textContent=titles[1];$('subtitle').textContent=titles[2];$('hint').textContent=titles[3];const games={domino,paciencia,pinball,bolhas,frogger,resta,stop};(games[mode]||domino)()}
+function stop(){
+shellStats(stat('Rodadas','rounds')+stat('Pontos','score'));
+const cats=['Nome','Cidade','Animal','Comida','Objeto','Profissão'];let letter='A',round=0;
+$('stage').innerHTML='<div style="text-align:center;font-size:56px;font-weight:900" id="stopLetter">A</div><div class="solgrid" style="grid-template-columns:1fr">'+cats.map((x,i)=>'<label style="display:block;margin:6px 0">'+x+'<input id="stop'+i+'" placeholder="Digite uma resposta" style="width:100%;padding:12px;border-radius:9px;background:#0b1424;color:white;border:1px solid #334155"></label>').join('')+'</div>';
+buttons(btn('stopNew','🔤 Nova letra')+btn('stopCheck','✅ STOP!','btn primary'));
+function newRound(){letter='ABCDEFGHIJKLMNOPQRSTUVWXYZ'[Math.random()*26|0];round++;$('stopLetter').textContent=letter;cats.forEach((_,i)=>{$('stop'+i).value=''});$('rounds').textContent=round;setMsg('Responda cada categoria com a letra '+letter+'.')}
+on('stopNew',newRound);on('stopCheck',()=>{let points=0;cats.forEach((_,i)=>{const v=$('stop'+i).value.trim();if(v&&v[0].toUpperCase()===letter)points+=10});const total=Number($('score').textContent||0)+points;$('score').textContent=total;setMsg('Você marcou '+points+' pontos nesta rodada! Total: '+total+'.');newRound()});newRound()
+}
 function domino(){
 shellStats(stat('Pontos','score')+stat('Suas peças','mine')+stat('Peças da IA','ai'));
 $('stage').innerHTML='<div class="domino-top"><div class="dom-avatar"><div class="avatar-face">😎</div><b>Você</b><small id="playerCount">7 peças</small></div><div class="domino-status" id="domStatus">Sua vez</div><div class="dom-avatar ai-avatar"><div class="avatar-face">🤖</div><b>IA</b><small id="aiCount">7 peças</small></div></div><div class="dom-theme-row"><span>🎨 Mesa</span><select id="domTheme"><option value="green">Clássica verde</option><option value="wood">Madeira</option><option value="blue">Azul moderna</option><option value="dark">Escura</option><option value="casino">Cassino</option></select></div><div class="ends"><span id="leftEnd">⬅️ Ponta: —</span><span id="rightEnd">Ponta: — ➡️</span></div><div class="domboard" id="domboard">O tabuleiro começa aqui</div><h3 style="font-size:15px;margin:14px 0 3px">🀄 Sua mão <span id="handHint" class="handhint"></span></h3><div class="hand" id="hand"></div><div class="dom-actions" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">'+btn('draw','🛒 Comprar peça')+btn('pass','⏭️ Passar')+'</div>';
