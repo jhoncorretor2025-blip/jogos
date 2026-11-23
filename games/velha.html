@@ -54,7 +54,7 @@
       <option value="hard" selected>IA · Difícil</option>
       <option value="medium">IA · Médio</option>
       <option value="easy">IA · Fácil</option>
-      <option value="pvp">2 jogadores</option>
+      <option value="pvp">👥 2 jogadores · mesmo celular</option>
     </select>
     <button class="btn" id="new">Novo</button>
   </div>
@@ -69,7 +69,7 @@
   </div>
 
   <p class="hint" id="hint">No modo difícil a IA não perde. Empate já é vitória.</p>
-  <div class="ver">v1.0 · 22/11/2026</div>
+  <div class="ver">v1.1 · 22/11/2026</div>
 
 <script>
 (function(){
@@ -196,7 +196,7 @@
       }, 320);
     } else {
       turn = turn === 'X' ? 'O' : 'X';
-      statusEl.innerHTML = 'Vez do <b>' + turn + '</b>';
+      statusEl.innerHTML = modeSel.value === 'pvp' ? '👥 Jogador ' + (turn === 'X' ? '1' : '2') + ' — vez do <b>' + turn + '</b>' : 'Vez do <b>' + turn + '</b>';
       paint();
     }
   }
@@ -206,9 +206,9 @@
     turn = 'X';
     over = false;
     busy = false;
-    statusEl.innerHTML = modeSel.value === 'pvp' ? 'Vez do <b>X</b>' : 'Sua vez — você é o <b>X</b>';
+    statusEl.innerHTML = modeSel.value === 'pvp' ? '👥 Jogador 1 — sua vez: <b>X</b>' : 'Sua vez — você é o <b>X</b>';
     hintEl.textContent = modeSel.value === 'pvp'
-      ? 'Passem o celular: X começa e alterna com O.'
+      ? '📱 Dois jogadores no mesmo celular! Jogador 1 (X) começa. Depois passe para o Jogador 2 (O).'
       : modeSel.value === 'hard'
         ? 'No modo difícil a IA não perde. Empate já é vitória.'
         : 'A IA joga bem, mas escorrega de vez em quando.';
