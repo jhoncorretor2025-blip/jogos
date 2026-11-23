@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Jogos do Jhon">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Jogos do Jhon · v3.29</title>
+<title>Jogos do Jhon · v3.30</title>
 <meta name="description" content="Arcade de jogos web do Jhon com busca, favoritos, categorias, histórico e perfil gamer.">
 <style>
   :root{
@@ -162,6 +162,61 @@
   .notes b{color:#e2e8f0}
   footer{text-align:center;color:#64748b;font-size:12.5px;margin-top:26px;line-height:1.7}
   .kbd{background:#111c31;border:1px solid #24334d;border-radius:6px;padding:1px 6px;font-size:12px}
+  .home-hero{
+    position:relative;overflow:hidden;margin:0 0 24px;padding:30px 22px 24px;
+    border:1px solid rgba(34,211,238,.22);border-radius:24px;
+    background:radial-gradient(520px 220px at 12% 0%,rgba(34,211,238,.16),transparent 72%),
+      radial-gradient(460px 220px at 92% 5%,rgba(167,139,250,.16),transparent 70%),
+      linear-gradient(145deg,#101d31,#0a1221 72%);
+    box-shadow:0 18px 48px -34px rgba(34,211,238,.55);
+  }
+  .home-hero::after{content:"";position:absolute;width:190px;height:190px;right:-84px;bottom:-126px;border:1px solid rgba(34,211,238,.20);border-radius:50%;box-shadow:0 0 0 22px rgba(34,211,238,.025),0 0 0 44px rgba(167,139,250,.025);pointer-events:none}
+  .hero-kicker{display:inline-flex;margin-bottom:9px;color:#67e8f9;font-size:10px;font-weight:900;letter-spacing:1.8px}
+  .home-hero h1,.home-hero .sub,.home-hero .version,.home-hero-actions{position:relative;z-index:1}
+  .home-hero h1{margin-bottom:9px}
+  .home-hero .sub{max-width:560px;margin:0 auto;color:#b7c5d8}
+  .home-hero .version{margin-top:13px}
+  .home-hero-actions{display:flex;justify-content:center;align-items:center;gap:12px;flex-wrap:wrap;margin-top:18px}
+  .primary-cta{display:inline-flex;justify-content:center;align-items:center;gap:12px;min-height:44px;padding:10px 17px;border:1px solid rgba(103,232,249,.65);border-radius:12px;background:linear-gradient(105deg,#0e7490,#5b21b6);color:#fff;text-decoration:none;font-size:13px;font-weight:800;box-shadow:0 8px 24px -14px #22d3ee;transition:transform .16s ease,filter .16s ease}
+  .primary-cta:hover{transform:translateY(-2px);filter:brightness(1.12)}
+  .primary-cta span{font-size:17px}
+  .hero-count{color:#b6c6d9;font-size:12px;font-weight:700}
+  #catalogStart{scroll-margin-top:16px}
+  .category-chip{min-height:54px}
+  .toolbtn,.filter,.mobile-nav button{min-height:40px}
+  .toolbtn:focus-visible,.filter:focus-visible,.category-chip:focus-visible,
+  .searchbox:focus-visible,.search-clear:focus-visible,.suggestion:focus-visible,
+  .favbtn:focus-visible,.favorite-tile:focus-visible,.favorite-remove:focus-visible,
+  .mobile-nav button:focus-visible,.primary-cta:focus-visible,.recent a:focus-visible{
+    outline:3px solid rgba(34,211,238,.9);outline-offset:3px
+  }
+  .searchbox:focus-visible{border-color:var(--a1)}
+  .catalog-count[role="status"]{font-variant-numeric:tabular-nums}
+  @media(max-width:560px){
+    body{padding:15px 12px 104px}
+    .home-hero{padding:23px 14px 20px;border-radius:20px;margin-bottom:18px}
+    .home-hero .sub{font-size:13px;max-width:330px}
+    .home-hero-actions{gap:9px;margin-top:15px}
+    .primary-cta{width:100%;max-width:320px}
+    .hero-count{font-size:11px}
+    .category-nav{gap:7px}
+    .category-chip{min-height:58px;padding:9px 5px}
+    .toolbar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+    .toolbar .toolbtn{min-width:0;padding:9px 6px;font-size:12px}
+    .toolbar .catalog-count{grid-column:1/-1;text-align:center;padding:3px}
+    .searchbox{min-height:48px}
+    .mobile-nav{left:8px;right:8px;padding:7px;gap:3px}
+    .mobile-nav button{min-height:48px}
+  }
+  @media(max-width:380px){
+    .category-chip small{display:none}
+    .category-chip b{font-size:10px}
+    .toolbar .toolbtn{font-size:11px}
+  }
+  @media(prefers-reduced-motion:reduce){
+    html:focus-within{scroll-behavior:auto}
+    *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+  }
  
   .family-panel,.feature-panel{margin:14px 0;background:rgba(255,255,255,.035);border:1px solid var(--line);border-radius:16px;padding:13px 15px}
   .family-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
@@ -201,10 +256,15 @@
 </head>
 <body>
 <div class="wrap">
-  <header>
+  <header class="home-hero">
+    <span class="hero-kicker">ARCADE PESSOAL</span>
     <h1>Jogos do Jhon</h1>
-    <p class="sub">🎮 Arcade de bolso — abre no celular e no PC, sem instalar nada.</p>
-    <div class="version"><span class="dot"></span> Versão <b>v3.29</b> · atualizado em <b>22/11/2026</b></div>
+    <p class="sub">🎮 Seu cantinho de diversão: escolha um jogo e comece a jogar no celular ou no PC.</p>
+    <div class="version"><span class="dot"></span> Versão <b>v3.30</b> · atualizado em <b>23/11/2026</b></div>
+    <div class="home-hero-actions">
+      <a class="primary-cta" href="#catalogStart">🎮 Explorar jogos <span aria-hidden="true">↓</span></a>
+      <span class="hero-count" id="heroGameCount">28 jogos no catálogo</span>
+    </div>
   </header>
 
   <section class="category-section" aria-label="Navegação por categoria">
@@ -213,7 +273,7 @@
   </section>
   <section class="menu-tools" aria-label="Ferramentas do catálogo">
     <div class="search-shell">
-      <input id="gameSearch" class="searchbox" type="search" placeholder="🔎 Buscar jogo, estilo ou palavra..." autocomplete="off" aria-label="Buscar jogos">
+      <input id="gameSearch" class="searchbox" type="search" placeholder="🔎 Buscar jogo, estilo ou palavra..." autocomplete="off" aria-label="Buscar jogos" aria-controls="searchSuggestions" aria-autocomplete="list" aria-expanded="false">
       <button class="search-clear" id="searchClear" type="button" aria-label="Limpar busca">×</button>
       <div class="search-suggestions" id="searchSuggestions" role="listbox"></div>
     </div>
@@ -221,10 +281,10 @@
       <button class="toolbtn" id="randomGame">🎲 Jogo aleatório</button>
       <button class="toolbtn" id="viewToggle">▦ Grade</button>
       <button class="toolbtn" id="installApp">📲 Instalar app</button>
-      <span class="catalog-count" id="resultsLabel">28 jogos disponíveis</span>
+      <span class="catalog-count" id="resultsLabel" role="status" aria-live="polite" aria-atomic="true">28 de 28 jogos</span>
     </div>
   </section>
-  <div class="catalog-head" id="catalogStart"><div><h2 class="catalog-title">🎮 Todos os jogos</h2><p class="catalog-sub">Sua biblioteca completa, com 25 experiências.</p></div><span class="catalog-count" id="sortLabel">Ordem padrão</span></div>
+  <div class="catalog-head" id="catalogStart"><div><h2 class="catalog-title">🎮 Todos os jogos</h2><p class="catalog-sub" id="catalogDescription">Sua biblioteca completa, com 28 jogos para explorar.</p></div><span class="catalog-count" id="sortLabel">Ordem padrão</span></div>
   <div class="grid" id="gameGrid">
     <div class="card" data-category="puzzle" data-href="games/2048.html" style="--accent:#fbbf24;--glow:rgba(251,191,36,.20)">
       <span class="tag new">v1.0</span>
@@ -417,8 +477,9 @@
     </div>
   </details>
   <div class="notes">
-    <h2>📝 Novidades da v3.29</h2>
+    <h2>📝 Novidades da tela inicial · v3.30</h2>
     <ul>
+      <li><b>Tela inicial v3.30:</b> destaque para explorar o catálogo, navegação por categoria mais direta, busca que respeita os filtros e melhorias de acessibilidade e uso no celular.</li>
       <li><b>Batalha Naval v1.1:</b> corrigido e reforçado o posicionamento automático da frota para garantir que todos os navios sejam colocados.</li>
       <li><b>Forca v2.3:</b> corrigida tela preta na inicialização e adicionados ícones para categorias em inglês.</li>
       <li><b>Forca v2.2:</b> tela inicial para escolher Português ou English; o jogo não inicia sem seleção, e palavras/dicas acompanham o idioma.</li>
@@ -438,7 +499,7 @@
   </footer>
 </div>
 <nav class="mobile-nav" id="mobileNav" aria-label="Navegação principal">
-  <button type="button" data-nav="home" class="active"><span>🏠</span>Início</button>
+  <button type="button" data-nav="home" class="active" aria-current="page"><span>🏠</span>Início</button>
   <button type="button" data-nav="games"><span>🎮</span>Jogos</button>
   <button type="button" data-nav="favorites"><span>⭐</span>Favoritos</button>
   <button type="button" data-nav="records"><span>🏆</span>Recordes</button>
@@ -464,7 +525,7 @@ const achievements=[
  {id:'first',icon:'🌱',name:'Primeiro passo',desc:'Abra seu primeiro jogo.',ok:p=>p.plays>=1},
  {id:'five',icon:'🧭',name:'Explorador',desc:'Experimente 5 jogos diferentes.',ok:p=>Object.keys(p.counts).length>=5},
  {id:'ten',icon:'🗺️',name:'Grande explorador',desc:'Experimente 10 jogos diferentes.',ok:p=>Object.keys(p.counts).length>=10},
- {id:'all',icon:'👑',name:'Mestre do Arcade',desc:'Abra todos os 28 jogos.',ok:p=>names.every(g=>(p.counts[g.href]||0)>0)},
+ {id:'all',icon:'👑',name:'Mestre do Arcade',desc:'Abra todos os '+names.length+' jogos.',ok:p=>names.every(g=>(p.counts[g.href]||0)>0)},
  {id:'plays10',icon:'🎮',name:'Jogador frequente',desc:'Abra jogos 10 vezes.',ok:p=>p.plays>=10},
  {id:'plays30',icon:'🔥',name:'Maratonista',desc:'Abra jogos 30 vezes.',ok:p=>p.plays>=30},
  {id:'favs3',icon:'⭐',name:'Colecionador',desc:'Salve 3 jogos favoritos.',ok:p=>p.favs.length>=3},
@@ -528,7 +589,7 @@ function renderCategoryNav(){
   const count=key==='all'?names.length:names.filter(g=>g.cat===key).length;
   const b=document.createElement('button');b.type='button';b.className='category-chip'+(filter===key?' active':'');
   b.dataset.filter=key;b.innerHTML='<span class="cat-icon">'+icon+'</span><span><b>'+label+'</b><small>'+count+' jogos</small></span>';
-  b.addEventListener('click',()=>{filter=key;renderCards();playUi()});box.appendChild(b);
+  b.addEventListener('click',()=>{filter=key;renderCards();document.getElementById('catalogStart').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});playUi()});box.appendChild(b);
  });
 }
 function renderFavorites(){
@@ -555,15 +616,15 @@ function getMatches(query){
 function renderSuggestions(){
  const input=document.getElementById('gameSearch'),box=document.getElementById('searchSuggestions'),clear=document.getElementById('searchClear'),q=input.value.trim();
  clear.style.display=q?'block':'none';box.innerHTML='';
- if(!q){box.classList.remove('show');return}
+ if(!q){box.classList.remove('show');input.setAttribute('aria-expanded','false');return}
  const matches=getMatches(q);
  if(!matches.length){box.innerHTML='<div class="suggestion"><span class="s-ico">🔎</span><span>Nenhum jogo encontrado</span></div>'}
  else matches.forEach(({game})=>{
   const b=document.createElement('button');b.type='button';b.className='suggestion';b.innerHTML='<span class="s-ico">'+game.icon+'</span><span><b>'+game.name+'</b><small>'+(categories[game.cat]||'Jogo')+'</small></span>';
-  b.addEventListener('click',()=>{input.value=game.name;renderCards();box.classList.remove('show');document.getElementById('catalogStart').scrollIntoView({behavior:'smooth',block:'start'})});
+  b.addEventListener('click',()=>{input.value=game.name;filter='all';renderCategoryNav();renderCards();box.classList.remove('show');input.setAttribute('aria-expanded','false');document.getElementById('catalogStart').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'})});
   box.appendChild(b);
  });
- box.classList.add('show');
+ box.classList.add('show');input.setAttribute('aria-expanded','true');
 }
 function setView(mode){
  grid.classList.remove('compact','list');if(mode!=='grid')grid.classList.add(mode);
@@ -588,6 +649,8 @@ function renderCards(){
  });
  ordered.forEach(card=>grid.appendChild(card));
  document.getElementById('resultsLabel').textContent=shown+' de '+names.length+' jogos';
+ document.getElementById('heroGameCount').textContent=names.length+' jogos no catálogo';
+ document.getElementById('catalogDescription').textContent='Sua biblioteca completa, com '+names.length+' jogos para explorar.';
  document.getElementById('sortLabel').textContent=p.favs.length?'⭐ Favoritos personalizados primeiro':'Ordem padrão';
  document.querySelectorAll('.category-chip').forEach(b=>b.classList.toggle('active',b.dataset.filter===filter));
  refreshCardMeta();
@@ -614,16 +677,16 @@ searchInput.addEventListener('keydown',e=>{
  if(e.key==='Enter'){const first=getMatches(searchInput.value)[0];if(first){e.preventDefault();launch(first.game.href)}}
 });
 document.getElementById('searchClear').addEventListener('click',()=>{searchInput.value='';renderCards();renderSuggestions();searchInput.focus()});
-document.addEventListener('click',e=>{if(!e.target.closest('.search-shell'))document.getElementById('searchSuggestions').classList.remove('show')});
+document.addEventListener('click',e=>{if(!e.target.closest('.search-shell')){document.getElementById('searchSuggestions').classList.remove('show');searchInput.setAttribute('aria-expanded','false')}});
 document.getElementById('seeAllFavorites').addEventListener('click',()=>{filter='favorites';renderCards();document.getElementById('catalogStart').scrollIntoView({behavior:'smooth'})});
 document.querySelectorAll('.filter').forEach(b=>b.addEventListener('click',()=>{filter=b.dataset.filter;renderCards();playUi()}));
 document.getElementById('randomGame').addEventListener('click',()=>{const visible=cards.filter(c=>c.style.display!=='none'),pool=visible.length?visible:cards;launch(pool[Math.floor(Math.random()*pool.length)].dataset.href)});
 document.getElementById('viewToggle').addEventListener('click',()=>{const modes=['grid','compact','list'];setView(modes[(modes.indexOf(viewMode)+1)%modes.length]);playUi()});
 document.querySelectorAll('.mobile-nav button').forEach(b=>b.addEventListener('click',()=>{
- document.querySelectorAll('.mobile-nav button').forEach(x=>x.classList.toggle('active',x===b));
  const action=b.dataset.nav;
+ document.querySelectorAll('.mobile-nav button').forEach(x=>{const selected=x===b;x.classList.toggle('active',selected);if(selected)x.setAttribute('aria-current','page');else x.removeAttribute('aria-current')});
  if(action==='home'){filter='all';searchInput.value='';renderCards();window.scrollTo({top:0,behavior:'smooth'})}
- if(action==='games'){filter='all';renderCards();document.getElementById('catalogStart').scrollIntoView({behavior:'smooth'})}
+ if(action==='games'){filter='all';searchInput.value='';renderCategoryNav();renderCards();document.getElementById('catalogStart').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}
  if(action==='favorites'){filter='favorites';renderCards();if(active().favs.length)document.getElementById('favoriteSection').scrollIntoView({behavior:'smooth'})}
  if(action==='records'){document.getElementById('achievementsPanel').open=true;document.getElementById('achievementsPanel').scrollIntoView({behavior:'smooth'})}
  playUi();
