@@ -79,7 +79,7 @@
     </div>
   </div>
 
-  <div class="ver">v1.0 · 22/11/2026</div>
+  <div class="ver">v1.1 · 22/11/2026</div>
 
   <div id="ov">
     <div class="panel">
@@ -132,18 +132,33 @@
   }
 
   function autoPlace(board){
+    // Posicionamento com tentativa e retrocesso: garante que todos os navios caibam.
     board.forEach(function(c){ c.ship = -1; c.shot = false; });
-    SHIPS.forEach(function(size, id){
-      let ok = false, guard = 0;
-      while (!ok && guard++ < 400) {
-        const horizontal = Math.random() < .5;
-        const start = Math.floor(Math.random() * N);
-        if (canPlace(board, start, size, horizontal)) {
-          place(board, start, size, horizontal, id);
-          ok = true;
+    const order = SHIPS.map(function(size,id){return {size,id};}).sort(function(a,b){return b.size-a.size;});
+    function candidates(size){
+      const list=[];
+      for(let start=0;start<N;start++){
+        for(const horizontal of [true,false]){
+          if(canPlace(board,start,size,horizontal))list.push({start,horizontal});
         }
       }
-    });
+      for(let k=list.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[list[k],list[j]]=[list[j],list[k]];}
+      return list;
+    }
+    function backtrack(pos){
+      if(pos>=order.length)return true;
+      const ship=order[pos],opts=candidates(ship.size);
+      for(const p of opts){
+        place(board,p.start,ship.size,p.horizontal,ship.id);
+        if(backtrack(pos+1))return true;
+        shipCells(board,ship.id).forEach(function(cell){board[cell].ship=-1;});
+      }
+      return false;
+    }
+    if(!backtrack(0)){ // fallback seguro, reinicia e usa posições simples
+      board.forEach(function(c){c.ship=-1;c.shot=false;});
+      SHIPS.forEach(function(size,id){let placed=false;for(let start=0;start<N&&!placed;start++){if(canPlace(board,start,size,true)){place(board,start,size,true,id);placed=true;}}});
+    }
   }
 
   function shipCells(board, id){
