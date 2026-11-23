@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Jogos do Jhon">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Jogos do Jhon · v3.28</title>
+<title>Jogos do Jhon · v3.29</title>
 <meta name="description" content="Arcade de jogos web do Jhon com busca, favoritos, categorias, histórico e perfil gamer.">
 <style>
   :root{
@@ -204,7 +204,7 @@
   <header>
     <h1>Jogos do Jhon</h1>
     <p class="sub">🎮 Arcade de bolso — abre no celular e no PC, sem instalar nada.</p>
-    <div class="version"><span class="dot"></span> Versão <b>v3.28</b> · atualizado em <b>22/11/2026</b></div>
+    <div class="version"><span class="dot"></span> Versão <b>v3.29</b> · atualizado em <b>22/11/2026</b></div>
   </header>
 
   <section class="category-section" aria-label="Navegação por categoria">
@@ -417,7 +417,7 @@
     </div>
   </details>
   <div class="notes">
-    <h2>📝 Novidades da v3.28</h2>
+    <h2>📝 Novidades da v3.29</h2>
     <ul>
       <li><b>Batalha Naval v1.1:</b> corrigido e reforçado o posicionamento automático da frota para garantir que todos os navios sejam colocados.</li>
       <li><b>Forca v2.3:</b> corrigida tela preta na inicialização e adicionados ícones para categorias em inglês.</li>
@@ -515,7 +515,7 @@ function refreshCardMeta(){
   if(meta)meta.innerHTML='<span class="meta-pill">'+(categories[g.cat]||'🎮 Jogo')+'</span><span class="meta-pill">▶ '+(p.counts[href]||0)+'x aberto</span>'+(isFav?'<span class="meta-pill">⭐ Favorito</span>':'');
  });
 }
-const defaultOrder=['games/cobra.html','games/memoria.html','games/velha.html','games/tetris.html','games/palavras-cruzadas.html','games/stop.html','games/galaxia-invasora.html','games/2048.html'];
+const defaultOrder=['games/cobra.html','games/memoria.html','games/velha.html','games/tetris.html','games/palavras-cruzadas.html','games/bubble-shooter.html','games/galaxia-invasora.html','games/2048.html'];
 let filter='all';
 const VIEW_KEY='jhonArcadeViewV1';
 let viewMode='grid';
