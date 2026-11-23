@@ -35,7 +35,8 @@ body.arcade-large-text button,body.arcade-large-text input,body.arcade-large-tex
 body.arcade-reduced-motion *,body.arcade-reduced-motion *::before,body.arcade-reduced-motion *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 .arcade-force-touch.controls{display:flex!important;visibility:visible!important}
 .arcade-force-touch.pad,.arcade-force-touch.dpad,.arcade-force-touch.control-pad{display:grid!important;visibility:visible!important}
-.arcade-force-touch.mobile-controls,.arcade-force-touch.touch-controls,.arcade-force-touch[data-touch-controls]{display:flex!important;visibility:visible!important}
+.arcade-force-touch.mobile-controls{display:grid!important;visibility:visible!important}
+.arcade-force-touch.touch-controls,.arcade-force-touch[data-touch-controls]{display:flex!important;visibility:visible!important}
 `;
 (document.head||document.documentElement).appendChild(style);
 apply();
