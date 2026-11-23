@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Jogos do Jhon">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Jogos do Jhon · v3.4</title>
+<title>Jogos do Jhon · v3.5</title>
 <meta name="description" content="Arcade de jogos web do Jhon com busca, favoritos, categorias, histórico e perfil gamer.">
 <style>
   :root{
@@ -146,6 +146,14 @@
   }
   @media(min-width:561px){.grid.compact{grid-template-columns:repeat(auto-fill,minmax(175px,1fr))}}
 
+
+  .player-panel{margin:14px 0}
+  .player-panel summary{font-size:14px}
+  .player-panel summary span{color:var(--muted);font-size:11px;font-weight:500}
+  .player-panel .favorite-section{margin:14px 0 4px}
+  .player-panel .family-panel{margin:14px 0 4px}
+  .player-panel .profile{margin:12px 0}
+
   .notes{
     margin-top:26px;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:16px;padding:16px 18px;
   }
@@ -196,7 +204,7 @@
   <header>
     <h1>Jogos do Jhon</h1>
     <p class="sub">🎮 Arcade de bolso — abre no celular e no PC, sem instalar nada.</p>
-    <div class="version"><span class="dot"></span> Versão <b>v3.4</b> · atualizado em <b>22/11/2026</b></div>
+    <div class="version"><span class="dot"></span> Versão <b>v3.5</b> · atualizado em <b>22/11/2026</b></div>
   </header>
 
   <section class="category-section" aria-label="Navegação por categoria">
@@ -215,6 +223,10 @@
       <button class="toolbtn" id="installApp">📲 Instalar app</button>
       <span class="catalog-count" id="resultsLabel">25 jogos disponíveis</span>
     </div>
+  </section>
+  <details class="feature-panel player-panel" id="playerPanel">
+    <summary>👤 Painel do jogador <span>Estatísticas, favoritos, perfis e conquistas</span></summary>
+    <div class="feature-content">
     <div>
       <h2 class="section-title">🕐 Jogados recentemente</h2>
       <div class="recent" id="recentGames"><span class="sub">Seus jogos recentes aparecerão aqui.</span></div>
@@ -229,7 +241,6 @@
       <div class="collection-progress-head"><span>🏆 Progresso da coleção</span><b id="collectionPercent">0%</b></div>
       <div class="collection-track"><div class="collection-fill" id="collectionFill"></div></div>
     </div>
-  </section>
   <section class="favorite-section" id="favoriteSection" hidden>
     <div class="section-head"><div><h2>⭐ Seus favoritos</h2><p id="favoriteCaption">Seus jogos escolhidos, prontos para continuar.</p></div><button class="toolbtn" id="seeAllFavorites" type="button">Ver todos</button></div>
     <div class="favorite-rail" id="favoriteRail"></div>
@@ -241,6 +252,8 @@
   <details class="feature-panel" id="achievementsPanel">
     <summary>🏆 Conquistas <span id="achievementCount">0/8 desbloqueadas</span></summary>
     <div class="feature-content"><div class="achievement-grid" id="achievementGrid"></div><p class="settings-note">As conquistas são individuais por perfil e acompanham os jogos abertos e os favoritos neste dispositivo.</p></div>
+  </details>
+    </div>
   </details>
   <details class="feature-panel" id="settingsPanel">
     <summary>⚙️ Configurações de experiência</summary>
@@ -400,7 +413,7 @@
   </div>
 
   <div class="notes">
-    <h2>📝 Novidades da v3.4</h2>
+    <h2>📝 Novidades da v3.5</h2>
     <ul>
       <li><b>Navegação v3.4:</b> categorias visuais, busca com sugestões, carrossel de favoritos, progresso da coleção, menu inferior no celular e visualização em grade, compacta ou lista.</li>
       <li><b>Favoritos primeiro:</b> jogos marcados com ⭐ ficam no topo, respeitando o perfil ativo. Sem favoritos, a ordem padrão começa com Cobra Neon, Jogo da Memória, Jogo da Velha, Tetris Neon, Palavras Cruzadas, STOP!, Galáxia Invasora e 2048.</li><li><b>Banco Imobiliário v4.0:</b> peças percorrem o tabuleiro, miniaturas 3D de casas e hotéis, escrituras interativas, moedas animadas, cidade central evolutiva, cartas ilustradas, gráfico de patrimônio, bairros destacados, ciclo dia/noite e leilões com lances da pessoa e da IA.</li><li>Menu com busca, favoritos, histórico recente, categorias, visual em lista, perfis familiares e conquistas individuais.</li><li>Instalação como aplicativo (PWA), suporte offline, quatro temas e configurações de acessibilidade e controles.</li><li><b>6 jogos clássicos novos:</b> Dominó, Paciência, Pinball Neon, Bubble Shooter, Travessia Maluca e Resta Um.</li><li><b>STOP! v1.0:</b> novo jogo de Adedonha com modo solo, passa o celular, categorias configuráveis, cronômetro, pontuação e ranking local.</li><li><b>Galáxia Invasora v1.0:</b> shooter espacial inspirado nos arcades de 1979, com formação inimiga, mergulhos, disparos, ondas e recordes.</li><li>5 novos jogos adicionados: <b>Tetris Neon</b>, <b>Voo Desafiador</b>, <b>Labirinto Fantasma</b>, <b>Sudoku</b> e <b>Xadrez</b>.</li><li><b>Palavras Cruzadas v1.0:</b> novo passatempo com 16 palavras, pistas horizontais e verticais, dicas e conferência.</li><li><b>Ninja Forest Rescue v4.12:</b> mais vidas, proteção após dano e checkpoints que recuperam vida.</li><li>Filtros por categoria e botão para abrir um jogo aleatório.</li>
