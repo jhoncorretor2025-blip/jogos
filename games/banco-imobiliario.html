@@ -425,6 +425,107 @@ function render(){
  boardEl.appendChild(center);$('rollBtn').addEventListener('click',()=>roll(false));
  updateHud();
 }
+function showDeed(i){
+ const s=spaces[i],group=groupFor(s),owner=s.owner===0?'Você':s.owner===1?'IA':'Banco';
+ $('deedName').textContent=s.name;
+ $('deedIcon').textContent=iconFor(s);
+ $('deedGroup').textContent=group?group.name.toUpperCase():'ESPECIAL';
+ $('deedHero').style.background=group?'linear-gradient(145deg,'+group.color+'66,#bd9561)':'linear-gradient(145deg,#f0dfb0,#bd9561)';
+ if(s.type==='prop'){
+  const next=s.buildings<4?rentFor(Object.assign({},s,{buildings:s.buildings+1,mortgaged:false})):rentFor(s);
+  const level=s.buildings===4?'1 hotel':s.buildings+' de 3 casas';
+  const ratio=group?groupProgress(s.owner,group)+' de '+group.members.length+' imóveis do bairro':'—';
+  $('deedDescription').textContent='Uma oportunidade de investimento do bairro '+(group?group.name:'especial')+'. Toque nos imóveis do tabuleiro para consultar suas escrituras.';
+  $('deedStats').innerHTML='<div class="deed-stat"><small>PREÇO DE COMPRA</small><b>'+money(s.price)+'</b><em>Valor de referência</em></div><div class="deed-stat"><small>ALUGUEL BASE</small><b>'+money(s.rent)+'</b><em>Sem construções</em></div><div class="deed-stat"><small>ALUGUEL ATUAL</small><b>'+money(rentFor(s))+'</b><em>'+(s.mortgaged?'Imóvel hipotecado':level)+'</em></div><div class="deed-stat"><small>PRÓXIMA MELHORIA</small><b>'+(s.buildings>=4?'Completo':money(upgradeCost(s)))+'</b><em>'+(s.buildings>=4?'Hotel já construído':'Aluguel após melhoria: '+money(next))+'</em></div>';
+  $('deedOwner').innerHTML='Proprietário: <strong>'+owner+'</strong> · Bairro: <strong>'+(group?group.name:'—')+'</strong> · Controle do grupo: <strong>'+ratio+'</strong>'+(s.mortgaged?' · <strong>HIPOTECADO</strong>':'')+(group&&ownsGroup(s.owner,group)?' · <strong>BAIRRO COMPLETO!</strong>':'');
+ }else{
+  $('deedDescription').textContent=s.type==='start'?'Receba bônus de dinheiro ao passar ou parar nesta casa.':s.type==='chance'?'Compreenda os eventos de sorte, movimentação, receitas e despesas.':s.type==='tax'?'Uma cobrança que reduz o caixa de quem parar aqui.':'Casa de pausa: concede recuperação financeira ao jogador.';
+  $('deedStats').innerHTML='<div class="deed-stat"><small>TIPO DE CASA</small><b>'+kindFor(s)+'</b></div><div class="deed-stat"><small>EFEITO</small><b>'+(s.type==='start'?'R$ 200 / R$ 300':s.type==='rest'?'+R$ 75':s.type==='chance'?'Carta aleatória':'-'+money(s.amount))+'</b></div>';
+  $('deedOwner').textContent='Casa especial do tabuleiro. Não pode ser comprada.';
+ }
+ $('deedManage').style.display=s.type==='prop'&&s.owner===0?'':'none';
+ $('deedOv').classList.add('show');
+}
+function openPortfolio(){
+ const values=[assetValue(0),assetValue(1)];
+ function breakdown(idx){
+  const own=spaces.filter(s=>s.owner===idx);
+  const property=own.reduce((n,s)=>n+(s.mortgaged?s.price*.5:s.price),0);
+  const developments=own.reduce((n,s)=>n+investmentInBuildings(s)*.7,0);
+  return {cash:players[idx].cash,property,developments,total:values[idx]};
+ }
+ const a=breakdown(0),b=breakdown(1);
+ $('portfolioSummary').innerHTML='<div class="portfolio-player" style="--c:#4de1d0"><small>🚙 SEU PATRIMÔNIO</small><b>'+money(a.total)+'</b><span>Caixa '+money(a.cash)+' · Imóveis '+money(a.property+a.developments)+'</span></div><div class="portfolio-player" style="--c:#fb8d9c"><small>🤖 PATRIMÔNIO DA IA</small><b>'+money(b.total)+'</b><span>Caixa '+money(b.cash)+' · Imóveis '+money(b.property+b.developments)+'</span></div>';
+ const points=wealthHistory.length?wealthHistory.slice():[{round:0,you:a.total,ai:b.total}];
+ if(points.length===1)points.unshift({round:0,you:startingCash,ai:startingCash});
+ const all=points.flatMap(p=>[p.you,p.ai]),min=Math.min(...all)*.9,max=Math.max(...all)*1.1||1,range=Math.max(1,max-min),w=480,h=170,pad=25;
+ const coords=key=>points.map((p,i)=>{const x=pad+(points.length===1?0:i/(points.length-1))*(w-2*pad),y=h-pad-((p[key]-min)/range)*(h-2*pad);return x.toFixed(1)+','+y.toFixed(1)}).join(' ');
+ const gridLines=[0,1,2,3].map(i=>{const y=pad+i*(h-2*pad)/3;return '<line x1="'+pad+'" y1="'+y+'" x2="'+(w-pad)+'" y2="'+y+'" stroke="#ffffff18" stroke-dasharray="3 4"/>'}).join('');
+ $('portfolioChart').innerHTML='<svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="Gráfico da evolução patrimonial de você e da IA">'+gridLines+'<polyline points="'+coords('you')+'" fill="none" stroke="#4de1d0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><polyline points="'+coords('ai')+'" fill="none" stroke="#fb8d9c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><text x="'+pad+'" y="13" fill="#b5c7b0" font-size="9">'+money(max)+'</text><text x="'+pad+'" y="'+(h-5)+'" fill="#b5c7b0" font-size="9">'+money(min)+'</text><text x="'+(w-pad)+'" y="'+(h-5)+'" text-anchor="end" fill="#b5c7b0" font-size="9">RODADA '+rounds+'</text></svg>';
+ $('portfolioOv').classList.add('show');
+}
+function updateAuctionUI(){
+ if(!auction)return;
+ $('auctionName').textContent=spaces[auction.index].name;
+ $('auctionPrice').textContent=auction.price?money(auction.price):'Sem ofertas';
+ $('auctionLeader').textContent=auction.leader===0?'Maior lance: Você 🚙':auction.leader===1?'Maior lance: IA 🤖':'Aguardando primeiro lance';
+ $('auctionTimer').textContent='ENCERRA EM '+auction.seconds+'s';
+ const next=auction.price+50;
+ $('auctionBid').disabled=auction.leader===0||players[0].cash<next;
+ $('auctionBid').textContent=auction.leader===0?'Você lidera':'Dar lance +R$ 50';
+ $('auctionIntro').textContent='Lance inicial de R$ 50. A IA pode cobrir sua oferta se considerar o imóvel um bom investimento.';
+}
+function scheduleAIAuctionBid(){
+ if(auctionBidTimer)clearTimeout(auctionBidTimer);
+ auctionBidTimer=setTimeout(()=>{
+  if(!auction||auction.leader===1||auction.aiBids>=3)return;
+  const s=spaces[auction.index],favorites=['Centro','Avenida','Jardim','Colina'];
+  const score=s.rent/s.price+(favorites.includes(s.name)?.05:0),next=auction.price+50;
+  const limit=Math.round(s.price*(score>=.22?1.45:1.05));
+  if(players[1].cash-next>=reserveForAI()&&next<=limit){
+   auction.price=next;auction.leader=1;auction.aiBids++;auction.seconds=6;
+   logEvent('IA cobriu o lance no leilão de '+s.name+' com '+money(next)+'.');
+   setMessage('🤖 A IA ofereceu '+money(next)+' no leilão de '+s.name+'.');
+   updateAuctionUI();
+  }
+ },1250);
+}
+function startAuction(index){
+ if(!started||over)return;
+ auction={index:index,price:0,leader:-1,seconds:9,aiBids:0};busy=true;
+ $('auctionOv').classList.add('show');updateAuctionUI();
+ logEvent('Leilão aberto para '+spaces[index].name+'. Lance mínimo: R$ 50.');
+ if(auctionTimer)clearInterval(auctionTimer);
+ auctionTimer=setInterval(()=>{
+  if(!auction)return;
+  auction.seconds--;updateAuctionUI();
+  if(auction.seconds<=0)finishAuction();
+ },1000);
+ scheduleAIAuctionBid();
+}
+function placeAuctionBid(){
+ if(!auction||auction.leader===0)return;
+ const next=auction.price+50;
+ if(players[0].cash<next){showToast('Saldo insuficiente',true,0);return}
+ auction.price=next;auction.leader=0;auction.seconds=8;
+ logEvent('Você ofereceu '+money(next)+' por '+spaces[auction.index].name+'.');
+ updateAuctionUI();scheduleAIAuctionBid();
+}
+function finishAuction(){
+ if(!auction)return;
+ if(auctionTimer)clearInterval(auctionTimer);if(auctionBidTimer)clearTimeout(auctionBidTimer);
+ const result=auction,s=spaces[result.index],winner=result.leader,bid=result.price;
+ auction=null;$('auctionOv').classList.remove('show');
+ if(winner===0){players[0].cash-=bid;s.owner=0;logEvent('Você arrematou '+s.name+' por '+money(bid)+'.','gain');showToast('🏡 Arrematado '+money(bid),false,0)}
+ else if(winner===1){players[1].cash-=bid;s.owner=1;logEvent('IA arrematou '+s.name+' por '+money(bid)+'.','gain');showToast('IA arrematou '+s.name,false,1)}
+ else{logEvent('O leilão de '+s.name+' terminou sem lances.')}
+ render();nextTurn();
+}
+function animateDayNight(){
+ nightMode=!nightMode;
+ const center=boardEl.querySelector('.center');
+ if(center){center.dataset.time=nightMode?'night':'day';const label=center.querySelector('.center-kicker');if(label)label.textContent='CLUBE DOS INVESTIDORES · '+(nightMode?'CIDADE À NOITE':'CIDADE DE DIA')}
+}
 function showSetup(){started=false;busy=true;pendingDebt=null;pendingAction=null;managerFinishTurn=false;moveSequenceId++;if(auctionTimer)clearInterval(auctionTimer);if(auctionBidTimer)clearTimeout(auctionBidTimer);auction=null;$('auctionOv').classList.remove('show');$('deedOv').classList.remove('show');$('portfolioOv').classList.remove('show');sheet.classList.remove('show');setupOv.classList.add('show');managerOv.classList.remove('show');ov.classList.remove('show')}
 function startGame(){
  startingCash=Number($('startingCash').value)||1000;roundLimit=Number($('roundLimit').value)||0;rounds=0;history=[];wealthHistory=[];pendingDebt=null;pendingAction=null;managerFinishTurn=false;auction=null;
