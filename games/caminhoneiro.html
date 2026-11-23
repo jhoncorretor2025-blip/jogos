@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0b1725">
-<title>Caminhoneiro · Entrega na Estrada · Jogos do Jhon</title>
+<title>Caminhoneiro · Entrega na Estrada · Jogos do Jhon · v1.2</title>
 <style>
 :root{color-scheme:dark;--bg:#091522;--panel:#122235;--line:#2a435c;--txt:#ecf5fa;--muted:#9bb0c2;--mint:#64e2b0;--gold:#f6c96a}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,system-ui,Arial,sans-serif;background:radial-gradient(1000px 500px at 50% -10%,#193b56,#091522 72%);color:var(--txt)}
@@ -18,26 +18,58 @@ body{padding:16px 12px 25px}.wrap{width:min(1050px,100%);margin:auto}header{text
 .jobs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:11px}.job{padding:10px;background:#0a1927;border:1px solid #233d52;border-radius:11px}.job b{display:block;font-size:12px}.job small{display:block;color:var(--muted);font-size:10px;line-height:1.45;margin-top:4px}
 .footer-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.footer-actions .btn{flex:1}.help{color:var(--muted);font-size:11px;line-height:1.55;margin:10px 0 0}
 @media(max-width:700px){body{padding:11px 7px 20px}.panel{padding:8px}.hud{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.stat b{font-size:14px}.progress-row{grid-template-columns:1fr}.controls{grid-template-columns:1fr 1fr}.drive-actions{grid-column:1/-1;grid-row:1}.steer{grid-column:1/-1}.jobs{grid-template-columns:1fr}.btn{min-height:50px}.footer-actions{display:grid;grid-template-columns:1fr 1fr}}
+
+/* v1.2 — painel de viagem, garagem e feedback visual */
+.settings-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:0 0 11px}
+.setting{background:#091522;border:1px solid #29445a;border-radius:11px;padding:8px;min-width:0}
+.setting label{display:block;color:#a9c0d1;font-size:10px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.setting select{width:100%;min-width:0;background:#172d42;color:#f3f8fb;border:1px solid #3a5a72;border-radius:8px;padding:8px;font:600 12px system-ui}
+.setting select:focus-visible,.garage button:focus-visible{outline:3px solid #67e8f9;outline-offset:2px}
+.garage{margin-top:12px;padding:12px;background:linear-gradient(130deg,#142b3b,#0b1c2a);border:1px solid #34536a;border-radius:14px}
+.garage h2{margin:0 0 4px;font-size:16px}.garage>p{margin:0 0 10px;color:#9fb6c7;font-size:11px}
+.upgrades{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.upgrade{background:#091522;border:1px solid #2d4a60;border-radius:10px;padding:10px;min-width:0}
+.upgrade b{display:block;font-size:12px}.upgrade small{display:block;min-height:30px;margin:5px 0;color:#9fb6c7;font-size:10px;line-height:1.4}
+.garage button{width:100%;border:1px solid #438a78;background:#143e3b;color:#dffcf2;border-radius:8px;padding:9px 5px;font:700 11px system-ui;cursor:pointer}
+.garage button:disabled{opacity:.45;cursor:not-allowed}
+.controls .drive-actions{align-items:center}
+.btn.nitro{background:linear-gradient(120deg,#854d0e,#9a3412);border-color:#fbbf24;color:#fff7d6}
+.meter.nitro-meter .fill{background:linear-gradient(90deg,#f59e0b,#fde047)}
+.stat b.good{color:#86efac}.stat b.warn{color:#fbbf24}.stat b.bad{color:#fb7185}
+.jobs .job{transition:transform .18s,border-color .18s,background .18s}
+.jobs .job:hover{transform:translateY(-2px);border-color:#4b8297;background:#102538}
+@media(max-width:700px){.settings-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.upgrades{grid-template-columns:1fr}.upgrade{display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px}.upgrade small{min-height:0;margin:3px 0}.upgrade button{grid-column:2;grid-row:1/3;min-width:110px}.garage{padding:9px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
 </style>
 </head>
 <body><main class="wrap">
-<header><h1>🚛 Caminhoneiro — Entrega na Estrada</h1><p>Carregue, dirija com cuidado e entregue no prazo. Cada frete é uma nova missão!</p><span class="version">Jogos do Jhon · v1.1</span></header>
+<header><h1>🚛 Caminhoneiro — Entrega na Estrada</h1><p>Carregue, dirija com cuidado e entregue no prazo. Cada frete é uma nova missão!</p><span class="version">Jogos do Jhon · v1.2</span></header>
 <section class="panel">
+
+<div class="settings-grid" aria-label="Configurações da viagem">
+ <div class="setting"><label for="contractSelect">📦 Tipo de carga</label><select id="contractSelect"><option value="0">Madeira serrada</option><option value="1">Alimentos frescos</option><option value="2">Eletrônicos</option><option value="3">Materiais de construção</option><option value="4">Produtos agrícolas</option></select></div>
+ <div class="setting"><label for="difficulty">🎯 Dificuldade</label><select id="difficulty"><option value="easy">Passeio</option><option value="normal" selected>Normal</option><option value="hard">Desafio</option></select></div>
+ <div class="setting"><label for="routeLength">🛣️ Distância</label><select id="routeLength"><option value="1500">Curta · 1.500 km</option><option value="3000" selected>Média · 3.000 km</option><option value="5000">Longa · 5.000 km</option></select></div>
+ <div class="setting"><label for="weather">🌦️ Clima</label><select id="weather"><option value="clear" selected>Ensolarado</option><option value="rain">Chuva</option><option value="night">Viagem noturna</option></select></div>
+</div>
 <div class="hud">
 <div class="stat"><small>Distância</small><b id="distance">0 / 3.000 km</b></div>
 <div class="stat"><small>Velocidade</small><b id="speed">0 km/h</b></div>
 <div class="stat"><small>Dinheiro</small><b id="money">R$ 0</b></div>
 <div class="stat"><small>Entregas</small><b id="deliveries">0</b></div>
 <div class="stat"><small>Recorde</small><b id="best">R$ 0</b></div>
+<div class="stat"><small>Sequência limpa</small><b id="streak">0 x</b></div>
 </div>
 <div class="canvasbox"><canvas id="road" width="900" height="600" aria-label="Estrada vista de cima. Desvie dos veículos e obstáculos com os botões direcionais."></canvas></div>
 <div class="progress-row">
 <div class="meter"><label><span>⛽ Combustível</span><b id="fuelText">100%</b></label><div class="track"><div class="fill" id="fuelFill"></div></div></div>
 <div class="meter"><label><span>📦 Integridade da carga</span><b id="cargoText">100%</b></label><div class="track"><div class="fill" id="cargoFill"></div></div></div>
+<div class="meter nitro-meter"><label><span>⚡ Turbo</span><b id="nitroText">Pronto</b></label><div class="track"><div class="fill" id="nitroFill" style="width:100%"></div></div></div>
 </div>
 <div class="controls">
 <div class="steer"><button class="btn" id="left" aria-label="Virar à esquerda">◀</button><button class="btn" id="right" aria-label="Virar à direita">▶</button></div>
-<div class="drive-actions"><button class="btn accel" id="accelerate">▲ Acelerar</button><button class="btn" id="brake">▼ Frear</button></div>
+<div class="drive-actions"><button class="btn accel" id="accelerate">▲ Acelerar</button><button class="btn" id="brake">▼ Frear</button><button class="btn nitro" id="nitro">⚡ Turbo</button></div>
 <div class="drive-actions"><button class="btn primary" id="start">▶ Iniciar viagem</button><button class="btn" id="pause">Ⅱ Pausar</button></div>
 </div>
 <div class="message" id="message" role="status" aria-live="polite">Sua primeira carga está pronta. Inicie a viagem e faça uma entrega segura!</div>
@@ -46,168 +78,339 @@ body{padding:16px 12px 25px}.wrap{width:min(1050px,100%);margin:auto}header{text
 <div class="job"><b>🎯 Objetivo</b><small id="goalDesc">Chegar ao destino com pelo menos 65% da carga.</small></div>
 <div class="job"><b>🛣️ Dica de direção</b><small>Use as setas para mudar de faixa. Desvie dos carros, cones e buracos para proteger a carga.</small></div>
 </div>
+
+<div class="garage">
+ <h2>🔧 Garagem & melhorias</h2><p>Invista o dinheiro das entregas para deixar seu caminhão mais forte e seguro. Melhorias até o nível 3.</p>
+ <div class="upgrades">
+  <div class="upgrade"><div><b>🏎️ Motor <span id="engineLevel">Nível 0/3</span></b><small>Mais aceleração e velocidade máxima.</small></div><button id="buyEngine">Comprar melhoria</button></div>
+  <div class="upgrade"><div><b>⛽ Tanque <span id="tankLevel">Nível 0/3</span></b><small>Maior reserva e autonomia de combustível.</small></div><button id="buyTank">Comprar melhoria</button></div>
+  <div class="upgrade"><div><b>🛡️ Proteção <span id="armorLevel">Nível 0/3</span></b><small>Reduz os danos causados por colisões.</small></div><button id="buyArmor">Comprar melhoria</button></div>
+ </div>
+</div>
 <div class="footer-actions"><button class="btn" id="newTrip">↻ Novo frete</button><button class="btn" id="restart">🏠 Reiniciar carreira</button><a class="btn" href="../index.html" style="text-decoration:none;text-align:center">⌂ Voltar ao Arcade</a></div>
-<p class="help">Computador: ← → ou A/D para dirigir, ↑/W para acelerar e ↓/S para frear. Celular: use os botões na tela. Colete galões de combustível e bônus de cuidado. A viagem é dividida em trechos; ao concluir, você recebe pelo estado da carga e parte para um novo contrato.</p>
+<p class="help">Computador: ← → ou A/D para dirigir, ↑/W para acelerar e ↓/S para frear. Celular: use os botões na tela. Colete galões de combustível e bônus de cuidado. Escolha carga, dificuldade, distância e clima antes de iniciar. Use o turbo com estratégia, faça quase-passagens para ganhar bônus e evolua o caminhão na garagem. Seus créditos e melhorias ficam salvos neste navegador.</p>
 </section></main>
 <script>
 (()=>{
 'use strict';
 const cv=document.getElementById('road'),ctx=cv.getContext('2d'),W=900,H=600;
-const road={left:190,right:710,top:0,bottom:H},laneW=(road.right-road.left)/3;
-const lanes=[road.left+laneW*.5,road.left+laneW*1.5,road.left+laneW*2.5];
+const road={left:180,right:720},laneW=(road.right-road.left)/3,lanes=[road.left+laneW*.5,road.left+laneW*1.5,road.left+laneW*2.5];
 const jobs=[
- {name:'🪵 Madeira serrada',desc:'Carga resistente. Boa para começar sua carreira.',pay:850,fragile:.7},
- {name:'🍎 Alimentos frescos',desc:'Entrega delicada. Evite freadas e colisões.',pay:1250,fragile:1.25},
- {name:'📦 Eletrônicos',desc:'Carga valiosa. Cada impacto reduz bastante o pagamento.',pay:1800,fragile:1.5},
- {name:'🧱 Materiais de construção',desc:'Carga pesada. Caminhão acelera um pouco mais devagar.',pay:1550,fragile:1.1},
- {name:'🌻 Produtos agrícolas',desc:'Carga no prazo vale bônus extra.',pay:1450,fragile:.95}
+ {name:'🪵 Madeira serrada',desc:'Carga resistente e estável. Uma boa escolha para começar.',pay:900,fragile:.72},
+ {name:'🍎 Alimentos frescos',desc:'Carga delicada: evite impactos e preserve a integridade.',pay:1350,fragile:1.2},
+ {name:'📦 Eletrônicos',desc:'Frete valioso e sensível. Proteja cada caixa!',pay:1950,fragile:1.48},
+ {name:'🧱 Materiais de construção',desc:'Carga pesada. O motor trabalha um pouco mais.',pay:1650,fragile:1.02},
+ {name:'🌻 Produtos agrícolas',desc:'Carga equilibrada, com boa recompensa por uma entrega limpa.',pay:1500,fragile:.92}
 ];
 const $=id=>document.getElementById(id);
-let state='ready',jobIndex=0,job=jobs[0],distance=0,speed=0,fuel=100,cargo=100,money=0,deliveries=0,best=0,lane=1,truckX=lanes[1],targetX=lanes[1],roadOffset=0,obstacles=[],pickups=[],particles=[],last=0,spawn=0,kmToGo=3000,frame=0,keys={left:false,right:false,up:false,down:false},pressing={};
-try{best=Number(localStorage.getItem('jhon_truck_best')||0)||0;money=Number(localStorage.getItem('jhon_truck_money')||0)||0;deliveries=Number(localStorage.getItem('jhon_truck_deliveries')||0)||0}catch(e){}
-function setMessage(t){$('message').textContent=t}
+const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+let state='ready',jobIndex=0,job=jobs[0],distance=0,speed=0,fuel=100,maxFuel=100,cargo=100,money=0,deliveries=0,best=0,lane=1,truckX=lanes[1],targetX=lanes[1],roadOffset=0,obstacles=[],pickups=[],particles=[],rain=[],last=0,spawn=0,kmToGo=3000,frame=0,keys={left:false,right:false,up:false,down:false},nitroTime=0,nitroCooldown=0,streak=0,bestStreak=0,milestone=0,shake=0,flash=0,nearMisses=0;
+let upgrades={engine:0,tank:0,armor:0},difficulty='normal',weather='clear',routeLength=3000;
+const prices={engine:[1200,2600,4800],tank:[900,1900,3500],armor:[1100,2300,4100]};
+const factors={easy:{spawn:1.28,damage:.72,pay:.88},normal:{spawn:1,damage:1,pay:1},hard:{spawn:.78,damage:1.35,pay:1.28}};
+try{
+ const data=JSON.parse(localStorage.getItem('jhon_truck_career')||'{}');
+ money=Math.max(0,Number(data.money)||0);deliveries=Math.max(0,Number(data.deliveries)||0);best=Math.max(0,Number(data.best)||0);
+ upgrades={engine:clamp(Number(data.engine)||0,0,3),tank:clamp(Number(data.tank)||0,0,3),armor:clamp(Number(data.armor)||0,0,3)};
+ bestStreak=Math.max(0,Number(data.bestStreak)||0);
+}catch(e){}
 function save(){
- try{localStorage.setItem('jhon_truck_best',String(best));localStorage.setItem('jhon_truck_money',String(money));localStorage.setItem('jhon_truck_deliveries',String(deliveries))}catch(e){setMessage('⚠️ O navegador não conseguiu salvar seu progresso. Confira o armazenamento do site.')}
+ try{localStorage.setItem('jhon_truck_career',JSON.stringify({money,deliveries,best,engine:upgrades.engine,tank:upgrades.tank,armor:upgrades.armor,bestStreak}))}
+ catch(e){setMessage('⚠️ Não foi possível salvar a carreira. Verifique o armazenamento do navegador.')}
 }
-function chooseJob(){job=jobs[jobIndex%jobs.length];$('cargoName').textContent=job.name;$('cargoDesc').textContent=job.desc;$('goalDesc').textContent='Entregar 3.000 km com pelo menos 65% da carga. Fretes valem a partir de R$ '+job.pay+'.'}
+function setMessage(t){$('message').textContent=t}
+function maxFuelValue(){return 100+upgrades.tank*22}
+function maxSpeed(){return 6.1+upgrades.engine*.52}
+function difficultyFactor(){return factors[difficulty]||factors.normal}
+function chooseJob(){
+ job=jobs[jobIndex%jobs.length];$('cargoName').textContent=job.name;$('cargoDesc').textContent=job.desc;
+ $('goalDesc').textContent='Entregue '+routeLength.toLocaleString('pt-BR')+' km com pelo menos 65% da carga. Base: R$ '+job.pay.toLocaleString('pt-BR')+'.';
+}
+function renderGarage(){
+ ['engine','tank','armor'].forEach(k=>{
+  const level=upgrades[k],button=$('buy'+k[0].toUpperCase()+k.slice(1)),price=prices[k][level];
+  $(k+'Level').textContent='Nível '+level+'/3';
+  button.textContent=level>=3?'✓ Máximo':('Melhorar · R$ '+price.toLocaleString('pt-BR'));
+  button.disabled=level>=3||money<price;
+ });
+}
 function updateHud(){
- $('distance').textContent=Math.floor(distance)+' / '+kmToGo+' km';$('speed').textContent=Math.round(speed*12)+' km/h';
- $('money').textContent='R$ '+money.toLocaleString('pt-BR');$('deliveries').textContent=deliveries;$('best').textContent='R$ '+best.toLocaleString('pt-BR');
- $('fuelText').textContent=Math.round(fuel)+'%';$('cargoText').textContent=Math.round(cargo)+'%';
- $('fuelFill').style.width=Math.max(0,fuel)+'%';$('cargoFill').style.width=Math.max(0,cargo)+'%';
- $('fuelFill').style.background=fuel<25?'linear-gradient(90deg,#ef4444,#f97316)':'linear-gradient(90deg,#32c48d,#a3e635)';
+ $('distance').textContent=Math.floor(distance).toLocaleString('pt-BR')+' / '+routeLength.toLocaleString('pt-BR')+' km';
+ $('speed').textContent=Math.round(speed*13)+' km/h';$('money').textContent='R$ '+money.toLocaleString('pt-BR');
+ $('deliveries').textContent=deliveries;$('best').textContent='R$ '+best.toLocaleString('pt-BR');
+ $('streak').textContent=streak+' x';$('streak').className=streak>=5?'good':streak>=2?'warn':'';
+ $('fuelText').textContent=Math.round(fuel)+' / '+maxFuel+'%';$('cargoText').textContent=Math.round(cargo)+'%';
+ $('fuelFill').style.width=(fuel/maxFuel*100)+'%';$('cargoFill').style.width=cargo+'%';
+ $('fuelFill').style.background=fuel<maxFuel*.25?'linear-gradient(90deg,#ef4444,#f97316)':'linear-gradient(90deg,#32c48d,#a3e635)';
  $('cargoFill').style.background=cargo<40?'linear-gradient(90deg,#ef4444,#f97316)':'linear-gradient(90deg,#32c48d,#a3e635)';
+ $('nitroText').textContent=nitroCooldown<=0?'Pronto':(nitroTime>0?'Ativado':'Recarga '+nitroCooldown.toFixed(1)+'s');
+ $('nitroFill').style.width=(nitroCooldown<=0?100:100*(1-nitroCooldown/9))+'%';
+ renderGarage();
 }
 function resetTrip(){
- state='ready';distance=0;speed=0;fuel=100;cargo=100;lane=1;truckX=lanes[1];targetX=lanes[1];roadOffset=0;obstacles=[];pickups=[];spawn=0;last=0;chooseJob();updateHud();setMessage('🚛 Frete carregado! Inicie a viagem e faça uma entrega segura.');draw();
+ state='ready';distance=0;speed=0;maxFuel=maxFuelValue();fuel=maxFuel;cargo=100;lane=1;truckX=lanes[1];targetX=lanes[1];
+ roadOffset=0;obstacles=[];pickups=[];particles=[];spawn=0;last=0;nitroTime=0;nitroCooldown=0;streak=0;milestone=0;shake=0;flash=0;nearMisses=0;
+ chooseJob();updateHud();setMessage('🚛 Frete carregado! Ajuste as opções, confira a garagem e inicie a viagem.');draw();
  $('start').textContent='▶ Iniciar viagem';$('pause').textContent='Ⅱ Pausar';
 }
 function resetCareer(){
- if(!confirm('Reiniciar a carreira? Seu dinheiro, entregas e recorde salvos também serão zerados.'))return;
- money=0;deliveries=0;best=0;jobIndex=0;save();resetTrip();
+ if(!confirm('Reiniciar a carreira? Dinheiro, entregas, recordes e melhorias serão apagados.'))return;
+ money=0;deliveries=0;best=0;bestStreak=0;upgrades={engine:0,tank:0,armor:0};jobIndex=0;save();resetTrip();
 }
+function configure(){
+ if(state!=='ready')return;
+ jobIndex=Number($('contractSelect').value)||0;difficulty=$('difficulty').value;routeLength=Number($('routeLength').value)||3000;weather=$('weather').value;kmToGo=routeLength;
+ chooseJob();updateHud();draw();
+}
+['contractSelect','difficulty','routeLength','weather'].forEach(id=>$(id).addEventListener('change',configure));
 function start(){
  if(state==='over')return resetTrip();
- if(state==='delivered'){jobIndex++;resetTrip();state='driving';$('start').textContent='🚛 Na estrada';setMessage('Novo contrato aceito! Boa viagem, caminhoneiro.');last=performance.now();requestAnimationFrame(loop);return}
+ if(state==='delivered'){jobIndex=(jobIndex+1)%jobs.length;$('contractSelect').value=String(jobIndex);configure();resetTrip();state='driving';$('start').textContent='🚛 Na estrada';setMessage('Novo contrato aceito! Boa viagem.');last=performance.now();requestAnimationFrame(loop);return}
  if(state==='paused'){state='driving';$('pause').textContent='Ⅱ Pausar';last=performance.now();requestAnimationFrame(loop);return}
- if(state==='ready'){state='driving';$('start').textContent='🚛 Na estrada';setMessage('Boa viagem! Mantenha a carga protegida e fique de olho no combustível.');last=performance.now();requestAnimationFrame(loop)}
+ if(state==='ready'){configure();state='driving';$('start').textContent='🚛 Na estrada';setMessage('Viagem iniciada! Desvie do tráfego, cuide da carga e aproveite a estrada.');last=performance.now();requestAnimationFrame(loop)}
 }
-function pause(){if(state==='driving'){state='paused';$('pause').textContent='▶ Continuar';setMessage('Viagem pausada. Seu caminhão está parado em segurança.')}else if(state==='paused')start()}
-function setLane(delta){if(state!=='driving')return;lane=Math.max(0,Math.min(2,lane+delta));targetX=lanes[lane]}
+function pause(){
+ if(state==='driving'){state='paused';$('pause').textContent='▶ Continuar';setMessage('⏸ Viagem pausada. Seu progresso está preservado.');draw()}
+ else if(state==='paused')start();
+}
+function setLane(delta){if(state!=='driving')return;lane=clamp(lane+delta,0,2);targetX=lanes[lane]}
 function bindHold(id,key){
- const b=$(id);const on=e=>{e.preventDefault();keys[key]=true};const off=e=>{e.preventDefault();keys[key]=false};
- b.addEventListener('pointerdown',on);b.addEventListener('pointerup',off);b.addEventListener('pointerleave',off);b.addEventListener('pointercancel',off);
+ const b=$(id),on=e=>{e.preventDefault();keys[key]=true},off=e=>{e.preventDefault();keys[key]=false};
+ b.addEventListener('pointerdown',on);['pointerup','pointerleave','pointercancel','lostpointercapture'].forEach(ev=>b.addEventListener(ev,off));
+ window.addEventListener('pointerup',()=>{keys[key]=false});
 }
 function bindLaneTap(id,delta){$(id).addEventListener('pointerdown',e=>{e.preventDefault();setLane(delta)})}
 bindLaneTap('left',-1);bindLaneTap('right',1);bindHold('accelerate','up');bindHold('brake','down');
-$('start').addEventListener('click',start);$('pause').addEventListener('click',pause);$('newTrip').addEventListener('click',()=>{if(confirm('Carregar um novo frete? O trecho atual será encerrado.')){jobIndex++;resetTrip()}});
+$('start').addEventListener('click',start);$('pause').addEventListener('click',pause);
+$('newTrip').addEventListener('click',()=>{if(confirm('Encerrar o trecho atual e carregar outro frete?')){jobIndex=(jobIndex+1)%jobs.length;$('contractSelect').value=String(jobIndex);configure();resetTrip()}});
 $('restart').addEventListener('click',resetCareer);
+function buyUpgrade(k){
+ const level=upgrades[k];if(level>=3)return;
+ const cost=prices[k][level];if(money<cost){setMessage('💰 Saldo insuficiente. Conclua mais entregas para comprar essa melhoria.');return}
+ money-=cost;upgrades[k]++;if(k==='tank'){maxFuel=maxFuelValue();fuel=Math.min(maxFuel,fuel+22)}
+ save();updateHud();setMessage('🔧 Melhoria instalada! '+({engine:'Motor mais potente',tank:'Tanque ampliado',armor:'Proteção reforçada'}[k])+'.');
+}
+$('buyEngine').addEventListener('click',()=>buyUpgrade('engine'));$('buyTank').addEventListener('click',()=>buyUpgrade('tank'));$('buyArmor').addEventListener('click',()=>buyUpgrade('armor'));
+function useNitro(){
+ if(state!=='driving')return;
+ if(nitroCooldown>0){setMessage('⚡ O turbo ainda está recarregando.');return}
+ if(fuel<8){setMessage('⛽ Combustível insuficiente para ativar o turbo.');return}
+ fuel-=8;nitroTime=2.6;nitroCooldown=9;flash=9;particles.push({x:truckX,y:510,text:'⚡',life:34});
+ setMessage('⚡ TURBO ATIVADO! Aproveite o impulso e mantenha o controle.');
+}
+$('nitro').addEventListener('click',useNitro);
 window.addEventListener('keydown',e=>{
- const map={ArrowLeft:'left',a:'left',ArrowRight:'right',d:'right',ArrowUp:'up',w:'up',ArrowDown:'down',s:'down'};
- const k=map[e.key]||map[e.key.toLowerCase()];if(k){if(k==='left'&&!keys.left)setLane(-1);if(k==='right'&&!keys.right)setLane(1);keys[k]=true;e.preventDefault()}
+ const keyMap={ArrowLeft:'left',a:'left',ArrowRight:'right',d:'right',ArrowUp:'up',w:'up',ArrowDown:'down',s:'down'};
+ const k=keyMap[e.key]||keyMap[e.key.toLowerCase()];
+ if(k){if((k==='left'||k==='right')&&!keys[k])setLane(k==='left'?-1:1);keys[k]=true;e.preventDefault()}
  if(e.key===' '){if(state==='ready')start();else if(state==='driving')pause();e.preventDefault()}
+ if(e.key.toLowerCase()==='x'){useNitro();e.preventDefault()}
 });
 window.addEventListener('keyup',e=>{
- const map={ArrowLeft:'left',a:'left',ArrowRight:'right',d:'right',ArrowUp:'up',w:'up',ArrowDown:'down',s:'down'};
- const k=map[e.key]||map[e.key.toLowerCase()];if(k){keys[k]=false;e.preventDefault()}
+ const keyMap={ArrowLeft:'left',a:'left',ArrowRight:'right',d:'right',ArrowUp:'up',w:'up',ArrowDown:'down',s:'down'};
+ const k=keyMap[e.key]||keyMap[e.key.toLowerCase()];if(k){keys[k]=false;e.preventDefault()}
 });
+window.addEventListener('blur',()=>{keys={left:false,right:false,up:false,down:false};if(state==='driving')pause()});
 function spawnObjects(){
- const lane=Math.floor(Math.random()*3),kind=Math.random();
- if(kind<.58){const types=['🚗','🚙','🚚','🚧','🪨'];obstacles.push({x:lanes[lane],y:-90,type:types[Math.floor(Math.random()*types.length)],lane,hit:false,scale:.85+Math.random()*.25})}
- else{pickups.push({x:lanes[lane],y:-55,type:kind<.77?'fuel':'bonus',taken:false})}
+ const laneNo=Math.floor(Math.random()*3),roll=Math.random();
+ if(roll<.68){
+  const typeRoll=Math.random(),type=typeRoll<.52?'car':typeRoll<.72?'truck':typeRoll<.85?'barrier':typeRoll<.94?'rock':'cone';
+  obstacles.push({x:lanes[laneNo],y:-100,type,lane:laneNo,hit:false,passed:false,scale:.88+Math.random()*.22,color:['#d95757','#3b82a8','#e7b34e','#d5e1e8','#7b82aa'][Math.floor(Math.random()*5)],vx:0});
+ }else{
+  const type=roll<.79?'fuel':roll<.91?'bonus':'repair';
+  pickups.push({x:lanes[laneNo],y:-55,type,taken:false,phase:Math.random()*6});
+ }
 }
-function collision(o){
- const dx=Math.abs(o.x-truckX),dy=Math.abs(o.y-465);
- return dx<44&&dy<58;
-}
+function collision(o){return Math.abs(o.x-truckX)<48&&Math.abs(o.y-470)<58}
+function addParticle(x,y,text,life=36){particles.push({x,y,text,life,max:life,vy:-1.2+(Math.random()*.7)})}
 function hitObstacle(o){
- if(o.hit)return;o.hit=true;
- const damage=job.fragile*(o.type==='🚧'?17:13);cargo=Math.max(0,cargo-damage);speed=Math.max(1.2,speed-1.7);
- particles.push({x:truckX,y:465,text:'💥',life:35});
- setMessage('⚠️ Impacto! A carga perdeu '+Math.round(damage)+'% de integridade. Dirija com mais cuidado.');
- if(cargo<=0){state='over';speed=0;setMessage('📦 A carga foi danificada demais. Contrato perdido! Tente novamente.');$('start').textContent='↻ Tentar novamente'}
+ if(o.hit)return;o.hit=true;streak=0;
+ const raw=o.type==='barrier'?19:o.type==='truck'?15:o.type==='rock'?14:o.type==='cone'?7:11;
+ const damage=raw*job.fragile*difficultyFactor().damage*(1-upgrades.armor*.17);
+ cargo=Math.max(0,cargo-damage);speed=Math.max(0,speed-(o.type==='barrier'?2.1:1.45));
+ shake=13;flash=8;addParticle(truckX,465,'💥',42);
+ setMessage('⚠️ Colisão! A carga perdeu '+Math.round(damage)+'% de integridade. '+(cargo<40?'Cuidado: carga em estado crítico.':'Tente evitar novos impactos.'));
+ if(cargo<=0){state='over';speed=0;$('start').textContent='↻ Tentar novamente';setMessage('📦 A carga foi danificada demais. Contrato perdido!');save()}
 }
 function collect(p){
  if(p.taken)return;p.taken=true;
- if(p.type==='fuel'){fuel=Math.min(100,fuel+27);setMessage('⛽ Galão coletado! Combustível +27%.')}
- else{money+=150;setMessage('⭐ Bônus de direção segura! +R$ 150.');save()}
+ if(p.type==='fuel'){const amount=Math.min(32,maxFuel-fuel);fuel+=amount;addParticle(p.x,p.y,'+⛽');setMessage('⛽ Abastecimento na estrada! Combustível +'+Math.round(amount)+'%.')}
+ else if(p.type==='repair'){const amount=Math.min(22,100-cargo);cargo+=amount;addParticle(p.x,p.y,'🛠️');setMessage('🛠️ Kit de reparo! Integridade da carga +'+Math.round(amount)+'%.')}
+ else{const reward=180+streak*15;money+=reward;addParticle(p.x,p.y,'+R$');setMessage('⭐ Bônus de rota segura! +R$ '+reward+'.');save()}
+ updateHud();
+}
+function nearMiss(o){
+ if(o.passed||o.y<490)return;o.passed=true;
+ const dx=Math.abs(o.x-truckX);
+ if(!o.hit&&dx>=47&&dx<100){streak++;nearMisses++;bestStreak=Math.max(bestStreak,streak);const reward=streak%3===0?120:35;money+=reward;addParticle(truckX,430,'+'+reward+' R$',40);setMessage('🤏 Quase! Boa condução: sequência '+streak+'x · bônus R$ '+reward+'.');save()}
 }
 function deliver(){
  state='delivered';speed=0;
- if(cargo<65){setMessage('📦 Você chegou, mas a carga ficou abaixo de 65%. Pagamento reduzido.')}
- const factor=Math.max(.25,cargo/100),bonus=fuel>25?120:0,payment=Math.round(job.pay*factor+bonus);
- money+=payment;deliveries++;best=Math.max(best,money);save();updateHud();
- setMessage((cargo>=65?'🏁 Entrega concluída!':'⚠️ Entrega com avarias.')+' Recebimento: R$ '+payment.toLocaleString('pt-BR')+'. Próximo frete disponível!');
- $('start').textContent='➡️ Próximo frete';$('pause').textContent='Ⅱ Pausar';
+ const factor=Math.max(.18,cargo/100),fuelBonus=fuel>maxFuel*.25?150:0,qualityBonus=streak>=3?streak*25:0;
+ const payment=Math.round(job.pay*(routeLength/3000)*factor*difficultyFactor().pay+fuelBonus+qualityBonus);
+ money+=payment;deliveries++;best=Math.max(best,money);bestStreak=Math.max(bestStreak,streak);save();updateHud();
+ setMessage((cargo>=65?'🏁 Entrega concluída!':'⚠️ Entrega com avarias.')+' Recebimento: R$ '+payment.toLocaleString('pt-BR')+'. Contrato finalizado; escolha o próximo frete.');$('start').textContent='➡️ Próximo frete';draw();
 }
 function update(dt){
- if(state!=='driving')return;frame++;
- const accel=keys.up?0.11:0.025,brake=keys.down?0.17:0;
- speed=Math.max(0,Math.min(7.2,speed+accel-brake-(fuel<=0?.12:0)));
- truckX+=(targetX-truckX)*Math.min(1,dt*.012);
- const kmPerFrame=speed*.06;distance+=kmPerFrame*dt/16.67;fuel=Math.max(0,fuel-speed*.0008*dt);roadOffset=(roadOffset+speed*dt*.55)%120;
- spawn+=dt;if(spawn>Math.max(420,1150-speed*75)){spawn=0;spawnObjects()}
- const delta=speed*dt*.20;
- obstacles.forEach(o=>o.y+=delta);pickups.forEach(p=>p.y+=delta);
- obstacles.forEach(o=>{if(!o.hit&&collision(o))hitObstacle(o)});
+ if(state!=='driving')return;frame++;const step=dt/16.67;
+ const accel=keys.up?.16:.045,brake=keys.down?.22:0,boost=nitroTime>0?2.35:0,max=maxSpeed()+boost;
+ speed=clamp(speed+accel*step-brake*step-(fuel<=0?.14*step:0),0,max);
+ const handling=(weather==='rain'?.0065:.0105)*(1-cargo<0?0:1);
+ truckX+=(targetX-truckX)*Math.min(1,dt*handling*(1+upgrades.engine*.025));
+ const kmPerFrame=speed*.058;distance+=kmPerFrame*step;
+ fuel=Math.max(0,fuel-speed*(weather==='rain'?.0011:.00083)*step);
+ roadOffset=(roadOffset+speed*dt*.57)%120;
+ nitroTime=Math.max(0,nitroTime-dt/1000);nitroCooldown=Math.max(0,nitroCooldown-dt/1000);
+ spawn+=dt;const gap=Math.max(470,1180-speed*76)*difficultyFactor().spawn;if(spawn>gap){spawn=0;spawnObjects()}
+ const delta=speed*dt*.19;
+ obstacles.forEach(o=>{o.y+=delta;o.x+=o.vx*step});
+ pickups.forEach(p=>p.y+=delta);
+ obstacles.forEach(o=>{if(!o.hit&&collision(o))hitObstacle(o);else nearMiss(o)});
  pickups.forEach(p=>{if(!p.taken&&collision(p))collect(p)});
- obstacles=obstacles.filter(o=>o.y<H+100&&!o.hit);pickups=pickups.filter(p=>p.y<H+60&&!p.taken);
- particles=particles.filter(p=>{p.life--;return p.life>0});
- if(fuel<=0&&speed<.4){state='over';setMessage('⛽ Sem combustível! A viagem terminou. Colete galões para manter o caminhão na estrada.');$('start').textContent='↻ Tentar novamente'}
- if(distance>=kmToGo)deliver();
+ obstacles=obstacles.filter(o=>o.y<H+110&&!o.hit);pickups=pickups.filter(p=>p.y<H+70&&!p.taken);
+ particles=particles.filter(p=>{p.life-=step;p.y+=p.vy*step;return p.life>0});
+ if(flash>0)flash-=step;if(shake>0)shake=Math.max(0,shake-step*1.4);
+ const currentMilestone=Math.floor(distance/(routeLength/4));
+ if(currentMilestone>milestone&&currentMilestone<=4){milestone=currentMilestone;const reward=150*currentMilestone;money+=reward;save();setMessage('🪧 Marco de rota '+(currentMilestone*25)+'% concluído! Bônus de viagem: R$ '+reward+'.')}
+ if(fuel<=0&&speed<.35){state='over';$('start').textContent='↻ Tentar novamente';setMessage('⛽ Sem combustível! A viagem terminou. Colete galões ou melhore o tanque.');save()}
+ if(state!=='driving')return;
+ if(distance>=routeLength)deliver();
  updateHud();
 }
-function truck(x,y){
- ctx.save();ctx.translate(x,y);
- ctx.fillStyle='#07111c';round(-27,15,54,78,9);ctx.fill();
- ctx.fillStyle='#d8893e';round(-23,-24,46,92,10);ctx.fill();
- ctx.fillStyle='#f2b15c';round(-21,-19,42,34,7);ctx.fill();
- ctx.fillStyle='#173e57';round(-16,-13,32,19,5);ctx.fill();
- ctx.fillStyle='#f8e6b9';round(-19,18,38,43,5);ctx.fill();
- ctx.fillStyle='#9b5d2e';round(-15,25,30,28,4);ctx.fill();
- ctx.fillStyle='#fff1bb';ctx.fillRect(-17,-24,9,4);ctx.fillRect(8,-24,9,4);
- ctx.fillStyle='#facc15';ctx.fillRect(-23,58,7,10);ctx.fillRect(16,58,7,10);
- ctx.fillStyle='#111827';round(-29,-18,7,24,3);round(22,-18,7,24,3);round(-29,34,7,24,3);round(22,34,7,24,3);
- ctx.fillStyle='#f7fafc';ctx.font='bold 10px Arial';ctx.textAlign='center';ctx.fillText('JHON',0,13);
+function round(x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill()}
+function tree(x,y,s=1){
+ ctx.save();ctx.translate(x,y);ctx.scale(s,s);
+ ctx.fillStyle='#4a3528';ctx.fillRect(-4,3,8,24);
+ ctx.fillStyle='#23583f';ctx.beginPath();ctx.arc(0,-3,18,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle='#3f8154';ctx.beginPath();ctx.arc(-6,-9,12,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle='#78ad68';ctx.beginPath();ctx.arc(-9,-13,5,0,Math.PI*2);ctx.fill();ctx.restore();
+}
+function roadsideBuilding(x,y,scale){
+ ctx.save();ctx.translate(x,y);ctx.scale(scale,scale);
+ ctx.fillStyle='#6a5142';round(-24,-24,48,43,3);
+ ctx.fillStyle='#ad7955';ctx.beginPath();ctx.moveTo(-29,-22);ctx.lineTo(0,-43);ctx.lineTo(29,-22);ctx.fill();
+ ctx.fillStyle='#d8e8e7';ctx.fillRect(-15,-13,11,12);ctx.fillRect(5,-13,11,12);
+ ctx.fillStyle='#49372d';ctx.fillRect(-5,1,11,18);ctx.restore();
+}
+function drawCar(o){
+ ctx.save();ctx.translate(o.x,o.y);ctx.scale(o.scale,o.scale);
+ ctx.fillStyle='#101923';ctx.beginPath();ctx.ellipse(0,23,30,10,0,0,Math.PI*2);ctx.fill();
+ if(o.type==='truck'){
+  ctx.fillStyle='#1b252c';round(-29,-32,58,77,8);ctx.fill();
+  ctx.fillStyle=o.color;round(-27,-43,54,42,7);
+  ctx.fillStyle='#a9d9e8';round(-20,-36,40,19,4);
+  ctx.fillStyle='#e8eef1';ctx.fillRect(-23,-11,46,4);
+ }else if(o.type==='barrier'){
+  ctx.fillStyle='#ef8e22';round(-32,-9,64,32,5);
+  ctx.save();ctx.rotate(-.24);ctx.fillStyle='#fff1cf';for(let x=-35;x<40;x+=22)ctx.fillRect(x,-10,10,35);ctx.restore();
+  ctx.fillStyle='#454c52';ctx.fillRect(-28,23,8,8);ctx.fillRect(20,23,8,8);
+ }else if(o.type==='rock'){
+  ctx.fillStyle='#707b80';ctx.beginPath();ctx.moveTo(-26,17);ctx.lineTo(-20,-12);ctx.lineTo(-2,-25);ctx.lineTo(22,-16);ctx.lineTo(30,12);ctx.lineTo(12,24);ctx.closePath();ctx.fill();
+  ctx.fillStyle='#9ca7a6';ctx.beginPath();ctx.moveTo(-16,-10);ctx.lineTo(-1,-22);ctx.lineTo(9,-10);ctx.fill();
+ }else if(o.type==='cone'){
+  ctx.fillStyle='#ed812a';ctx.beginPath();ctx.moveTo(0,-24);ctx.lineTo(19,24);ctx.lineTo(-19,24);ctx.closePath();ctx.fill();
+  ctx.fillStyle='#fff0cf';ctx.fillRect(-12,5,24,6);ctx.fillStyle='#38434a';ctx.fillRect(-22,23,44,5);
+ }else{
+  ctx.fillStyle=o.color;round(-24,-32,48,65,10);
+  ctx.fillStyle='#c4e0e8';round(-17,-22,34,19,5);
+  ctx.fillStyle='#92b4c0';round(-17,2,34,12,4);
+  ctx.fillStyle='#fef3c7';ctx.fillRect(-20,-32,9,4);ctx.fillRect(11,-32,9,4);
+  ctx.fillStyle='#ef5350';ctx.fillRect(-20,27,8,4);ctx.fillRect(12,27,8,4);
+ }
+ ctx.fillStyle='#101820';ctx.fillRect(-29,-20,7,17);ctx.fillRect(22,-20,7,17);ctx.fillRect(-29,15,7,17);ctx.fillRect(22,15,7,17);
  ctx.restore();
 }
-function round(x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill()}
+function drawPlayerTruck(x,y){
+ ctx.save();ctx.translate(x,y);
+ ctx.fillStyle='#06111b88';ctx.beginPath();ctx.ellipse(0,40,49,76,0,0,Math.PI*2);ctx.fill();
+ // Carreta e carga
+ ctx.fillStyle='#101a22';round(-34,-13,68,101,7);
+ ctx.fillStyle='#c3d0d4';round(-30,-10,60,91,5);
+ ctx.fillStyle='#8d9ca2';ctx.fillRect(-26,-4,52,4);ctx.fillRect(-26,70,52,4);
+ ctx.fillStyle='#6a7b82';for(let x=-18;x<=18;x+=18)ctx.fillRect(x,-1,3,82);
+ ctx.fillStyle='#e7b967';round(-27,7,54,56,4);
+ ctx.fillStyle='#f4d49a';ctx.fillRect(-23,12,46,5);ctx.fillRect(-23,51,46,5);
+ ctx.fillStyle='#101820';ctx.fillRect(-39,0,8,25);ctx.fillRect(31,0,8,25);ctx.fillRect(-39,58,8,25);ctx.fillRect(31,58,8,25);
+ // cabine
+ ctx.fillStyle='#b9582f';round(-31,-63,62,58,12);
+ ctx.fillStyle='#e58a43';round(-28,-61,56,52,10);
+ ctx.fillStyle='#163b50';round(-22,-54,44,27,7);
+ ctx.fillStyle='#9ccbd7';ctx.fillRect(-17,-50,34,3);ctx.fillRect(-2,-50,3,20);
+ ctx.fillStyle='#f8f1d0';ctx.fillRect(-25,-15,50,5);
+ ctx.fillStyle='#fff5cc';round(-26,-63,11,6,2);round(15,-63,11,6,2);
+ ctx.fillStyle='#facc15';ctx.fillRect(-28,-7,9,10);ctx.fillRect(19,-7,9,10);
+ ctx.fillStyle='#101820';ctx.fillRect(-37,-57,7,23);ctx.fillRect(30,-57,7,23);
+ ctx.fillStyle='#fff';ctx.font='bold 10px Arial';ctx.textAlign='center';ctx.fillText('JHON',0,-29);
+ ctx.restore();
+}
+function drawPickup(p){
+ ctx.save();ctx.translate(p.x,p.y+Math.sin(frame*.09+p.phase)*4);
+ const color=p.type==='fuel'?'#f59e0b':p.type==='repair'?'#34d399':'#facc15';
+ ctx.shadowColor=color;ctx.shadowBlur=19;ctx.fillStyle=color;ctx.beginPath();ctx.arc(0,0,21,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
+ ctx.fillStyle='#17222b';ctx.font='bold 21px Arial';ctx.textAlign='center';ctx.textBaseline='middle';
+ ctx.fillText(p.type==='fuel'?'⛽':p.type==='repair'?'🛠️':'★',0,1);ctx.restore();
+}
+function drawDashboard(){
+ ctx.save();
+ ctx.fillStyle='#071521dd';round(20,42,220,66,12);
+ ctx.fillStyle='#9db7c7';ctx.font='bold 11px Arial';ctx.textAlign='left';ctx.fillText('PAINEL DE BORDO',34,61);
+ ctx.fillStyle='#f8fafc';ctx.font='bold 23px Arial';ctx.fillText(String(Math.round(speed*13)).padStart(3,'0')+' km/h',34,91);
+ ctx.fillStyle='#7dd3fc';ctx.font='bold 11px Arial';ctx.fillText('MARCHA '+(speed<1?'N':speed<3?'2':'5'),155,88);
+ // minimapa de faixas
+ ctx.fillStyle='#071521cc';round(754,42,125,66,12);
+ ctx.fillStyle='#a9c4d3';ctx.font='bold 10px Arial';ctx.fillText('ROTA',768,59);
+ ctx.fillStyle='#354b59';round(772,65,88,30,5);
+ ctx.strokeStyle='#8ca6b4';ctx.setLineDash([5,5]);ctx.beginPath();ctx.moveTo(801,67);ctx.lineTo(801,93);ctx.moveTo(831,67);ctx.lineTo(831,93);ctx.stroke();ctx.setLineDash([]);
+ ctx.fillStyle='#f6bd60';ctx.beginPath();ctx.arc(truckX/900*88+772-0,80,5,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle='#ecf5fa';ctx.font='bold 10px Arial';ctx.fillText('TRECHO '+(Math.min(4,Math.floor(distance/routeLength*4)+1))+'/4',28,132);
+ ctx.restore();
+}
+function drawWeather(){
+ if(weather==='rain'){
+  ctx.strokeStyle='#d6efff66';ctx.lineWidth=2;
+  for(let i=0;i<55;i++){const x=(i*137+frame*5)%W,y=(i*79+frame*12)%H;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x-9,y+18);ctx.stroke()}
+  ctx.fillStyle='#15354b22';ctx.fillRect(0,0,W,H);
+ }else if(weather==='night'){
+  ctx.fillStyle='#06132688';ctx.fillRect(0,0,W,H);
+  const glow=ctx.createRadialGradient(truckX,440,20,truckX,300,340);glow.addColorStop(0,'#fef3c733');glow.addColorStop(1,'#fef3c700');ctx.fillStyle=glow;ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='#fff5bb';for(let x=60;x<900;x+=130){const y=70+((x*3+frame*.15)%170);ctx.globalAlpha=.35+Math.sin(frame*.03+x)*.12;ctx.beginPath();ctx.arc(x,y,2,0,Math.PI*2);ctx.fill()}ctx.globalAlpha=1;
+ }
+}
 function draw(){
- const sky=ctx.createLinearGradient(0,0,0,H);sky.addColorStop(0,'#8bc4d2');sky.addColorStop(.55,'#c4d8c2');sky.addColorStop(1,'#8cae79');ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
- ctx.fillStyle='#61906a';ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(road.left,0);ctx.lineTo(road.left,H);ctx.lineTo(0,H);ctx.fill();
- ctx.fillStyle='#709b70';ctx.beginPath();ctx.moveTo(road.right,0);ctx.lineTo(W,0);ctx.lineTo(W,H);ctx.lineTo(road.right,H);ctx.fill();
- for(let i=0;i<16;i++){
-  const y=((i*93+roadOffset*1.1)%(H+70))-35;const x=i%2?105:795;
-  ctx.fillStyle='#315b43';ctx.beginPath();ctx.arc(x,y,17,0,Math.PI*2);ctx.fill();ctx.fillStyle='#80b97a';ctx.beginPath();ctx.arc(x-5,y-6,11,0,Math.PI*2);ctx.fill();
- }
- ctx.fillStyle='#4b5962';ctx.fillRect(road.left,0,road.right-road.left,H);
- ctx.fillStyle='#e7e2cd';ctx.fillRect(road.left+5,0,5,H);ctx.fillRect(road.right-10,0,5,H);
- ctx.fillStyle='#e8e7d7';for(let lane=1;lane<3;lane++){const x=road.left+lane*laneW-3;for(let y=-90+roadOffset;y<H;y+=120)ctx.fillRect(x,y,6,60)}
- ctx.fillStyle='#d8cba5';ctx.fillRect(road.left+laneW,0,1,H);
- obstacles.forEach(o=>{
-  ctx.save();ctx.translate(o.x,o.y);ctx.scale(o.scale,o.scale);
-  ctx.fillStyle='#17212b';ctx.beginPath();ctx.ellipse(0,29,31,10,0,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle=o.type==='🚧'?'#f59e0b':o.type==='🪨'?'#737b80':'#28475d';round(-25,-20,50,57,11);
-  ctx.fillStyle=o.type==='🚧'?'#fef3c7':'#98c6d5';round(-19,-12,38,17,5);
-  ctx.fillStyle='#f8fafc';ctx.font='30px Arial';ctx.textAlign='center';ctx.fillText(o.type,0,17);ctx.restore();
- });
- pickups.forEach(p=>{
-  ctx.save();ctx.translate(p.x,p.y);ctx.fillStyle=p.type==='fuel'?'#f59e0b':'#fde68a';ctx.beginPath();ctx.arc(0,0,20,0,Math.PI*2);ctx.fill();ctx.font='22px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(p.type==='fuel'?'⛽':'⭐',0,1);ctx.restore();
- });
- truck(truckX,430);
- particles.forEach(p=>{ctx.globalAlpha=p.life/35;ctx.font='28px Arial';ctx.textAlign='center';ctx.fillText(p.text,p.x,465-(35-p.life)*1.3);ctx.globalAlpha=1});
+ ctx.save();if(shake>0)ctx.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake);
+ const bg=ctx.createLinearGradient(0,0,0,H);bg.addColorStop(0,weather==='night'?'#142a43':weather==='rain'?'#627c86':'#8bc4d2');bg.addColorStop(.62,weather==='night'?'#304a4e':'#c6d9b8');bg.addColorStop(1,'#648b64');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+ // morros em camadas
+ for(let layer=0;layer<2;layer++){ctx.fillStyle=weather==='night'?(layer?'#22394a':'#29495a'):(layer?'#6e9b72':'#85aa7a');ctx.beginPath();ctx.moveTo(0,195+layer*38);for(let x=0;x<=W;x+=60)ctx.lineTo(x,145+layer*35+Math.sin(x*.018+layer*2+roadOffset*.002)*35);ctx.lineTo(W,260+layer*40);ctx.lineTo(0,260+layer*40);ctx.fill()}
+ ctx.fillStyle='#56865d';ctx.fillRect(0,210,W,H-210);
+ for(let i=0;i<18;i++){const y=((i*79+roadOffset*1.3)%(H+70))-35;const leftX=42+(i%3)*43,rightX=855-(i%3)*43;if(i%5===0){roadsideBuilding(leftX,y,.7);roadsideBuilding(rightX,y,.75)}else{tree(leftX,y,.7+(i%3)*.12);tree(rightX,y,.75+(i%4)*.1)}}
+ // acostamento, defensa e pista
+ ctx.fillStyle='#b4b1a0';ctx.fillRect(road.left-10,0,road.right-road.left+20,H);
+ ctx.fillStyle='#46535c';ctx.fillRect(road.left,0,road.right-road.left,H);
+ ctx.fillStyle='#687780';ctx.fillRect(road.left+8,0,5,H);ctx.fillRect(road.right-13,0,5,H);
+ // faixas laterais de segurança
+ for(let y=-36+roadOffset%70;y<H;y+=70){ctx.fillStyle='#f3e8c7';ctx.fillRect(road.left-8,y,7,35);ctx.fillRect(road.right+1,y,7,35)}
+ // linhas de faixa
+ for(let laneNo=1;laneNo<3;laneNo++){const x=road.left+laneNo*laneW-3;for(let y=-80+roadOffset;y<H;y+=112){ctx.fillStyle='#f4eedc';round(x,y,6,54,3)}}
+ ctx.fillStyle='#343f46';ctx.fillRect(road.left+laneW,0,1,H);ctx.fillRect(road.left+laneW*2,0,1,H);
+ // placas de sinalização
+ ctx.fillStyle='#d9e8dc';round(18,157,116,36,7);ctx.fillStyle='#214b3c';ctx.font='bold 12px Arial';ctx.textAlign='center';ctx.fillText('RODOVIA J-01',76,180);
+ ctx.fillStyle='#d9e8dc';round(766,157,116,36,7);ctx.fillStyle='#214b3c';ctx.fillText(weather==='rain'?'PISTA MOLHADA':weather==='night'?'REDUZA À NOITE':'BOA VIAGEM',824,180);
+ obstacles.forEach(drawCar);pickups.forEach(drawPickup);drawPlayerTruck(truckX,470);
+ particles.forEach(p=>{ctx.globalAlpha=clamp(p.life/p.max,0,1);ctx.fillStyle='#fff';ctx.font='bold 18px Arial';ctx.textAlign='center';ctx.fillText(p.text,p.x,p.y);ctx.globalAlpha=1});
+ drawDashboard();drawWeather();
+ if(flash>0){ctx.fillStyle='#fff9';ctx.fillRect(0,0,W,H)}
  if(state==='ready'||state==='delivered'||state==='over'||state==='paused'){
-  ctx.fillStyle='#081522bb';round(210,205,480,155,20);ctx.textAlign='center';ctx.fillStyle='#fff';ctx.font='bold 27px Arial';
-  const title=state==='ready'?'🚛 PRONTO PARA A ENTREGA':state==='delivered'?'🏁 CARGA ENTREGUE!':state==='paused'?'⏸ VIAGEM PAUSADA':'🛑 FIM DA VIAGEM';
-  ctx.fillText(title,W/2,253);ctx.fillStyle='#d5e7ed';ctx.font='16px Arial';ctx.fillText(state==='ready'?'Aperte INICIAR e pegue a estrada':state==='delivered'?'Prepare-se para o próximo contrato':state==='paused'?'Toque em Continuar para voltar à estrada':'Recomece a viagem para tentar novamente',W/2,290);
+  ctx.fillStyle='#061521d9';round(190,218,520,145,20);ctx.textAlign='center';ctx.fillStyle='#fff';ctx.font='bold 26px Arial';
+  const title=state==='ready'?'🚛 PRONTO PARA A ESTRADA':state==='delivered'?'🏁 CARGA ENTREGUE!':state==='paused'?'⏸ VIAGEM PAUSADA':'🛑 FIM DA VIAGEM';
+  ctx.fillText(title,W/2,267);ctx.fillStyle='#d5e7ed';ctx.font='16px Arial';
+  ctx.fillText(state==='ready'?'Escolha seu contrato e aperte INICIAR':state==='delivered'?'Prepare-se para a próxima missão':state==='paused'?'Toque em Continuar para retomar':'Recomece o trecho e tente novamente',W/2,306);
  }
- ctx.textAlign='left';ctx.fillStyle='#f8fafc';ctx.font='bold 13px Arial';ctx.fillText('ROTA '+(deliveries+1)+'  •  '+Math.floor(distance)+' / '+kmToGo+' KM',22,28);
+ ctx.restore();
 }
 function loop(now){
- if(!last)last=now;const dt=Math.min(40,now-last);last=now;
- update(dt);draw();
+ if(!last)last=now;const dt=Math.min(40,now-last);last=now;update(dt);draw();
  if(state==='driving')requestAnimationFrame(loop);else last=0;
 }
-chooseJob();updateHud();draw();
+configure();maxFuel=maxFuelValue();fuel=maxFuel;renderGarage();updateHud();draw();
 })();
 </script></body></html>
