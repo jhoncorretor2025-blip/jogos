@@ -59,6 +59,7 @@
   .msg b{color:var(--txt)}
   .hint{color:#64748b;font-size:12.5px;margin:10px 0 0;text-align:center;max-width:460px}
   .ver{color:#475569;font-size:11.5px;margin-top:10px}
+/* Forca v2.0 */ .hud{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.stat.streak{border-color:#7c521a;background:linear-gradient(145deg,#2b2113,#111827)}.stat.streak b{color:#fbbf24}.stage{background:linear-gradient(135deg,#17233a,#0d1423);border-radius:18px;padding:10px;box-shadow:0 8px 24px #0002;transition:.25s}.stage.winGlow{border-color:#10b981;box-shadow:0 0 22px #10b98122}.stage.lossGlow{border-color:#fb7185;box-shadow:0 0 22px #fb718522}.wood{stroke:#d69a55;stroke-width:7;stroke-linecap:round;filter:drop-shadow(0 2px 2px #3c1d0b)}.wood-light{stroke:#e7b778;stroke-width:3;opacity:.7}.rope{stroke:#e7c99a;stroke-width:3;stroke-dasharray:3 2}.part{transform-origin:center;transition:opacity .35s,transform .35s}.part.on{opacity:1;transform:scale(1)}.bodypart{stroke:#fb7185;stroke-width:5;stroke-linecap:round;filter:drop-shadow(0 0 5px #fb718544)}.catrow{display:flex;align-items:center;gap:6px}.caticon{font-size:18px}.cat{border:1px solid #384965;background:#1a2942;border-radius:99px;padding:4px 9px;font-size:11px}.key{background:linear-gradient(145deg,#1b2b47,#111a2c);box-shadow:0 2px 0 #070b14;transition:transform .12s,background .2s}.key:active{transform:scale(.93)}.key.ok{background:linear-gradient(145deg,#075b46,#064334);border-color:#10b981;color:#d1fae5;box-shadow:0 0 10px #10b98122}.key.bad{background:linear-gradient(145deg,#4a202a,#2b1720);border-color:#9f354b;color:#fda4af;opacity:.75}.slot{animation:slotIn .25s ease}.slot.reveal{color:#34d399;border-color:#34d399;text-shadow:0 0 10px #34d39966}.shake{animation:shake .35s}.msg.win{color:#34d399;font-weight:700}.msg.loss{color:#fb7185;font-weight:700}#confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:30}.conf{position:absolute;width:7px;height:12px;top:-20px;animation:fall 1.8s ease-in forwards;border-radius:2px}@keyframes fall{to{transform:translateY(105vh) rotate(760deg);opacity:0}}@keyframes shake{25%{transform:translateX(-5px)}50%{transform:translateX(5px)}75%{transform:translateX(-3px)}}@keyframes slotIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}@media(max-width:390px){svg{width:122px;height:145px}.stage{gap:8px;padding:8px}.slot{min-width:23px;font-size:20px}.keys{gap:5px}.key{font-size:14px}}
 </style>
 </head>
 <body>
@@ -70,15 +71,15 @@
   <div class="hud">
     <div class="stat"><span>Rodada</span><b id="round">1</b></div>
     <div class="stat"><span>Acertos</span><b id="wins">0</b></div>
-    <div class="stat"><span>Erros</span><b id="losses">0</b></div>
+    <div class="stat"><span>Erros</span><b id="losses">0</b></div><div class="stat streak"><span>🔥 Sequência</span><b id="streak">0</b></div>
   </div>
 
   <div class="stage">
     <svg viewBox="0 0 130 150" aria-hidden="true">
-      <line x1="14" y1="140" x2="78" y2="140" stroke="#475569" stroke-width="6" stroke-linecap="round"/>
+      <line x1="14" y1="140" x2="78" y2="140" stroke="#d69a55" stroke-width="7" stroke-linecap="round"/>
       <line x1="34" y1="140" x2="34" y2="16" stroke="#475569" stroke-width="6" stroke-linecap="round"/>
       <line x1="34" y1="18" x2="92" y2="18" stroke="#475569" stroke-width="6" stroke-linecap="round"/>
-      <line x1="92" y1="18" x2="92" y2="34" stroke="#475569" stroke-width="4" stroke-linecap="round"/>
+      <line x1="92" y1="18" x2="92" y2="34" stroke="#e7c99a" stroke-width="3" stroke-dasharray="3 2" stroke-linecap="round"/>
       <g stroke="#fb7185" stroke-width="5" stroke-linecap="round" fill="none">
         <circle class="part" data-part="1" cx="92" cy="47" r="12"/>
         <line class="part" data-part="2" x1="92" y1="59" x2="92" y2="96"/>
@@ -89,7 +90,7 @@
       </g>
     </svg>
     <div class="side">
-      <div class="cat">Categoria: <b id="cat">—</b></div><div class="hintline" id="hintline">Descubra a palavra!</div>
+      <div class="catrow"><span class="caticon" id="caticon">🧩</span><span class="cat">Categoria: <b id="cat">—</b></span></div><div class="hintline" id="hintline">Descubra a palavra!</div>
       <div class="hearts" id="hearts">❤️❤️❤️❤️❤️❤️</div>
     </div>
   </div>
@@ -104,7 +105,7 @@
   </div>
 
   <p class="hint">Acerte a palavra antes de completar o boneco. 6 erros e acabou.</p>
-  <div class="ver">v1.1 · 22/11/2026</div>
+  <div class="ver">v2.0 · 22/11/2026</div><div id="confetti"></div>
 
 <script>
 (function(){
@@ -160,6 +161,7 @@
   const keysEl = document.getElementById('keys');
   const catEl = document.getElementById('cat');
   const hintEl = document.getElementById('hintline');
+  const catIconEl=document.getElementById('caticon'),streakEl=document.getElementById('streak'),stageEl=document.querySelector('.stage'),confettiEl=document.getElementById('confetti');
   const heartsEl = document.getElementById('hearts');
   const msgEl = document.getElementById('msg');
   const roundEl = document.getElementById('round');
@@ -167,7 +169,9 @@
   const lossesEl = document.getElementById('losses');
   const parts = Array.prototype.slice.call(document.querySelectorAll('.part'));
 
-  let current, guessed, errors, over, wins = 0, losses = 0, round = 0;
+  let current, guessed, errors, over, wins = 0, losses = 0, round = 0, streak=0, score=0;
+  const categoryIcons={'Imóveis':'🏠','Tecnologia':'💻','Transportes':'🚗','Animais':'🐾','Natureza':'🌿','Alimentos':'🍕','Instrumentos musicais':'🎸','Esportes':'⚽','Viagens':'✈️','Sentimentos':'💭','Pessoas e relações':'👨‍👩‍👧','Arte e cultura':'🎨','Lugares':'📍','Objetos':'🧰','Alimentos · Vegetais':'🥦','Ferramentas':'🔧','Ferramentas e objetos':'🛠️','Profissões':'🧑‍💼','Jogos':'🎲','Tecnologia · Áudio':'🎧','Construção':'🧱','Casa':'🏡','Espaço':'🚀'};
+  function celebrate(){confettiEl.innerHTML='';for(let i=0;i<60;i++){const p=document.createElement('i');p.className='conf';p.style.left=Math.random()*100+'%';p.style.animationDelay=Math.random()*.45+'s';p.style.background=['#fb7185','#fbbf24','#34d399','#60a5fa','#c084fc'][i%5];confettiEl.appendChild(p)}setTimeout(()=>confettiEl.innerHTML='',2300)}
 
   function norm(s){
     return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
@@ -209,6 +213,7 @@
     });
 
     catEl.textContent = current.c;
+    catIconEl.textContent=categoryIcons[current.c]||'🧩';
     hintEl.textContent = 'Pense em algo que pertence a esta categoria.';
     heartsEl.textContent = '❤️'.repeat(Math.max(0, MAX_ERRORS - errors)) + '🖤'.repeat(Math.min(errors, MAX_ERRORS));
     parts.forEach(function(p){
@@ -217,6 +222,7 @@
     roundEl.textContent = round;
     winsEl.textContent = wins;
     lossesEl.textContent = losses;
+    streakEl.textContent=streak;
   }
 
   function newWord(){
@@ -228,7 +234,9 @@
     errors = 0;
     over = false;
     round++;
+    msgEl.className='msg';
     msgEl.textContent = 'Escolha uma letra.';
+    stageEl.classList.remove('winGlow','lossGlow');
     render();
   }
 
@@ -238,9 +246,11 @@
     const nw = norm(current.w);
     if (nw.indexOf(letter) === -1) {
       errors++;
+      stageEl.classList.remove('shake');void stageEl.offsetWidth;stageEl.classList.add('shake');
       if (errors >= MAX_ERRORS) {
         over = true;
-        losses++;
+        losses++;streak=0;
+        stageEl.classList.add('lossGlow');msgEl.className='msg loss';
         msgEl.innerHTML = 'Sem vidas. A palavra era <b>' + current.w + '</b>.';
         render();
         return;
@@ -251,7 +261,8 @@
     });
     if (allFound) {
       over = true;
-      wins++;
+      wins++;streak++;score+=Math.max(10,(MAX_ERRORS-errors)*10);
+      stageEl.classList.add('winGlow');msgEl.className='msg win';celebrate();
       msgEl.innerHTML = '🎉 Acertou: <b>' + current.w + '</b>!';
     }
     render();
@@ -259,7 +270,7 @@
 
   document.getElementById('next').addEventListener('click', newWord);
   document.getElementById('resetScore').addEventListener('click', function(){
-    wins = 0; losses = 0; round = 0;
+    wins = 0; losses = 0; round = 0;streak=0;score=0;
     newWord();
   });
 
