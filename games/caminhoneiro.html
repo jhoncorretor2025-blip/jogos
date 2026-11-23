@@ -21,7 +21,7 @@ body{padding:16px 12px 25px}.wrap{width:min(1050px,100%);margin:auto}header{text
 </style>
 </head>
 <body><main class="wrap">
-<header><h1>🚛 Caminhoneiro — Entrega na Estrada</h1><p>Carregue, dirija com cuidado e entregue no prazo. Cada frete é uma nova missão!</p><span class="version">Jogos do Jhon · v1.0</span></header>
+<header><h1>🚛 Caminhoneiro — Entrega na Estrada</h1><p>Carregue, dirija com cuidado e entregue no prazo. Cada frete é uma nova missão!</p><span class="version">Jogos do Jhon · v1.1</span></header>
 <section class="panel">
 <div class="hud">
 <div class="stat"><small>Distância</small><b id="distance">0 / 3.000 km</b></div>
@@ -86,7 +86,10 @@ function resetCareer(){
  if(!confirm('Reiniciar a carreira? Seu dinheiro, entregas e recorde salvos também serão zerados.'))return;
  money=0;deliveries=0;best=0;jobIndex=0;save();resetTrip();
 }
-function start(){if(state==='over')return resetTrip();if(state==='paused'){state='driving';$('pause').textContent='Ⅱ Pausar';last=performance.now();return}
+function start(){
+ if(state==='over')return resetTrip();
+ if(state==='delivered'){jobIndex++;resetTrip();state='driving';$('start').textContent='🚛 Na estrada';setMessage('Novo contrato aceito! Boa viagem, caminhoneiro.');last=performance.now();requestAnimationFrame(loop);return}
+ if(state==='paused'){state='driving';$('pause').textContent='Ⅱ Pausar';last=performance.now();requestAnimationFrame(loop);return}
  if(state==='ready'){state='driving';$('start').textContent='🚛 Na estrada';setMessage('Boa viagem! Mantenha a carga protegida e fique de olho no combustível.');last=performance.now();requestAnimationFrame(loop)}
 }
 function pause(){if(state==='driving'){state='paused';$('pause').textContent='▶ Continuar';setMessage('Viagem pausada. Seu caminhão está parado em segurança.')}else if(state==='paused')start()}
@@ -95,12 +98,13 @@ function bindHold(id,key){
  const b=$(id);const on=e=>{e.preventDefault();keys[key]=true};const off=e=>{e.preventDefault();keys[key]=false};
  b.addEventListener('pointerdown',on);b.addEventListener('pointerup',off);b.addEventListener('pointerleave',off);b.addEventListener('pointercancel',off);
 }
-bindHold('left','left');bindHold('right','right');bindHold('accelerate','up');bindHold('brake','down');
+function bindLaneTap(id,delta){$(id).addEventListener('pointerdown',e=>{e.preventDefault();setLane(delta)})}
+bindLaneTap('left',-1);bindLaneTap('right',1);bindHold('accelerate','up');bindHold('brake','down');
 $('start').addEventListener('click',start);$('pause').addEventListener('click',pause);$('newTrip').addEventListener('click',()=>{if(confirm('Carregar um novo frete? O trecho atual será encerrado.')){jobIndex++;resetTrip()}});
 $('restart').addEventListener('click',resetCareer);
 window.addEventListener('keydown',e=>{
  const map={ArrowLeft:'left',a:'left',ArrowRight:'right',d:'right',ArrowUp:'up',w:'up',ArrowDown:'down',s:'down'};
- const k=map[e.key]||map[e.key.toLowerCase()];if(k){keys[k]=true;e.preventDefault()}
+ const k=map[e.key]||map[e.key.toLowerCase()];if(k){if(k==='left'&&!keys.left)setLane(-1);if(k==='right'&&!keys.right)setLane(1);keys[k]=true;e.preventDefault()}
  if(e.key===' '){if(state==='ready')start();else if(state==='driving')pause();e.preventDefault()}
 });
 window.addEventListener('keyup',e=>{
@@ -140,8 +144,6 @@ function update(dt){
  if(state!=='driving')return;frame++;
  const accel=keys.up?0.11:0.025,brake=keys.down?0.17:0;
  speed=Math.max(0,Math.min(7.2,speed+accel-brake-(fuel<=0?.12:0)));
- if(keys.left&&truckX>lanes[0]+5)targetX=lanes[Math.max(0,Math.round((targetX-road.left-laneW/2)/laneW)-1)];
- if(keys.right&&truckX<lanes[2]-5)targetX=lanes[Math.min(2,Math.round((targetX-road.left-laneW/2)/laneW)+1)];
  truckX+=(targetX-truckX)*Math.min(1,dt*.012);
  const kmPerFrame=speed*.06;distance+=kmPerFrame*dt/16.67;fuel=Math.max(0,fuel-speed*.0008*dt);roadOffset=(roadOffset+speed*dt*.55)%120;
  spawn+=dt;if(spawn>Math.max(420,1150-speed*75)){spawn=0;spawnObjects()}
