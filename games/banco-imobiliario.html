@@ -6,95 +6,111 @@
 <meta name="theme-color" content="#070b14">
 <title>Banco Imobiliário — Jogos do Jhon</title>
 <style>
-  :root{--bg:#070b14;--card:#0f172a;--line:#1e293b;--txt:#e2e8f0;--muted:#94a3b8;--you:#22d3ee;--ia:#fb7185}
-  *{box-sizing:border-box}
-  html,body{margin:0}
-  body{
-    min-height:100vh;min-height:100dvh;
-    background:radial-gradient(700px 420px at 50% -10%,rgba(52,211,153,.14),transparent 65%),var(--bg);
-    color:var(--txt);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-    padding:12px 12px 20px;display:flex;flex-direction:column;align-items:center;
-    -webkit-tap-highlight-color:transparent;user-select:none;
-  }
-  .top{width:100%;max-width:520px;display:flex;align-items:center;gap:10px;margin-bottom:8px}
-  .back{color:var(--muted);text-decoration:none;font-size:22px;padding:6px 8px;border-radius:10px}
-  .back:hover{background:#111c31;color:var(--txt)}
-  h1{font-size:17px;margin:0;font-weight:700;flex:1}
-  .hud{width:100%;max-width:520px;display:flex;gap:8px;margin-bottom:8px}
-  .pcard{flex:1;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:7px 10px;display:flex;justify-content:space-between;align-items:center;gap:6px}
-  .pcard.you{border-color:rgba(34,211,238,.45)}
-  .pcard.ia{border-color:rgba(251,113,133,.35)}
-  .pcard span{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
-  .pcard b{font-size:15px;font-variant-numeric:tabular-nums}
-  #board{
-    width:100%;max-width:520px;aspect-ratio:1;display:grid;gap:4px;
-    grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(5,1fr);
-  }
-  .sp{
-    position:relative;border-radius:7px;background:#101a2e;border:1px solid #1e2f4a;
-    padding:3px;font-size:8.5px;line-height:1.15;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;
-  }
-  .sp .nm{font-weight:700;font-size:8.5px;color:#cbd5e1;word-break:break-word}
-  .sp .pr{font-size:7.5px;color:#64748b}
-  .sp.own0{border-color:var(--you);background:#0b2a33}
-  .sp.own1{border-color:var(--ia);background:#2a1119}
-  .sp.here{outline:2px solid #fbbf24;outline-offset:-2px}
-  .sp .houses{position:absolute;top:2px;right:3px;font-size:7px;color:#fbbf24;letter-spacing:-1px}
-  .sp .pawns{position:absolute;bottom:2px;left:3px;display:flex;gap:2px;font-size:9px}
-  .center{
-    grid-column:2 / span 3;grid-row:2 / span 3;border-radius:12px;background:linear-gradient(160deg,#0d1a2c,#0a1322);
-    border:1px solid #1e2f4a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px;text-align:center;
-  }
-  .dice{font-size:26px;line-height:1}
-  .turn{font-size:11px;color:var(--muted)}
-  .turn b{color:var(--txt)}
-  .btn{
-    font:inherit;font-size:13px;font-weight:700;border-radius:10px;padding:9px 14px;border:0;cursor:pointer;
-    background:linear-gradient(90deg,#34d399,#22d3ee);color:#04211b;
-  }
-  .btn:disabled{opacity:.4;cursor:default}
-  .btn:active{transform:scale(.97)}
-  .msg{width:100%;max-width:520px;min-height:34px;margin-top:10px;font-size:13.5px;color:var(--muted);text-align:center;line-height:1.45}
-  .msg b{color:var(--txt)}
-  .ver{color:#475569;font-size:11.5px;margin-top:10px}
-  #sheet{
-    position:fixed;left:0;right:0;bottom:0;background:#0d1728;border-top:1px solid var(--line);
-    padding:14px 16px 18px;display:none;flex-direction:column;gap:10px;z-index:8;
-  }
-  #sheet.show{display:flex}
-  #sheet p{margin:0;font-size:14px;line-height:1.5;text-align:center;color:var(--txt)}
-  #sheet .row{display:flex;gap:8px}
-  #sheet .row .btn{flex:1}
-  #sheet .btn.no{background:#101a2e;border:1px solid var(--line);color:var(--txt)}
-  #ov{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(4,8,16,.86);backdrop-filter:blur(4px);z-index:9}
-  #ov.show{display:flex}
-  .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px 22px;text-align:center;max-width:330px;width:100%}
-  .panel h2{margin:0 0 8px;font-size:23px}
-  .panel p{margin:0 0 6px;color:var(--muted);font-size:14.5px;line-height:1.6}
-  .panel .btn{margin-top:14px;width:100%;padding:13px}
+:root{--bg:#081b17;--card:#10271f;--line:#315747;--txt:#f4f3e8;--muted:#a8b9a8;--you:#4de1d0;--ia:#fb8d9c}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%}
+body{min-height:100vh;min-height:100dvh;padding:16px 12px 28px;display:flex;flex-direction:column;align-items:center;color:var(--txt);font-family:ui-rounded,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:radial-gradient(900px 560px at 50% -12%,#315b3e 0,transparent 67%),repeating-linear-gradient(110deg,#0b211a 0,#0b211a 3px,#0d261e 3px,#0d261e 6px);-webkit-tap-highlight-color:transparent;user-select:none}
+.top,.hud,.board-frame,.activity-bar,.legend,.ver{width:100%;max-width:720px}
+.top{display:flex;align-items:center;gap:11px;margin:0 auto 13px}
+.back{width:38px;height:38px;display:grid;place-items:center;border-radius:12px;color:#f3e6c6;text-decoration:none;font-size:23px;background:#1d382b;border:1px solid #42614b;box-shadow:0 3px 0 #0a1712}
+.back:hover{background:#294b38}
+.brandmark{width:44px;height:44px;display:grid;place-items:center;border-radius:14px;background:linear-gradient(145deg,#f5dfa5,#b98542);color:#402b19;font-size:24px;box-shadow:inset 0 1px #fff8,0 5px 14px #0005}
+.brandcopy{min-width:0;flex:1}h1{margin:0;font-size:clamp(18px,4vw,23px);line-height:1.15;letter-spacing:-.5px;color:#fff4d8}
+.kicker{margin:4px 0 0;font-size:9px;letter-spacing:1.45px;color:#b4c5a9;font-weight:800}
+.version-pill{font-size:10px;font-weight:900;letter-spacing:.4px;color:#3b2a14;background:linear-gradient(135deg,#f5dfa5,#d6aa61);border-radius:99px;padding:6px 9px;white-space:nowrap;box-shadow:0 2px 7px #0004}
+.hud{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 auto 13px}
+.pcard{min-width:0;position:relative;overflow:hidden;display:flex;align-items:center;gap:10px;padding:11px 13px;border:1px solid #45604d;border-radius:16px;background:linear-gradient(145deg,#18372a,#10261e);box-shadow:0 7px 20px #0003;transition:border-color .2s,transform .2s,box-shadow .2s}
+.pcard:before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:var(--player-color)}.pcard.you{--player-color:var(--you)}.pcard.ia{--player-color:var(--ia)}
+.pcard.active{border-color:var(--player-color);box-shadow:0 0 0 2px color-mix(in srgb,var(--player-color) 22%,transparent),0 9px 22px #0004;transform:translateY(-2px)}
+.avatar{width:43px;height:43px;flex:0 0 43px;display:grid;place-items:center;border-radius:13px;background:#ffffff12;border:1px solid #ffffff20;font-size:25px;filter:drop-shadow(0 3px 3px #0005)}
+.player-info{flex:1;min-width:0}.player-name{display:flex;align-items:center;gap:6px;flex-wrap:wrap;color:#c4d2c0;font-size:10px;font-weight:900;letter-spacing:.8px}
+.turn-tag{font-size:8px;letter-spacing:.5px;padding:3px 6px;border-radius:99px;background:#ffffff12;color:#cbd5c1}.pcard.active .turn-tag{background:var(--player-color);color:#08221a}
+.pcard b{display:block;margin-top:3px;font-size:clamp(17px,3.5vw,22px);letter-spacing:-.5px;font-variant-numeric:tabular-nums;color:#fff4d8}
+.pcard small{display:block;margin-top:2px;color:#a8b9a8;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.board-frame{position:relative;padding:10px;border-radius:25px;border:2px solid #bd9259;background:linear-gradient(135deg,#d8b679,#68432b 12%,#a97643 28%,#68432b 44%,#c3985c 61%,#68432b 80%,#d8b679);box-shadow:0 17px 42px #0007,inset 0 1px 1px #fff9,inset 0 -3px 5px #241309}
+.board-frame:before{content:"";position:absolute;inset:5px;border:1px solid #f0d59a88;border-radius:19px;pointer-events:none}
+#board{position:relative;width:100%;aspect-ratio:1;display:grid;gap:5px;grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:repeat(5,minmax(0,1fr));padding:5px;border-radius:16px;overflow:hidden;background-color:#164b39;background-image:radial-gradient(ellipse at center,#2b6b4d45,transparent 65%),repeating-linear-gradient(45deg,#ffffff05 0,#ffffff05 1px,transparent 1px,transparent 4px);box-shadow:inset 0 0 0 1px #83ab7655,inset 0 0 35px #061b13aa}
+.space{--accent:#8da78a;position:relative;isolation:isolate;min-width:0;min-height:0;overflow:hidden;border-radius:8px;border:1px solid #d6d6b44f;background:linear-gradient(150deg,#f4f0dc,#d8d3b6);color:#273a2d;padding:clamp(3px,.8vw,8px);display:flex;flex-direction:column;justify-content:space-between;box-shadow:inset 0 1px #fff9,0 2px 3px #03130c55;transition:transform .18s,box-shadow .18s}
+.space:after{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(140deg,#ffffff55,transparent 44%,#2e422016)}
+.space-band{height:5px;flex:0 0 5px;margin:calc(clamp(3px,.8vw,8px)*-1) calc(clamp(3px,.8vw,8px)*-1) 3px;background:var(--accent);box-shadow:0 1px 2px #0003}
+.space-header{display:flex;align-items:center;justify-content:space-between;gap:2px;min-width:0}
+.space-icon{font-size:clamp(12px,2.5vw,21px);line-height:1;filter:drop-shadow(0 1px 1px #0002)}
+.space-kind{font-size:clamp(5px,.85vw,8px);font-weight:900;letter-spacing:.2px;color:#687365;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.space .nm{font-size:clamp(7px,1.55vw,12px);font-weight:950;line-height:1.1;color:#26382b;overflow-wrap:anywhere;margin-top:2px}
+.space .pr{font-size:clamp(6px,1.15vw,9px);font-weight:750;line-height:1.15;color:#63705f;margin-top:2px}.space .pr strong{color:#344e3a}
+.space.own0{border-color:var(--you);background:linear-gradient(145deg,#dcfff4,#a7ded1);box-shadow:inset 0 0 0 1px #2cc4b588,0 2px 4px #03130c66}
+.space.own1{border-color:var(--ia);background:linear-gradient(145deg,#ffe8e9,#f2bfc4);box-shadow:inset 0 0 0 1px #e86e7b88,0 2px 4px #03130c66}
+.space.here{outline:3px solid #f6c94f;outline-offset:-3px;animation:landPulse .75s ease-in-out 2;z-index:2}
+.space .houses{position:absolute;right:3px;bottom:3px;display:flex;gap:1px;font-size:clamp(7px,1.3vw,11px);filter:drop-shadow(0 1px 1px #0005)}
+.space .pawns{display:flex;gap:3px;align-items:center;min-height:14px;margin-top:2px}
+.pawn{width:clamp(13px,2.5vw,20px);height:clamp(13px,2.5vw,20px);display:grid;place-items:center;border-radius:50%;font-size:clamp(9px,1.8vw,14px);line-height:1;background:#fff;border:1px solid #fff;box-shadow:0 2px 3px #0005}
+.pawn-you{background:#c7fff5;border-color:#189e91}.pawn-ia{background:#ffe2e4;border-color:#d85d6b}
+.space.own0 .space-kind,.space.own1 .space-kind{color:#3d5145}
+.space[data-type="start"]{background:linear-gradient(145deg,#ffe8ae,#d6aa5a);border-color:#f7d98e}
+.space[data-type="chance"]{background:linear-gradient(145deg,#e8dcff,#c5b2ed)}
+.space[data-type="tax"]{background:linear-gradient(145deg,#f9d5c4,#e9b39d)}
+.space[data-type="rest"]{background:linear-gradient(145deg,#d9edcf,#b9d2a8)}
+.center{grid-column:2 / span 3;grid-row:2 / span 3;position:relative;overflow:hidden;border-radius:13px;border:1px solid #d6bd7a;background:radial-gradient(ellipse at 50% 0,#f6e6ad,#d8c58e 52%,#b8a46d);color:#35432d;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(3px,.9vw,8px);padding:8px;text-align:center;box-shadow:inset 0 0 0 3px #fff5,inset 0 -14px 24px #68512a22}
+.center:before,.center:after{content:"";position:absolute;border:1px solid #8a754544;border-radius:50%;width:85%;height:85%;pointer-events:none}.center:after{width:70%;height:70%}
+.center-kicker{position:relative;z-index:1;font-size:clamp(6px,1vw,9px);font-weight:950;letter-spacing:1.5px;color:#6c6948}
+.center-logo{position:relative;z-index:1;font-size:clamp(13px,3vw,24px);font-weight:1000;line-height:1.05;letter-spacing:-.8px;color:#31452f;text-shadow:0 1px #fff8}.center-logo em{display:block;font-style:normal;color:#8b542b;font-size:.78em;letter-spacing:2px}
+.city-art{height:clamp(30px,7vw,62px);display:flex;align-items:end;justify-content:center;gap:4px;position:relative;z-index:1}
+.building{width:clamp(13px,3.3vw,27px);border:1px solid #3c6651;border-bottom:0;border-radius:3px 3px 0 0;background:linear-gradient(90deg,#597e60,#315b49);box-shadow:2px 0 #fff2 inset;position:relative}
+.building:after{content:"";position:absolute;inset:5px 3px;background:repeating-linear-gradient(0deg,transparent 0 6px,#f7dc8b 6px 9px),repeating-linear-gradient(90deg,transparent 0 5px,#f7dc8b 5px 7px);opacity:.8}
+.b1{height:58%}.b2{height:87%}.b3{height:70%}.b4{height:100%}
+.turn-chip{position:relative;z-index:1;padding:4px 9px;border-radius:99px;background:#34533d;color:#fff7dc;font-size:clamp(8px,1.3vw,11px);font-weight:850;box-shadow:0 2px 4px #0002}
+.dice-tray{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:7px;perspective:300px}
+.dice-cube{width:clamp(25px,5vw,40px);height:clamp(25px,5vw,40px);display:grid;place-items:center;border-radius:9px;border:1px solid #d8d4c5;background:linear-gradient(145deg,#fff,#e5e2d8);box-shadow:0 4px 0 #a8a18e,0 6px 8px #40351d55,inset 0 1px #fff;font-size:clamp(20px,4vw,31px);line-height:1;color:#263b32;text-shadow:0 1px #fff}
+.dice-tray.rolling .dice-cube{animation:diceRoll .48s ease-in-out}
+.dice-total{font-size:clamp(8px,1.2vw,11px);font-weight:950;color:#6b5b34;min-width:22px}
+.btn{font:inherit;font-size:clamp(10px,1.6vw,13px);font-weight:950;letter-spacing:.2px;border-radius:10px;padding:9px 13px;border:1px solid #a86f2a;cursor:pointer;background:linear-gradient(135deg,#f8dfa0,#d9a952);color:#382510;box-shadow:0 3px 0 #93642c,0 5px 9px #0002;transition:transform .12s,filter .12s}
+.btn:disabled{opacity:.42;cursor:default;filter:grayscale(.4);box-shadow:none}.btn:not(:disabled):active{transform:translateY(2px);box-shadow:0 1px 0 #93642c}
+.center .btn{position:relative;z-index:1;padding:clamp(6px,1vw,9px) clamp(10px,2vw,16px);border-radius:99px}
+.activity-bar{display:flex;align-items:center;gap:10px;margin:13px auto 0;padding:12px 15px;border:1px solid #355845;border-radius:14px;background:linear-gradient(135deg,#173528,#10241c);box-shadow:0 5px 16px #0003}
+.activity-icon{width:33px;height:33px;flex:0 0 33px;display:grid;place-items:center;border-radius:10px;background:#e9c77b20;color:#f4d999;font-size:17px}
+.msg{flex:1;min-width:0;min-height:22px;font-size:12px;color:#c2d0bc;text-align:left;line-height:1.5}.msg b{color:#fff0c4}
+.legend{display:flex;justify-content:center;align-items:center;gap:14px;flex-wrap:wrap;margin:11px auto 0;color:#aabca9;font-size:9px;font-weight:800;letter-spacing:.4px}
+.legend-item{display:flex;align-items:center;gap:5px}.legend-dot{width:8px;height:8px;border-radius:3px;background:var(--dot)}
+.ver{margin-top:12px;text-align:center;color:#8da08a;font-size:10px;letter-spacing:.6px}
+#sheet{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(100%,680px);background:linear-gradient(145deg,#203f2e,#10251c);border:1px solid #b58a50;border-bottom:0;border-radius:24px 24px 0 0;padding:18px 18px max(20px,env(safe-area-inset-bottom));display:none;flex-direction:column;gap:12px;z-index:8;box-shadow:0 -16px 70px #000b,0 0 0 100vmax #06130db0}
+#sheet.show{display:flex}.sheet-head{display:flex;align-items:center;justify-content:space-between;color:#d8c08e;font-size:10px;font-weight:950;letter-spacing:1.2px}
+.sheet-badge{border-radius:99px;background:#e9c77b20;padding:5px 8px;color:#f1d79c}
+.sheet-property{display:flex;align-items:center;gap:13px;padding:12px;border:1px solid #66826677;border-radius:16px;background:#ffffff09}
+.sheet-icon{width:56px;height:56px;flex:0 0 56px;display:grid;place-items:center;border-radius:14px;background:linear-gradient(145deg,#f5dfa5,#b98542);font-size:30px;box-shadow:inset 0 1px #fff8}
+#sheetText{margin:0;flex:1;font-size:14px;line-height:1.55;color:#f4f0df}#sheetText b{color:#ffe0a1}
+#sheet .row{display:flex;gap:9px}#sheet .row .btn{flex:1;padding:12px}
+#sheet .btn.no{background:#172b21;border:1px solid #526b54;color:#e2e8d7;box-shadow:0 3px 0 #0b1a13}
+#ov{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(4,13,9,.82);backdrop-filter:blur(7px);z-index:9}#ov.show{display:flex}
+.panel{position:relative;overflow:hidden;background:linear-gradient(145deg,#244a35,#10271d);border:1px solid #c09a5b;border-radius:23px;padding:28px 23px;text-align:center;max-width:380px;width:100%;box-shadow:0 25px 75px #0009,inset 0 1px #fff2}
+.panel:before{content:"🏆";display:grid;place-items:center;width:64px;height:64px;margin:0 auto 12px;border-radius:20px;background:linear-gradient(145deg,#f5dfa5,#b98542);font-size:34px;box-shadow:0 5px 15px #0004}
+.panel h2{margin:0 0 9px;font-size:clamp(22px,5vw,28px);color:#fff1ca}.panel p{margin:0 0 6px;color:#c2d0bc;font-size:14px;line-height:1.7}.panel p b{color:#ffe0a1}
+.panel .btn{margin-top:15px;width:100%;padding:13px}
+@keyframes diceRoll{0%{transform:rotateX(0) rotateY(0) translateY(0)}45%{transform:rotateX(260deg) rotateY(190deg) translateY(-10px)}100%{transform:rotateX(720deg) rotateY(360deg) translateY(0)}}
+@keyframes landPulse{0%,100%{box-shadow:0 0 0 0 #f6c94f00}50%{box-shadow:0 0 0 5px #f6c94f77}}
+@media(min-width:760px){body{padding-top:22px}.board-frame{padding:13px}.hud{gap:14px}.pcard{padding:13px 17px}.space{border-radius:10px}}
+@media(max-width:480px){body{padding:10px 8px 22px}.top{gap:7px;margin-bottom:10px}.back{width:34px;height:34px}.brandmark{width:37px;height:37px;font-size:21px}.kicker{font-size:7px;letter-spacing:1px}.version-pill{font-size:9px;padding:5px 7px}.hud{gap:7px;margin-bottom:10px}.pcard{padding:8px;gap:7px;border-radius:12px}.avatar{width:34px;height:34px;flex-basis:34px;border-radius:10px;font-size:20px}.player-name{font-size:9px}.turn-tag{font-size:7px;padding:2px 4px}.pcard small{font-size:8px}.board-frame{padding:6px;border-radius:18px}.board-frame:before{inset:3px;border-radius:14px}#board{gap:3px;padding:3px;border-radius:12px}.space{border-radius:5px}.space-band{height:4px;flex-basis:4px}.space .pawns{min-height:10px}.center{border-radius:9px;padding:4px;gap:3px}.center-kicker{letter-spacing:.8px}.city-art{height:clamp(22px,6vw,34px)}.dice-tray{gap:4px}.dice-cube{border-radius:6px;box-shadow:0 3px 0 #a8a18e,0 4px 5px #40351d55}.center .btn{padding:5px 8px;font-size:9px}.activity-bar{margin-top:10px;padding:9px 10px;gap:8px}.activity-icon{width:29px;height:29px;flex-basis:29px}.msg{font-size:11px}.legend{gap:9px;font-size:8px}}
+@media(max-width:350px){.space-kind{display:none}.space .nm{font-size:6.5px}.space .pr{font-size:5.8px}.player-name{font-size:8px}.pcard b{font-size:16px}.avatar{width:29px;height:29px;flex-basis:29px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
-  <div class="top">
-    <a class="back" href="../index.html" title="Voltar">←</a>
-    <h1>🏠 Banco Imobiliário</h1>
-  </div>
-
-  <div class="hud">
-    <div class="pcard you"><span>Você</span><b id="cash0">R$ 1.000</b></div>
-    <div class="pcard ia"><span>IA</span><b id="cash1">R$ 1.000</b></div>
-  </div>
-
-  <div id="board"></div>
-  <div class="msg" id="msg">Toque em <b>Rolar</b> para começar. Você joga primeiro.</div>
-  <div class="ver">v1.0 · 22/11/2026</div>
-
+  <header class="top">
+    <a class="back" href="../index.html" title="Voltar ao Arcade" aria-label="Voltar ao Arcade">←</a>
+    <div class="brandmark">🏘️</div>
+    <div class="brandcopy"><h1>Banco Imobiliário</h1><p class="kicker">NEGÓCIOS · PROPRIEDADES · ESTRATÉGIA</p></div>
+    <span class="version-pill">VISUAL v2.0</span>
+  </header>
+  <section class="hud" aria-label="Patrimônio dos jogadores">
+    <div class="pcard you active" id="player0"><div class="avatar">🚙</div><div class="player-info"><div class="player-name">VOCÊ <span class="turn-tag" id="turnTag0">SUA VEZ</span></div><b id="cash0">R$ 1.000</b><small id="assets0">Caixa inicial · sem imóveis</small></div></div>
+    <div class="pcard ia" id="player1"><div class="avatar">🤖</div><div class="player-info"><div class="player-name">IA <span class="turn-tag" id="turnTag1">AGUARDANDO</span></div><b id="cash1">R$ 1.000</b><small id="assets1">Caixa inicial · sem imóveis</small></div></div>
+  </section>
+  <section class="board-frame" aria-label="Tabuleiro do Banco Imobiliário"><div id="board"></div></section>
+  <div class="activity-bar"><span class="activity-icon">📣</span><div class="msg" id="msg">Toque em <b>Lançar dados</b> para começar. Você joga primeiro.</div></div>
+  <div class="legend"><span class="legend-item"><i class="legend-dot" style="--dot:var(--you)"></i> SEUS IMÓVEIS</span><span class="legend-item"><i class="legend-dot" style="--dot:var(--ia)"></i> IMÓVEIS DA IA</span><span class="legend-item">🏠 CASAS CONSTRUÍDAS</span></div>
+  <div class="ver">BANCO IMOBILIÁRIO · EDIÇÃO VISUAL 2.0</div>
   <div id="sheet">
-    <p id="sheetText"></p>
-    <div class="row">
-      <button class="btn no" id="sheetNo">Passar</button>
-      <button class="btn" id="sheetYes">Comprar</button>
-    </div>
+    <div class="sheet-head"><span id="sheetLabel">OPORTUNIDADE IMOBILIÁRIA</span><span class="sheet-badge">DECISÃO</span></div>
+    <div class="sheet-property"><div class="sheet-icon" id="sheetIcon">🏡</div><p id="sheetText"></p></div>
+    <div class="row"><button class="btn no" id="sheetNo">Passar</button><button class="btn" id="sheetYes">Comprar</button></div>
   </div>
 
   <div id="ov">
@@ -146,10 +162,26 @@
   const ovTitle = document.getElementById('ovTitle');
   const ovText = document.getElementById('ovText');
 
-  let spaces, players, turn, busy, over, dice, pending;
+  let spaces, players, turn, busy, over, dice, pending, diceFaces = [], diceRolling = false;
 
+  const playerEls = [document.getElementById('player0'), document.getElementById('player1')];
+  const assetEls = [document.getElementById('assets0'), document.getElementById('assets1')];
+  const turnTags = [document.getElementById('turnTag0'), document.getElementById('turnTag1')];
+  const sheetIcon = document.getElementById('sheetIcon');
+  const sheetLabel = document.getElementById('sheetLabel');
+  const DICE_GLYPHS = ['','⚀','⚁','⚂','⚃','⚄','⚅'];
   function money(v){ return 'R$ ' + Math.round(v).toLocaleString('pt-BR'); }
-
+  function accentFor(s){
+    const colors = {Centro:'#60a5fa',Praia:'#38bdf8','Vila Nova':'#fb923c',Jardim:'#4ade80',Alameda:'#a78bfa',Colina:'#facc15',Periferia:'#f87171',Avenida:'#e879f9'};
+    return colors[s.name] || (s.type === 'start' ? '#d6a94d' : s.type === 'chance' ? '#a78bfa' : s.type === 'tax' ? '#df9273' : '#8eaf8a');
+  }
+  function iconFor(s){
+    if(s.type === 'start')return '🏁'; if(s.type === 'chance')return '🎴'; if(s.type === 'tax')return '🧾'; if(s.type === 'rest')return '☕';
+    const icons = {Centro:'🏙️',Praia:'🏖️','Vila Nova':'🏡',Jardim:'🌳',Alameda:'🏘️',Colina:'⛰️',Periferia:'🏚️',Avenida:'🌆'};
+    return icons[s.name] || '🏠';
+  }
+  function kindFor(s){return s.type === 'prop' ? 'IMÓVEL' : s.type === 'start' ? 'INÍCIO' : s.type === 'chance' ? 'SORTE' : s.type === 'tax' ? 'TAXA' : 'PAUSA';}
+  function sideFor(i){return i <= 4 ? 'top' : i <= 8 ? 'right' : i <= 12 ? 'bottom' : 'left';}
   function cellPos(i){
     if (i <= 4) return {r:1, c:i+1};
     if (i <= 8) return {r:i-3, c:5};
@@ -160,55 +192,56 @@
   function render(){
     boardEl.innerHTML = '';
     spaces.forEach(function(s, i){
-      const p = cellPos(i);
+      const p = cellPos(i), at0 = players[0].pos === i, at1 = players[1].pos === i;
       const d = document.createElement('div');
-      d.className = 'sp' + (s.owner === 0 ? ' own0' : s.owner === 1 ? ' own1' : '');
+      d.className = 'space space-' + sideFor(i) + (s.owner === 0 ? ' own0' : s.owner === 1 ? ' own1' : '') + (at0 || at1 ? ' here' : '');
+      d.dataset.type = s.type; d.style.setProperty('--accent',accentFor(s));
       d.style.gridRow = p.r; d.style.gridColumn = p.c;
-      const houses = s.houses ? '🏠'.repeat(s.houses) : '';
-      const pawns = (players[0].pos === i ? '<span style="color:var(--you)">●</span>' : '') +
-                    (players[1].pos === i ? '<span style="color:var(--ia)">●</span>' : '');
-      d.innerHTML = '<div class="nm">' + s.name + '</div>' +
-        '<div class="pr">' + (s.type === 'prop' ? money(s.price) : '') + '</div>' +
-        (houses ? '<div class="houses">' + houses + '</div>' : '') +
-        (pawns ? '<div class="pawns">' + pawns + '</div>' : '');
+      const houses = s.houses ? '<div class="houses">' + '🏠'.repeat(s.houses) + '</div>' : '';
+      const pawns = (at0 ? '<span class="pawn pawn-you" title="Você">🚙</span>' : '') + (at1 ? '<span class="pawn pawn-ia" title="IA">🤖</span>' : '');
+      const value = s.type === 'prop' ? '<span>COMPRA</span> <strong>' + money(s.price) + '</strong>' : s.type === 'tax' ? '<strong>-' + money(s.amount) + '</strong>' : '';
+      const owner = s.owner === 0 ? 'SEU' : s.owner === 1 ? 'IA' : '';
+      d.innerHTML = '<div class="space-band"></div><div class="space-header"><span class="space-icon">' + iconFor(s) + '</span><span class="space-kind">' + kindFor(s) + '</span></div><div class="nm">' + s.name + '</div><div class="pr">' + value + '</div>' + (owner ? '<div class="space-kind">' + owner + ' · PROPRIEDADE</div>' : '') + houses + (pawns ? '<div class="pawns">' + pawns + '</div>' : '');
       boardEl.appendChild(d);
     });
-
-    const center = document.createElement('div');
-    center.className = 'center';
-    center.innerHTML = '<div class="dice">' + (dice ? dice : '🎲') + '</div>' +
-      '<div class="turn">Vez de <b>' + (turn === 0 ? 'Você' : 'IA') + '</b></div>' +
-      '<button class="btn" id="rollBtn"' + (busy || over || turn === 1 ? ' disabled' : '') + '>Rolar</button>';
+    const center = document.createElement('div'); center.className = 'center';
+    const face1 = diceFaces.length ? DICE_GLYPHS[diceFaces[0]] : '⚄', face2 = diceFaces.length ? DICE_GLYPHS[diceFaces[1]] : '⚄';
+    center.innerHTML = '<div class="center-kicker">CLUBE DOS INVESTIDORES</div><div class="city-art"><span class="building b1"></span><span class="building b2"></span><span class="building b3"></span><span class="building b4"></span><span class="building b2"></span></div><div class="center-logo">BANCO <em>IMOBILIÁRIO</em></div><div class="turn-chip">VEZ DE ' + (turn === 0 ? 'VOCÊ 🚙' : 'IA 🤖') + '</div><div class="dice-tray' + (diceRolling ? ' rolling' : '') + '"><span class="dice-cube">' + face1 + '</span><span class="dice-cube">' + face2 + '</span><span class="dice-total">' + (dice ? '= ' + dice : '') + '</span></div><button class="btn" id="rollBtn"' + (busy || over || turn === 1 ? ' disabled' : '') + '>🎲 LANÇAR DADOS</button>';
     boardEl.appendChild(center);
-    document.getElementById('rollBtn').addEventListener('click', roll);
-
-    cashEls[0].textContent = money(players[0].cash);
-    cashEls[1].textContent = money(players[1].cash);
+    document.getElementById('rollBtn').addEventListener('click',function(){roll(false)});
+    cashEls[0].textContent = money(players[0].cash); cashEls[1].textContent = money(players[1].cash);
+    for(let idx=0;idx<2;idx++){
+      const owned = spaces.filter(function(s){return s.owner === idx;});
+      const invested = owned.reduce(function(total,s){return total + s.price + s.houses * Math.round(s.price * .6);},0);
+      assetEls[idx].textContent = owned.length + (owned.length === 1 ? ' imóvel' : ' imóveis') + ' · Patrimônio ' + money(players[idx].cash + invested);
+      playerEls[idx].classList.toggle('active',turn === idx);
+      turnTags[idx].textContent = turn === idx ? (idx === 0 ? 'SUA VEZ' : 'JOGANDO') : 'AGUARDANDO';
+    }
   }
 
   function reset(){
     spaces = SPACES.map(function(s){ return Object.assign({}, s, {owner: -1, houses: 0}); });
     players = [{cash: START_CASH, pos: 0}, {cash: START_CASH, pos: 0}];
-    turn = 0; busy = false; over = false; dice = ''; pending = null;
+    turn = 0; busy = false; over = false; dice = ''; diceFaces = []; diceRolling = false; pending = null;
     sheet.classList.remove('show');
     ov.classList.remove('show');
     msgEl.innerHTML = 'Toque em <b>Rolar</b> para começar. Você joga primeiro.';
     render();
   }
 
-  function roll(){
-    if (busy || over || turn === 1) return;
+  function roll(isAI){
+    if (busy || over || (turn === 1 && !isAI)) return;
     busy = true;
     const d1 = 1 + Math.floor(Math.random() * 6);
     const d2 = 1 + Math.floor(Math.random() * 6);
-    dice = d1 + d2;
+    diceFaces = [d1,d2]; dice = d1 + d2; diceRolling = true;
     const p = players[turn];
     const from = p.pos;
     const to = (from + dice) % spaces.length;
     if (to < from) { p.cash += 200; msgEl.innerHTML = '💼 Passou pelo <b>Início</b>: +R$ 200.'; }
     p.pos = to;
     render();
-    setTimeout(function(){ resolve(to); }, 380);
+    setTimeout(function(){ diceRolling = false; render(); resolve(to); }, 520);
   }
 
   function resolve(i){
@@ -269,7 +302,8 @@
       return next();
     }
     pending = {kind: 'buy', i: i};
-    sheetText.innerHTML = '<b>' + s.name + '</b> está à venda por <b>' + money(s.price) + '</b>.<br>Aluguel: ' + money(s.rent) + '.';
+    sheetIcon.textContent = iconFor(s); sheetLabel.textContent = 'NOVA OPORTUNIDADE · COMPRA';
+    sheetText.innerHTML = '<b>' + s.name + '</b> está à venda por <b>' + money(s.price) + '</b>.<br>Aluguel inicial: <b>' + money(s.rent) + '</b> por visita.';
     sheetYes.textContent = 'Comprar';
     sheetYes.style.display = '';
     sheetNo.textContent = 'Passar';
@@ -295,7 +329,8 @@
       return next();
     }
     pending = {kind: 'build', i: i};
-    sheetText.innerHTML = 'Você caiu em <b>' + s.name + '</b>, que é sua.<br>Construir uma casa por <b>' + money(cost) + '</b>? Aluguel vai a ' + money(s.rent * (1 + s.houses + 1)) + '.';
+    sheetIcon.textContent = '🏗️'; sheetLabel.textContent = 'EXPANDA SEU PATRIMÔNIO · CONSTRUÇÃO';
+    sheetText.innerHTML = 'Você caiu em <b>' + s.name + '</b>, que é sua.<br>Construir uma casa por <b>' + money(cost) + '</b>? O aluguel passará a <b>' + money(s.rent * (1 + s.houses + 1)) + '</b>.';
     sheetYes.textContent = 'Construir';
     sheetYes.style.display = '';
     sheetNo.textContent = 'Depois';
@@ -323,7 +358,7 @@
     render();
     if (turn === 1 && !over) {
       setTimeout(function(){
-        if (!over) roll();
+        if (!over) roll(true);
       }, 700);
     }
   }
@@ -368,7 +403,7 @@
 
   document.getElementById('ovBtn').addEventListener('click', reset);
   window.addEventListener('keydown', function(e){
-    if (e.key === 'Enter' && !busy && !over) roll();
+    if (e.key === 'Enter' && !busy && !over && turn === 0) roll(false);
   });
 
   reset();
