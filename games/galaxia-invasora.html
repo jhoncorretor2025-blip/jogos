@@ -81,7 +81,7 @@ function spawnWave(){
  aliens=[];shots=[];formationOffset=0;formationDir=1;
  const rows=5,cols=9,gapX=43,gapY=42,startX=(W-(cols-1)*gapX)/2,startY=94;
  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
-  aliens.push({id:aliens.length,row:r,col:c,x:startX+c*gapX,y:startY+r*gapY,alive:true,diving:false,diveT:0,type:r===0?0:r<=2?1:2,hp:1,phase:Math.random()*6.28,shotChance:Math.random()});
+  aliens.push({id:aliens.length,row:r,col:c,x:startX+c*gapX,baseX:startX+c*gapX,y:startY+r*gapY,alive:true,diving:false,diveT:0,type:r===0?0:r<=2?1:2,hp:1,phase:Math.random()*6.28,shotChance:Math.random()});
  }
  diveClock=Math.max(.75,2.7-(wave-1)*.14);alienShotClock=.9;formationSpeed=22+(wave-1)*4;
 }
@@ -98,7 +98,7 @@ function updateHud(){$('score').textContent=score.toLocaleString('pt-BR');$('bes
 function addScore(n){score+=n;if(score>best){best=score;try{localStorage.setItem(STORAGE,String(best))}catch(e){}}updateHud()}
 function burst(x,y,color,n=12){for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,s=35+Math.random()*150;sparks.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:.35+Math.random()*.55,max:.9,color,size:1.5+Math.random()*3})}}
 function playerFire(){if(state!=='playing'||fireClock>0)return;shots.push({x:player.x,y:player.y-22,vy:-520,owner:'player',color:'#67e8f9',r:4});fireClock=.19;tone(640,.045,'square',.018)}
-function enemyFire(a){shots.push({x:a.x,y:a.y+16,vy:205+(wave-1)*10,owner:'enemy',color:'#fb7185',r:4});}
+function enemyFire(a){shots.push({x:a.x+(a.diving?0:formationOffset),y:a.y+16,vy:205+(wave-1)*10,owner:'enemy',color:'#fb7185',r:4});}
 function diveAlien(){
  const options=aliens.filter(a=>a.alive&&!a.diving&&a.row<=2);
  if(!options.length)return;
@@ -132,14 +132,14 @@ function update(dt){
  aliens.forEach(a=>{
   if(!a.alive)return;
   if(a.diving){a.diveT+=dt/(1.55+Math.max(0,1.2-wave*.035));const t=Math.min(1,a.diveT);a.x=a.startX+(a.targetX-a.startX)*t+Math.sin(t*Math.PI*2)*58*a.diveSide;a.y=a.startY+t*450;
-   if(t>=1){a.diving=false;a.diveT=0;a.x=a.startX;a.y=88+a.row*42;a.phase=Math.random()*6.28}
-  }else{a.x=a.x+a.col*0; a.y=94+a.row*42+Math.sin(elapsed*2+a.phase)*3;}
+   if(t>=1){a.diving=false;a.diveT=0;a.x=a.baseX-formationOffset;a.y=88+a.row*42;a.phase=Math.random()*6.28}
+  }else{a.x=a.baseX-formationOffset; a.y=94+a.row*42+Math.sin(elapsed*2+a.phase)*3;}
   if(a.diving&&Math.abs(a.x-player.x)<25&&Math.abs(a.y-player.y)<23)loseLife();
  });
  shots.forEach(s=>{s.y+=s.vy*dt});
  for(let i=shots.length-1;i>=0;i--){const s=shots[i];if(s.y< -15||s.y>H+15){shots.splice(i,1);continue}
   if(s.owner==='player'){
-   const target=aliens.find(a=>a.alive&&Math.abs(s.x-a.x-formationOffset)<18&&Math.abs(s.y-a.y)<16);
+   const target=aliens.find(a=>a.alive&&Math.abs(s.x-(a.x+(a.diving?0:formationOffset)))<18&&Math.abs(s.y-a.y)<16);
    if(target){target.alive=false;shots.splice(i,1);addScore(target.type===0?40:target.type===1?25:15);burst(target.x+formationOffset,target.y,COLORS[target.type],10);tone(240+target.type*90,.06,'square',.018);continue}
   }else if(Math.abs(s.x-player.x)<20&&Math.abs(s.y-player.y)<22){shots.splice(i,1);loseLife()}
  }
