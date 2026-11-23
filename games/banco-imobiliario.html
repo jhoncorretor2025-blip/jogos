@@ -214,7 +214,7 @@ body{min-height:100vh;min-height:100dvh;padding:16px 12px 28px;display:flex;flex
 .money-float.gain{color:#8ff2b4}.money-float.loss{color:#ffaaa4}
 .space.moving-token{outline:4px solid #fff3a0;box-shadow:0 0 0 5px #f2c94c88,0 0 20px #ffdf7a}
 @keyframes moneyFloat{0%{opacity:0;transform:translate(-50%,10px) scale(.75)}15%{opacity:1;transform:translate(-50%,0) scale(1.12)}100%{opacity:0;transform:translate(-50%,-70px) scale(.94)}}
-@media(max-width:480px){.deed-grid{gap:6px}.deed-stat{padding:8px}.deed-stat b{font-size:14px}.deed-hero{height:92px}.deed-hero>span{font-size:47px}.toolbar .btn{font-size:9px;padding:8px 4px}.portfolio-summary{gap:6px}.portfolio-player{padding:8px}.portfolio-player b{font-size:16px}.auction-price b{font-size:26px}.event-card{top:10px;padding:10px}.event-art{width:46px;height:46px;flex-basis:46px;font-size:28px}}
+@media(max-width:480px){.toolbar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.deed-grid{gap:6px}.deed-stat{padding:8px}.deed-stat b{font-size:14px}.deed-hero{height:92px}.deed-hero>span{font-size:47px}.toolbar .btn{font-size:9px;padding:8px 4px}.portfolio-summary{gap:6px}.portfolio-player{padding:8px}.portfolio-player b{font-size:16px}.auction-price b{font-size:26px}.event-card{top:10px;padding:10px}.event-art{width:46px;height:46px;flex-basis:46px;font-size:28px}}
 
 .center-groups{position:relative;z-index:1;display:flex;justify-content:center;gap:3px;flex-wrap:wrap;max-width:100%}
 .center-group{font-size:clamp(5px,.75vw,7px);font-weight:950;letter-spacing:.1px;color:#3d4b31;background:color-mix(in srgb,var(--group) 35%,#f7e8bb);border:1px solid color-mix(in srgb,var(--group) 70%,#fff);border-radius:99px;padding:2px 4px;white-space:nowrap}
@@ -425,7 +425,7 @@ function render(){
  const propertyCount=spaces.filter(s=>s.owner!==-1).length,buildingCount=spaces.reduce((n,s)=>n+s.buildings,0);
  center.dataset.cityLevel=(propertyCount>=5||buildingCount>=3)?'high':'low';
  const f1=diceFaces.length?DICE[diceFaces[0]]:'⚄',f2=diceFaces.length?DICE[diceFaces[1]]:'⚄';
- const groupsMarkup=PROPERTY_GROUPS.map(g=>'<span class="center-group" style="--group:'+g.color+'">'+g.name+' '+Math.max(groupProgress(0,g),groupProgress(1,g))+'/2</span>').join('');
+ const groupsMarkup=PROPERTY_GROUPS.map(g=>'<span class="center-group" style="--group:'+g.color+'">'+g.name+' · V'+groupProgress(0,g)+'/2 I'+groupProgress(1,g)+'/2</span>').join('');
  center.innerHTML='<div class="center-kicker">CLUBE DOS INVESTIDORES · '+(nightMode?'CIDADE À NOITE':'CIDADE DE DIA')+'</div><div class="round-pill">RODADA '+Math.min(rounds+1,roundLimit||rounds+1)+(roundLimit?' / '+roundLimit:'')+'</div>'+renderCityArt()+'<div class="center-logo">BANCO <em>IMOBILIÁRIO</em></div><div class="center-groups">'+groupsMarkup+'</div><div class="turn-chip">VEZ DE '+(turn===0?'VOCÊ 🚙':'IA 🤖')+'</div><div class="dice-tray'+(diceRolling?' rolling':'')+'"><span class="dice-cube">'+f1+'</span><span class="dice-cube">'+f2+'</span><span class="dice-total">'+(dice?'= '+dice:'')+'</span></div><button class="btn" id="rollBtn"'+(busy||over||!started||turn===1?' disabled':'')+'>🎲 LANÇAR DADOS</button>';
  boardEl.appendChild(center);$('rollBtn').addEventListener('click',()=>roll(false));
  updateHud();
