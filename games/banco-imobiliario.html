@@ -221,6 +221,10 @@ body{min-height:100vh;min-height:100dvh;padding:16px 12px 28px;display:flex;flex
 .center[data-time="night"] .center-group{color:#fff1cc;background:#263e59;border-color:#738fb3}
 .building.city-upgraded{background:linear-gradient(90deg,#e2c176,#9e773e);border-color:#f0d38e;box-shadow:0 0 10px #f5d68b66,inset 2px 0 #fff7}
 .building.city-upgraded:after{background:repeating-linear-gradient(0deg,transparent 0 6px,#fff0ae 6px 9px),repeating-linear-gradient(90deg,transparent 0 5px,#fff0ae 5px 7px);filter:drop-shadow(0 0 3px #ffdf89)}
+
+.money-coin{position:fixed;z-index:22;width:12px;height:12px;border-radius:50%;border:1px solid #fff1a0;background:radial-gradient(circle at 35% 28%,#fff3a8 0 12%,#f5c84c 38%,#a96b20 100%);box-shadow:0 1px 5px #0008;pointer-events:none;animation:coinFly 1s cubic-bezier(.16,.7,.25,1) forwards}
+@keyframes coinFly{0%{opacity:0;transform:translate(0,10px) scale(.5) rotate(0)}16%{opacity:1;transform:translate(0,0) scale(1) rotate(90deg)}100%{opacity:0;transform:translate(22px,-55px) scale(.65) rotate(430deg)}}
+@media(prefers-reduced-motion:reduce){.money-coin,.money-float{animation:none!important;opacity:1}}
 </style>
 </head>
 <body>
@@ -353,7 +357,7 @@ function showToast(text,loss,playerIndex){
  toast.textContent=text;toast.classList.toggle('loss',!!loss);toast.classList.add('show');
  if(toastTimer)clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),1500);
  const idx=playerIndex===0||playerIndex===1?playerIndex:turn,anchor=playerEls[idx];
- if(anchor){const rect=anchor.getBoundingClientRect(),pop=document.createElement('div');pop.className='money-float '+(loss?'loss':'gain');pop.textContent=text;pop.style.left=(rect.left+rect.width/2)+'px';pop.style.top=(rect.top+rect.height*.2)+'px';document.body.appendChild(pop);setTimeout(()=>pop.remove(),1200)}
+ if(anchor){const rect=anchor.getBoundingClientRect(),pop=document.createElement('div');pop.className='money-float '+(loss?'loss':'gain');pop.textContent=text;pop.style.left=(rect.left+rect.width/2)+'px';pop.style.top=(rect.top+rect.height*.2)+'px';document.body.appendChild(pop);setTimeout(()=>pop.remove(),1200);for(let coin=0;coin<3;coin++){const piece=document.createElement('i');piece.className='money-coin';piece.style.left=(rect.left+rect.width/2+(coin-1)*12)+'px';piece.style.top=(rect.top+rect.height*.45)+'px';piece.style.animationDelay=(coin*.07)+'s';document.body.appendChild(piece);setTimeout(()=>piece.remove(),1050)}}
  try{if(navigator.vibrate)navigator.vibrate(loss?[70,35,70]:35)}catch(e){}
 }
 function setMessage(text){msgEl.innerHTML=text}
@@ -531,7 +535,7 @@ function animateDayNight(){
  const center=boardEl.querySelector('.center');
  if(center){center.dataset.time=nightMode?'night':'day';const label=center.querySelector('.center-kicker');if(label)label.textContent='CLUBE DOS INVESTIDORES · '+(nightMode?'CIDADE À NOITE':'CIDADE DE DIA')}
 }
-function showSetup(){started=false;busy=true;pendingDebt=null;pendingAction=null;managerFinishTurn=false;moveSequenceId++;if(auctionTimer)clearInterval(auctionTimer);if(auctionBidTimer)clearTimeout(auctionBidTimer);auction=null;$('auctionOv').classList.remove('show');$('deedOv').classList.remove('show');$('portfolioOv').classList.remove('show');sheet.classList.remove('show');setupOv.classList.add('show');managerOv.classList.remove('show');ov.classList.remove('show')}
+function showSetup(){started=false;busy=true;pendingDebt=null;pendingAction=null;managerFinishTurn=false;moveSequenceId++;if(auctionTimer)clearInterval(auctionTimer);if(auctionBidTimer)clearTimeout(auctionBidTimer);if(eventCardTimer)clearTimeout(eventCardTimer);$('eventCard').classList.remove('show');auction=null;$('auctionOv').classList.remove('show');$('deedOv').classList.remove('show');$('portfolioOv').classList.remove('show');sheet.classList.remove('show');setupOv.classList.add('show');managerOv.classList.remove('show');ov.classList.remove('show')}
 function startGame(){
  startingCash=Number($('startingCash').value)||1000;roundLimit=Number($('roundLimit').value)||0;rounds=0;history=[];wealthHistory=[];pendingDebt=null;pendingAction=null;managerFinishTurn=false;auction=null;
  spaces=START_SPACES.map(s=>Object.assign({},s,{owner:-1,buildings:0,mortgaged:false}));
@@ -765,7 +769,7 @@ function handleManagerClick(e){
 }
 function finishBankruptcy(){if(!pendingDebt)return;const loser=pendingDebt.idx,winner=1-loser;pendingDebt=null;endGame('bankruptcy',winner)}
 function endGame(reason,winner){
- over=true;busy=true;started=false;recordWealth();sheet.classList.remove('show');managerOv.classList.remove('show');$('deedOv').classList.remove('show');$('portfolioOv').classList.remove('show');$('auctionOv').classList.remove('show');if(auctionTimer)clearInterval(auctionTimer);if(auctionBidTimer)clearTimeout(auctionBidTimer);auction=null;
+ over=true;busy=true;started=false;recordWealth();sheet.classList.remove('show');managerOv.classList.remove('show');$('deedOv').classList.remove('show');$('portfolioOv').classList.remove('show');$('auctionOv').classList.remove('show');$('eventCard').classList.remove('show');if(eventCardTimer)clearTimeout(eventCardTimer);if(auctionTimer)clearInterval(auctionTimer);if(auctionBidTimer)clearTimeout(auctionBidTimer);auction=null;
  const values=[assetValue(0),assetValue(1)];
  if(winner===undefined)winner=values[0]>=values[1]?0:1;
  const title=winner===0?'🏆 Você venceu!':'🤖 A IA venceu!';
