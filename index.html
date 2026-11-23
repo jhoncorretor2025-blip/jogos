@@ -351,7 +351,7 @@ const achievements=[
  {id:'first',icon:'🌱',name:'Primeiro passo',desc:'Abra seu primeiro jogo.',ok:p=>p.plays>=1},
  {id:'five',icon:'🧭',name:'Explorador',desc:'Experimente 5 jogos diferentes.',ok:p=>Object.keys(p.counts).length>=5},
  {id:'ten',icon:'🗺️',name:'Grande explorador',desc:'Experimente 10 jogos diferentes.',ok:p=>Object.keys(p.counts).length>=10},
- {id:'all',icon:'👑',name:'Mestre do Arcade',desc:'Abra todos os 17 jogos.',ok:p=>names.every(g=>(p.counts[g.href]||0)>0)},
+ {id:'all',icon:'👑',name:'Mestre do Arcade',desc:'Abra todos os 18 jogos.',ok:p=>names.every(g=>(p.counts[g.href]||0)>0)},
  {id:'plays10',icon:'🎮',name:'Jogador frequente',desc:'Abra jogos 10 vezes.',ok:p=>p.plays>=10},
  {id:'plays30',icon:'🔥',name:'Maratonista',desc:'Abra jogos 30 vezes.',ok:p=>p.plays>=30},
  {id:'favs3',icon:'⭐',name:'Colecionador',desc:'Salve 3 jogos favoritos.',ok:p=>p.favs.length>=3},
