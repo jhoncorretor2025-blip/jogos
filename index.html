@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Jogos do Jhon">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Jogos do Jhon · v3.32</title>
+<title>Jogos do Jhon · v3.33</title>
 <meta name="description" content="Arcade de jogos web do Jhon com busca, favoritos, categorias, histórico e perfil gamer.">
 <style>
   :root{
@@ -305,7 +305,7 @@
     <span class="hero-kicker">ARCADE PESSOAL</span>
     <h1>Jogos do Jhon</h1>
     <p class="sub">🎮 Seu cantinho de diversão: escolha um jogo e comece a jogar no celular ou no PC.</p>
-    <div class="version"><span class="dot"></span> Versão <b>v3.32</b> · atualizado em <b>23/11/2026</b></div>
+    <div class="version"><span class="dot"></span> Versão <b>v3.33</b> · atualizado em <b>23/11/2026</b></div>
     <div class="home-hero-actions">
       <a class="primary-cta" href="#catalogStart">🎮 Explorar jogos <span aria-hidden="true">↓</span></a>
       <span class="hero-count" id="heroGameCount">28 jogos no catálogo</span>
@@ -565,8 +565,9 @@
     </div>
   </details>
   <div class="notes">
-    <h2>📝 Novidades da tela inicial · v3.32</h2>
+    <h2>📝 Novidades da tela inicial · v3.33</h2>
     <ul>
+      <li><b>Correção v3.33:</b> corrigidos os alvos do menu inferior para abrir Favoritos e Recordes sem erro.</li>
       <li><b>Tela inicial v3.32:</b> links reais para os jogos, gerenciamento de perfis, estados vazios, backup dos dados reconhecidos dos jogos, importação com conflitos configuráveis e melhorias de navegação e acessibilidade.</li>
       <li><b>Dados e segurança v3.31:</b> backup JSON dos perfis, favoritos, histórico, conquistas e preferências do Arcade; importação com mesclagem ou substituição confirmada; restauração das configurações e diagnóstico do armazenamento local.</li>
       <li><b>Tela inicial v3.30:</b> destaque para explorar o catálogo, navegação por categoria mais direta, busca que respeita os filtros e melhorias de acessibilidade e uso no celular.</li>
@@ -861,7 +862,10 @@ function syncMobileNavFromScroll(){
 let navScrollQueued=false;
 window.addEventListener('scroll',()=>{if(navScrollQueued)return;navScrollQueued=true;requestAnimationFrame(()=>{navScrollQueued=false;syncMobileNavFromScroll()})},{passive:true});
 document.querySelectorAll('.mobile-nav button').forEach(b=>b.addEventListener('click',()=>{
- const action=b.dataset.nav;setMobileNavActive(action);
+ const action=b.dataset.nav;
+ const playerPanel=document.getElementById('playerPanel');
+ const records=document.getElementById('achievementsPanel');
+ setMobileNavActive(action);
  if(action==='home'){filter='all';searchInput.value='';renderCategoryNav();renderCards();window.scrollTo({top:0,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}
  if(action==='games'){filter='all';searchInput.value='';renderCategoryNav();renderCards();scrollToSection(document.getElementById('catalogStart'))}
  if(action==='favorites'){filter='favorites';renderCards();playerPanel.open=true;scrollToSection(active().favs.length?document.getElementById('favoriteSection'):playerPanel)}
@@ -959,7 +963,7 @@ function validateBackup(raw){
 }
 function exportBackup(){
  try{
-  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v3.32',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
+  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v3.33',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
   const content=JSON.stringify(backup,null,2),blob=new Blob([content],{type:'application/json'});
   if(blob.size>MAX_BACKUP_BYTES)throw new Error('O backup ultrapassa 2 MB.');
   const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='jogos-do-jhon-backup-'+new Date().toISOString().slice(0,10)+'.json';
