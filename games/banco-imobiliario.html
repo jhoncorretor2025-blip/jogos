@@ -510,13 +510,13 @@ $('managerCloseBtn').addEventListener('click',()=>{if(!pendingDebt){managerOv.cl
 $('sheetYes').addEventListener('click',performPending);
 $('sheetNo').addEventListener('click',()=>{if(!pendingAction)return;const a=pendingAction;logEvent(a.type==='buy'?'Você decidiu não comprar '+spaces[a.index].name+'.':'Você adiou a melhoria em '+spaces[a.index].name+'.');pendingAction=null;sheet.classList.remove('show');nextTurn()});
 $('ovBtn').addEventListener('click',showSetup);
-$('managerOv').addEventListener('click',e=>{if(e.target===managerOv&&!pendingDebt)managerOv.classList.remove('show')});
+$('managerOv').addEventListener('click',e=>{if(e.target===managerOv&&!pendingDebt){managerOv.classList.remove('show');if(managerFinishTurn){managerFinishTurn=false;nextTurn()}}});
 $('ov').addEventListener('click',e=>{if(e.target===ov)showSetup()});
 $('managerCloseBtn').insertAdjacentHTML('afterend','<button class="btn declare-btn" id="declareBtn" style="display:none">Declarar falência</button>');
 $('declareBtn').addEventListener('click',finishBankruptcy);
 const originalOpenManager=openManager;
 openManager=function(emergency){originalOpenManager(emergency);$('declareBtn').style.display=emergency?'block':'none'};
-window.addEventListener('keydown',e=>{if(e.key==='Enter'&&started&&!busy&&!over&&turn===0)roll(false);if(e.key==='Escape'&&!pendingDebt){managerOv.classList.remove('show');if(sheet.classList.contains('show')){sheet.classList.remove('show');pendingAction=null;nextTurn()}}});
+window.addEventListener('keydown',e=>{if(e.key==='Enter'&&started&&!busy&&!over&&turn===0)roll(false);if(e.key==='Escape'&&!pendingDebt){managerOv.classList.remove('show');if(managerFinishTurn){managerFinishTurn=false;nextTurn()}if(sheet.classList.contains('show')){sheet.classList.remove('show');pendingAction=null;nextTurn()}}});
 init();
 })();
 </script>
