@@ -132,8 +132,8 @@ function update(dt){
  aliens.forEach(a=>{
   if(!a.alive)return;
   if(a.diving){a.diveT+=dt/(1.55+Math.max(0,1.2-wave*.035));const t=Math.min(1,a.diveT);a.x=a.startX+(a.targetX-a.startX)*t+Math.sin(t*Math.PI*2)*58*a.diveSide;a.y=a.startY+t*450;
-   if(t>=1){a.diving=false;a.diveT=0;a.x=a.baseX-formationOffset;a.y=88+a.row*42;a.phase=Math.random()*6.28}
-  }else{a.x=a.baseX-formationOffset; a.y=94+a.row*42+Math.sin(elapsed*2+a.phase)*3;}
+   if(t>=1){a.diving=false;a.diveT=0;a.x=a.baseX;a.y=88+a.row*42;a.phase=Math.random()*6.28}
+  }else{a.y=94+a.row*42+Math.sin(elapsed*2+a.phase)*3;}
   if(a.diving&&Math.abs(a.x-player.x)<25&&Math.abs(a.y-player.y)<23)loseLife();
  });
  shots.forEach(s=>{s.y+=s.vy*dt});
