@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1725">
+<title>Caminhoneiro · Entrega na Estrada · Jogos do Jhon</title>
+<style>
+:root{color-scheme:dark;--bg:#091522;--panel:#122235;--line:#2a435c;--txt:#ecf5fa;--muted:#9bb0c2;--mint:#64e2b0;--gold:#f6c96a}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,system-ui,Arial,sans-serif;background:radial-gradient(1000px 500px at 50% -10%,#193b56,#091522 72%);color:var(--txt)}
+body{padding:16px 12px 25px}.wrap{width:min(1050px,100%);margin:auto}header{text-align:center;margin-bottom:15px}h1{font-size:clamp(24px,4vw,39px);letter-spacing:-1px;margin:0 0 5px}header p{margin:0;color:var(--muted);font-size:13px}.version{display:inline-block;margin-top:9px;padding:4px 10px;border:1px solid #35536b;border-radius:30px;color:#a8d7e7;font-size:11px}
+.panel{background:linear-gradient(145deg,#14283c,#0e1b2a);border:1px solid var(--line);border-radius:18px;padding:13px;box-shadow:0 18px 50px #0005}
+.hud{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:11px}.stat{background:#091522;border:1px solid #203a50;border-radius:11px;padding:8px;text-align:center;min-width:0}.stat small{display:block;color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.6px}.stat b{display:block;margin-top:3px;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.canvasbox{position:relative;overflow:hidden;border:2px solid #31536a;border-radius:15px;background:#172c3c}canvas{display:block;width:100%;height:auto;aspect-ratio:900/600;touch-action:none}
+.progress-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.meter{background:#091522;border:1px solid #203a50;border-radius:11px;padding:9px}.meter label{display:flex;justify-content:space-between;font-size:11px;color:#cbdce7;margin-bottom:6px}.track{height:9px;border-radius:9px;background:#25384a;overflow:hidden}.fill{height:100%;width:100%;border-radius:9px;background:linear-gradient(90deg,#32c48d,#a3e635);transition:width .2s}
+.controls{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;margin-top:12px;align-items:center}.steer{display:flex;gap:8px}.btn{border:1px solid #35536b;background:#172c40;color:var(--txt);border-radius:11px;min-height:46px;padding:10px 15px;font:700 13px system-ui;cursor:pointer;touch-action:manipulation}.btn:active{transform:translateY(1px);filter:brightness(1.2)}.btn.primary{background:linear-gradient(120deg,#0e7490,#166e63);border-color:#42c9b0;color:#fff}.btn.accel{background:linear-gradient(120deg,#3b7c45,#22653e);border-color:#5fbf76}.btn:focus-visible{outline:3px solid #67e8f9;outline-offset:3px}.steer .btn{flex:1;font-size:19px}.drive-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:center}
+.message{margin-top:11px;min-height:43px;padding:11px 13px;background:#091522;border:1px solid #203a50;border-radius:11px;font-size:12px;color:#d5e9f1;line-height:1.5}
+.jobs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:11px}.job{padding:10px;background:#0a1927;border:1px solid #233d52;border-radius:11px}.job b{display:block;font-size:12px}.job small{display:block;color:var(--muted);font-size:10px;line-height:1.45;margin-top:4px}
+.footer-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.footer-actions .btn{flex:1}.help{color:var(--muted);font-size:11px;line-height:1.55;margin:10px 0 0}
+@media(max-width:700px){body{padding:11px 7px 20px}.panel{padding:8px}.hud{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.stat b{font-size:14px}.progress-row{grid-template-columns:1fr}.controls{grid-template-columns:1fr 1fr}.drive-actions{grid-column:1/-1;grid-row:1}.steer{grid-column:1/-1}.jobs{grid-template-columns:1fr}.btn{min-height:50px}.footer-actions{display:grid;grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body><main class="wrap">
+<header><h1>🚛 Caminhoneiro — Entrega na Estrada</h1><p>Carregue, dirija com cuidado e entregue no prazo. Cada frete é uma nova missão!</p><span class="version">Jogos do Jhon · v1.0</span></header>
+<section class="panel">
+<div class="hud">
+<div class="stat"><small>Distância</small><b id="distance">0 / 3.000 km</b></div>
+<div class="stat"><small>Velocidade</small><b id="speed">0 km/h</b></div>
+<div class="stat"><small>Dinheiro</small><b id="money">R$ 0</b></div>
+<div class="stat"><small>Entregas</small><b id="deliveries">0</b></div>
+<div class="stat"><small>Recorde</small><b id="best">R$ 0</b></div>
+</div>
+<div class="canvasbox"><canvas id="road" width="900" height="600" aria-label="Estrada vista de cima. Desvie dos veículos e obstáculos com os botões direcionais."></canvas></div>
+<div class="progress-row">
+<div class="meter"><label><span>⛽ Combustível</span><b id="fuelText">100%</b></label><div class="track"><div class="fill" id="fuelFill"></div></div></div>
+<div class="meter"><label><span>📦 Integridade da carga</span><b id="cargoText">100%</b></label><div class="track"><div class="fill" id="cargoFill"></div></div></div>
+</div>
+<div class="controls">
+<div class="steer"><button class="btn" id="left" aria-label="Virar à esquerda">◀</button><button class="btn" id="right" aria-label="Virar à direita">▶</button></div>
+<div class="drive-actions"><button class="btn accel" id="accelerate">▲ Acelerar</button><button class="btn" id="brake">▼ Frear</button></div>
+<div class="drive-actions"><button class="btn primary" id="start">▶ Iniciar viagem</button><button class="btn" id="pause">Ⅱ Pausar</button></div>
+</div>
+<div class="message" id="message" role="status" aria-live="polite">Sua primeira carga está pronta. Inicie a viagem e faça uma entrega segura!</div>
+<div class="jobs">
+<div class="job"><b id="cargoName">🪵 Madeira serrada</b><small id="cargoDesc">Carga resistente. Boa para começar sua carreira.</small></div>
+<div class="job"><b>🎯 Objetivo</b><small id="goalDesc">Chegar ao destino com pelo menos 65% da carga.</small></div>
+<div class="job"><b>🛣️ Dica de direção</b><small>Use as setas para mudar de faixa. Desvie dos carros, cones e buracos para proteger a carga.</small></div>
+</div>
+<div class="footer-actions"><button class="btn" id="newTrip">↻ Novo frete</button><button class="btn" id="restart">🏠 Reiniciar carreira</button><a class="btn" href="../index.html" style="text-decoration:none;text-align:center">⌂ Voltar ao Arcade</a></div>
+<p class="help">Computador: ← → ou A/D para dirigir, ↑/W para acelerar e ↓/S para frear. Celular: use os botões na tela. Colete galões de combustível e bônus de cuidado. A viagem é dividida em trechos; ao concluir, você recebe pelo estado da carga e parte para um novo contrato.</p>
+</section></main>
+<script>
+(()=>{
+'use strict';
+const cv=document.getElementById('road'),ctx=cv.getContext('2d'),W=900,H=600;
+const road={left:190,right:710,top:0,bottom:H},laneW=(road.right-road.left)/3;
+const lanes=[road.left+laneW*.5,road.left+laneW*1.5,road.left+laneW*2.5];
+const jobs=[
+ {name:'🪵 Madeira serrada',desc:'Carga resistente. Boa para começar sua carreira.',pay:850,fragile:.7},
+ {name:'🍎 Alimentos frescos',desc:'Entrega delicada. Evite freadas e colisões.',pay:1250,fragile:1.25},
+ {name:'📦 Eletrônicos',desc:'Carga valiosa. Cada impacto reduz bastante o pagamento.',pay:1800,fragile:1.5},
+ {name:'🧱 Materiais de construção',desc:'Carga pesada. Caminhão acelera um pouco mais devagar.',pay:1550,fragile:1.1},
+ {name:'🌻 Produtos agrícolas',desc:'Carga no prazo vale bônus extra.',pay:1450,fragile:.95}
+];
+const $=id=>document.getElementById(id);
+let state='ready',jobIndex=0,job=jobs[0],distance=0,speed=0,fuel=100,cargo=100,money=0,deliveries=0,best=0,lane=1,truckX=lanes[1],targetX=lanes[1],roadOffset=0,obstacles=[],pickups=[],particles=[],last=0,spawn=0,kmToGo=3000,frame=0,keys={left:false,right:false,up:false,down:false},pressing={};
+try{best=Number(localStorage.getItem('jhon_truck_best')||0)||0;money=Number(localStorage.getItem('jhon_truck_money')||0)||0;deliveries=Number(localStorage.getItem('jhon_truck_deliveries')||0)||0}catch(e){}
+function setMessage(t){$('message').textContent=t}
+function save(){
+ try{localStorage.setItem('jhon_truck_best',String(best));localStorage.setItem('jhon_truck_money',String(money));localStorage.setItem('jhon_truck_deliveries',String(deliveries))}catch(e){setMessage('⚠️ O navegador não conseguiu salvar seu progresso. Confira o armazenamento do site.')}
+}
+function chooseJob(){job=jobs[jobIndex%jobs.length];$('cargoName').textContent=job.name;$('cargoDesc').textContent=job.desc;$('goalDesc').textContent='Entregar 3.000 km com pelo menos 65% da carga. Fretes valem a partir de R$ '+job.pay+'.'}
+function updateHud(){
+ $('distance').textContent=Math.floor(distance)+' / '+kmToGo+' km';$('speed').textContent=Math.round(speed*12)+' km/h';
+ $('money').textContent='R$ '+money.toLocaleString('pt-BR');$('deliveries').textContent=deliveries;$('best').textContent='R$ '+best.toLocaleString('pt-BR');
+ $('fuelText').textContent=Math.round(fuel)+'%';$('cargoText').textContent=Math.round(cargo)+'%';
+ $('fuelFill').style.width=Math.max(0,fuel)+'%';$('cargoFill').style.width=Math.max(0,cargo)+'%';
+ $('fuelFill').style.background=fuel<25?'linear-gradient(90deg,#ef4444,#f97316)':'linear-gradient(90deg,#32c48d,#a3e635)';
+ $('cargoFill').style.background=cargo<40?'linear-gradient(90deg,#ef4444,#f97316)':'linear-gradient(90deg,#32c48d,#a3e635)';
+}
+function resetTrip(){
+ state='ready';distance=0;speed=0;fuel=100;cargo=100;lane=1;truckX=lanes[1];targetX=lanes[1];roadOffset=0;obstacles=[];pickups=[];spawn=0;last=0;chooseJob();updateHud();setMessage('🚛 Frete carregado! Inicie a viagem e faça uma entrega segura.');draw();
+ $('start').textContent='▶ Iniciar viagem';$('pause').textContent='Ⅱ Pausar';
+}
+function resetCareer(){
+ if(!confirm('Reiniciar a carreira? Seu dinheiro, entregas e recorde salvos também serão zerados.'))return;
+ money=0;deliveries=0;best=0;jobIndex=0;save();resetTrip();
+}
+function start(){if(state==='over')return resetTrip();if(state==='paused'){state='driving';$('pause').textContent='Ⅱ Pausar';last=performance.now();return}
+ if(state==='ready'){state='driving';$('start').textContent='🚛 Na estrada';setMessage('Boa viagem! Mantenha a carga protegida e fique de olho no combustível.');last=performance.now();requestAnimationFrame(loop)}
+}
+function pause(){if(state==='driving'){state='paused';$('pause').textContent='▶ Continuar';setMessage('Viagem pausada. Seu caminhão está parado em segurança.')}else if(state==='paused')start()}
+function setLane(delta){if(state!=='driving')return;lane=Math.max(0,Math.min(2,lane+delta));targetX=lanes[lane]}
+function bindHold(id,key){
+ const b=$(id);const on=e=>{e.preventDefault();keys[key]=true};const off=e=>{e.preventDefault();keys[key]=false};
+ b.addEventListener('pointerdown',on);b.addEventListener('pointerup',off);b.addEventListener('pointerleave',off);b.addEventListener('pointercancel',off);
+}
+bindHold('left','left');bindHold('right','right');bindHold('accelerate','up');bindHold('brake','down');
+$('start').addEventListener('click',start);$('pause').addEventListener('click',pause);$('newTrip').addEventListener('click',()=>{if(confirm('Carregar um novo frete? O trecho atual será encerrado.')){jobIndex++;resetTrip()}});
+$('restart').addEventListener('click',resetCareer);
+window.addEventListener('keydown',e=>{
+ const map={ArrowLeft:'left',a:'left',ArrowRight:'right',d:'right',ArrowUp:'up',w:'up',ArrowDown:'down',s:'down'};
+ const k=map[e.key]||map[e.key.toLowerCase()];if(k){keys[k]=true;e.preventDefault()}
+ if(e.key===' '){if(state==='ready')start();else if(state==='driving')pause();e.preventDefault()}
+});
+window.addEventListener('keyup',e=>{
+ const map={ArrowLeft:'left',a:'left',ArrowRight:'right',d:'right',ArrowUp:'up',w:'up',ArrowDown:'down',s:'down'};
+ const k=map[e.key]||map[e.key.toLowerCase()];if(k){keys[k]=false;e.preventDefault()}
+});
+function spawnObjects(){
+ const lane=Math.floor(Math.random()*3),kind=Math.random();
+ if(kind<.58){const types=['🚗','🚙','🚚','🚧','🪨'];obstacles.push({x:lanes[lane],y:-90,type:types[Math.floor(Math.random()*types.length)],lane,hit:false,scale:.85+Math.random()*.25})}
+ else{pickups.push({x:lanes[lane],y:-55,type:kind<.77?'fuel':'bonus',taken:false})}
+}
+function collision(o){
+ const dx=Math.abs(o.x-truckX),dy=Math.abs(o.y-465);
+ return dx<44&&dy<58;
+}
+function hitObstacle(o){
+ if(o.hit)return;o.hit=true;
+ const damage=job.fragile*(o.type==='🚧'?17:13);cargo=Math.max(0,cargo-damage);speed=Math.max(1.2,speed-1.7);
+ particles.push({x:truckX,y:465,text:'💥',life:35});
+ setMessage('⚠️ Impacto! A carga perdeu '+Math.round(damage)+'% de integridade. Dirija com mais cuidado.');
+ if(cargo<=0){state='over';speed=0;setMessage('📦 A carga foi danificada demais. Contrato perdido! Tente novamente.');$('start').textContent='↻ Tentar novamente'}
+}
+function collect(p){
+ if(p.taken)return;p.taken=true;
+ if(p.type==='fuel'){fuel=Math.min(100,fuel+27);setMessage('⛽ Galão coletado! Combustível +27%.')}
+ else{money+=150;setMessage('⭐ Bônus de direção segura! +R$ 150.');save()}
+}
+function deliver(){
+ state='delivered';speed=0;
+ if(cargo<65){setMessage('📦 Você chegou, mas a carga ficou abaixo de 65%. Pagamento reduzido.')}
+ const factor=Math.max(.25,cargo/100),bonus=fuel>25?120:0,payment=Math.round(job.pay*factor+bonus);
+ money+=payment;deliveries++;best=Math.max(best,money);save();updateHud();
+ setMessage((cargo>=65?'🏁 Entrega concluída!':'⚠️ Entrega com avarias.')+' Recebimento: R$ '+payment.toLocaleString('pt-BR')+'. Próximo frete disponível!');
+ $('start').textContent='➡️ Próximo frete';$('pause').textContent='Ⅱ Pausar';
+}
+function update(dt){
+ if(state!=='driving')return;frame++;
+ const accel=keys.up?0.11:0.025,brake=keys.down?0.17:0;
+ speed=Math.max(0,Math.min(7.2,speed+accel-brake-(fuel<=0?.12:0)));
+ if(keys.left&&truckX>lanes[0]+5)targetX=lanes[Math.max(0,Math.round((targetX-road.left-laneW/2)/laneW)-1)];
+ if(keys.right&&truckX<lanes[2]-5)targetX=lanes[Math.min(2,Math.round((targetX-road.left-laneW/2)/laneW)+1)];
+ truckX+=(targetX-truckX)*Math.min(1,dt*.012);
+ const kmPerFrame=speed*.06;distance+=kmPerFrame*dt/16.67;fuel=Math.max(0,fuel-speed*.0008*dt);roadOffset=(roadOffset+speed*dt*.55)%120;
+ spawn+=dt;if(spawn>Math.max(420,1150-speed*75)){spawn=0;spawnObjects()}
+ const delta=speed*dt*.20;
+ obstacles.forEach(o=>o.y+=delta);pickups.forEach(p=>p.y+=delta);
+ obstacles.forEach(o=>{if(!o.hit&&collision(o))hitObstacle(o)});
+ pickups.forEach(p=>{if(!p.taken&&collision(p))collect(p)});
+ obstacles=obstacles.filter(o=>o.y<H+100&&!o.hit);pickups=pickups.filter(p=>p.y<H+60&&!p.taken);
+ particles=particles.filter(p=>{p.life--;return p.life>0});
+ if(fuel<=0&&speed<.4){state='over';setMessage('⛽ Sem combustível! A viagem terminou. Colete galões para manter o caminhão na estrada.');$('start').textContent='↻ Tentar novamente'}
+ if(distance>=kmToGo)deliver();
+ updateHud();
+}
+function truck(x,y){
+ ctx.save();ctx.translate(x,y);
+ ctx.fillStyle='#07111c';round(-27,15,54,78,9);ctx.fill();
+ ctx.fillStyle='#d8893e';round(-23,-24,46,92,10);ctx.fill();
+ ctx.fillStyle='#f2b15c';round(-21,-19,42,34,7);ctx.fill();
+ ctx.fillStyle='#173e57';round(-16,-13,32,19,5);ctx.fill();
+ ctx.fillStyle='#f8e6b9';round(-19,18,38,43,5);ctx.fill();
+ ctx.fillStyle='#9b5d2e';round(-15,25,30,28,4);ctx.fill();
+ ctx.fillStyle='#fff1bb';ctx.fillRect(-17,-24,9,4);ctx.fillRect(8,-24,9,4);
+ ctx.fillStyle='#facc15';ctx.fillRect(-23,58,7,10);ctx.fillRect(16,58,7,10);
+ ctx.fillStyle='#111827';round(-29,-18,7,24,3);round(22,-18,7,24,3);round(-29,34,7,24,3);round(22,34,7,24,3);
+ ctx.fillStyle='#f7fafc';ctx.font='bold 10px Arial';ctx.textAlign='center';ctx.fillText('JHON',0,13);
+ ctx.restore();
+}
+function round(x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill()}
+function draw(){
+ const sky=ctx.createLinearGradient(0,0,0,H);sky.addColorStop(0,'#8bc4d2');sky.addColorStop(.55,'#c4d8c2');sky.addColorStop(1,'#8cae79');ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
+ ctx.fillStyle='#61906a';ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(road.left,0);ctx.lineTo(road.left,H);ctx.lineTo(0,H);ctx.fill();
+ ctx.fillStyle='#709b70';ctx.beginPath();ctx.moveTo(road.right,0);ctx.lineTo(W,0);ctx.lineTo(W,H);ctx.lineTo(road.right,H);ctx.fill();
+ for(let i=0;i<16;i++){
+  const y=((i*93+roadOffset*1.1)%(H+70))-35;const x=i%2?105:795;
+  ctx.fillStyle='#315b43';ctx.beginPath();ctx.arc(x,y,17,0,Math.PI*2);ctx.fill();ctx.fillStyle='#80b97a';ctx.beginPath();ctx.arc(x-5,y-6,11,0,Math.PI*2);ctx.fill();
+ }
+ ctx.fillStyle='#4b5962';ctx.fillRect(road.left,0,road.right-road.left,H);
+ ctx.fillStyle='#e7e2cd';ctx.fillRect(road.left+5,0,5,H);ctx.fillRect(road.right-10,0,5,H);
+ ctx.fillStyle='#e8e7d7';for(let lane=1;lane<3;lane++){const x=road.left+lane*laneW-3;for(let y=-90+roadOffset;y<H;y+=120)ctx.fillRect(x,y,6,60)}
+ ctx.fillStyle='#d8cba5';ctx.fillRect(road.left+laneW,0,1,H);
+ obstacles.forEach(o=>{
+  ctx.save();ctx.translate(o.x,o.y);ctx.scale(o.scale,o.scale);
+  ctx.fillStyle='#17212b';ctx.beginPath();ctx.ellipse(0,29,31,10,0,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle=o.type==='🚧'?'#f59e0b':o.type==='🪨'?'#737b80':'#28475d';round(-25,-20,50,57,11);
+  ctx.fillStyle=o.type==='🚧'?'#fef3c7':'#98c6d5';round(-19,-12,38,17,5);
+  ctx.fillStyle='#f8fafc';ctx.font='30px Arial';ctx.textAlign='center';ctx.fillText(o.type,0,17);ctx.restore();
+ });
+ pickups.forEach(p=>{
+  ctx.save();ctx.translate(p.x,p.y);ctx.fillStyle=p.type==='fuel'?'#f59e0b':'#fde68a';ctx.beginPath();ctx.arc(0,0,20,0,Math.PI*2);ctx.fill();ctx.font='22px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(p.type==='fuel'?'⛽':'⭐',0,1);ctx.restore();
+ });
+ truck(truckX,430);
+ particles.forEach(p=>{ctx.globalAlpha=p.life/35;ctx.font='28px Arial';ctx.textAlign='center';ctx.fillText(p.text,p.x,465-(35-p.life)*1.3);ctx.globalAlpha=1});
+ if(state==='ready'||state==='delivered'||state==='over'||state==='paused'){
+  ctx.fillStyle='#081522bb';round(210,205,480,155,20);ctx.textAlign='center';ctx.fillStyle='#fff';ctx.font='bold 27px Arial';
+  const title=state==='ready'?'🚛 PRONTO PARA A ENTREGA':state==='delivered'?'🏁 CARGA ENTREGUE!':state==='paused'?'⏸ VIAGEM PAUSADA':'🛑 FIM DA VIAGEM';
+  ctx.fillText(title,W/2,253);ctx.fillStyle='#d5e7ed';ctx.font='16px Arial';ctx.fillText(state==='ready'?'Aperte INICIAR e pegue a estrada':state==='delivered'?'Prepare-se para o próximo contrato':state==='paused'?'Toque em Continuar para voltar à estrada':'Recomece a viagem para tentar novamente',W/2,290);
+ }
+ ctx.textAlign='left';ctx.fillStyle='#f8fafc';ctx.font='bold 13px Arial';ctx.fillText('ROTA '+(deliveries+1)+'  •  '+Math.floor(distance)+' / '+kmToGo+' KM',22,28);
+}
+function loop(now){
+ if(!last)last=now;const dt=Math.min(40,now-last);last=now;
+ update(dt);draw();
+ if(state==='driving')requestAnimationFrame(loop);else last=0;
+}
+chooseJob();updateHud();draw();
+})();
+</script></body></html>
