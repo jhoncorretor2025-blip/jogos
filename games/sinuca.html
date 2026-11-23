@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#07111b">
-<title>Sinuca 8-Ball · Jogos do Jhon</title>
+<title>Sinuca 8-Ball · Jogos do Jhon · v1.1</title>
 <style>
 :root{color-scheme:dark;--bg:#07111b;--panel:#101e2d;--line:#294158;--text:#edf6f8;--muted:#9bb1c2;--cyan:#45d9e8;--gold:#f6c96a}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,system-ui,Arial,sans-serif;background:radial-gradient(900px 520px at 50% -10%,#173c50,#07111b 70%);color:var(--text)}
@@ -19,23 +19,41 @@ canvas{display:block;width:100%;height:auto;aspect-ratio:1000/560;touch-action:n
 .message{min-height:43px;padding:11px 13px;border-radius:11px;background:#0a1723;border:1px solid #20384c;color:#cbe5ed;font-size:13px;line-height:1.45;margin-top:12px}
 .rules{margin-top:12px;color:var(--muted);font-size:12px;line-height:1.6}.rules summary{color:#cde6ed;cursor:pointer;font-weight:800}
 @media(max-width:650px){body{padding:12px 8px 22px}.panel{padding:9px}.scorebar{grid-template-columns:repeat(2,minmax(0,1fr))}.controls{grid-template-columns:1fr}.btnrow .btn{flex:1}.table-wrap{border-width:3px;border-radius:11px}}
+
+/* v1.1 — mesa aprimorada e ferramentas de partida */
+.settings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:0 0 12px}
+.setting{background:#091521;border:1px solid #29465b;border-radius:12px;padding:9px}
+.setting label{display:block;color:#a9c0d1;font-size:10px;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+.setting select{width:100%;min-width:0;background:#162b3d;color:#edf6f8;border:1px solid #38566d;border-radius:8px;padding:9px;font:600 12px system-ui}
+.setting input[type=range]{width:100%;accent-color:#45d9e8}
+.tools{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.tools .btn{flex:1;min-width:105px}
+.btn:disabled{opacity:.42;cursor:not-allowed;filter:saturate(.5)}.stat{transition:border-color .2s,background .2s}
+.table-wrap{box-shadow:inset 0 0 0 7px #b47b43,0 16px 34px #0009,0 0 0 1px #d7a56b55}
+canvas{cursor:crosshair}
+@media(max-width:650px){.settings{grid-template-columns:repeat(2,minmax(0,1fr))}.settings .setting:last-child{grid-column:1/-1}.tools .btn{min-width:calc(50% - 7px);font-size:11px;padding:10px 8px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body><main class="wrap">
-<header><h1>🎱 Sinuca 8-Ball</h1><p>Controle o taco, mire com precisão e encaçape suas bolas antes da preta.</p><span class="version">Jogos do Jhon · v1.0</span></header>
+<header><h1>🎱 Sinuca 8-Ball</h1><p>Controle o taco, mire com precisão e encaçape suas bolas antes da preta.</p><span class="version">Jogos do Jhon · v1.1</span></header>
 <section class="panel">
+<div class="settings" aria-label="Configurações da partida">
+<div class="setting"><label for="difficulty">🎯 Dificuldade</label><select id="difficulty"><option value="easy">Fácil</option><option value="normal" selected>Normal</option><option value="pro">Profissional</option></select></div>
+<div class="setting"><label for="mode">🎮 Modo de jogo</label><select id="mode"><option value="classic" selected>8-Ball clássico</option><option value="practice">Treino livre</option></select></div>
+<div class="setting"><label for="spin">↪ Efeito lateral</label><input id="spin" type="range" min="-100" max="100" value="0"><div class="help" id="spinValue">Sem efeito</div></div>
+</div>
 <div class="scorebar">
 <div class="stat"><small>Suas bolas</small><b id="playerGroup">Aberto</b></div>
 <div class="stat"><small>Encaçapadas</small><b id="pocketed">0 / 7</b></div>
 <div class="stat"><small>Tacadas</small><b id="shots">0</b></div>
-<div class="stat"><small>Recorde</small><b id="best">0</b></div>
+<div class="stat"><small>Recorde</small><b id="best">0</b></div><div class="stat"><small>Faltas</small><b id="fouls">0</b></div><div class="stat"><small>Pontos</small><b id="score">0</b></div>
 </div>
 <div class="table-wrap"><canvas id="table" width="1000" height="560" aria-label="Mesa de sinuca. Mire apontando e use o botão de tacada."></canvas></div>
 <div class="controls">
 <div class="controlbox"><label for="power"><span>💥 Força da tacada</span><b id="powerValue">55%</b></label><input id="power" type="range" min="12" max="100" value="55"><p class="help">Aponte com o mouse ou toque na mesa. No celular, ajuste a força e toque em Tacada.</p></div>
-<div class="controlbox"><label><span>🎯 Mira</span><b id="aimLabel">Pronta</b></label><p class="help">A linha pontilhada mostra a direção aproximada da bola branca. Se encaçapar a branca, reposicione-a na área de saída.</p><div class="btnrow"><button class="btn primary" id="shoot">🎱 Tacada</button><button class="btn" id="placeCue" disabled>Reposicionar branca</button></div></div>
+<div class="controlbox"><label><span>🎯 Mira</span><b id="aimLabel">Pronta</b></label><p class="help">A linha pontilhada mostra a direção aproximada da bola branca. Se encaçapar a branca, reposicione-a na área de saída.</p><div class="btnrow"><button class="btn primary" id="shoot">🎱 Tacada</button><button class="btn" id="placeCue" disabled>Reposicionar branca</button><button class="btn" id="undoShot" disabled>↶ Desfazer tacada</button><button class="btn" id="pauseGame" disabled>Ⅱ Pausar</button></div></div>
 </div>
-<div class="message" id="message" role="status" aria-live="polite">Sua vez! Aponte para a direção desejada e escolha a força.</div>
+<div class="tools"><button class="btn" id="guideToggle">🎯 Guia: ligado</button><button class="btn" id="soundToggle">🔇 Som: desligado</button><button class="btn" id="centerCue" disabled>⚪ Branca no início</button></div><div class="message" id="message" role="status" aria-live="polite">Sua vez! Aponte para a direção desejada e escolha a força.</div>
 <div class="btnrow"><button class="btn" id="newGame">↻ Nova partida</button><button class="btn" id="rulesBtn">📖 Regras</button><a class="btn" href="../index.html" style="text-decoration:none">⌂ Voltar ao Arcade</a></div>
 <details class="rules" id="rules"><summary>Como jogar</summary><p>É uma partida simplificada de 8-Ball para um jogador. Depois da primeira bola encaçapada, você recebe o grupo de lisas ou listradas. Encaçape as sete bolas do seu grupo e depois a preta (8). Encaçapar a branca é falta; encaçapar a preta antes da hora encerra a partida. O jogo usa física simplificada para ser fácil de jogar no celular.</p></details>
 </section></main>
@@ -43,14 +61,14 @@ canvas{display:block;width:100%;height:auto;aspect-ratio:1000/560;touch-action:n
 (()=>{
 'use strict';
 const canvas=document.getElementById('table'),ctx=canvas.getContext('2d'),W=1000,H=560;
-const play={x:94,y:72,w:812,h:416},R=11.5,pocketR=24;
+const play={x:94,y:72,w:812,h:416},R=11.5,pocketR=24;let pocketSize=24,difficulty='normal',mode='classic',paused=false,soundEnabled=false,guideEnabled=true,spinValue=0,fouls=0,pottedTotal=0,score=0,lastSnapshot=null,canUndo=false,particles=[];
 const pockets=[[play.x,play.y],[play.x+play.w/2,play.y-2],[play.x+play.w,play.y],[play.x,play.y+play.h],[play.x+play.w/2,play.y+play.h+2],[play.x+play.w,play.y+play.h]];
 const colors={1:'#f6d34c',2:'#3286df',3:'#d8483e',4:'#7445a7',5:'#f28b2f',6:'#31965d',7:'#9b343a',8:'#131820',9:'#f6d34c',10:'#3286df',11:'#d8483e',12:'#7445a7',13:'#f28b2f',14:'#31965d',15:'#9b343a',0:'#f3f5eb'};
 let balls=[],aim={x:1,y:0},pointer={x:650,y:280},moving=false,shots=0,playerGroup=null,turn='player',cueInHand=false,gameOver=false,notice='Sua vez! Aponte para a direção desejada e escolha a força.',best=0,lastPocket=0,shotPocketed=[],firstHit=null,shotFoul=false,animation=0;
 const $=id=>document.getElementById(id);
 try{best=Number(localStorage.getItem('jhon_snooker_best')||0)||0}catch(e){}
 $('best').textContent=best;
-function ball(id,x,y){return{id,x,y,vx:0,vy:0,active:true}}
+function ball(id,x,y){return{id,x,y,vx:0,vy:0,active:true,spin:0}}
 function rack(){
  balls=[ball(0,play.x+play.w*.28,play.y+play.h/2)];
  const rows=[[1],[9,2],[3,8,10],[11,4,12,5],[6,13,7,14,15]];
@@ -60,21 +78,21 @@ function rack(){
   const id=order[index++],x=startX+r*dx,y=startY+(c-r/2)*dy;
   balls.push(ball(id,x,y));
  }));
- shots=0;playerGroup=null;turn='player';cueInHand=false;gameOver=false;moving=false;notice='Partida iniciada! Acerte primeiro uma bola lisa ou listrada.';shotPocketed=[];updateHud();draw();
+ shots=0;playerGroup=null;turn='player';cueInHand=false;gameOver=false;moving=false;paused=false;notice=mode==='practice'?'Treino livre: pratique suas tacadas sem encerrar a partida.':'Partida iniciada! Acerte primeiro uma bola lisa ou listrada.';shotPocketed=[];fouls=0;pottedTotal=0;score=0;spinValue=Number($('spin').value)||0;lastSnapshot=null;canUndo=false;particles=[];updateHud();draw();
 }
 function updateHud(){
  $('playerGroup').textContent=playerGroup==='solid'?'Lisas':playerGroup==='stripe'?'Listradas':'Aberto';
  $('pocketed').textContent=balls.filter(b=>b.id!==0&&!b.active&&((playerGroup==='solid'&&b.id<8)||(playerGroup==='stripe'&&b.id>8))).length+' / 7';
- $('shots').textContent=shots;$('message').textContent=notice;
- $('aimLabel').textContent=moving?'Bolas em movimento':gameOver?'Fim de jogo':'Pronta';
- $('shoot').disabled=moving||gameOver||cueInHand;
- $('placeCue').disabled=!cueInHand||moving;
+ $('shots').textContent=shots;$('fouls').textContent=fouls;$('score').textContent=score;$('message').textContent=notice;
+ $('aimLabel').textContent=paused?'Pausada':moving?'Bolas em movimento':gameOver?'Fim de jogo':'Pronta';
+ $('shoot').disabled=moving||paused||gameOver||cueInHand;$('placeCue').disabled=!cueInHand||moving||paused;
+ $('undoShot').disabled=!canUndo||moving||paused;$('pauseGame').disabled=!moving&&!paused;$('pauseGame').textContent=paused?'▶ Continuar':'Ⅱ Pausar';$('centerCue').disabled=!cueInHand||moving||paused;
 }
 function position(e){
  const rect=canvas.getBoundingClientRect();
  return{x:(e.clientX-rect.left)*W/rect.width,y:(e.clientY-rect.top)*H/rect.height};
 }
-function cue(){return balls.find(b=>b.id===0&&b.active)}
+function cue(){return balls.find(b=>b.id===0)}
 function setAim(x,y){
  const c=cue();if(!c)return;
  let dx=x-c.x,dy=y-c.y,len=Math.hypot(dx,dy)||1;aim={x:dx/len,y:dy/len};pointer={x,y};
@@ -82,28 +100,34 @@ function setAim(x,y){
 }
 canvas.addEventListener('pointermove',e=>{if(moving||cueInHand||gameOver)return;const p=position(e);setAim(p.x,p.y)});
 canvas.addEventListener('pointerdown',e=>{
- if(moving||gameOver)return;const p=position(e);
- if(cueInHand){const c=cue();if(p.x<play.x+play.w*.42&&p.x>play.x+R&&p.y>play.y+R&&p.y<play.y+play.h-R){c.x=p.x;c.y=p.y;c.vx=c.vy=0;cueInHand=false;notice='Bola branca posicionada. Prepare a tacada.';$('placeCue').disabled=true;updateHud();draw()}return}
+ if(moving||paused||gameOver)return;const p=position(e);
+ if(cueInHand){const c=cue();if(p.x<play.x+play.w*.42&&p.x>play.x+R&&p.y>play.y+R&&p.y<play.y+play.h-R){if(balls.some(b=>b.active&&b.id!==0&&Math.hypot(b.x-p.x,b.y-p.y)<R*2+2)){notice='Esse espaço está ocupado por outra bola. Escolha outro ponto.';updateHud();return}c.x=p.x;c.y=p.y;c.vx=c.vy=0;c.active=true;cueInHand=false;notice='Bola branca posicionada. Prepare a tacada.';updateHud();draw()}return}
  setAim(p.x,p.y);
 });
 $('power').addEventListener('input',()=>{$('powerValue').textContent=$('power').value+'%'});
+$('spin').addEventListener('input',()=>{spinValue=Number($('spin').value);$('spinValue').textContent=spinValue===0?'Sem efeito':(spinValue<0?'Efeito à esquerda ':'Efeito à direita ')+Math.abs(spinValue)+'%'});
+$('difficulty').addEventListener('change',()=>{difficulty=$('difficulty').value;pocketSize=difficulty==='easy'?29:difficulty==='pro'?20:24;notice='Dificuldade ajustada: '+$('difficulty').selectedOptions[0].text+'.';updateHud();draw()});
+$('mode').addEventListener('change',()=>{mode=$('mode').value;notice=mode==='practice'?'Treino livre ativado. A bola preta volta à mesa e a partida não termina.':'Modo 8-Ball clássico ativado. Encaçape seu grupo e depois a preta.';rack()});
+$('guideToggle').addEventListener('click',()=>{guideEnabled=!guideEnabled;$('guideToggle').textContent='🎯 Guia: '+(guideEnabled?'ligado':'desligado');draw()});
+$('soundToggle').addEventListener('click',()=>{soundEnabled=!soundEnabled;$('soundToggle').textContent=(soundEnabled?'🔊 Som: ligado':'🔇 Som: desligado');if(soundEnabled)beep(660,.07)});
+$('undoShot').addEventListener('click',undoShot);$('pauseGame').addEventListener('click',togglePause);
+$('centerCue').addEventListener('click',()=>placeCueAt(play.x+play.w*.28,play.y+play.h/2));
 $('shoot').addEventListener('click',shoot);
-$('placeCue').addEventListener('click',()=>{if(!cueInHand||moving)return;const c=cue();c.x=play.x+play.w*.28;c.y=play.y+play.h/2;cueInHand=false;notice='Bola branca reposicionada. Sua vez!';updateHud();draw()});
+$('placeCue').addEventListener('click',()=>{if(!cueInHand||moving||paused)return;placeCueAt(play.x+play.w*.28,play.y+play.h/2)});
 $('newGame').addEventListener('click',()=>{if(confirm('Começar uma nova partida? O progresso desta partida será encerrado.'))rack()});
 $('rulesBtn').addEventListener('click',()=>{$('rules').open=!$('rules').open});
 function shoot(){
- if(moving||gameOver||cueInHand)return;
- const c=cue();if(!c)return;
- const force=Number($('power').value)/100;
- const speed=5+force*10;
- c.vx=aim.x*speed;c.vy=aim.y*speed;
- shots++;shotPocketed=[];firstHit=null;shotFoul=false;moving=true;
- notice='Tacada feita! Acompanhe as bolas...';updateHud();loop();
+ if(moving||paused||gameOver||cueInHand)return;
+ const c=cue();if(!c||!c.active)return;
+ saveSnapshot();const force=Number($('power').value)/100;
+ const speed=(difficulty==='easy'?5.6:difficulty==='pro'?4.7:5)+force*(difficulty==='easy'?10.8:difficulty==='pro'?8.5:10);
+ const spin=spinValue/100*.14;c.vx=(aim.x-aim.y*spin)*speed;c.vy=(aim.y+aim.x*spin)*speed;c.spin=spinValue/100;
+ shots++;shotPocketed=[];firstHit=null;shotFoul=false;moving=true;notice='Tacada feita! Acompanhe as bolas...';beep(220,.06);updateHud();loop();
 }
 function pocket(b){
- b.active=false;b.vx=b.vy=0;shotPocketed.push(b.id);
- if(b.id===0){shotFoul=true;notice='Falta: a bola branca caiu. Reposicione-a na área de saída.';cueInHand=true;$('placeCue').disabled=false;return}
- if(!playerGroup&&b.id!==8){playerGroup=b.id<8?'solid':'stripe'}
+ b.active=false;b.vx=b.vy=0;shotPocketed.push(b.id);addParticles(b.x,b.y,b.id===0?'#ffffff':colors[b.id],18);beep(b.id===0?130:520,.055);
+ if(b.id===0){shotFoul=true;fouls++;notice='Falta: a bola branca caiu. Posicione-a na área de saída.';cueInHand=true;return}
+ pottedTotal++;score+=10;if(!playerGroup&&b.id!==8)playerGroup=b.id<8?'solid':'stripe';
 }
 function ballCollision(a,b){
  const dx=b.x-a.x,dy=b.y-a.y,dist=Math.hypot(dx,dy),min=R*2;
@@ -115,9 +139,11 @@ function ballCollision(a,b){
  if((a.id===0||b.id===0)&&firstHit===null)firstHit=a.id===0?b.id:a.id;
 }
 function update(){
- for(const b of balls){if(!b.active)continue;b.x+=b.vx;b.y+=b.vy;b.vx*=.989;b.vy*=.989;
+ if(paused)return;
+ for(const b of balls){if(!b.active)continue;b.x+=b.vx;b.y+=b.vy;b.vx*=difficulty==='easy'?.984:difficulty==='pro'?.993:.989;b.vy*=difficulty==='easy'?.984:difficulty==='pro'?.993:.989;
+  if(b.spin){b.vx+=b.spin*.018;b.spin*=.986;}
   if(Math.hypot(b.vx,b.vy)<.055)b.vx=b.vy=0;
-  for(const p of pockets)if(Math.hypot(b.x-p[0],b.y-p[1])<pocketR){pocket(b);break}
+  for(const p of pockets)if(Math.hypot(b.x-p[0],b.y-p[1])<pocketSize){pocket(b);break}
   if(!b.active)continue;
   if(b.x<play.x+R){b.x=play.x+R;b.vx=Math.abs(b.vx)*.92}
   if(b.x>play.x+play.w-R){b.x=play.x+play.w-R;b.vx=-Math.abs(b.vx)*.92}
@@ -129,24 +155,28 @@ function update(){
  if(still&&moving)finishShot();
 }
 function finishShot(){
- moving=false;
+ moving=false;const c=cue();
  const own=id=>playerGroup==='solid'?id>0&&id<8:playerGroup==='stripe'?id>8&&id<=15:false;
+ if(firstHit===null&&!shotFoul){shotFoul=true;fouls++;if(c){c.active=false;cueInHand=true}notice='Falta: a branca não acertou nenhuma bola. Reposicione-a.'}
+ if(firstHit!==null&&playerGroup&&firstHit!==8&&!own(firstHit)&&!shotFoul){shotFoul=true;fouls++;if(c){c.active=false;cueInHand=true}notice='Falta: a branca acertou primeiro uma bola do outro grupo.'}
  const ownPocketed=shotPocketed.some(own),eightPocketed=shotPocketed.includes(8),otherPocketed=shotPocketed.some(id=>id!==0&&!own(id)&&id!==8);
  const remaining=balls.filter(b=>b.active&&own(b.id)).length;
- if(eightPocketed){
-  if(remaining===0&&!shotFoul){gameOver=true;notice='🏆 Vitória! Você encaçapou todas as suas bolas e a preta!';best=Math.max(best,Math.max(1,1000-shots*20));try{localStorage.setItem('jhon_snooker_best',String(best))}catch(e){}$('best').textContent=best}
+ if(eightPocketed&&mode==='practice'){
+  const black=balls.find(b=>b.id===8);black.active=true;black.x=play.x+play.w*.70+3*R*1.78;black.y=play.y+play.h/2;black.vx=black.vy=0;score+=50;notice='🎯 Treino: bola preta encaçapada! Ela voltou à mesa. Continue praticando.';
+ }else if(eightPocketed){
+  if(remaining===0&&!shotFoul){gameOver=true;score+=100;notice='🏆 Vitória! Você encaçapou todas as suas bolas e a preta!';best=Math.max(best,score);try{localStorage.setItem('jhon_snooker_best',String(best))}catch(e){}$('best').textContent=best}
   else{gameOver=true;notice='A bola preta caiu antes da hora. Fim de jogo! Toque em Nova partida para tentar novamente.'}
- }else if(!shotFoul&&ownPocketed&&!otherPocketed){notice='Boa! Você encaçapou uma bola do seu grupo. Jogue novamente.'}
+ }else if(!shotFoul&&ownPocketed&&!otherPocketed){score+=15;notice='Boa! Você encaçapou uma bola do seu grupo. Jogue novamente.'}
  else{turn='player';notice=shotFoul?'Falta! Reposicione a bola branca na área de saída.':otherPocketed?'Você encaçapou uma bola do outro grupo. A vez continua com você.':'Bolas paradas. Prepare sua próxima tacada.'}
- if(shotFoul)turn='player';
- updateHud();draw();
+ if(shotFoul){turn='player';score=Math.max(0,score-15)}
+ canUndo=true;updateHud();draw();
 }
-function drawPocket(x,y){const g=ctx.createRadialGradient(x-4,y-5,2,x,y,27);g.addColorStop(0,'#02070a');g.addColorStop(.7,'#03080b');g.addColorStop(1,'#5d3a25');ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,pocketR,0,Math.PI*2);ctx.fill()}
+function drawPocket(x,y){const g=ctx.createRadialGradient(x-4,y-5,2,x,y,30);g.addColorStop(0,'#010406');g.addColorStop(.68,'#03080b');g.addColorStop(.84,'#26190f');g.addColorStop(1,'#d29b5c');ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,29,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#f4d5a055';ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,27,0,Math.PI*2);ctx.stroke()}
 function drawBall(b){
  if(!b.active)return;
  const c=colors[b.id],stripe=b.id>8,number=b.id;
  ctx.save();ctx.translate(b.x,b.y);ctx.shadowColor='#000';ctx.shadowBlur=5;ctx.shadowOffsetY=3;
- ctx.fillStyle=c;ctx.beginPath();ctx.arc(0,0,R,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;ctx.shadowOffsetY=0;
+ const base=ctx.createRadialGradient(-4,-6,1,1,2,R*1.35);base.addColorStop(0,lighten(c,.52));base.addColorStop(.42,c);base.addColorStop(1,darken(c,.52));ctx.fillStyle=base;ctx.beginPath();ctx.arc(0,0,R,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;ctx.shadowOffsetY=0;
  if(stripe){ctx.save();ctx.beginPath();ctx.arc(0,0,R-.5,0,Math.PI*2);ctx.clip();ctx.fillStyle='#f6f5ed';ctx.fillRect(-R,-5,R*2,10);ctx.restore()}
  if(b.id===0){const g=ctx.createRadialGradient(-4,-5,1,0,0,R);g.addColorStop(0,'#fff');g.addColorStop(1,'#b7c2c8');ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,R,0,Math.PI*2);ctx.fill()}
  if(b.id!==0){ctx.fillStyle='#f8fafc';ctx.beginPath();ctx.arc(0,0,5.8,0,Math.PI*2);ctx.fill();ctx.fillStyle='#17212b';ctx.font='bold 7px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(number,0,.5)}
@@ -159,24 +189,36 @@ function draw(){
  ctx.fillStyle='#704326';roundRect(24,22,952,516,25);ctx.fill();
  const rail=ctx.createLinearGradient(0,25,0,535);rail.addColorStop(0,'#b7824d');rail.addColorStop(.5,'#754329');rail.addColorStop(1,'#452718');ctx.fillStyle=rail;roundRect(40,38,920,484,24);ctx.fill();
  const felt=ctx.createLinearGradient(0,play.y,0,play.y+play.h);felt.addColorStop(0,'#167454');felt.addColorStop(.5,'#0e6347');felt.addColorStop(1,'#084c39');ctx.fillStyle=felt;ctx.fillRect(play.x,play.y,play.w,play.h);
+ for(let i=0;i<170;i++){const x=play.x+((i*131)%play.w),y=play.y+((i*67)%play.h);ctx.fillStyle=i%2?'#b7f1d008':'#001b120b';ctx.fillRect(x,y,2,2)}
+ const light=ctx.createRadialGradient(play.x+play.w*.48,play.y+play.h*.42,40,play.x+play.w*.48,play.y+play.h*.42,play.w*.7);light.addColorStop(0,'#b7f4d00c');light.addColorStop(1,'#001c1600');ctx.fillStyle=light;ctx.fillRect(play.x,play.y,play.w,play.h);
  ctx.strokeStyle='#62c49b55';ctx.lineWidth=2;ctx.strokeRect(play.x+5,play.y+5,play.w-10,play.h-10);
  pockets.forEach(p=>drawPocket(p[0],p[1]));
  ctx.strokeStyle='#f4d49a55';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(play.x+play.w*.28,play.y);ctx.lineTo(play.x+play.w*.28,play.y+play.h);ctx.stroke();
- for(let i=1;i<=3;i++){const x=play.x+i*play.w/4;ctx.fillStyle='#f7e3bb';ctx.beginPath();ctx.arc(x,play.y-18,3,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(x,play.y+play.h+18,3,0,Math.PI*2);ctx.fill()}
- balls.forEach(drawBall);
+ for(let i=1;i<=7;i++){const x=play.x+i*play.w/8;ctx.fillStyle='#f7e3bb';ctx.beginPath();ctx.arc(x,play.y-18,3,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(x,play.y+play.h+18,3,0,Math.PI*2);ctx.fill()}for(let i=1;i<=3;i++){const y=play.y+i*play.h/4;ctx.beginPath();ctx.arc(play.x-18,y,3,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(play.x+play.w+18,y,3,0,Math.PI*2);ctx.fill()}
+ balls.forEach(drawBall);drawParticles();
  const c=cue();
- if(c&&!moving&&!gameOver&&!cueInHand){
-  const ax=aim.x,ay=aim.y,reach=260;
-  ctx.save();ctx.setLineDash([10,8]);ctx.strokeStyle='#e7fff5cc';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(c.x,c.y);ctx.lineTo(c.x+ax*reach,c.y+ay*reach);ctx.stroke();ctx.setLineDash([]);
-  const back=38;ctx.strokeStyle='#e5b66a';ctx.lineWidth=7;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(c.x-ax*back,c.y-ay*back);ctx.lineTo(c.x-ax*(back+105),c.y-ay*(back+105));ctx.stroke();
-  ctx.strokeStyle='#f2e5c7';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(c.x-ax*back,c.y-ay*back);ctx.lineTo(c.x-ax*(back+18),c.y-ay*(back+18));ctx.stroke();ctx.restore();
+ if(c&&c.active&&!moving&&!paused&&!gameOver&&!cueInHand){
+  const ax=aim.x,ay=aim.y,reach=300;
+  if(guideEnabled){ctx.save();ctx.setLineDash([9,7]);ctx.strokeStyle='#e7fff5cc';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(c.x,c.y);ctx.lineTo(c.x+ax*reach,c.y+ay*reach);ctx.stroke();ctx.setLineDash([]);
+   const wallX=ax>0?play.x+play.w-R:play.x+R,wallY=ay>0?play.y+play.h-R:play.y+R,tx=ax===0?Infinity:(wallX-c.x)/ax,ty=ay===0?Infinity:(wallY-c.y)/ay,t=Math.min(tx>0?tx:Infinity,ty>0?ty:Infinity);
+   if(Number.isFinite(t)&&t<reach){const bx=c.x+ax*t,by=c.y+ay*t;ctx.strokeStyle='#75e6c4aa';ctx.setLineDash([4,7]);ctx.beginPath();ctx.moveTo(bx,by);ctx.lineTo(bx-ay*70,by+ax*70);ctx.stroke();ctx.setLineDash([]);ctx.beginPath();ctx.arc(bx,by,7,0,Math.PI*2);ctx.stroke()}ctx.restore()}
+  const power=Number($('power').value)/100,back=36+power*50;ctx.save();const shaft=ctx.createLinearGradient(c.x-ax*back,c.y-ay*back,c.x-ax*(back+118),c.y-ay*(back+118));shaft.addColorStop(0,'#f2d6a0');shaft.addColorStop(.18,'#9f632f');shaft.addColorStop(.55,'#e8b66e');shaft.addColorStop(1,'#4a2918');ctx.strokeStyle=shaft;ctx.lineWidth=7;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(c.x-ax*back,c.y-ay*back);ctx.lineTo(c.x-ax*(back+118),c.y-ay*(back+118));ctx.stroke();ctx.strokeStyle='#f3ead2';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(c.x-ax*back,c.y-ay*back);ctx.lineTo(c.x-ax*(back+16),c.y-ay*(back+16));ctx.stroke();ctx.restore();
  }
- if(cueInHand){ctx.fillStyle='#fff';ctx.font='bold 20px Arial';ctx.textAlign='center';ctx.fillText('Toque na área esquerda para reposicionar a branca',W/2,H-17)}
+ if(cueInHand){ctx.fillStyle='#fff';ctx.font='bold 20px Arial';ctx.textAlign='center';ctx.fillText('Toque na área esquerda para reposicionar a branca',W/2,H-17)}if(paused||gameOver){ctx.fillStyle='#06131bc9';ctx.fillRect(play.x,play.y,play.w,play.h);ctx.fillStyle='#fff';ctx.textAlign='center';ctx.font='bold 32px Arial';ctx.fillText(paused?'⏸ PARTIDA PAUSADA':(notice.includes('Vitória')?'🏆 VITÓRIA!':'FIM DE JOGO'),W/2,H/2);ctx.font='16px Arial';ctx.fillStyle='#cce4e9';ctx.fillText(paused?'Toque em Continuar para voltar à mesa':'Use Nova partida para jogar novamente',W/2,H/2+34)}
  ctx.fillStyle='#f4deb4';ctx.font='bold 13px Arial';ctx.textAlign='left';ctx.fillText('JOGOS DO JHON  •  SINUCA 8-BALL',58,29);
 }
 function roundRect(x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r)}
 let raf=null;
-function loop(){update();draw();if(moving)raf=requestAnimationFrame(loop);else raf=null}
+function loop(){if(!paused&&moving)update();updateParticles();draw();if(moving||particles.length)raf=requestAnimationFrame(loop);else raf=null}
+function addParticles(x,y,color,count){for(let i=0;i<count;i++){const a=Math.random()*Math.PI*2,v=1+Math.random()*3;particles.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:18+Math.random()*18,color})}}
+function updateParticles(){particles=particles.filter(p=>{p.x+=p.vx;p.y+=p.vy;p.vx*=.94;p.vy*=.94;p.life--;return p.life>0})}
+function drawParticles(){particles.forEach(p=>{ctx.globalAlpha=Math.min(1,p.life/24);ctx.fillStyle=p.color;ctx.beginPath();ctx.arc(p.x,p.y,1.5,0,Math.PI*2);ctx.fill()});ctx.globalAlpha=1}
+function saveSnapshot(){lastSnapshot={balls:balls.map(b=>({...b})),shots,playerGroup,turn,cueInHand,gameOver,fouls,pottedTotal,score,notice,best};canUndo=false}
+function undoShot(){if(!canUndo||moving||paused||!lastSnapshot)return;const s=lastSnapshot;balls=s.balls.map(b=>({...b}));shots=s.shots;playerGroup=s.playerGroup;turn=s.turn;cueInHand=s.cueInHand;gameOver=s.gameOver;fouls=s.fouls;pottedTotal=s.pottedTotal;score=s.score;notice='Tacada desfeita. Você pode tentar outra direção.';best=s.best;lastSnapshot=null;canUndo=false;particles=[];updateHud();draw()}
+function togglePause(){if(!moving&&!paused)return;paused=!paused;updateHud();draw();if(!paused&&moving&&!raf)loop()}
+function placeCueAt(x,y){const c=cue();if(!c)return;if(balls.some(b=>b.active&&b.id!==0&&Math.hypot(b.x-x,b.y-y)<R*2+2)){notice='Não é possível colocar a branca sobre outra bola.';updateHud();return}c.x=x;c.y=y;c.vx=c.vy=0;c.active=true;cueInHand=false;notice='Bola branca posicionada. Sua vez!';updateHud();draw()}
+function beep(freq,duration){if(!soundEnabled)return;try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;const ac=new AC(),osc=ac.createOscillator(),gain=ac.createGain();osc.frequency.value=freq;osc.type='sine';gain.gain.setValueAtTime(.045,ac.currentTime);gain.gain.exponentialRampToValueAtTime(.001,ac.currentTime+duration);osc.connect(gain);gain.connect(ac.destination);osc.start();osc.stop(ac.currentTime+duration);osc.onended=()=>ac.close()}catch(e){}}
+function lighten(hex,a){return shade(hex,a)}function darken(hex,a){return shade(hex,-a)}function shade(hex,amount){const n=parseInt(hex.slice(1),16),r=Math.max(0,Math.min(255,((n>>16)&255)+Math.round(255*amount*.25))),g=Math.max(0,Math.min(255,((n>>8)&255)+Math.round(255*amount*.25))),b=Math.max(0,Math.min(255,(n&255)+Math.round(255*amount*.25)));return 'rgb('+r+','+g+','+b+')'}
 rack();
 })();
 </script></body></html>
