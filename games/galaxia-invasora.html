@@ -71,19 +71,19 @@ canvas{display:block;width:100%;height:auto;aspect-ratio:480/680;border-radius:1
 const W=480,H=680,canvas=document.getElementById('game'),ctx=canvas.getContext('2d'),$=id=>document.getElementById(id);
 const KEYS={left:false,right:false,up:false,down:false,fire:false};
 const COLORS=['#fb7185','#f97316','#facc15','#34d399','#60a5fa'];
-let state='ready',score=0,best=0,lives=3,wave=1,player,aliens=[],shots=[],sparks=[],stars=[],formationOffset=0,formationDir=1,formationSpeed=22,alienShotClock=0,diveClock=0,fireClock=0,last=0,raf=0,elapsed=0,invuln=0,shake=0,flash=0,soundOn=true,dragging=false,pointerX=null;
-const STORAGE='jhon_galaxia_invasora_best';
+let state='ready',score=0,best=0,lives=3,wave=1,diff='normal',player,aliens=[],shots=[],sparks=[],stars=[],formationOffset=0,formationDir=1,formationSpeed=22,alienShotClock=0,diveClock=0,fireClock=0,last=0,raf=0,elapsed=0,invuln=0,shake=0,flash=0,soundOn=true,dragging=false,pointerX=null;
+const STORAGE='jhon_galaxia_invasora_best';const diffSpeed={easy:.7,normal:1,hard:1.35};
 try{best=Number(localStorage.getItem(STORAGE)||0)||0}catch(e){}
 function settingSound(){try{const s=JSON.parse(localStorage.getItem('jhonArcadeSettingsV1')||'{}');return s.sound!==false&&Number(s.volume??45)>0}catch(e){return true}}
 function tone(freq=440,dur=.08,type='square',volume=.045){if(!soundOn||!settingSound())return;try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;const a=new AC(),o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.setValueAtTime(freq,a.currentTime);g.gain.setValueAtTime(volume,a.currentTime);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+dur);o.connect(g);g.connect(a.destination);o.start();o.stop(a.currentTime+dur);o.onended=()=>a.close()}catch(e){}}
 function makeStars(){stars=Array.from({length:95},()=>({x:Math.random()*W,y:Math.random()*H,s:.5+Math.random()*1.7,a:.25+Math.random()*.65,v:12+Math.random()*28}))}
 function spawnWave(){
  aliens=[];shots=[];formationOffset=0;formationDir=1;
- const rows=5,cols=9,gapX=43,gapY=42,startX=(W-(cols-1)*gapX)/2,startY=94;
+ const rows=5,cols=9,gapX=43,gapY=42,startX=(W-(cols-1)*gapX)/2,startY=94;formationSpeed=(22+(wave-1)*4)*diffSpeed[diff];diveClock=Math.max(.5,2.7-(wave-1)*.14)/diffSpeed[diff];alienShotClock=.9/diffSpeed[diff];
  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
   aliens.push({id:aliens.length,row:r,col:c,x:startX+c*gapX,baseX:startX+c*gapX,y:startY+r*gapY,alive:true,diving:false,diveT:0,type:r===0?0:r<=2?1:2,hp:1,phase:Math.random()*6.28,shotChance:Math.random()});
  }
- diveClock=Math.max(.75,2.7-(wave-1)*.14);alienShotClock=.9;formationSpeed=22+(wave-1)*4;
+
 }
 function resetGame(){
  cancelAnimationFrame(raf);score=0;lives=3;wave=1;elapsed=0;invuln=1.5;shake=0;flash=0;
