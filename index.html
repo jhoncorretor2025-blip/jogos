@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Jogos do Jhon">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Jogos do Jhon · v3.40</title>
+<title>Jogos do Jhon · v3.41</title>
 <meta name="description" content="Arcade de jogos web do Jhon com busca, favoritos, categorias, histórico e perfil gamer.">
 <style>
   :root{
@@ -305,7 +305,7 @@
     <span class="hero-kicker">ARCADE PESSOAL</span>
     <h1>Jogos do Jhon</h1>
     <p class="sub">🎮 Seu cantinho de diversão: escolha um jogo e comece a jogar no celular ou no PC.</p>
-    <div class="version"><span class="dot"></span> Versão <b>v3.40</b> · atualizado em <b>23/11/2026</b></div>
+    <div class="version"><span class="dot"></span> Versão <b>v3.41</b> · atualizado em <b>23/11/2026</b></div>
     <div class="home-hero-actions">
       <a class="primary-cta" href="#catalogStart">🎮 Explorar jogos <span aria-hidden="true">↓</span></a>
       <span class="hero-count" id="heroGameCount">36 jogos no catálogo</span>
@@ -589,8 +589,9 @@
     </div>
   </details>
   <div class="notes">
-    <h2>📝 Novidades da tela inicial · v3.40</h2>
+    <h2>📝 Novidades da tela inicial · v3.41</h2>
     <ul>
+      <li><b>v3.41 — Jewel Match 2.0:</b> campanha com 50 fases, quatro modos de jogo, joias especiais, obstáculos, poderes, recordes, conquistas, temas visuais e progresso integrado ao backup.</li>
       <li><b>v3.40 — Tower Defense 2.1:</b> adicionado modo Sobrevivência infinita, prioridade de ataque configurável, prévia visual de construção, inteligência da próxima onda e estatísticas individuais das torres; otimizado o cálculo das rotas.</li>
       <li><b>v3.38 — Seis novos jogos:</b> adicionados Caça-Palavras, Torre de Hanói, Damas, Ludo, Tower Defense e Jewel Match; catálogo ampliado para 36 jogos e novos jogos incluídos nas categorias adequadas.</li>
       <li><b>v3.37 — Ordem dos jogos:</b> preservados os 10 primeiros cards; Forca, Xadrez, STOP!, Dominó e Sinuca 8-Ball organizados nas posições 11 a 15. Os favoritos continuam disponíveis na seção e no filtro próprios.</li>
@@ -907,7 +908,7 @@ document.getElementById('addProfile').addEventListener('click',()=>{
 function syncSettingsUI(){const s=family.settings;document.getElementById('themeSetting').value=s.theme;document.getElementById('textSetting').value=s.textSize;document.getElementById('controlsSetting').value=s.touchControls;document.getElementById('volumeSetting').value=s.volume;document.getElementById('volumeValue').textContent=s.volume+'%';document.getElementById('soundSetting').checked=s.sound;document.getElementById('contrastSetting').checked=s.contrast;document.getElementById('motionSetting').checked=s.reducedMotion}
 function updateSetting(key,value){family.settings[key]=value;save();applySettings();syncSettingsUI()}
 const BACKUP_FORMAT='jogos-do-jhon-backup',BACKUP_SCHEMA=2,MAX_BACKUP_BYTES=2*1024*1024,MAX_GAME_STORAGE_BYTES=1500000;
-const GAME_STORAGE_KEYS=new Set(['g2048.best','corrida.best','cobra.best','memoria.muted','velha.score','jhon_v5_save','jhon_tetris_best','jhon_voo_best','jhon_labirinto_best','jhon_snooker_best','jhon_truck_best','jhon_truck_money','jhon_truck_deliveries','crosswordStatsV2','bubble_sound','bubble_achievements','bubble_theme','bubble_skin']);
+const GAME_STORAGE_KEYS=new Set(['g2048.best','corrida.best','cobra.best','memoria.muted','velha.score','jhon_v5_save','jhon_tetris_best','jhon_voo_best','jhon_labirinto_best','jhon_snooker_best','jhon_truck_best','jhon_truck_money','jhon_truck_deliveries','crosswordStatsV2','bubble_sound','bubble_achievements','bubble_theme','bubble_skin','jewelmatch_v2_save']);
 const GAME_STORAGE_PREFIXES=['memoria.best.','memoria.time.','crosswordDaily_','arcade_best_'];
 const knownGameHrefs=new Set(names.map(g=>g.href)),knownAchievementIds=new Set(achievements.map(a=>a.id));
 function isGameStorageKey(key){return GAME_STORAGE_KEYS.has(key)||GAME_STORAGE_PREFIXES.some(prefix=>key.startsWith(prefix))}
@@ -943,6 +944,20 @@ function sanitizeGameStorageValue(key,value){
  if(key.startsWith('crosswordDaily_'))return /^crosswordDaily_\d{4}-\d{2}-\d{2}$/.test(key)&&value==='1'?'1':null;
  if(key==='velha.score'){
   const o=parseStoredObject(value);if(!o)return null;const out={};['X','O','D'].forEach(k=>{const n=Number(o[k]);out[k]=Number.isFinite(n)&&n>=0?Math.min(10000000,Math.floor(n)):0});return JSON.stringify(out);
+ }
+ if(key==='jewelmatch_v2_save'){
+  const o=parseStoredObject(value);if(!o)return null;
+  const levels={};if(o.levels&&typeof o.levels==='object'&&!Array.isArray(o.levels))Object.entries(o.levels).forEach(([k,v])=>{if(/^(?:[1-9]|[1-4][0-9]|50)$/.test(k)&&v&&typeof v==='object'){const stars=Number(v.stars),best=Number(v.best);levels[k]={stars:Number.isFinite(stars)?Math.max(0,Math.min(3,Math.floor(stars))):0,best:Number.isFinite(best)?Math.max(0,Math.min(100000000,Math.floor(best))):0}}});
+  const bounded=(source,keys)=>{const out={};keys.forEach(k=>{const n=Number(source&&source[k]);out[k]=Number.isFinite(n)?Math.max(0,Math.min(100000000,Math.floor(n))):0});return out};
+  const achievements=Array.isArray(o.achievements)?[...new Set(o.achievements.filter(x=>typeof x==='string'&&/^[a-z0-9_]{1,50}$/.test(x)))].slice(0,100):[];
+  const unlocked=Number(o.unlocked),rewards=bounded(o.rewards,['hammer','shuffle','bomb','extra']);Object.keys(rewards).forEach(k=>rewards[k]=Math.min(99,rewards[k]));
+  return JSON.stringify({unlocked:Number.isFinite(unlocked)?Math.max(1,Math.min(50,Math.floor(unlocked))):1,levels,rewards,achievements,stats:bounded(o.stats,['plays','wins','gems','bestScore','bestCombo','combos']),records:bounded(o.records,['classic','timed','endless','daily']),theme:['crystal','ocean','sunset','emerald'].includes(o.theme)?o.theme:'crystal',sound:o.sound!==false});
+ }
+ if(key==='jewelmatch_v2_save'){
+  const clean=value=>JSON.parse(sanitizeGameStorageValue(key,value)||'{}'),a=clean(current),b=clean(incoming),levels={...(a.levels||{})};
+  Object.entries(b.levels||{}).forEach(([k,v])=>{const old=levels[k]||{stars:0,best:0};levels[k]={stars:Math.max(old.stars||0,v.stars||0),best:Math.max(old.best||0,v.best||0)}});
+  const maxMap=(x,y,keys)=>{const out={};keys.forEach(k=>out[k]=Math.max(Number(x&&x[k])||0,Number(y&&y[k])||0));return out};
+  return JSON.stringify({unlocked:Math.max(a.unlocked||1,b.unlocked||1),levels,rewards:maxMap(a.rewards,b.rewards,['hammer','shuffle','bomb','extra']),achievements:[...new Set([...(a.achievements||[]),...(b.achievements||[])])].slice(0,100),stats:maxMap(a.stats,b.stats,['plays','wins','gems','bestScore','bestCombo','combos']),records:maxMap(a.records,b.records,['classic','timed','endless','daily']),theme:a.theme||b.theme||'crystal',sound:a.sound!==false});
  }
  if(key==='crosswordStatsV2'){
   const o=parseStoredObject(value);if(!o)return null;const n=Number(o.record),achievements=Array.isArray(o.achievements)?[...new Set(o.achievements.filter(x=>typeof x==='string').map(x=>x.slice(0,100)))].slice(0,100):[];
@@ -988,7 +1003,7 @@ function validateBackup(raw){
 }
 function exportBackup(){
  try{
-  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v3.40',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
+  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v3.41',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
   const content=JSON.stringify(backup,null,2),blob=new Blob([content],{type:'application/json'});
   if(blob.size>MAX_BACKUP_BYTES)throw new Error('O backup ultrapassa 2 MB.');
   const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='jogos-do-jhon-backup-'+new Date().toISOString().slice(0,10)+'.json';
