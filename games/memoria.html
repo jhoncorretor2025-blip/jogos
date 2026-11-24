@@ -118,7 +118,7 @@
   <div class="progress" aria-hidden="true"><div id="fill"></div></div>
   <div id="board"></div>
   <div class="msg" id="msg" aria-live="polite"></div>
-  <div class="ver">v1.1 · 22/11/2026</div>
+  <div class="ver">v1.2 · 22/11/2026</div>
 
   <div id="ov">
     <div class="panel">
@@ -447,8 +447,6 @@
   build();
 })();
 
-// Web Audio API - Som Retrô
-let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}}function tone(f,d,t='square',v=.05){if(!soundOn||!audioCtx)return;const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=t;o.frequency.value=f;g.gain.value=v;g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d)
 </script>
 <script src="../arcade-common.js"></script></body>
 </html>
