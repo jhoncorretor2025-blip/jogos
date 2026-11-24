@@ -71,8 +71,8 @@ canvas{display:block;width:100%;height:auto;aspect-ratio:480/680;border-radius:1
 const W=480,H=680,canvas=document.getElementById('game'),ctx=canvas.getContext('2d'),$=id=>document.getElementById(id);
 const KEYS={left:false,right:false,up:false,down:false,fire:false};
 const COLORS=['#fb7185','#f97316','#facc15','#34d399','#60a5fa'];
-let state='ready',score=0,best=0,lives=3,wave=1,diff='normal',player,aliens=[],shots=[],sparks=[],stars=[],formationOffset=0,formationDir=1,formationSpeed=22,alienShotClock=0,diveClock=0,fireClock=0,last=0,raf=0,elapsed=0,invuln=0,shake=0,flash=0,soundOn=true,dragging=false,pointerX=null;
-const STORAGE='jhon_galaxia_invasora_best';const diffSpeed={easy:.7,normal:1,hard:1.35};
+let state='ready',score=0,best=0,lives=3,wave=1,diff='normal',soundOn=true,player,aliens=[],shots=[],sparks=[],stars=[],formationOffset=0,formationDir=1,formationSpeed=22,alienShotClock=0,diveClock=0,fireClock=0,last=0,raf=0,elapsed=0,invuln=0,shake=0,flash=0,soundOn=true,dragging=false,pointerX=null;
+const STORAGE='jhon_galaxia_invasora_best';const diffSpeed={easy:.7,normal:1,hard:1.35};let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}}function tone(f,d,t='square',v=.05){if(!soundOn||!audioCtx)return;const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=t;o.frequency.value=f;g.gain.value=v;g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d)}
 try{best=Number(localStorage.getItem(STORAGE)||0)||0}catch(e){}
 function settingSound(){try{const s=JSON.parse(localStorage.getItem('jhonArcadeSettingsV1')||'{}');return s.sound!==false&&Number(s.volume??45)>0}catch(e){return true}}
 function tone(freq=440,dur=.08,type='square',volume=.045){if(!soundOn||!settingSound())return;try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;const a=new AC(),o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.setValueAtTime(freq,a.currentTime);g.gain.setValueAtTime(volume,a.currentTime);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+dur);o.connect(g);g.connect(a.destination);o.start();o.stop(a.currentTime+dur);o.onended=()=>a.close()}catch(e){}}
@@ -93,7 +93,7 @@ function resetGame(){
 }
 function showOverlay(title,text,button){$('overlayTitle').textContent=title;$('overlayText').textContent=text;$('overlayButton').textContent=button;$('overlay').classList.remove('hidden')}
 function hideOverlay(){$('overlay').classList.add('hidden')}
-function start(){if(state==='paused'){state='playing';hideOverlay();last=performance.now();raf=requestAnimationFrame(loop);return}resetGame();state='playing';hideOverlay();last=performance.now();raf=requestAnimationFrame(loop);tone(520,.09,'triangle')}
+function start(){ensureAudio();if(state==='paused'){state='playing';hideOverlay();last=performance.now();raf=requestAnimationFrame(loop);return}resetGame();state='playing';hideOverlay();last=performance.now();raf=requestAnimationFrame(loop);tone(520,.09,'triangle')}
 function updateHud(){$('score').textContent=score.toLocaleString('pt-BR');$('best').textContent=best.toLocaleString('pt-BR');$('lives').textContent=lives?'♥ '.repeat(lives).trim():'0';$('wave').textContent=wave}
 function addScore(n){score+=n;if(score>best){best=score;try{localStorage.setItem(STORAGE,String(best))}catch(e){}}updateHud()}
 function burst(x,y,color,n=12){for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,s=35+Math.random()*150;sparks.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:.35+Math.random()*.55,max:.9,color,size:1.5+Math.random()*3})}}
