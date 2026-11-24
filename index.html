@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Jogos do Jhon">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Jogos do Jhon · v3.39</title>
+<title>Jogos do Jhon · v3.40</title>
 <meta name="description" content="Arcade de jogos web do Jhon com busca, favoritos, categorias, histórico e perfil gamer.">
 <style>
   :root{
@@ -305,7 +305,7 @@
     <span class="hero-kicker">ARCADE PESSOAL</span>
     <h1>Jogos do Jhon</h1>
     <p class="sub">🎮 Seu cantinho de diversão: escolha um jogo e comece a jogar no celular ou no PC.</p>
-    <div class="version"><span class="dot"></span> Versão <b>v3.39</b> · atualizado em <b>23/11/2026</b></div>
+    <div class="version"><span class="dot"></span> Versão <b>v3.40</b> · atualizado em <b>23/11/2026</b></div>
     <div class="home-hero-actions">
       <a class="primary-cta" href="#catalogStart">🎮 Explorar jogos <span aria-hidden="true">↓</span></a>
       <span class="hero-count" id="heroGameCount">36 jogos no catálogo</span>
@@ -589,9 +589,9 @@
     </div>
   </details>
   <div class="notes">
-    <h2>📝 Novidades da tela inicial · v3.39</h2>
+    <h2>📝 Novidades da tela inicial · v3.40</h2>
     <ul>
-      <li><b>v3.39 — Seis novos jogos:</b> adicionados Caça-Palavras, Torre de Hanói, Damas, Ludo, Tower Defense e Jewel Match; catálogo ampliado para 36 jogos e novos jogos incluídos nas categorias adequadas.</li>
+      <li><b>v3.40 — Seis novos jogos:</b> adicionados Caça-Palavras, Torre de Hanói, Damas, Ludo, Tower Defense e Jewel Match; catálogo ampliado para 36 jogos e novos jogos incluídos nas categorias adequadas.</li>
       <li><b>v3.37 — Ordem dos jogos:</b> preservados os 10 primeiros cards; Forca, Xadrez, STOP!, Dominó e Sinuca 8-Ball organizados nas posições 11 a 15. Os favoritos continuam disponíveis na seção e no filtro próprios.</li>
       <li><b>v3.36 — Filtros da tela inicial:</b> correção da montagem dos filtros e atalhos visíveis para Melhor Idade, Tabuleiro, Cartas e Favoritos.</li>
       <li><b>v3.35 — Clássicos & Tranquilos:</b> filtro dedicado para jogos de tabuleiro, cartas, lógica e experiências mais calmas, com seleção curada de 16 jogos.</li>
@@ -987,7 +987,7 @@ function validateBackup(raw){
 }
 function exportBackup(){
  try{
-  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v3.39',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
+  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v3.40',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
   const content=JSON.stringify(backup,null,2),blob=new Blob([content],{type:'application/json'});
   if(blob.size>MAX_BACKUP_BYTES)throw new Error('O backup ultrapassa 2 MB.');
   const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='jogos-do-jhon-backup-'+new Date().toISOString().slice(0,10)+'.json';
