@@ -1,7 +1,4 @@
-
-
-// Web Audio API - Som Retrô
-let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}}function tone(f,d,t='square',v=.05){if(!soundOn||!audioCtx)return;const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=t;o.frequency.value=f;g.gain.value=v;g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d)}function sfxMove(){tone(220,.04,'square',.03)}function sfxClick(){tone(440,.08,'triangle',.05)}<!doctype html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
@@ -319,6 +316,10 @@ body{min-height:100vh;min-height:100dvh;padding:16px 12px 28px;display:flex;flex
 
 <script>
 (function(){
+
+// Web Audio API - Som Retrô
+let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}}function tone(f,d,t='square',v=.05){if(!soundOn||!audioCtx)return;const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=t;o.frequency.value=f;g.gain.value=v;g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d)}function sfxMove(){tone(220,.04,'square',.03)}function sfxClick(){tone(440,.08,'triangle',.05)}
+
 'use strict';
 const START_SPACES=[
 {name:'Início',type:'start'},{name:'Centro',type:'prop',price:220,rent:44},{name:'Sorte',type:'chance'},{name:'Praia',type:'prop',price:180,rent:36},
