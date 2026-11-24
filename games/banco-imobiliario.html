@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#070b14">
-<title>Banco Imobiliário — Jogos do Jhon v4.8</title>
+<title>Banco Imobiliário — Jogos do Jhon v4.9</title>
 <style>
 :root{--bg:#081b17;--card:#10271f;--line:#315747;--txt:#f4f3e8;--muted:#a8b9a8;--you:#4de1d0;--ia:#fb8d9c}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%}
@@ -349,7 +349,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
 @keyframes buildAppear{from{opacity:0;transform:translateY(7px) scale(.82)}to{opacity:1;transform:translateY(0) scale(1)}}
 @media(max-width:480px){.toolbar .btn{min-width:calc(33.333% - 7px);padding:8px 6px;font-size:9px}}
 
-/* v4.8 · leitura imediata da propriedade e pequenos detalhes de interface */
+/* v4.9 · leitura imediata da propriedade e pequenos detalhes de interface */
 .space.own0{background:linear-gradient(145deg,#baf3e5 0%,#72cbb6 100%);border:2px solid #168b70;box-shadow:inset 0 0 0 2px #eafff8aa,0 0 0 2px #168b7066,0 3px 8px #03130c77}
 .space.own1{background:linear-gradient(145deg,#ffd1d5 0%,#e98d9a 100%);border:2px solid #b83f54;box-shadow:inset 0 0 0 2px #fff1f2aa,0 0 0 2px #b83f5466,0 3px 8px #03130c77}
 .space.own0 .nm,.space.own1 .nm{color:#172b2a;text-shadow:0 1px #ffffff88}
@@ -370,6 +370,28 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
 .pcard{transition:transform .2s,box-shadow .2s}
 .pcard.active{transform:translateY(-2px);box-shadow:0 0 0 2px #f4d17c,0 7px 18px #0004}
 @media(max-width:480px){.space.own0:after,.space.own1:after{font-size:5px;padding:1px 2px;top:2px;right:2px}}
+
+/* v4.9 — identidade visual das construções, escrituras e cidade */
+.buildings-3d.owner-you .house-3d{background:linear-gradient(90deg,#c9fff0,#42bca7);border-color:#087f73}
+.buildings-3d.owner-you .house-3d:before{background:linear-gradient(145deg,#1b9e8c,#086b61)}
+.buildings-3d.owner-you .hotel-3d{background:linear-gradient(90deg,#c8fff0,#39b9a2);border-color:#087f73}
+.buildings-3d.owner-you .hotel-3d:before{background:#087f73}
+.buildings-3d.owner-rival .house-3d{background:linear-gradient(90deg,#ffe0e5,#e77b8b);border-color:#a83d51}
+.buildings-3d.owner-rival .house-3d:before{background:linear-gradient(145deg,#d64e65,#8c263e)}
+.buildings-3d.owner-rival .hotel-3d{background:linear-gradient(90deg,#ffe0e5,#e77b8b);border-color:#a83d51}
+.buildings-3d.owner-rival .hotel-3d:before{background:#a83d51}
+.building.city-you{background:linear-gradient(90deg,#63d7c2,#147d70)!important;border-color:#a5fff0!important;box-shadow:0 0 12px #4de1d088,inset 2px 0 #fff8!important}
+.building.city-rival{background:linear-gradient(90deg,#ff9eaa,#a83c52)!important;border-color:#ffd0d6!important;box-shadow:0 0 12px #fb8d9c88,inset 2px 0 #fff8!important}
+.building.city-you:after{filter:drop-shadow(0 0 3px #baffef)}
+.building.city-rival:after{filter:drop-shadow(0 0 3px #ffd0d6)}
+.deed-hero.deed-owned[data-owner="you"]{box-shadow:inset 0 0 0 3px #4de1d0,0 0 0 2px #4de1d055}
+.deed-hero.deed-owned[data-owner="rival"]{box-shadow:inset 0 0 0 3px #fb8d9c,0 0 0 2px #fb8d9c55}
+.deed-hero.deed-owned:before{content:attr(data-owner);position:absolute;top:9px;right:10px;z-index:3;padding:5px 9px;border-radius:99px;background:#10271ddd;color:#fff;font-size:9px;font-weight:1000;letter-spacing:1px;text-transform:uppercase}
+.pcard.active{animation:turnGlow 2.1s ease-in-out infinite}
+.pcard.active .avatar{box-shadow:0 0 0 3px color-mix(in srgb,var(--player-color) 40%,transparent),0 0 16px color-mix(in srgb,var(--player-color) 55%,transparent)}
+@keyframes turnGlow{0%,100%{box-shadow:0 0 0 2px color-mix(in srgb,var(--player-color) 18%,transparent),0 9px 22px #0004}50%{box-shadow:0 0 0 4px color-mix(in srgb,var(--player-color) 42%,transparent),0 0 24px color-mix(in srgb,var(--player-color) 28%,transparent)}}
+@media(prefers-reduced-motion:reduce){.pcard.active{animation:none}}
+
 </style>
 <style>.quick-guide{max-width:1120px;margin:0 auto 10px;background:#101e2d;border:1px solid #2a435c;border-radius:13px;padding:10px 14px;color:#eaf2f7}.quick-guide summary{cursor:pointer;font-weight:800;color:#8de3dc}.quick-guide ol{margin:9px 0 2px;padding-left:22px;color:#c5d4df;font-size:13px;line-height:1.65}.quick-guide li{margin:3px 0}</style></head>
 <body>
@@ -377,7 +399,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
     <a class="back" href="../index.html" title="Voltar ao Arcade" aria-label="Voltar ao Arcade">←</a>
     <div class="brandmark">🏘️</div>
     <div class="brandcopy"><h1>Banco Imobiliário</h1><p class="kicker">NEGÓCIOS · PROPRIEDADES · ESTRATÉGIA</p></div>
-    <span class="version-pill">JOGO v4.8</span>
+    <span class="version-pill">JOGO v4.9</span>
   </header>
   <details class="quick-guide"><summary>❔ Como jogar — guia rápido</summary><ol><li>Escolha se vai jogar contra a máquina ou em dupla, além de dados virtuais ou reais.</li><li>Toque em <b>Começar partida</b>.</li><li>Com dados virtuais, o jogo faz o lançamento. Com dados reais, informe os valores físicos de 1 a 6 quando solicitado.</li><li>No modo de dois jogadores, passe o aparelho para a outra pessoa quando aparecer a vez dela.</li><li>Ao cair num imóvel livre, o participante da vez escolhe comprar ou passar. Use <b>Imóveis</b> para construir, vender melhorias ou hipotecar.</li></ol></details>
   <section class="hud" aria-label="Patrimônio dos jogadores">
@@ -389,7 +411,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
   <div class="toolbar"><button class="btn secondary" id="manageBtn">🏘️ Imóveis</button><button class="btn secondary" id="portfolioBtn">📈 Patrimônio</button><button class="btn secondary" id="saveBtn">💾 Salvar</button><button class="btn secondary" id="loadBtn">↩️ Carregar</button><button class="btn secondary" id="restartBtn">⚙️ Partida</button><button class="btn secondary" id="historyBtn">📜 Histórico</button></div>
   <details id="historyBox"><summary>📜 ÚLTIMAS JOGADAS · <span id="historyCount">0</span></summary><ol id="historyList"><li>A partida ainda não começou.</li></ol></details>
   <div class="legend"><span class="legend-item"><i class="legend-dot" style="--dot:var(--you)"></i> SEUS IMÓVEIS</span><span class="legend-item"><i class="legend-dot" style="--dot:var(--ia)"></i> IMÓVEIS DA IA</span><span class="legend-item">🏠 CASAS CONSTRUÍDAS</span></div>
-  <div class="ver">BANCO IMOBILIÁRIO · VERSÃO 4.8</div>
+  <div class="ver">BANCO IMOBILIÁRIO · VERSÃO 4.9</div>
   <div id="deedOv" class="modal-cover">
     <div class="modal-card deed-card">
       <div class="deed-top"><span class="deed-kicker">ESCRITURA IMOBILIÁRIA</span><span class="deed-group" id="deedGroup">BAIRRO</span></div>
@@ -541,13 +563,16 @@ function ownsGroup(owner,group){return !!group&&owner>=0&&group.members.every(na
 function groupProgress(owner,group){return group.members.filter(name=>spaces.some(s=>s.name===name&&s.owner===owner)).length}
 function renderBuildings(s){
  if(!s.buildings)return '';
- if(s.buildings===4)return '<div class="buildings-3d"><span class="hotel-3d" title="Hotel"></span></div>';
- return '<div class="buildings-3d">'+Array.from({length:s.buildings},()=>'<span class="house-3d" title="Casa"></span>').join('')+'</div>';
+ const ownerClass=s.owner===0?'owner-you':s.owner===1?'owner-rival':'';
+ if(s.buildings===4)return '<div class="buildings-3d '+ownerClass+'"><span class="hotel-3d" title="Hotel"></span></div>';
+ return '<div class="buildings-3d '+ownerClass+'">'+Array.from({length:s.buildings},()=>'<span class="house-3d" title="Casa"></span>').join('')+'</div>';
 }
 function renderCityArt(){
  const owned=spaces.filter(s=>s.owner!==-1).length,level=spaces.reduce((n,s)=>n+(s.buildings||0),0);
+ const yours=spaces.filter(s=>s.owner===0).length,rivals=spaces.filter(s=>s.owner===1).length;
+ const yourBuild=spaces.filter(s=>s.owner===0).reduce((n,s)=>n+s.buildings,0),rivalBuild=spaces.filter(s=>s.owner===1).reduce((n,s)=>n+s.buildings,0);
  const heights=[46,66,53,77,58,86,63,72],upgraded=Math.min(8,Math.floor(level/2)+Math.floor(owned/2));
- return '<div class="city-art">'+heights.map((h,i)=>'<span class="building b'+(i%4+1)+(i<upgraded?' city-upgraded':'')+'" style="height:'+Math.min(100,h+(i<upgraded?16:0))+'%"></span>').join('')+'</div>';
+ return '<div class="city-art" title="'+owned+' imóveis e '+level+' melhorias construídas">'+heights.map((h,i)=>{const active=i<upgraded,owner=(yourBuild>rivalBuild||(yourBuild===rivalBuild&&yours>=rivals))?'city-you':'city-rival';return '<span class="building b'+(i%4+1)+(active?' city-upgraded '+owner:'')+'" style="height:'+Math.min(100,h+(active?16:0))+'%"></span>'}).join('')+'</div>';
 }
 function recordWealth(){
  if(!players.length||!spaces.length)return;
@@ -610,7 +635,9 @@ function showDeed(i){
  $('deedName').textContent=s.name;
  $('deedIcon').textContent=iconFor(s);
  $('deedGroup').textContent=group?group.name.toUpperCase():'ESPECIAL';
- $('deedHero').style.background=group?'linear-gradient(145deg,'+group.color+'66,#bd9561)':'linear-gradient(145deg,#f0dfb0,#bd9561)';
+ $('deedHero').style.background=group?'linear-gradient(145deg,'+group.color+'88,#bd9561)':'linear-gradient(145deg,#f0dfb0,#bd9561)';
+ $('deedHero').dataset.owner=s.owner===0?'you':s.owner===1?'rival':'bank';
+ $('deedHero').classList.toggle('deed-owned',s.owner>=0);
  if(s.type==='prop'){
   const next=s.buildings<4?rentFor(Object.assign({},s,{buildings:s.buildings+1,mortgaged:false})):rentFor(s);
   const level=s.buildings===4?'1 hotel':s.buildings+' de 3 casas';
