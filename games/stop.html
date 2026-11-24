@@ -18,11 +18,12 @@ input:focus-visible, select:focus-visible{
   outline: 2px solid #67e8f9;
   outline-offset: 2px;
 }
-</style></head><body>
+.start-banner{display:flex;flex-direction:column;align-items:center;gap:6px;margin:10px auto 14px;padding:14px;border:1px solid #3b82f6;border-radius:16px;background:linear-gradient(135deg,#10264a,#151a3a);text-align:center}.start-banner p{margin:0;color:#bfd4ec;font-size:12px;line-height:1.5}.start-now{width:min(100%,430px);min-height:58px;font-size:18px;font-weight:1000;letter-spacing:.5px;box-shadow:0 8px 22px #0006}@media(max-width:560px){.start-banner{padding:10px}.start-now{min-height:64px;font-size:18px;position:relative;z-index:2}}</style></head><body>
 <main class="wrap">
 <div class="top"><a class="back" href="../index.html">← Voltar ao Arcade</a><span class="version">STOP! · v1.0</span></div>
 <header class="hero"><div class="logo">S<span>T</span>OP!</div><p class="tagline">Adedonha: pense rápido e complete as categorias antes do STOP! 🧠</p></header>
 <section id="homeScreen">
+<div class="start-banner"><button class="btn gold start-now" id="startNow">▶ COMEÇAR A JOGAR</button><p>Partida rápida: solo, categorias clássicas, 60 segundos. Tu também pode ajustar as opções abaixo antes de jogar.</p></div>
 <div class="menuStats">
  <div class="stat" aria-live="polite"><small>PARTIDAS</small><b id="homeGames">0</b></div>
  <div class="stat" aria-live="polite"><small>MELHOR PONTUAÇÃO</small><b id="homeBest">0</b></div>
@@ -201,7 +202,7 @@ function init(){
  $('roundCount').addEventListener('change',e=>config.rounds=Number(e.target.value));
  $('hardLetters').addEventListener('change',e=>config.hard=e.target.checked);
  $('addCategory').onclick=()=>{const v=$('newCategory').value.trim();if(!v)return;if(BASE.some(x=>x[0].toLowerCase()===v.toLowerCase())||customCats.some(x=>x.toLowerCase()===v.toLowerCase())){$('homeMessage').textContent='Essa categoria já existe.';return}customCats.push(v);data.custom=customCats;chosen.push(v);$('newCategory').value='';save();renderCategoryGrid();$('preset').value='custom';config.preset='custom'};
- $('quickStart').onclick=()=>startMatch(true);$('startGame').onclick=()=>startMatch(false);
+ $('startNow').onclick=()=>startMatch(true);$('quickStart').onclick=()=>startMatch(true);$('startGame').onclick=()=>startMatch(false);
  $('readyButton').onclick=startTurn;$('stopButton').onclick=()=>submitTurn(false);$('nextRound').onclick=startNext;$('finishMatch').onclick=finishMatch;
  $('backHome').onclick=()=>{if(confirm('Sair da partida? O progresso desta partida será perdido.')){if(timerId)clearInterval(timerId);$('passOverlay').classList.add('hidden');showScreen('homeScreen')}};
  $('playAgain').onclick=()=>{showScreen('homeScreen');startMatch(false)};$('finalHome').onclick=()=>showScreen('homeScreen');
