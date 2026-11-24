@@ -2,7 +2,7 @@
 <html lang="pt-BR"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#070b18">
-<title>Galáxia Invasora · Jogos do Jhon v1.0</title>
+<title>Galáxia Invasora · Jogos do Jhon v1.1</title>
 <style>
 *{box-sizing:border-box}
 :root{color-scheme:dark}
@@ -80,7 +80,7 @@ input:focus-visible, select:focus-visible{
 const W=480,H=680,canvas=document.getElementById('game'),ctx=canvas.getContext('2d'),$=id=>document.getElementById(id);
 const KEYS={left:false,right:false,up:false,down:false,fire:false};
 const COLORS=['#fb7185','#f97316','#facc15','#34d399','#60a5fa'];
-let state='ready',score=0,best=0,lives=3,wave=1,diff='normal',soundOn=true,player,aliens=[],shots=[],sparks=[],stars=[],formationOffset=0,formationDir=1,formationSpeed=22,alienShotClock=0,diveClock=0,fireClock=0,last=0,raf=0,elapsed=0,invuln=0,shake=0,flash=0,soundOn=true,dragging=false,pointerX=null;
+let state='ready',score=0,best=0,lives=3,wave=1,diff='normal',soundOn=true,player,aliens=[],shots=[],sparks=[],stars=[],formationOffset=0,formationDir=1,formationSpeed=22,alienShotClock=0,diveClock=0,fireClock=0,last=0,raf=0,elapsed=0,invuln=0,shake=0,flash=0,dragging=false,pointerX=null;
 const STORAGE='jhon_galaxia_invasora_best';const diffSpeed={easy:.7,normal:1,hard:1.35};let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}}function tone(f,d,t='square',v=.05){if(!soundOn||!audioCtx)return;const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=t;o.frequency.value=f;g.gain.value=v;g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d)}
 try{best=Number(localStorage.getItem(STORAGE)||0)||0}catch(e){}
 function settingSound(){try{const s=JSON.parse(localStorage.getItem('jhonArcadeSettingsV1')||'{}');return s.sound!==false&&Number(s.volume??45)>0}catch(e){return true}}
