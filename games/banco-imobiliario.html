@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#070b14">
-<title>Banco Imobiliário — Jogos do Jhon v4.7</title>
+<title>Banco Imobiliário — Jogos do Jhon v4.8</title>
 <style>
 :root{--bg:#081b17;--card:#10271f;--line:#315747;--txt:#f4f3e8;--muted:#a8b9a8;--you:#4de1d0;--ia:#fb8d9c}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%}
@@ -348,6 +348,28 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
 .space:hover .house-3d,.space:hover .hotel-3d{transform:translateY(-2px);filter:brightness(1.12)}
 @keyframes buildAppear{from{opacity:0;transform:translateY(7px) scale(.82)}to{opacity:1;transform:translateY(0) scale(1)}}
 @media(max-width:480px){.toolbar .btn{min-width:calc(33.333% - 7px);padding:8px 6px;font-size:9px}}
+
+/* v4.8 · leitura imediata da propriedade e pequenos detalhes de interface */
+.space.own0{background:linear-gradient(145deg,#baf3e5 0%,#72cbb6 100%);border:2px solid #168b70;box-shadow:inset 0 0 0 2px #eafff8aa,0 0 0 2px #168b7066,0 3px 8px #03130c77}
+.space.own1{background:linear-gradient(145deg,#ffd1d5 0%,#e98d9a 100%);border:2px solid #b83f54;box-shadow:inset 0 0 0 2px #fff1f2aa,0 0 0 2px #b83f5466,0 3px 8px #03130c77}
+.space.own0 .nm,.space.own1 .nm{color:#172b2a;text-shadow:0 1px #ffffff88}
+.space.own0 .space-kind,.space.own1 .space-kind{color:#263d39}
+.space.own0 .space-band{background:linear-gradient(90deg,#087b61,#37d6ac,#087b61);height:7px;flex-basis:7px}
+.space.own1 .space-band{background:linear-gradient(90deg,#a52e48,#ff8294,#a52e48);height:7px;flex-basis:7px}
+.space.own0:after,.space.own1:after{position:absolute;top:3px;right:4px;font-size:7px;font-weight:1000;letter-spacing:.4px;padding:2px 4px;border-radius:5px;background:#fffde8dd;color:#263b36;box-shadow:0 1px 3px #0003}
+.space.own0:after{content:"SEU"}
+.space.own1:after{content:"ADVERSÁRIO"}
+.space.own0 .space-icon,.space.own1 .space-icon{filter:drop-shadow(0 1px 1px #fff9)}
+.space.own0.group-complete,.space.own1.group-complete{outline:2px dashed #f4c95b;outline-offset:2px}
+.space.own0.here,.space.own1.here{outline:3px solid #ffdb62;outline-offset:-3px}
+.space .rentline{font-weight:950}
+.space .pr strong{font-weight:1000}
+.toolbar .btn{transition:transform .18s ease,box-shadow .18s ease}
+.toolbar .btn:hover{transform:translateY(-2px);box-shadow:0 5px 12px #0004}
+.activity-bar{box-shadow:inset 4px 0 #e7bd62,0 3px 12px #0002}
+.pcard{transition:transform .2s,box-shadow .2s}
+.pcard.active{transform:translateY(-2px);box-shadow:0 0 0 2px #f4d17c,0 7px 18px #0004}
+@media(max-width:480px){.space.own0:after,.space.own1:after{font-size:5px;padding:1px 2px;top:2px;right:2px}}
 </style>
 <style>.quick-guide{max-width:1120px;margin:0 auto 10px;background:#101e2d;border:1px solid #2a435c;border-radius:13px;padding:10px 14px;color:#eaf2f7}.quick-guide summary{cursor:pointer;font-weight:800;color:#8de3dc}.quick-guide ol{margin:9px 0 2px;padding-left:22px;color:#c5d4df;font-size:13px;line-height:1.65}.quick-guide li{margin:3px 0}</style></head>
 <body>
@@ -355,7 +377,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
     <a class="back" href="../index.html" title="Voltar ao Arcade" aria-label="Voltar ao Arcade">←</a>
     <div class="brandmark">🏘️</div>
     <div class="brandcopy"><h1>Banco Imobiliário</h1><p class="kicker">NEGÓCIOS · PROPRIEDADES · ESTRATÉGIA</p></div>
-    <span class="version-pill">JOGO v4.7</span>
+    <span class="version-pill">JOGO v4.8</span>
   </header>
   <details class="quick-guide"><summary>❔ Como jogar — guia rápido</summary><ol><li>Escolha se vai jogar contra a máquina ou em dupla, além de dados virtuais ou reais.</li><li>Toque em <b>Começar partida</b>.</li><li>Com dados virtuais, o jogo faz o lançamento. Com dados reais, informe os valores físicos de 1 a 6 quando solicitado.</li><li>No modo de dois jogadores, passe o aparelho para a outra pessoa quando aparecer a vez dela.</li><li>Ao cair num imóvel livre, o participante da vez escolhe comprar ou passar. Use <b>Imóveis</b> para construir, vender melhorias ou hipotecar.</li></ol></details>
   <section class="hud" aria-label="Patrimônio dos jogadores">
@@ -367,7 +389,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
   <div class="toolbar"><button class="btn secondary" id="manageBtn">🏘️ Imóveis</button><button class="btn secondary" id="portfolioBtn">📈 Patrimônio</button><button class="btn secondary" id="saveBtn">💾 Salvar</button><button class="btn secondary" id="loadBtn">↩️ Carregar</button><button class="btn secondary" id="restartBtn">⚙️ Partida</button><button class="btn secondary" id="historyBtn">📜 Histórico</button></div>
   <details id="historyBox"><summary>📜 ÚLTIMAS JOGADAS · <span id="historyCount">0</span></summary><ol id="historyList"><li>A partida ainda não começou.</li></ol></details>
   <div class="legend"><span class="legend-item"><i class="legend-dot" style="--dot:var(--you)"></i> SEUS IMÓVEIS</span><span class="legend-item"><i class="legend-dot" style="--dot:var(--ia)"></i> IMÓVEIS DA IA</span><span class="legend-item">🏠 CASAS CONSTRUÍDAS</span></div>
-  <div class="ver">BANCO IMOBILIÁRIO · VERSÃO 4.7</div>
+  <div class="ver">BANCO IMOBILIÁRIO · VERSÃO 4.8</div>
   <div id="deedOv" class="modal-cover">
     <div class="modal-card deed-card">
       <div class="deed-top"><span class="deed-kicker">ESCRITURA IMOBILIÁRIA</span><span class="deed-group" id="deedGroup">BAIRRO</span></div>
