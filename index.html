@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Jogos do Jhon">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Jogos do Jhon · v3.78</title>
+<title>Jogos do Jhon · v3.79</title>
 <meta property="og:title" content="Jogos do Jhon · Arcade">
 <meta property="og:description" content="Arcade de jogos web do Jhon com 46 jogos para jogar no celular ou PC.">
 <meta property="og:type" content="website">
@@ -326,7 +326,7 @@
     <span class="hero-kicker">ARCADE PESSOAL</span>
     <h1>Jogos do Jhon</h1>
     <p class="sub">🎮 Seu cantinho de diversão: escolha um jogo e comece a jogar no celular ou no PC.</p>
-    <div class="version"><span class="dot"></span> Versão <b>v3.78</b> · atualizado em <b>24/11/2026</b></div>
+    <div class="version"><span class="dot"></span> Versão <b>v3.79</b> · atualizado em <b>24/11/2026</b></div>
     <div class="home-hero-actions">
       <a class="primary-cta" href="#catalogStart">🎮 Explorar jogos <span aria-hidden="true">↓</span></a>
       <span class="hero-count" id="heroGameCount">46 jogos no catálogo</span>
@@ -507,7 +507,7 @@
     <div class="card" data-category="puzzle" data-href="games/paciencia.html" style="--accent:#fb7185;--glow:rgba(251,113,133,.20)"><span class="tag new">v1.1</span><span class="ico">🃏</span><p class="name">Paciência <em class="new">NOVO</em></p><p class="desc">Organize as cartas em sequência, alterne as cores e complete os quatro naipes.</p></div>
     <div class="card" data-category="arcade" data-href="games/pinball.html" style="--accent:#fbbf24;--glow:rgba(251,191,36,.20)"><span class="tag new">v1.1</span><span class="ico">🎱</span><p class="name">Pinball Neon <em class="new">NOVO</em></p><p class="desc">Acione as palhetas, acerte os alvos e tente bater seu recorde.</p></div>
     <div class="card" data-category="arcade" data-href="games/sinuca.html" style="--accent:#2dd4bf;--glow:rgba(45,212,191,.20)"><span class="tag new">v1.0</span><span class="ico">🎱</span><p class="name">Sinuca 8-Ball <em class="new">NOVO</em></p><p class="desc">Mire com o taco, controle a força e encaçape suas bolas antes da preta.</p></div>
-    <div class="card" data-category="arcade" data-href="games/bubble-shooter.html" style="--accent:#a78bfa;--glow:rgba(167,139,250,.20)"><span class="tag new">v1.2</span><span class="ico">🫧</span><p class="name">Bubble Shooter <em class="new">NOVO</em></p><p class="desc">Mire, combine três bolhas da mesma cor e limpe o campo.</p></div>
+    <div class="card" data-category="arcade" data-href="games/bubble-shooter.html" style="--accent:#a78bfa;--glow:rgba(167,139,250,.20)"><span class="tag new">v1.3</span><span class="ico">🫧</span><p class="name">Bubble Shooter <em class="new">NOVO</em></p><p class="desc">Mire, combine três bolhas da mesma cor e limpe o campo.</p></div>
     <div class="card" data-category="arcade" data-href="games/travessia-maluca.html" style="--accent:#34d399;--glow:rgba(52,211,153,.20)"><span class="tag new">v1.1</span><span class="ico">🐸</span><p class="name">Travessia Maluca <em class="new">NOVO</em></p><p class="desc">Atravesse pistas e rios sem ser atingido. Leve o sapinho até as chegadas.</p></div>
     <div class="card" data-category="puzzle" data-href="games/resta-um.html" style="--accent:#38bdf8;--glow:rgba(56,189,248,.20)"><span class="tag new">v1.1</span><span class="ico">🔵</span><p class="name">Resta Um <em class="new">NOVO</em></p><p class="desc">Salte sobre as peças vizinhas até deixar apenas uma no tabuleiro.</p></div>
 
@@ -621,8 +621,9 @@
     </div>
   </details>
   <div class="notes">
-    <h2>📝 Novidades da tela inicial · v3.78</h2>
+    <h2>📝 Novidades da tela inicial · v3.79</h2>
     <ul>
+      <li><b>v3.79 — Bubble Shooter:</b> corrigida a cor da bolinha: o canhão mantém a cor exibida, o projétil preserva essa mesma cor no trajeto e na colisão; a próxima cor só é preparada depois do disparo.</li>
       <li><b>v3.78 — Bubble Shooter:</b> corrigidos o disparo, a animação contínua da bolinha, a mira por toque e a detecção de colisões; animação agora usa um único ciclo de quadros para evitar travamentos.</li>
       <li><b>v3.77 — Batalha Naval:</b> instruções de posicionamento e ataque mantidas visíveis após reiniciar o tabuleiro; botão de posicionamento automático identificado com clareza.</li>
       <li><b>v3.76 — Versões sincronizadas:</b> cartões do Sudoku, Corrida, Caminhoneiro, Detetive, Velha, Campo Minado, Xadrez, Conecte os Pontos, Acerte o Número, Caça-Palavras, Torre de Hanói, Damas, Ludo, Forca e Palavras Cruzadas atualizados para refletir as páginas corrigidas.</li>
@@ -1075,7 +1076,7 @@ function validateBackup(raw){
 }
 function exportBackup(){
  try{
-  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v3.78',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
+  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v3.79',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
   const content=JSON.stringify(backup,null,2),blob=new Blob([content],{type:'application/json'});
   if(blob.size>MAX_BACKUP_BYTES)throw new Error('O backup ultrapassa 2 MB.');
   const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='jogos-do-jhon-backup-'+new Date().toISOString().slice(0,10)+'.json';
