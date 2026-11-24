@@ -953,12 +953,6 @@ function sanitizeGameStorageValue(key,value){
   const unlocked=Number(o.unlocked),rewards=bounded(o.rewards,['hammer','shuffle','bomb','extra']);Object.keys(rewards).forEach(k=>rewards[k]=Math.min(99,rewards[k]));
   return JSON.stringify({unlocked:Number.isFinite(unlocked)?Math.max(1,Math.min(50,Math.floor(unlocked))):1,levels,rewards,achievements,stats:bounded(o.stats,['plays','wins','gems','bestScore','bestCombo','combos']),records:bounded(o.records,['classic','timed','endless','daily']),theme:['crystal','ocean','sunset','emerald'].includes(o.theme)?o.theme:'crystal',sound:o.sound!==false});
  }
- if(key==='jewelmatch_v2_save'){
-  const clean=value=>JSON.parse(sanitizeGameStorageValue(key,value)||'{}'),a=clean(current),b=clean(incoming),levels={...(a.levels||{})};
-  Object.entries(b.levels||{}).forEach(([k,v])=>{const old=levels[k]||{stars:0,best:0};levels[k]={stars:Math.max(old.stars||0,v.stars||0),best:Math.max(old.best||0,v.best||0)}});
-  const maxMap=(x,y,keys)=>{const out={};keys.forEach(k=>out[k]=Math.max(Number(x&&x[k])||0,Number(y&&y[k])||0));return out};
-  return JSON.stringify({unlocked:Math.max(a.unlocked||1,b.unlocked||1),levels,rewards:maxMap(a.rewards,b.rewards,['hammer','shuffle','bomb','extra']),achievements:[...new Set([...(a.achievements||[]),...(b.achievements||[])])].slice(0,100),stats:maxMap(a.stats,b.stats,['plays','wins','gems','bestScore','bestCombo','combos']),records:maxMap(a.records,b.records,['classic','timed','endless','daily']),theme:a.theme||b.theme||'crystal',sound:a.sound!==false});
- }
  if(key==='crosswordStatsV2'){
   const o=parseStoredObject(value);if(!o)return null;const n=Number(o.record),achievements=Array.isArray(o.achievements)?[...new Set(o.achievements.filter(x=>typeof x==='string').map(x=>x.slice(0,100)))].slice(0,100):[];
   return JSON.stringify({record:Number.isFinite(n)&&n>=0?Math.min(100000000,Math.floor(n)):0,achievements});
@@ -1044,6 +1038,12 @@ function mergeGameStorageValue(key,current,incoming,strategy){
  if(key==='velha.score'){
   const a=parseStoredObject(current)||{},b=parseStoredObject(incoming)||{};
   return JSON.stringify({X:Math.max(Number(a.X)||0,Number(b.X)||0),O:Math.max(Number(a.O)||0,Number(b.O)||0),D:Math.max(Number(a.D)||0,Number(b.D)||0)});
+ }
+ if(key==='jewelmatch_v2_save'){
+  const clean=value=>JSON.parse(sanitizeGameStorageValue(key,value)||'{}'),a=clean(current),b=clean(incoming),levels={...(a.levels||{})};
+  Object.entries(b.levels||{}).forEach(([k,v])=>{const old=levels[k]||{stars:0,best:0};levels[k]={stars:Math.max(old.stars||0,v.stars||0),best:Math.max(old.best||0,v.best||0)}});
+  const maxMap=(x,y,keys)=>{const out={};keys.forEach(k=>out[k]=Math.max(Number(x&&x[k])||0,Number(y&&y[k])||0));return out};
+  return JSON.stringify({unlocked:Math.max(a.unlocked||1,b.unlocked||1),levels,rewards:maxMap(a.rewards,b.rewards,['hammer','shuffle','bomb','extra']),achievements:[...new Set([...(a.achievements||[]),...(b.achievements||[])])].slice(0,100),stats:maxMap(a.stats,b.stats,['plays','wins','gems','bestScore','bestCombo','combos']),records:maxMap(a.records,b.records,['classic','timed','endless','daily']),theme:a.theme||b.theme||'crystal',sound:a.sound!==false});
  }
  if(key==='crosswordStatsV2'){
   const a=parseStoredObject(current)||{},b=parseStoredObject(incoming)||{};
