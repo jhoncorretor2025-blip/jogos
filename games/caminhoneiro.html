@@ -44,7 +44,7 @@ body{padding:16px 12px 25px}.wrap{width:min(1050px,100%);margin:auto}header{text
 
 </style>
 </head>
-<body><main class="wrap">
+<body data-arcade-controls="joystick"><main class="wrap">
 <header><h1>🚛 Caminhoneiro — Entrega na Estrada</h1><p>Carregue, dirija com cuidado e entregue no prazo. Cada frete é uma nova missão!</p><span class="version">Jogos do Jhon · v1.4</span></header>
 <section class="panel">
 
@@ -414,4 +414,4 @@ function loop(now){
 }
 configure();maxFuel=maxFuelValue();fuel=maxFuel;renderGarage();updateHud();draw();
 })();
-</script></body></html>
+</script><script src="../arcade-common.js"></script></body></html>
