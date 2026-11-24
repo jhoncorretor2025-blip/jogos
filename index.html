@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Jogos do Jhon">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Jogos do Jhon · v3.62</title>
+<title>Jogos do Jhon · v3.63</title>
 <meta property="og:title" content="Jogos do Jhon · Arcade">
 <meta property="og:description" content="Arcade de jogos web do Jhon com 36 jogos para jogar no celular ou PC.">
 <meta property="og:type" content="website">
@@ -326,7 +326,7 @@
     <span class="hero-kicker">ARCADE PESSOAL</span>
     <h1>Jogos do Jhon</h1>
     <p class="sub">🎮 Seu cantinho de diversão: escolha um jogo e comece a jogar no celular ou no PC.</p>
-    <div class="version"><span class="dot"></span> Versão <b>v3.62</b> · atualizado em <b>24/11/2026</b></div>
+    <div class="version"><span class="dot"></span> Versão <b>v3.63</b> · atualizado em <b>24/11/2026</b></div>
     <div class="home-hero-actions">
       <a class="primary-cta" href="#catalogStart">🎮 Explorar jogos <span aria-hidden="true">↓</span></a>
       <span class="hero-count" id="heroGameCount">36 jogos no catálogo</span>
@@ -610,8 +610,9 @@
     </div>
   </details>
   <div class="notes">
-    <h2>📝 Novidades da tela inicial · v3.62</h2>
+    <h2>📝 Novidades da tela inicial · v3.63</h2>
     <ul>
+      <li><b>v3.63 — Tetris Neon:</b> v2.0 com Guardar Peça (Hold), contador de Combo, partículas, tremor de tela e efeitos sonoros (Web Audio).</li>
       <li><b>v3.62 — Galáxia Invasora:</b> v2.0 com dificuldade escalonada (velocidade de formação, mergulhos e disparos aumentam com a onda).</li>
       <li><b>v3.61 — Labirinto:</b> v2.0 com 3 dificuldades (Fácil/Normal/Difícil) ajustando número e velocidade dos fantasmas.</li>
       <li><b>v3.60 — Duelo de Reflexos:</b> v2.0 com recorde de melhor tempo de reação (ms) salvo.</li>
@@ -1046,7 +1047,7 @@ function validateBackup(raw){
 }
 function exportBackup(){
  try{
-  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v3.62',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
+  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v3.63',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
   const content=JSON.stringify(backup,null,2),blob=new Blob([content],{type:'application/json'});
   if(blob.size>MAX_BACKUP_BYTES)throw new Error('O backup ultrapassa 2 MB.');
   const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='jogos-do-jhon-backup-'+new Date().toISOString().slice(0,10)+'.json';
