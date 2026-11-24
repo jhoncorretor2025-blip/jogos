@@ -9,13 +9,21 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Jogos do Jhon">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Jogos do Jhon · v3.48</title>
+<title>Jogos do Jhon · v3.49</title>
 <meta property="og:title" content="Jogos do Jhon · Arcade">
 <meta property="og:description" content="Arcade de jogos web do Jhon com 36 jogos para jogar no celular ou PC.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://jhoncorretor2025-blip.github.io/jogos/index.html">
 <link rel="canonical" href="https://jhoncorretor2025-blip.github.io/jogos/index.html">
 <link rel="apple-touch-icon" href="./icons/arcade-icon.svg">
+<meta name="robots" content="index, follow">
+<meta name="author" content="Jhon">
+<meta property="og:image" content="https://jhoncorretor2025-blip.github.io/jogos/icons/arcade-icon.svg">
+<meta property="og:image:alt" content="Logo do arcade Jogos do Jhon">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Jogos do Jhon · Arcade">
+<meta name="twitter:description" content="Arcade de jogos web com 36 jogos gratuitos para jogar no celular ou PC.">
+<meta name="twitter:image" content="https://jhoncorretor2025-blip.github.io/jogos/icons/arcade-icon.svg">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebApplication","name":"Jogos do Jhon","description":"Arcade de jogos web com 36 jogos gratuitos para jogar no celular ou PC.","url":"https://jhoncorretor2025-blip.github.io/jogos/index.html","applicationCategory":"Game","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"BRL"}}
 </script>
@@ -314,7 +322,7 @@
     <span class="hero-kicker">ARCADE PESSOAL</span>
     <h1>Jogos do Jhon</h1>
     <p class="sub">🎮 Seu cantinho de diversão: escolha um jogo e comece a jogar no celular ou no PC.</p>
-    <div class="version"><span class="dot"></span> Versão <b>v3.48</b> · atualizado em <b>23/11/2026</b></div>
+    <div class="version"><span class="dot"></span> Versão <b>v3.49</b> · atualizado em <b>23/11/2026</b></div>
     <div class="home-hero-actions">
       <a class="primary-cta" href="#catalogStart">🎮 Explorar jogos <span aria-hidden="true">↓</span></a>
       <span class="hero-count" id="heroGameCount">36 jogos no catálogo</span>
@@ -598,8 +606,9 @@
     </div>
   </details>
   <div class="notes">
-    <h2>📝 Novidades da tela inicial · v3.48</h2>
+    <h2>📝 Novidades da tela inicial · v3.49</h2>
     <ul>
+      <li><b>v3.49 — SEO Essencial:</b> meta tags robots, author, Open Graph image, Twitter Card e og:image:alt adicionadas para melhor indexação e compartilhamento.</li>
       <li><b>v3.48 — Páginas para unir:</b> criado PAGINAS-PARA-UNIR.md com análise de quais jogos podem ser agrupados (2 jogadores, tabuleiro simples) e recomendação de adiar a união.</li>
       <li><b>v3.47 — Plano de migração:</b> criado PLANO-MIGRACAO.md com plano passo a passo para arquivar versões antigas do Ninja e organizar assets, sem quebrar links.</li>
       <li><b>v3.46 — Padrões do projeto:</b> criado arquivo PADROES.md com convenções de estrutura, versionamento, CSS/JS compartilhado e checklist para novos jogos.</li>
@@ -1013,7 +1022,7 @@ function validateBackup(raw){
 }
 function exportBackup(){
  try{
-  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v3.48',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
+  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v3.49',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
   const content=JSON.stringify(backup,null,2),blob=new Blob([content],{type:'application/json'});
   if(blob.size>MAX_BACKUP_BYTES)throw new Error('O backup ultrapassa 2 MB.');
   const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='jogos-do-jhon-backup-'+new Date().toISOString().slice(0,10)+'.json';
