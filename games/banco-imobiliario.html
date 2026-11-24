@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#070b14">
-<title>Banco Imobiliário — Jogos do Jhon v4.6</title>
+<title>Banco Imobiliário — Jogos do Jhon v4.7</title>
 <style>
 :root{--bg:#081b17;--card:#10271f;--line:#315747;--txt:#f4f3e8;--muted:#a8b9a8;--you:#4de1d0;--ia:#fb8d9c}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%}
@@ -334,6 +334,20 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
 @media(hover:none){.space:hover{transform:none}.btn:not(:disabled):hover:after{display:none}}
 @media(prefers-reduced-motion:reduce){.space,.property-row,.btn:after{transition:none!important}}
 
+
+/* v4.7 · salvamento, dificuldade e refinamento dos controles */
+.toolbar{flex-wrap:wrap}
+.toolbar .btn{min-width:calc(25% - 8px)}
+#difficultyField{margin-top:2px;padding:10px 12px;border:1px solid #6d895d;border-radius:13px;background:#ffffff08}
+#difficultyField select{border-color:#bd9b5c}
+#saveBtn{border-color:#6d9b78;color:#e5ffe8}
+#loadBtn{border-color:#7c9fb4;color:#e2f4ff}
+.space .buildings-3d{filter:drop-shadow(0 2px 2px #0006);animation:buildAppear .35s cubic-bezier(.2,.8,.2,1)}
+.house-3d,.hotel-3d{transform-origin:bottom center}
+.house-3d{transition:transform .2s,filter .2s}
+.space:hover .house-3d,.space:hover .hotel-3d{transform:translateY(-2px);filter:brightness(1.12)}
+@keyframes buildAppear{from{opacity:0;transform:translateY(7px) scale(.82)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:480px){.toolbar .btn{min-width:calc(33.333% - 7px);padding:8px 6px;font-size:9px}}
 </style>
 <style>.quick-guide{max-width:1120px;margin:0 auto 10px;background:#101e2d;border:1px solid #2a435c;border-radius:13px;padding:10px 14px;color:#eaf2f7}.quick-guide summary{cursor:pointer;font-weight:800;color:#8de3dc}.quick-guide ol{margin:9px 0 2px;padding-left:22px;color:#c5d4df;font-size:13px;line-height:1.65}.quick-guide li{margin:3px 0}</style></head>
 <body>
@@ -341,7 +355,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
     <a class="back" href="../index.html" title="Voltar ao Arcade" aria-label="Voltar ao Arcade">←</a>
     <div class="brandmark">🏘️</div>
     <div class="brandcopy"><h1>Banco Imobiliário</h1><p class="kicker">NEGÓCIOS · PROPRIEDADES · ESTRATÉGIA</p></div>
-    <span class="version-pill">JOGO v4.6</span>
+    <span class="version-pill">JOGO v4.7</span>
   </header>
   <details class="quick-guide"><summary>❔ Como jogar — guia rápido</summary><ol><li>Escolha se vai jogar contra a máquina ou em dupla, além de dados virtuais ou reais.</li><li>Toque em <b>Começar partida</b>.</li><li>Com dados virtuais, o jogo faz o lançamento. Com dados reais, informe os valores físicos de 1 a 6 quando solicitado.</li><li>No modo de dois jogadores, passe o aparelho para a outra pessoa quando aparecer a vez dela.</li><li>Ao cair num imóvel livre, o participante da vez escolhe comprar ou passar. Use <b>Imóveis</b> para construir, vender melhorias ou hipotecar.</li></ol></details>
   <section class="hud" aria-label="Patrimônio dos jogadores">
@@ -350,10 +364,10 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
   </section>
   <section class="board-frame" aria-label="Tabuleiro do Banco Imobiliário"><div id="board"></div></section>
   <div class="activity-bar"><span class="activity-icon">📣</span><div class="msg" id="msg">Configure sua partida para começar.</div></div>
-  <div class="toolbar"><button class="btn secondary" id="manageBtn">🏘️ Imóveis</button><button class="btn secondary" id="portfolioBtn">📈 Patrimônio</button><button class="btn secondary" id="restartBtn">⚙️ Partida</button><button class="btn secondary" id="historyBtn">📜 Histórico</button></div>
+  <div class="toolbar"><button class="btn secondary" id="manageBtn">🏘️ Imóveis</button><button class="btn secondary" id="portfolioBtn">📈 Patrimônio</button><button class="btn secondary" id="saveBtn">💾 Salvar</button><button class="btn secondary" id="loadBtn">↩️ Carregar</button><button class="btn secondary" id="restartBtn">⚙️ Partida</button><button class="btn secondary" id="historyBtn">📜 Histórico</button></div>
   <details id="historyBox"><summary>📜 ÚLTIMAS JOGADAS · <span id="historyCount">0</span></summary><ol id="historyList"><li>A partida ainda não começou.</li></ol></details>
   <div class="legend"><span class="legend-item"><i class="legend-dot" style="--dot:var(--you)"></i> SEUS IMÓVEIS</span><span class="legend-item"><i class="legend-dot" style="--dot:var(--ia)"></i> IMÓVEIS DA IA</span><span class="legend-item">🏠 CASAS CONSTRUÍDAS</span></div>
-  <div class="ver">BANCO IMOBILIÁRIO · VERSÃO 4.4</div>
+  <div class="ver">BANCO IMOBILIÁRIO · VERSÃO 4.7</div>
   <div id="deedOv" class="modal-cover">
     <div class="modal-card deed-card">
       <div class="deed-top"><span class="deed-kicker">ESCRITURA IMOBILIÁRIA</span><span class="deed-group" id="deedGroup">BAIRRO</span></div>
@@ -406,6 +420,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
         <div class="form-field"><label for="startingCash">💰 Saldo inicial</label><select id="startingCash"><option value="800">R$ 800 · Rápida</option><option value="1000" selected>R$ 1.000 · Clássica</option><option value="1500">R$ 1.500 · Longa</option><option value="2000">R$ 2.000 · Investidor</option></select></div>
         <div class="form-field"><label for="roundLimit">🔄 Limite de rodadas</label><select id="roundLimit"><option value="20">20 rodadas</option><option value="30" selected>30 rodadas</option><option value="50">50 rodadas</option><option value="0">Sem limite · até falência</option></select></div>
       </div>
+      <div class="form-field" id="difficultyField"><label for="aiDifficulty">🧠 Dificuldade da máquina</label><select id="aiDifficulty"><option value="easy">Fácil · mais permissiva</option><option value="normal" selected>Normal · equilibrada</option><option value="hard">Difícil · estratégica</option><option value="expert">Especialista · agressiva</option></select></div>
       <p class="intro" style="margin-top:8px">Com dados reais, cada pessoa informa os valores que tirou. Contra a máquina, a IA continua usando dados virtuais.</p>
       <div class="modal-actions"><button class="btn" id="startGameBtn">🎲 Começar partida</button></div>
     </div>
@@ -473,7 +488,7 @@ const boardEl=$('board'),msgEl=$('msg'),sheet=$('sheet'),sheetText=$('sheetText'
 const setupOv=$('setupOv'),managerOv=$('managerOv'),ov=$('ov'),toast=$('toast');
 const cashEls=[$('cash0'),$('cash1')],playerEls=[$('player0'),$('player1')],assetEls=[$('assets0'),$('assets1')],turnTags=[$('turnTag0'),$('turnTag1')];
 let spaces=[],players=[],turn=0,busy=true,over=false,started=false,dice='',diceFaces=[],diceRolling=false,pendingAction=null,pendingDebt=null;
-let startingCash=1000,roundLimit=30,rounds=0,history=[],tradeOffer=null,toastTimer=null,managerFinishTurn=false,gameMode='ai',diceMode='virtual';
+let startingCash=1000,roundLimit=30,rounds=0,history=[],tradeOffer=null,toastTimer=null,managerFinishTurn=false,gameMode='ai',diceMode='virtual',aiDifficulty='normal';
 let wealthHistory=[],auction=null,auctionTimer=null,auctionBidTimer=null,eventCardTimer=null,nightMode=false,moveSequenceId=0;
 const DICE=['','⚀','⚁','⚂','⚃','⚄','⚅'];
 function money(v){return 'R$ '+Math.round(v).toLocaleString('pt-BR')}
@@ -671,7 +686,7 @@ function animateDayNight(){
 }
 function showSetup(){started=false;busy=true;pendingDebt=null;pendingAction=null;managerFinishTurn=false;$('realDiceOv').classList.remove('show');moveSequenceId++;if(auctionTimer)clearInterval(auctionTimer);if(auctionBidTimer)clearTimeout(auctionBidTimer);if(eventCardTimer)clearTimeout(eventCardTimer);$('eventCard').classList.remove('show');auction=null;$('auctionOv').classList.remove('show');$('deedOv').classList.remove('show');$('portfolioOv').classList.remove('show');sheet.classList.remove('show');setupOv.classList.add('show');managerOv.classList.remove('show');ov.classList.remove('show')}
 function startGame(){
- gameMode=$('gameMode').value==='two'?'two':'ai';diceMode=$('diceMode').value==='real'?'real':'virtual';
+ gameMode=$('gameMode').value==='two'?'two':'ai';diceMode=$('diceMode').value==='real'?'real':'virtual';aiDifficulty=$('aiDifficulty').value||'normal';
  startingCash=Number($('startingCash').value)||1000;roundLimit=Number($('roundLimit').value)||0;rounds=0;history=[];wealthHistory=[];pendingDebt=null;pendingAction=null;managerFinishTurn=false;auction=null;
  spaces=START_SPACES.map(s=>Object.assign({},s,{owner:-1,buildings:0,mortgaged:false}));
  players=[{cash:startingCash,pos:0},{cash:startingCash,pos:0}];turn=0;busy=false;over=false;started=true;dice='';diceFaces=[];diceRolling=false;
@@ -767,10 +782,11 @@ function resolve(i,fromCard){
 function offerBuy(i){
  const s=spaces[i],p=players[turn];
  if(turn===1&&gameMode==='ai'){
-  const reserve=reserveForAI(),favorites=['Centro','Avenida','Jardim','Colina'];
-  const score=s.rent/s.price+(favorites.includes(s.name) ? .05 : 0);
-  const buy=p.cash-s.price>=reserve&&score>=.22;
-  if(buy){p.cash-=s.price;s.owner=1;logEvent('IA comprou '+s.name+' por '+money(s.price)+'.');showToast('IA comprou '+s.name,false);render()}
+  const config={easy:{reserve:.34,threshold:.29},normal:{reserve:.22,threshold:.22},hard:{reserve:.15,threshold:.16},expert:{reserve:.10,threshold:.12}}[aiDifficulty]||{reserve:.22,threshold:.22};
+  const reserve=Math.max(150,Math.round(startingCash*config.reserve)),favorites=['Centro','Avenida','Jardim','Colina'];
+  const score=s.rent/s.price+(favorites.includes(s.name)?(aiDifficulty==='expert'?.09:.05):0);
+  const buy=p.cash-s.price>=reserve&&score>=config.threshold;
+  if(buy){p.cash-=s.price;s.owner=1;logEvent('IA ('+aiDifficulty+') comprou '+s.name+' por '+money(s.price)+'.');showToast('IA comprou '+s.name,false);render()}
   else{logEvent('IA decidiu não comprar '+s.name+' e colocou o imóvel em leilão.');setMessage('🤖 A IA não comprou '+s.name+'. O imóvel foi a leilão.');startAuction(i)}
   if(buy)nextTurn();return;
  }
@@ -788,7 +804,7 @@ function offerUpgrade(i){
  sheetText.innerHTML='<b>'+s.name+'</b>: investir '+money(cost)+' em '+(s.buildings===3?'um hotel':'uma casa')+'?<br>Aluguel atual: <b>'+money(rentFor(s))+'</b> → novo aluguel: <b>'+money(s.rent*RENT_MULTIPLIERS[newLevel])+'</b>.';
  sheetYes.textContent=s.buildings===3?'Construir hotel':'Construir casa';sheetNo.textContent='Depois';sheet.classList.add('show');
 }
-function aiShouldBuild(s){const cost=upgradeCost(s),reserve=reserveForAI(),newRent=s.rent*RENT_MULTIPLIERS[Math.min(4,s.buildings+1)],increase=newRent-rentFor(s);return !s.mortgaged&&s.buildings<4&&players[1].cash-cost>=reserve&&increase>=cost*.12}
+function aiShouldBuild(s){const cfg={easy:{reserve:.34,roi:.22},normal:{reserve:.22,roi:.12},hard:{reserve:.15,roi:.08},expert:{reserve:.10,roi:.055}}[aiDifficulty]||{reserve:.22,roi:.12},cost=upgradeCost(s),reserve=Math.max(150,Math.round(startingCash*cfg.reserve)),newRent=s.rent*RENT_MULTIPLIERS[Math.min(4,s.buildings+1)],increase=newRent-rentFor(s);return !s.mortgaged&&s.buildings<4&&players[1].cash-cost>=reserve&&increase>=cost*cfg.roi}
 function drawChance(){
  const card=CARDS[Math.floor(Math.random()*CARDS.length)],idx=turn,who=playerName(idx);
  showIllustratedEvent(card);
@@ -940,12 +956,41 @@ function performPending(){
  }
  pendingAction=null;sheet.classList.remove('show');render();nextTurn();
 }
+function saveGame(){
+ if(!started||over){setMessage('Inicie uma partida antes de salvar.');return false}
+ if(pendingDebt||pendingAction||auction){setMessage('Conclua a decisão ou o leilão antes de salvar.');return false}
+ const data={version:1,gameMode,diceMode,aiDifficulty,startingCash,roundLimit,rounds,turn,spaces,players,history,wealthHistory,dice,diceFaces};
+ try{localStorage.setItem('jhonBancoImobiliarioSave',JSON.stringify(data));setMessage('💾 <b>Partida salva neste aparelho!</b> Você pode fechar a página e continuar depois.');showToast('Partida salva',false);return true}
+ catch(e){setMessage('Não foi possível salvar. Verifique o espaço disponível no navegador.');return false}
+}
+function loadGame(){
+ let data;try{data=JSON.parse(localStorage.getItem('jhonBancoImobiliarioSave')||'null')}catch(e){data=null}
+ if(!data||data.version!==1||!Array.isArray(data.spaces)||!Array.isArray(data.players)||data.players.length!==2){setMessage('Nenhuma partida salva compatível foi encontrada neste aparelho.');showToast('Nenhum salvamento',true);return}
+ if(data.spaces.length!==START_SPACES.length||data.spaces.some((s,i)=>s.name!==START_SPACES[i].name)||data.players.some(p=>!Number.isFinite(p.cash)||!Number.isInteger(p.pos))){setMessage('O salvamento está incompleto ou incompatível com esta versão.');return}
+ gameMode=data.gameMode==='two'?'two':'ai';diceMode=data.diceMode==='real'?'real':'virtual';aiDifficulty=['easy','normal','hard','expert'].includes(data.aiDifficulty)?data.aiDifficulty:'normal';
+ startingCash=Number(data.startingCash)||1000;roundLimit=Number(data.roundLimit)||0;rounds=Number(data.rounds)||0;turn=data.turn===1?1:0;
+ spaces=data.spaces.map((s,i)=>({...START_SPACES[i],owner:Number.isInteger(s.owner)?s.owner:-1,buildings:Math.max(0,Math.min(4,Number(s.buildings)||0)),mortgaged:!!s.mortgaged}));
+ players=data.players.map(p=>({cash:Number(p.cash),pos:Math.max(0,Math.min(START_SPACES.length-1,Number(p.pos)||0))}));
+ history=Array.isArray(data.history)?data.history.slice(0,24):[];wealthHistory=Array.isArray(data.wealthHistory)?data.wealthHistory.slice(-32):[];
+ dice=Number(data.dice)||'';diceFaces=Array.isArray(data.diceFaces)?data.diceFaces.slice(0,2):[];
+ pendingDebt=null;pendingAction=null;auction=null;busy=false;over=false;started=true;managerFinishTurn=false;
+ setupOv.classList.remove('show');managerOv.classList.remove('show');ov.classList.remove('show');sheet.classList.remove('show');
+ $('gameMode').value=gameMode;$('diceMode').value=diceMode;$('aiDifficulty').value=aiDifficulty;$('startingCash').value=String(startingCash);$('roundLimit').value=String(roundLimit);
+ $('historyCount').textContent=history.length;$('historyList').innerHTML=history.slice(0,8).map(x=>'<li class="'+(x.type||'')+'">'+x.text+'</li>').join('')||'<li>Partida restaurada.</li>';
+ $('player1').querySelector('.player-name').firstChild.textContent=(gameMode==='two'?'JOGADOR 2':'IA · '+aiDifficulty.toUpperCase())+' ';
+ $('player1').querySelector('.avatar').textContent=playerEmoji(1);
+ render();setMessage('↩️ <b>Partida carregada!</b> Continue de onde parou.');
+ if(turn===1&&gameMode==='ai'){busy=true;render();setTimeout(()=>{if(started&&!over)roll(true)},650)}
+ showToast('Partida carregada',false);return true;
+}
 function init(){
  spaces=START_SPACES.map(s=>Object.assign({},s,{owner:-1,buildings:0,mortgaged:false}));
  players=[{cash:1000,pos:0},{cash:1000,pos:0}];turn=0;busy=true;over=false;started=false;rounds=0;dice='';diceFaces=[];diceRolling=false;
  $('historyCount').textContent='0';$('historyList').innerHTML='<li>Configure a partida para começar.</li>';
  render();showSetup();setMessage('Configure o saldo inicial e a duração da partida.');
 }
+$('saveBtn').addEventListener('click',saveGame);
+$('loadBtn').addEventListener('click',loadGame);
 $('startGameBtn').addEventListener('click',startGame);
 $('realDiceConfirm').addEventListener('click',confirmRealDice);
 $('realDiceCancel').addEventListener('click',()=>{$('realDiceOv').classList.remove('show');busy=false;render();setMessage('Lançamento cancelado. '+playerName(turn)+', pode lançar novamente quando estiver pronto.')});
