@@ -1,7 +1,132 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07111b">
+<title>Sinuca 8-Ball · Jogos do Jhon · v1.3</title>
+<style>
+:root{color-scheme:dark;--bg:#07111b;--panel:#101e2d;--line:#294158;--text:#edf6f8;--muted:#9bb1c2;--cyan:#45d9e8;--gold:#f6c96a}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,system-ui,Arial,sans-serif;background:radial-gradient(900px 520px at 50% -10%,#173c50,#07111b 70%);color:var(--text)}
+body{padding:18px 14px 28px}.wrap{width:min(1120px,100%);margin:auto}
+header{text-align:center;margin:0 auto 16px}h1{font-size:clamp(25px,4vw,40px);margin:0 0 6px;letter-spacing:-1px}header p{color:var(--muted);margin:0;font-size:14px}.version{display:inline-block;margin-top:9px;padding:4px 10px;border:1px solid #315064;border-radius:30px;color:#9fdce5;font-size:11px}
+.panel{background:linear-gradient(145deg,#13273a,#0d1927);border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:0 18px 50px #0005}
+.scorebar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:12px}.stat{background:#091521;border:1px solid #20384c;border-radius:12px;padding:9px;text-align:center}.stat small{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.7px}.stat b{display:block;font-size:17px;margin-top:2px}
+.table-wrap{position:relative;width:100%;border-radius:16px;overflow:hidden;background:#0a1d24;border:5px solid #6d442a;box-shadow:inset 0 0 0 7px #b47b43,0 12px 30px #0008}
+canvas{display:block;width:100%;height:auto;aspect-ratio:1000/560;touch-action:none}
+.controls{display:grid;grid-template-columns:1.2fr 1fr;gap:12px;margin-top:13px}.controlbox{background:#0a1723;border:1px solid #20384c;border-radius:13px;padding:11px}.controlbox label{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:#c5d7e2;margin-bottom:7px}.controlbox input{width:100%;accent-color:var(--cyan)}.help{font-size:11px;color:var(--muted);line-height:1.5;margin:9px 0 0}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.btn{border:1px solid #35516a;background:#14283a;color:var(--text);border-radius:11px;padding:11px 15px;font:700 13px inherit;cursor:pointer;min-height:43px}.btn.primary{background:linear-gradient(120deg,#0e7490,#155e75);border-color:#38bdf8;color:white}.btn:hover{filter:brightness(1.15)}.btn:focus-visible,input:focus-visible{outline:3px solid #67e8f9;outline-offset:3px}
+.message{min-height:43px;padding:11px 13px;border-radius:11px;background:#0a1723;border:1px solid #20384c;color:#cbe5ed;font-size:13px;line-height:1.45;margin-top:12px}
+.rules{margin-top:12px;color:var(--muted);font-size:12px;line-height:1.6}.rules summary{color:#cde6ed;cursor:pointer;font-weight:800}
+@media(max-width:650px){body{padding:12px 8px 22px}.panel{padding:9px}.scorebar{grid-template-columns:repeat(2,minmax(0,1fr))}.controls{grid-template-columns:1fr}.btnrow .btn{flex:1}.table-wrap{border-width:3px;border-radius:11px}}
 
+/* v1.1 — mesa aprimorada e ferramentas de partida */
+.settings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:0 0 12px}
+.setting{background:#091521;border:1px solid #29465b;border-radius:12px;padding:9px}
+.setting label{display:block;color:#a9c0d1;font-size:10px;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+.setting select{width:100%;min-width:0;background:#162b3d;color:#edf6f8;border:1px solid #38566d;border-radius:8px;padding:9px;font:600 12px system-ui}
+.setting input[type=range]{width:100%;accent-color:#45d9e8}
+.tools{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.tools .btn{flex:1;min-width:105px}
+.btn:disabled{opacity:.42;cursor:not-allowed;filter:saturate(.5)}.stat{transition:border-color .2s,background .2s}
+.table-wrap{box-shadow:inset 0 0 0 7px #b47b43,0 16px 34px #0009,0 0 0 1px #d7a56b55}
+canvas{cursor:crosshair}
+@media(max-width:650px){.settings{grid-template-columns:repeat(2,minmax(0,1fr))}.settings .setting:last-child{grid-column:1/-1}.tools .btn{min-width:calc(50% - 7px);font-size:11px;padding:10px 8px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
 
-// Web Audio API - Som Retrô
-let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}}function tone(f,d,t='square',v=.05){if(!soundOn||!audioCtx)return;const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=t;o.frequency.value=f;g.gain.value=v;g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d)}function ball(id,x,y){return{id,x,y,vx:0,vy:0,active:true,spin:0}}
+/* v1.2 — layout fixo e controles de mouse corrigidos */
+html,body{height:100%;overflow:hidden}
+body{height:100dvh;padding:7px 10px 9px}
+.wrap{height:100%;width:min(1500px,100%);display:flex;flex-direction:column;margin:0 auto}
+header{flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:12px;text-align:left;margin:0 0 7px}
+h1{font-size:clamp(20px,2.2vw,29px);margin:0;letter-spacing:-.6px}
+header p{font-size:12px;margin:0}
+.version{margin:0;padding:4px 9px;white-space:nowrap}
+.panel{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 285px;grid-template-rows:auto auto minmax(0,1fr) auto auto auto auto;gap:8px;padding:10px;overflow:hidden}
+.settings{grid-column:1/-1;grid-row:1;margin:0}
+.setting{padding:7px}
+.scorebar{grid-column:1/-1;grid-row:2;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px;margin:0}
+.stat{padding:6px}
+.stat small{font-size:9px}
+.stat b{font-size:15px}
+.table-wrap{grid-column:1;grid-row:3/7;width:100%;height:100%;min-height:0;margin:0;display:grid;place-items:center;aspect-ratio:auto}
+canvas{display:block;width:100%;height:auto;max-width:100%;max-height:100%;aspect-ratio:1000/560;touch-action:none;cursor:crosshair}
+.controls{grid-column:2;grid-row:3;display:grid;grid-template-columns:1fr;align-content:start;gap:8px;margin:0}
+.controlbox{padding:9px}
+.controlbox .help{margin-top:6px}
+.tools{grid-column:2;grid-row:4;margin:0;align-self:start}
+.tools .btn{min-width:0;padding:9px 8px;font-size:11px}
+.message{grid-column:2;grid-row:5;margin:0;min-height:40px;padding:9px 10px}
+.panel>.btnrow{grid-column:2;grid-row:6;margin:0;align-self:start}
+.panel>.btnrow .btn{flex:1;padding:9px 10px;min-height:39px}
+.rules{grid-column:1/-1;grid-row:7;margin:0}
+@media(max-height:650px) and (min-width:821px){
+ header p{display:none}
+ .rules{display:none}
+ .panel{gap:6px;padding:8px}
+ .setting{padding:5px}
+ .stat{padding:4px}
+ .controlbox{padding:7px}
+}
+@media(max-width:820px){
+ html,body{height:auto;min-height:100%;overflow:auto}
+ body{height:auto;min-height:100dvh;padding:12px 8px 20px}
+ .wrap{height:auto;min-height:100dvh;display:block}
+ header{display:block;text-align:center;margin:0 auto 12px}
+ h1{font-size:clamp(25px,4vw,40px);margin:0 0 6px}
+ header p{display:block;font-size:14px}
+ .version{display:inline-block;margin-top:8px}
+ .panel{display:block;min-height:0;overflow:visible;padding:9px}
+ .settings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin:0 0 12px}
+ .settings .setting:last-child{grid-column:1/-1}
+ .scorebar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin-bottom:12px}
+ .table-wrap{display:block;width:100%;height:auto;min-height:0;aspect-ratio:1000/560;margin:0}
+ canvas{width:100%;height:auto;max-width:none;max-height:none;aspect-ratio:1000/560}
+ .controls{display:grid;grid-template-columns:1fr;gap:12px;margin-top:13px}
+ .tools{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+ .tools .btn{flex:1;min-width:calc(50% - 7px);font-size:11px;padding:10px 8px}
+ .message{margin-top:12px}
+ .panel>.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+ .panel>.btnrow .btn{flex:1}
+ .rules{display:block;margin-top:12px}
+}
+
+</style>
+</head>
+<body><main class="wrap">
+<header><h1>🎱 Sinuca 8-Ball</h1><p>Controle o taco, mire com precisão e encaçape suas bolas antes da preta.</p><span class="version">Jogos do Jhon · v1.2</span></header>
+<section class="panel">
+<div class="settings" aria-label="Configurações da partida">
+<div class="setting"><label for="difficulty">🎯 Dificuldade</label><select id="difficulty"><option value="easy">Fácil</option><option value="normal" selected>Normal</option><option value="pro">Profissional</option></select></div>
+<div class="setting"><label for="mode">🎮 Modo de jogo</label><select id="mode"><option value="classic" selected>8-Ball clássico</option><option value="practice">Treino livre</option></select></div>
+<div class="setting"><label for="spin">↪ Efeito lateral</label><input id="spin" type="range" min="-100" max="100" value="0"><div class="help" id="spinValue">Sem efeito</div></div>
+</div>
+<div class="scorebar">
+<div class="stat"><small>Suas bolas</small><b id="playerGroup">Aberto</b></div>
+<div class="stat"><small>Encaçapadas</small><b id="pocketed">0 / 7</b></div>
+<div class="stat"><small>Tacadas</small><b id="shots">0</b></div>
+<div class="stat"><small>Recorde</small><b id="best">0</b></div><div class="stat"><small>Faltas</small><b id="fouls">0</b></div><div class="stat"><small>Pontos</small><b id="score">0</b></div>
+</div>
+<div class="table-wrap"><canvas id="table" width="1000" height="560" aria-label="Mesa de sinuca. Mova o mouse para mirar e clique para executar a tacada."></canvas></div>
+<div class="controls">
+<div class="controlbox"><label for="power"><span>💥 Força da tacada</span><b id="powerValue">55%</b></label><input id="power" type="range" min="12" max="100" value="55"><p class="help">Mova o mouse para mirar e clique uma vez na mesa para tacar. Também é possível usar o botão Tacada.</p></div>
+<div class="controlbox"><label><span>🎯 Mira</span><b id="aimLabel">Pronta</b></label><p class="help">A linha pontilhada mostra a direção aproximada da bola branca. Se encaçapar a branca, reposicione-a na área de saída.</p><div class="btnrow"><button class="btn primary" id="shoot">🎱 Tacada</button><button class="btn" id="placeCue" disabled>Reposicionar branca</button><button class="btn" id="undoShot" disabled>↶ Desfazer tacada</button><button class="btn" id="pauseGame" disabled>Ⅱ Pausar</button></div></div>
+</div>
+<div class="tools"><button class="btn" id="guideToggle">🎯 Guia: ligado</button><button class="btn" id="soundToggle">🔇 Som: desligado</button><button class="btn" id="centerCue" disabled>⚪ Branca no início</button></div><div class="message" id="message" role="status" aria-live="polite">Sua vez! Aponte para a direção desejada e escolha a força.</div>
+<div class="btnrow"><button class="btn" id="newGame">↻ Nova partida</button><button class="btn" id="rulesBtn">📖 Regras</button><a class="btn" href="../index.html" style="text-decoration:none">⌂ Voltar ao Arcade</a></div>
+<details class="rules" id="rules"><summary>Como jogar</summary><p>É uma partida simplificada de 8-Ball para um jogador. Depois da primeira bola encaçapada, você recebe o grupo de lisas ou listradas. Encaçape as sete bolas do seu grupo e depois a preta (8). Encaçapar a branca é falta; encaçapar a preta antes da hora encerra a partida. O jogo usa física simplificada para ser fácil de jogar no celular.</p></details>
+</section></main>
+<script>
+(()=>{
+'use strict';
+const canvas=document.getElementById('table'),ctx=canvas.getContext('2d'),W=1000,H=560;
+const play={x:94,y:72,w:812,h:416},R=11.5,pocketR=24;let pocketSize=24,difficulty='normal',mode='classic',paused=false,soundEnabled=false,guideEnabled=true,spinValue=0,fouls=0,pottedTotal=0,score=0,lastSnapshot=null,canUndo=false,particles=[];
+const pockets=[[play.x,play.y],[play.x+play.w/2,play.y-2],[play.x+play.w,play.y],[play.x,play.y+play.h],[play.x+play.w/2,play.y+play.h+2],[play.x+play.w,play.y+play.h]];
+const colors={1:'#f6d34c',2:'#3286df',3:'#d8483e',4:'#7445a7',5:'#f28b2f',6:'#31965d',7:'#9b343a',8:'#131820',9:'#f6d34c',10:'#3286df',11:'#d8483e',12:'#7445a7',13:'#f28b2f',14:'#31965d',15:'#9b343a',0:'#f3f5eb'};
+let balls=[],aim={x:1,y:0},pointer={x:650,y:280},moving=false,shots=0,playerGroup=null,turn='player',cueInHand=false,gameOver=false,notice='Sua vez! Aponte para a direção desejada e escolha a força.',best=0,lastPocket=0,shotPocketed=[],firstHit=null,shotFoul=false,animation=0;
+const $=id=>document.getElementById(id);
+try{best=Number(localStorage.getItem('jhon_snooker_best')||0)||0}catch(e){}
+$('best').textContent=best;
+function ball(id,x,y){return{id,x,y,vx:0,vy:0,active:true,spin:0}}
 function rack(){
  balls=[ball(0,play.x+play.w*.28,play.y+play.h/2)];
  const rows=[[1],[9,2],[3,8,10],[11,4,12,5],[6,13,7,14,15]];
@@ -176,8 +301,4 @@ function beep(freq,duration){if(!soundEnabled)return;try{const AC=window.AudioCo
 function lighten(hex,a){return shade(hex,a)}function darken(hex,a){return shade(hex,-a)}function shade(hex,amount){const n=parseInt(hex.slice(1),16),r=Math.max(0,Math.min(255,((n>>16)&255)+Math.round(255*amount*.25))),g=Math.max(0,Math.min(255,((n>>8)&255)+Math.round(255*amount*.25))),b=Math.max(0,Math.min(255,(n&255)+Math.round(255*amount*.25)));return 'rgb('+r+','+g+','+b+')'}
 rack();
 })();
-</script><script src="../arcade-common.js"></script>
-.btn:focus-visible, button:focus-visible{outline: 2px solid #67e8f9; outline-offset: 2px;}input:focus-visible, select:focus-visible{outline: 2px solid #67e8f9; outline-offset: 2px;}
-
-aria-live="polite"
-</body></html>
+</script></body></html>
