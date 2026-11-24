@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#070b14"><title>Clássicos Arcade · Jogos do Jhon v1.10</title>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#070b14"><title>Clássicos Arcade · Jogos do Jhon v1.11</title>
 <style>
 :root{color-scheme:dark;--bg:#070b14;--panel:#111b2d;--line:#29364c;--txt:#e2e8f0;--muted:#94a3b8;--cyan:#22d3ee;--gold:#fbbf24;--green:#34d399;--red:#fb7185}
 *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(850px 500px at 50% -10%,#172554 0,transparent 70%),var(--bg);color:var(--txt);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;padding:14px 12px 30px}button{font:inherit;cursor:pointer;color:inherit}.wrap{width:min(100%,820px);margin:auto}.top{display:flex;align-items:center;justify-content:space-between;gap:10px}.back{color:var(--muted);text-decoration:none;font-size:13px}.ver{font-size:11px;color:#a5f3fc;border:1px solid #155e75;border-radius:99px;padding:5px 10px}.hero{text-align:center;padding:13px 0 16px}.logo{font-size:clamp(45px,12vw,76px);line-height:1.1}.hero h1{margin:4px 0;font-size:clamp(25px,6vw,36px)}.sub{margin:0;color:var(--muted);font-size:14px}.panel{background:linear-gradient(145deg,#172338,#101827);border:1px solid var(--line);border-radius:18px;padding:13px;box-shadow:0 14px 32px #0004}.stats{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:12px}.stat{background:#0b1424;border:1px solid #26364c;border-radius:12px;padding:7px 12px;text-align:center;min-width:80px}.stat small{display:block;color:var(--muted);font-size:10px}.stat b{font-size:20px;font-variant-numeric:tabular-nums}.actions,.controls{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:12px}.btn{background:#1d2c42;border:1px solid #3b4b63;border-radius:11px;padding:10px 14px;font-weight:750}.btn.primary{background:#075466;border-color:#0891b2}.btn.gold{background:#563f08;border-color:#d6a51d}.btn:active{transform:scale(.97)}.hint{text-align:center;color:var(--muted);font-size:12px;margin:10px 0 0}.board{margin:auto;max-width:100%;overflow:auto}.message{text-align:center;min-height:25px;color:#bae6fd;font-weight:700;margin:8px 0}.pad{display:grid;grid-template-columns:repeat(3,56px);gap:7px;justify-content:center;margin:12px auto 0}.pad button{height:48px;border-radius:12px;background:#16263d;border:1px solid #334155;font-size:19px}.pad .empty{visibility:hidden}
@@ -34,8 +34,9 @@ canvas{display:block;max-width:100%;height:auto;touch-action:none;border-radius:
 .bubble-stage .btn:not(:disabled){text-shadow:0 1px 2px #0008}
 @media(max-width:430px){.bubble-stage{padding:9px 5px 12px;border-radius:17px}.bubble-stage canvas#bubble{border-radius:14px}.bubble-stage .stat{min-width:68px!important;padding:5px 7px!important}.bubble-stage .stat b{font-size:16px}}
 @media(prefers-reduced-motion:no-preference){.bubble-stage .btn{transition:transform .16s ease,filter .16s ease,box-shadow .16s ease}}
+.bubble-overlay{position:absolute;inset:6px;z-index:8;display:flex;align-items:center;justify-content:center;padding:10px;background:#020617ef;backdrop-filter:blur(7px);border:1px solid #38bdf866;border-radius:17px}.bubble-overlay[hidden]{display:none!important}.bubble-overlay-card{width:min(100%,330px);max-height:100%;overflow:auto;padding:15px;border:1px solid #38bdf8;border-radius:16px;background:linear-gradient(150deg,#122a46,#071426);box-shadow:0 15px 45px #000b;text-align:left}.bubble-overlay-card h3{margin:0 0 10px;color:#e0f2fe;font-size:19px}.bubble-overlay-card p,.bubble-overlay-card li{font-size:13px;line-height:1.5;color:#cbd5e1}.bubble-overlay-card ul{padding-left:20px;margin:8px 0 14px}.bubble-overlay-card .btn{margin:4px 4px 0 0}.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:12px 0}.result-item{padding:8px;background:#0b1c30;border:1px solid #294761;border-radius:10px}.result-item small{display:block;color:#7dd3fc;font-size:10px}.result-item b{font-size:17px;color:#f8fafc}.achievement{padding:8px 0;border-bottom:1px solid #294761}.achievement.locked{opacity:.4;filter:grayscale(1)}@media(max-width:430px){.bubble-overlay{inset:4px;padding:7px}.bubble-overlay-card{padding:12px}.bubble-stage .controls{gap:6px}.bubble-stage .btn{padding:9px 10px;font-size:12px}}
 </style></head><body><main class="wrap">
-<div class="top"><a class="back" href="../index.html">← Voltar ao Arcade</a><span class="ver">JOGO v1.10</span></div>
+<div class="top"><a class="back" href="../index.html">← Voltar ao Arcade</a><span class="ver">JOGO v1.11</span></div>
 <header class="hero"><div id="logo" class="logo">🎮</div><h1 id="title">Clássicos Arcade</h1><p id="subtitle" class="sub">Diversão para todos os momentos</p></header>
 <section class="panel"><div id="stats" class="stats"></div><div id="stage"></div><div id="message" class="message" aria-live="polite"></div><div id="controls" class="controls"></div><p id="hint" class="hint"></p></section>
 </main><script>
@@ -51,7 +52,7 @@ const info={
 };
 if(!info[mode])location.replace('../index.html');
 if(mode==='frogger')document.body.dataset.arcadeControls='both';
-const [logo,title,subtitle,hint]=info[mode];$('logo').textContent=logo;$('title').textContent=title;$('subtitle').textContent=subtitle;$('hint').textContent=hint;document.title=title+' · Jogos do Jhon v1.10';
+const [logo,title,subtitle,hint]=info[mode];$('logo').textContent=logo;$('title').textContent=title;$('subtitle').textContent=subtitle;$('hint').textContent=hint;document.title=title+' · Jogos do Jhon v1.11';
 const stat=(label,value)=>'<div class="stat"><small>'+label+'</small><b id="'+value+'">0</b></div>';
 function shellStats(html){$('stats').innerHTML=html}
 function setMsg(t){$('message').textContent=t}
@@ -66,127 +67,33 @@ shellStats(stat('Pontos','score')+stat('Suas peças','mine')+stat('Peças da IA'
 $('stage').innerHTML='<div class="ends"><span id="leftEnd">Ponta esquerda: —</span><span id="rightEnd">Ponta direita: —</span></div><div class="domboard" id="domboard">O tabuleiro começa aqui</div><h3 style="font-size:15px;margin:14px 0 3px">Sua mão</h3><div class="hand" id="hand"></div><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">'+btn('draw','Comprar peça')+btn('pass','Passar')+'</div>';
 buttons(btn('new','🔄 Nova partida','btn primary'));let deck=[],hand=[],ai=[],board=[],score=0,blocked=0,locked=false;
 function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
-function fresh(){deck=[];for(let a=0;a<=6;a++)for(let b=a;b<=6;b++)deck.push([a,b]);shuffle(deck);hand=deck.splice(0,7);ai=deck.splice(0,7);board=[deck.pop()];score=0;blocked=0;locked=false;render();setMsg('Sua vez! Comece com uma peça que combine com uma das pontas.')}
-function ends(){return [board[0][0],board[board.length-1][1]]}
-function render(){ $('score').textContent=score;$('mine').textContent=hand.length;$('ai').textContent=ai.length;const [l,r]=ends();$('leftEnd').textContent='Ponta esquerda: '+l;$('rightEnd').textContent='Ponta direita: '+r;$('domboard').innerHTML=board.map(p=>'<span class="domtile">'+p[0]+'<i></i>'+p[1]+'</span>').join('');$('hand').innerHTML='';hand.forEach((p,i)=>{const b=document.createElement('button');b.innerHTML=p[0]+' │ '+p[1];b.addEventListener('click',()=>choose(i));$('hand').appendChild(b)});$('draw').disabled=!deck.length||locked;$('pass').disabled=locked}
-function legal(p){const [l,r]=ends();return p[0]===l||p[1]===l||p[0]===r||p[1]===r}
-function put(p,side){const [l,r]=ends();if(side==='L'){if(p[1]===l)board.unshift(p);else board.unshift([p[1],p[0]])}else{if(p[0]===r)board.push(p);else board.push([p[1],p[0]])}}
-function choose(i){if(locked)return;const p=hand[i];if(!legal(p)){setMsg('Essa peça não encaixa. Escolha outra.');return}const [l,r]=ends();let side;if(p[0]===l||p[1]===l){if((p[0]===r||p[1]===r)&&l!==r){const s=prompt('Esta peça encaixa nos dois lados. Digite E para esquerda ou D para direita.','D');side=s&&s.toUpperCase().startsWith('E')?'L':'R'}else side='L'}else side='R';put(p,side);hand.splice(i,1);score+=p[0]+p[1];if(!hand.length){finish(true);return}render();setMsg('Boa jogada! Vez da IA…');locked=true;setTimeout(aiTurn,650)}
-function aiTurn(){if(!ai.length){finish(false);return}let idx=ai.findIndex(legal);while(idx<0&&deck.length){ai.push(deck.pop());idx=ai.findIndex(legal)}if(idx<0){blocked++;locked=false;render();setMsg('A IA passou. Sua vez!');return}const p=ai.splice(idx,1)[0];const [l,r]=ends();put(p,(p[0]===l||p[1]===l)?'L':'R');render();if(!ai.length){finish(false);return}locked=false;setMsg('A IA jogou '+p[0]+'|'+p[1]+'. Sua vez!')}
-function finish(win){locked=true;const my=hand.reduce((s,p)=>s+p[0]+p[1],0),opp=ai.reduce((s,p)=>s+p[0]+p[1],0);if(win){score+=opp;saveBest('domino',score);setMsg('🏆 Você venceu! Pontuação da rodada: '+score+'.')}else if(!ai.length){setMsg('A IA venceu desta vez. Tente outra rodada!')}else{setMsg(my<opp?'Rodada bloqueada: você venceu pelos pontos!':'Rodada bloqueada: a IA venceu pelos pontos.')}render()}
-on('draw',()=>{if(deck.length&&!locked){hand.push(deck.pop());render();setMsg('Você comprou uma peça.')}});
-on('pass',()=>{if(locked)return;if(hand.some(legal)){setMsg('Você ainda tem uma peça que encaixa.');return}if(deck.length){hand.push(deck.pop());render();setMsg('Compre uma peça antes de passar.')}else{locked=true;setTimeout(aiTurn,300)}});
-on('new',fresh);fresh();
+function readAchievements(){try{return JSON.parse(localStorage.getItem(ACH_KEY)||'[]')}catch(e){return []}}
+function unlockAchievement(id){
+ const list=readAchievements();if(list.includes(id))return;list.push(id);try{localStorage.setItem(ACH_KEY,JSON.stringify(list))}catch(e){}
+ const item=ACHIEVEMENTS.find(a=>a.id===id);if(item){setMsg('🏆 Conquista desbloqueada: '+item.name+'!');playFx('level')}
 }
-function paciencia(){
-shellStats(stat('Movimentos','moves')+stat('Vitórias','wins')+stat('Recorde','best'));
-let stock=[],waste=[],cols=[],found=[[],[],[],[]],sel=null,moves=0,wins=0;
-const suits=['♠','♥','♦','♣'],red=s=>s==='♥'||s==='♦',label=c=>c.v===1?'A':c.v===11?'J':c.v===12?'Q':c.v===13?'K':c.v;
-function fresh(){let d=[];for(let s of suits)for(let v=1;v<=13;v++)d.push({s,v,id:s+v});for(let i=d.length-1;i>0;i--){let j=Math.random()*(i+1)|0;[d[i],d[j]]=[d[j],d[i]]}stock=d;waste=[];cols=Array.from({length:7},(_,i)=>stock.splice(0,i+1).map((c,j)=>({...c,up:j===i})));found=[[],[],[],[]];sel=null;moves=0;render();setMsg('Comece revelando uma carta do monte.')}
-function card(c,clickable=true){return '<div class="cardface '+(red(c.s)?'red':'')+(c.up===false?' back':'')+(sel&&sel.card.id===c.id?' sel':'')+'" data-card="'+c.id+'">'+(c.up===false?'':label(c)+c.s)+'</div>'}
-function render(){ $('moves').textContent=moves;$('wins').textContent=wins;$('best').textContent=best('paciencia');let html='<div class="solmeta"><div class="pile" id="stock"><div class="pilehead">🂠</div>'+(stock.length?'<div class="cardface back">◆</div>':'')+'</div><div class="pile" id="waste"><div class="pilehead">Descarte</div>'+(waste.length?card({...waste[waste.length-1],up:true}):'')+'</div>';for(let i=0;i<4;i++)html+='<div class="pile" data-found="'+i+'"><div class="pilehead"> '+suits[i]+' </div>'+(found[i].length?card({...found[i][found[i].length-1],up:true}):'')+'</div>';html+='</div><div class="solgrid">'+cols.map((col,i)=>'<div class="pile" data-col="'+i+'">'+(col.length?col.map((c,j)=>'<div style="margin-top:'+(j?'-25px':'0')+'">'+card(c)+'</div>').join(''):'<div class="pilehead">K</div>')+'</div>').join('')+'</div>';$('stage').innerHTML=html;
-$('stock').onclick=draw;$('waste').onclick=()=>{if(waste.length)select({type:'waste',index:0,cardIndex:waste.length-1,card:waste[waste.length-1]})};document.querySelectorAll('[data-card]').forEach(el=>el.onclick=e=>{e.stopPropagation();const c=findCard(el.dataset.card);if(c)select(c)});document.querySelectorAll('[data-col]').forEach(el=>el.onclick=()=>destCol(+el.dataset.col));document.querySelectorAll('[data-found]').forEach(el=>el.onclick=()=>destFound(+el.dataset.found));}
-function findCard(id){for(let i=0;i<cols.length;i++){let j=cols[i].findIndex(c=>c.id===id);if(j>=0&&cols[i][j].up)return {type:'col',index:i,cardIndex:j,card:cols[i][j]}}let j=waste.findIndex(c=>c.id===id);if(j===waste.length-1&&j>=0)return {type:'waste',index:0,cardIndex:j,card:waste[j]};return null}
-function select(x){if(sel&&sel.card.id===x.card.id){sel=null}else sel=x;render()}
-function removeSel(){if(sel.type==='waste')return waste.splice(sel.cardIndex,1);const arr=cols[sel.index],part=arr.splice(sel.cardIndex);if(arr.length)arr[arr.length-1].up=true;return part}
-function destCol(i){if(!sel)return;const moving=sel.type==='waste'?[sel.card]:cols[sel.index].slice(sel.cardIndex),first=moving[0],dest=cols[i],top=dest[dest.length-1];if(sel.type==='col'&&sel.index===i){sel=null;render();return}if(!top?first.v===13:(first.v===top.v-1&&red(first.s)!==red(top.s))){const part=removeSel();if(sel.type==='waste'){}cols[i].push(...(Array.isArray(part)?part:[part]));moves++;sel=null;checkWin();render()}else setMsg('No tableau, alterne as cores e desça um valor.')}
-function destFound(i){if(!sel)return;const c=sel.card,top=found[i][found[i].length-1];if(c.s===suits[i]&&(!top?c.v===1:c.v===top.v+1)){removeSel();found[i].push(c);moves++;sel=null;checkWin();render()}else setMsg('A fundação recebe Ás e depois cartas do mesmo naipe em ordem crescente.')}
-function draw(){sel=null;if(stock.length){const c=stock.pop();c.up=true;waste.push(c)}else if(waste.length){stock=waste.reverse().map(c=>({...c,up:false}));waste=[]}render()}
-function checkWin(){if(found.every(a=>a.length===13)){wins++;setMsg('🏆 Parabéns! Você completou a Paciência!')}}
-buttons(btn('new','🔄 Novo jogo','btn primary')+btn('auto','↗ Enviar para fundação'));on('new',fresh);on('auto',()=>{let changed=true;while(changed){changed=false;const cands=[waste.length?{type:'waste',index:0,cardIndex:waste.length-1,card:waste[waste.length-1]}:null,...cols.map((col,i)=>col.length?{type:'col',index:i,cardIndex:col.length-1,card:col[col.length-1]}:null)].filter(Boolean);for(const c of cands){const j=suits.indexOf(c.card.s),top=found[j][found[j].length-1];if(!top?c.card.v===1:c.card.v===top.v+1){sel=c;removeSel();found[j].push(c.card);moves++;changed=true;break}}}checkWin();render()});fresh();
+function checkAchievements(){if(level>1)unlockAchievement('first');if(bestCombo>=5)unlockAchievement('combo5');if(level>=5)unlockAchievement('level5');if(totalPopped>=100)unlockAchievement('pop100');if(shots>=10&&clears/shots>=.8)unlockAchievement('accuracy80')}
+function showAchievements(){const list=readAchievements();$('achievementList').innerHTML=ACHIEVEMENTS.map(a=>'<div class="achievement '+(list.includes(a.id)?'':'locked')+'"><b>'+(list.includes(a.id)?'🏆':'🔒')+' '+a.name+'</b><br><small>'+a.desc+'</small></div>').join('');$('bubbleAchievements').hidden=false}
+function showTutorial(){$('bubbleTutorial').hidden=false}
+function closeTutorial(){$('bubbleTutorial').hidden=true;try{localStorage.setItem('jhon-bolhas-tutorial','1')}catch(e){}}
+function saveGame(){
+ try{if(gameOver){localStorage.removeItem(SAVE_KEY);return}
+ const d={v:1,difficulty,grid:grid.map(row=>row.map(b=>b?b.color:null)),angle,shot:shot?{x:shot.x,y:shot.y,vx:shot.vx,vy:shot.vy,color:shot.color,r:shot.r,wild:shot.wild,mode:shot.mode}:null,score,level,shots,clears,combo,bestCombo,bombs,rainbows,special,loadedColor,queueColor,swappedThisTurn,lives,totalPopped};
+ localStorage.setItem(SAVE_KEY,JSON.stringify(d));
+ }catch(e){}
 }
-function pinball(){
-shellStats(stat('Pontos','score')+stat('Vidas','lives')+stat('Recorde','best'));
-$('stage').innerHTML='<canvas id="pin" width="360" height="520" aria-label="Mesa de pinball"></canvas><p class="hint">Toque nos botões ou use as setas / A e D do teclado.</p><div class="pin-controls" style="margin-top:10px"><button id="leftFlipper">◀</button><button id="launch" class="btn gold">LANÇAR</button><button id="rightFlipper">▶</button></div>';
-buttons(btn('restart','🔄 Reiniciar','btn primary'));const cv=$('pin'),ctx=cv.getContext('2d');let score=0,lives=3,ball={x:180,y:465,vx:0,vy:0,r:8,active:false},left=false,right=false,playing=true,anim=0;
-const bumpers=[[90,210,22],[180,145,24],[270,210,22],[130,300,17],[235,300,17]];
-function resetBall(){ball={x:180,y:465,vx:0,vy:0,r:8,active:false}}
-function launch(){if(!playing)return;ball.active=true;ball.vx=(Math.random()-.5)*3;ball.vy=-8.5}
-function press(side,onoff){if(side==='L')left=onoff;else right=onoff}
-function frame(){if(!playing)return;ctx.clearRect(0,0,360,520);ctx.fillStyle='#0b1c2e';ctx.fillRect(0,0,360,520);ctx.strokeStyle='#38bdf8';ctx.lineWidth=6;ctx.strokeRect(8,8,344,504);ctx.fillStyle='#1e3a5f';ctx.fillRect(18,18,324,484);ctx.fillStyle='#fbbf24';for(const [x,y,r] of bumpers){ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff7ed';ctx.beginPath();ctx.arc(x-5,y-6,5,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fbbf24'}ctx.fillStyle='#94a3b8';ctx.fillRect(20,420,8,82);ctx.fillRect(332,420,8,82);
-ctx.save();ctx.translate(108,470);ctx.rotate(left?-.35:.25);ctx.fillStyle='#22d3ee';ctx.fillRect(-43,-7,86,14);ctx.restore();ctx.save();ctx.translate(252,470);ctx.rotate(right?.35:-.25);ctx.fillStyle='#22d3ee';ctx.fillRect(-43,-7,86,14);ctx.restore();
-if(ball.active){ball.vy+=.16;ball.x+=ball.vx;ball.y+=ball.vy;if(ball.x<25||ball.x>335){ball.x=Math.max(25,Math.min(335,ball.x));ball.vx*=-.85}if(ball.y<25){ball.y=25;ball.vy=Math.abs(ball.vy)*.8}
-for(const [x,y,r] of bumpers){let dx=ball.x-x,dy=ball.y-y,d=Math.hypot(dx,dy);if(d<r+ball.r){const nx=dx/(d||1),ny=dy/(d||1);ball.x=x+nx*(r+ball.r);ball.y=y+ny*(r+ball.r);ball.vx=nx*6;ball.vy=ny*6;score+=25}}
-if(ball.y>440&&ball.y<495&&((ball.x<175&&left)||(ball.x>185&&right))){ball.vy=-Math.abs(ball.vy)-5;ball.vx+=(ball.x<180?2:-2);score+=10}
-if(ball.y>520){lives--;resetBall();if(lives<=0){playing=false;saveBest('pinball',score);setMsg('Fim de jogo! Seu resultado: '+score+'. Toque em reiniciar para jogar novamente.')}}}
-ctx.fillStyle='#f8fafc';ctx.beginPath();ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2);ctx.fill();$('score').textContent=score;$('lives').textContent=lives;$('best').textContent=best('pinball');anim=requestAnimationFrame(frame)}
-function bind(id,side){const b=$(id);b.addEventListener('pointerdown',e=>{e.preventDefault();press(side,true)});['pointerup','pointercancel','pointerleave'].forEach(ev=>b.addEventListener(ev,()=>press(side,false)))}
-bind('leftFlipper','L');bind('rightFlipper','R');on('launch',launch);on('restart',()=>{score=0;lives=3;playing=true;resetBall();cancelAnimationFrame(anim);frame();setMsg('Bola pronta! Lance e acione as palhetas.')});window.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key.toLowerCase()==='a')press('L',true);if(e.key==='ArrowRight'||e.key.toLowerCase()==='d')press('R',true);if(e.code==='Space')launch()});window.addEventListener('keyup',e=>{if(e.key==='ArrowLeft'||e.key.toLowerCase()==='a')press('L',false);if(e.key==='ArrowRight'||e.key.toLowerCase()==='d')press('R',false)});frame();setMsg('Toque em LANÇAR para soltar a bolinha.');
-}
-function bolhas(){
-shellStats(stat('Pontos','score')+stat('Bolhas','count')+stat('Recorde','best'));
-$('stage').classList.add('bubble-stage');
-$('stage').innerHTML=
- '<div style="display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;margin:2px 0 10px">'+
- '<label for="bubbleDifficulty" style="font-size:12px;color:#cbd5e1">Dificuldade</label>'+
- '<select id="bubbleDifficulty" style="background:#0b1424;color:#e2e8f0;border:1px solid #3b4b63;border-radius:9px;padding:8px 10px;font:inherit;font-size:12px">'+
- '<option value="easy">Fácil</option><option value="normal" selected>Normal</option><option value="hard">Difícil</option></select>'+
- '<span id="bubbleLevel" class="stat" style="min-width:74px;padding:5px 9px"><small>Nível</small><b>1</b></span>'+
- '<span id="bubbleAccuracy" class="stat" style="min-width:74px;padding:5px 9px"><small>Precisão / tiros</small><b>0% · 0</b></span>'+
- '<span id="bubbleCombo" class="stat" style="min-width:74px;padding:5px 9px"><small>Combo / recorde</small><b>x0 / x0</b></span>'+
- '</div><canvas id="bubble" width="360" height="520" aria-label="Bubble Shooter"></canvas>'+
- '<div class="hint">Mire tocando no campo. Combine 3 ou mais bolhas. Use os poderes quando precisar.</div>';
-buttons(
- btn('shoot','🫧 Atirar','btn primary')+
- btn('swap','🔄 Trocar')+
- btn('bomb','💣 Bomba ×1')+
- btn('rainbow','🌈 Coringa ×1')+
- btn('pause','⏸ Pausar')+
- btn('new','🔄 Reiniciar')
-);
-const cv=$('bubble'),ctx=cv.getContext('2d');
-const COLORS=['#fb7185','#38bdf8','#fbbf24','#34d399','#c084fc','#fb923c'];
-const MODES={
- easy:{label:'Fácil',palette:4,rows:4,speed:470},
- normal:{label:'Normal',palette:5,rows:6,speed:520},
- hard:{label:'Difícil',palette:6,rows:7,speed:575}
-};
-let effects=[],fxRaf=0,lastFxTime=0,lastDroppedPositions=[],difficulty='normal',palette=COLORS.slice(0,5),grid=[],angle=-Math.PI/2,shot=null,score=0,level=1,shots=0,clears=0,combo=0,bestCombo=best('bolhas_combo'),bombs=1,rainbows=1,special=null,loadedColor=COLORS[0],queueColor=COLORS[1],swappedThisTurn=false,paused=false,gameOver=false,rafId=0,lastFrame=0;
-const shooter={x:180,y:474,r:14};
-function cellX(c){return 20+c*40}
-function cellY(r){return 36+r*34}
-function randColor(){
- const present=grid.flat().filter(Boolean).map(b=>b.color);
- const pool=[...new Set(present)].filter(c=>palette.includes(c));
- const choices=pool.length?pool:palette;
- return choices[Math.random()*choices.length|0];
-}
-function neighbors(r,c){
- return [[r,c-1],[r,c+1],[r-1,c],[r+1,c],[r-1,c-1],[r-1,c+1],[r+1,c-1],[r+1,c+1]]
- .filter(([a,b])=>a>=0&&a<14&&b>=0&&b<9);
-}
-function countBubbles(){return grid.flat().filter(Boolean).length}
-function updateControls(){
- const active=!!shot||paused||gameOver;
- $('shoot').disabled=active;
- $('swap').disabled=active||swappedThisTurn;
- $('bomb').disabled=active||bombs<=0;
- $('rainbow').disabled=active||rainbows<=0;
- $('pause').disabled=gameOver;
- $('bomb').textContent=(special==='bomb'?'✓ ':'')+'💣 Bomba ×'+bombs;
- $('rainbow').textContent=(special==='rainbow'?'✓ ':'')+'🌈 Coringa ×'+rainbows;
- $('pause').textContent=paused?'▶ Continuar':'⏸ Pausar';
- $('swap').textContent=swappedThisTurn?'🔄 Trocado':'🔄 Trocar';
-}
-function updateStats(){
- $('score').textContent=score;$('count').textContent=countBubbles();$('best').textContent=best('bolhas');
- $('bubbleLevel').querySelector('b').textContent=level;
- $('bubbleAccuracy').querySelector('b').textContent=(shots?Math.round(clears/shots*100):0)+'% · '+shots;
- $('bubbleCombo').querySelector('b').textContent='x'+combo+' / x'+bestCombo;
- updateControls();
-}
-function makeField(rows){
- grid=Array.from({length:14},()=>Array(9).fill(null));
- for(let r=0;r<rows;r++)for(let c=0;c<9;c++)grid[r][c]={x:cellX(c),y:cellY(r),color:palette[Math.random()*palette.length|0]};
+function loadGame(){
+ try{const d=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(!d||d.v!==1||!Array.isArray(d.grid)||d.grid.length!==14)return false;
+ difficulty=MODES[d.difficulty]?d.difficulty:'normal';palette=COLORS.slice(0,MODES[difficulty].palette);grid=d.grid.map((row,r)=>Array.from({length:9},(_,c)=>row[c]?{x:cellX(c,r),y:cellY(r),color:row[c]}:null));
+ angle=Number(d.angle)||-Math.PI/2;shot=d.shot?{...d.shot}:null;score=Number(d.score)||0;level=Math.max(1,Number(d.level)||1);shots=Number(d.shots)||0;clears=Number(d.clears)||0;combo=Number(d.combo)||0;bestCombo=Math.max(bestCombo,Number(d.bestCombo)||0);bombs=Math.max(0,Number(d.bombs)||0);rainbows=Math.max(0,Number(d.rainbows)||0);special=d.special||null;loadedColor=d.loadedColor||randColor();queueColor=d.queueColor||randColor();swappedThisTurn=!!d.swappedThisTurn;lives=Math.max(0,Math.min(5,Number(d.lives)||3));totalPopped=Math.max(0,Number(d.totalPopped)||0);paused=false;gameOver=false;effects=[];
+ $('bubbleDifficulty').value=difficulty;render();setMsg('💾 Sua partida anterior foi recuperada. Continue de onde parou!');if(shot){lastFrame=0;rafId=requestAnimationFrame(animate)}return true;
+ }catch(e){return false}
 }
 function fresh(){
- if(rafId){cancelAnimationFrame(rafId);rafId=0}
- const mode=MODES[difficulty];palette=COLORS.slice(0,mode.palette);
- level=1;score=0;shots=0;clears=0;combo=0;bombs=1;rainbows=1;special=null;paused=false;gameOver=false;shot=null;lastFrame=0;swappedThisTurn=false;
- makeField(mode.rows);loadedColor=randColor();queueColor=randColor();
- render();setMsg('Nível 1 · Mire e combine 3 ou mais bolhas da mesma cor. Você tem uma bomba e um coringa!');
+ if(rafId){cancelAnimationFrame(rafId);rafId=0}if(fxRaf){cancelAnimationFrame(fxRaf);fxRaf=0}
+ try{localStorage.removeItem(SAVE_KEY)}catch(e){}effects=[];level=1;score=0;shots=0;clears=0;combo=0;bestCombo=Math.max(bestCombo,best('bolhas_combo'));bombs=1;rainbows=1;special=null;paused=false;gameOver=false;shot=null;lastFrame=0;swappedThisTurn=false;lives=3;totalPopped=0;
+ const mode=MODES[difficulty];palette=COLORS.slice(0,mode.palette);makeField(mode.rows);loadedColor=randColor();queueColor=randColor();render();setMsg('Nível 1 · Combine três ou mais bolhas. Você tem três vidas, uma bomba e um coringa!');saveGame();
 }
-
 function spawnPopEffects(points,label='POP!'){
  if(!points||!points.length)return;
  const now=performance.now();
@@ -270,13 +177,13 @@ function render(){
  if(gameOver){ctx.fillStyle='#020617bb';ctx.fillRect(0,0,360,520);ctx.fillStyle='#111d35';ctx.strokeStyle='#fb7185';ctx.lineWidth=2;ctx.beginPath();ctx.roundRect(48,210,264,104,18);ctx.fill();ctx.stroke();ctx.fillStyle='#fff';ctx.font='bold 25px system-ui';ctx.textAlign='center';ctx.fillText('FIM DE JOGO',180,250);ctx.font='15px system-ui';ctx.fillStyle='#fecdd3';ctx.fillText('Toque em Reiniciar',180,280);ctx.textAlign='left'}
  // 5. Faixa inferior de perigo iluminada.
  ctx.fillStyle='#0f2940';ctx.fillRect(0,505,360,15);ctx.fillStyle='#22d3ee88';ctx.fillRect(0,505,360,2);ctx.fillStyle='#fb718555';ctx.fillRect(0,500,360,1);
- for(let x=12;x<360;x+=24){ctx.fillStyle='#7dd3fc55';ctx.fillRect(x,508,10,2)}ctx.font='10px system-ui';ctx.fillStyle='#7dd3fc';ctx.fillText('NÍVEL '+level,14,493);ctx.fillText('PONTOS '+score,270,493);updateStats();
+ for(let x=12;x<360;x+=24){ctx.fillStyle='#7dd3fc55';ctx.fillRect(x,508,10,2)}ctx.font='10px system-ui';ctx.fillStyle='#7dd3fc';ctx.fillText('NÍVEL '+level,14,493);ctx.fillText('PONTOS '+score,270,493);updateStats();const result=$('bubbleResult');if(result){result.hidden=!gameOver;if(gameOver){$('resultScore').textContent=score;$('resultLevel').textContent=level;$('resultPopped').textContent=totalPopped;$('resultCombo').textContent='x'+bestCombo;$('resultAccuracy').textContent='Precisão: '+(shots?Math.round(clears/shots*100):0)+'% · Disparos: '+shots}}
 }
 function nearestEmpty(b){
  let target=null,dist=Infinity;
  for(let r=0;r<14;r++)for(let c=0;c<9;c++){
   if(grid[r][c])continue;
-  const x=cellX(c),y=cellY(r),d=(x-b.x)**2+(y-b.y)**2;
+  const x=cellX(c,r),y=cellY(r),d=(x-b.x)**2+(y-b.y)**2;
   if(d<dist){dist=d;target={r,c,x,y}}
  }
  return target;
@@ -303,25 +210,23 @@ function removeFloating(){
  return dropped;
 }
 function finishImpact(removed,bonus=0,visualPoints=[]){
- if(removed>=3){
-  spawnPopEffects(visualPoints,'+'+(removed*10)+' PONTOS');
-  combo++;clears++;bestCombo=Math.max(bestCombo,combo);saveBest('bolhas_combo',bestCombo);
-  const multiplier=Math.min(combo,5);score+=removed*10*multiplier+bonus;
-  setMsg('✨ '+removed+' bolhas removidas · combo x'+combo+' · multiplicador x'+multiplier+'!');
- }else{
-  combo=0;setMsg('Bolinha posicionada. Prepare a próxima combinação!');
- }
+ removed=Math.max(0,removed|0);
+ if(removed>0){
+  spawnPopEffects(visualPoints,'+'+(removed*10)+' PONTOS');totalPopped+=removed;
+  if(removed>=3){combo++;clears++;bestCombo=Math.max(bestCombo,combo);saveBest('bolhas_combo',bestCombo);const multiplier=Math.min(combo,5);score+=removed*10*multiplier+bonus;setMsg('✨ '+removed+' bolhas eliminadas · combo x'+combo+' · multiplicador x'+multiplier+'!')}
+  else{combo=0;score+=removed*10+bonus;setMsg('💥 '+removed+' bolha(s) eliminada(s). Pontos adicionados!')}
+  playFx('pop');
+ }else{combo=0;setMsg('Bolinha posicionada. Prepare a próxima combinação!')}
  score=Math.max(0,score);saveBest('bolhas',score);
- const remaining=countBubbles();
- if(!remaining){
-  level++;bombs=Math.min(3,bombs+1);rainbows=Math.min(3,rainbows+1);
-  const rows=Math.min(9,MODES[difficulty].rows+Math.floor((level-1)/2));
-  makeField(rows);loadedColor=randColor();queueColor=randColor();combo=0;special=null;
-  setMsg('🏆 Nível '+(level-1)+' concluído! Novo nível '+level+' iniciado. Você ganhou uma bomba e um coringa!');
+ if(!countBubbles()){
+  const completedLevel=level;level++;bombs=Math.min(3,bombs+1);rainbows=Math.min(3,rainbows+1);if(completedLevel%3===0)lives=Math.min(5,lives+1);
+  const rows=Math.min(9,MODES[difficulty].rows+Math.floor((level-1)/2));makeField(rows);loadedColor=randColor();queueColor=randColor();combo=0;special=null;playFx('level');
+  setMsg('🏆 Fase '+completedLevel+' concluída! Novo desafio: '+levelChallenge()+'. Você ganhou uma bomba e um coringa'+(completedLevel%3===0?' e uma vida!':'!'));
  }else if(grid.some((row,r)=>r>=11&&row.some(Boolean))){
-  gameOver=true;saveBest('bolhas',score);setMsg('As bolhas chegaram perto do canhão! Fim de jogo. Pontos: '+score+'.');
+  if(lives>1){lives--;const danger=[];grid.forEach((row,r)=>row.forEach((v,c)=>{if(v&&r>=9){danger.push({x:v.x,y:v.y,color:v.color});grid[r][c]=null}}));spawnPopEffects(danger,'VIDA -1');combo=0;playFx('life');setMsg('❤️ Você perdeu uma vida, mas ganhou outra chance! Vidas restantes: '+lives+'.')}
+  else{lives=0;gameOver=true;saveBest('bolhas',score);playFx('life');setMsg('Fim de jogo! Suas vidas acabaram. Pontuação: '+score+'.')}
  }
- render();
+ checkAchievements();render();saveGame();
 }
 function attach(b){
  const target=nearestEmpty(b);
@@ -337,7 +242,7 @@ function bombImpact(b){
  const radius=78;let removed=0,visualPoints=[];
  grid.forEach((row,r)=>row.forEach((v,c)=>{if(v&&Math.hypot(v.x-b.x,v.y-b.y)<=radius){visualPoints.push({x:v.x,y:v.y,color:v.color});grid[r][c]=null;removed++}}));
  const dropped=removeFloating();removed+=dropped;visualPoints.push(...lastDroppedPositions);
- spawnPopEffects([{x:b.x,y:b.y,color:'#fb923c'}],'BOOM!');
+ spawnPopEffects([{x:b.x,y:b.y,color:'#fb923c'}],'BOOM!');playFx('bomb');if(removed>=10)unlockAchievement('bomb10');
  finishImpact(removed,dropped*20+(removed?40:0),visualPoints);
 }
 function rainbowImpact(b){
@@ -363,7 +268,7 @@ function fire(){
  if(mode==='bomb')bombs--;if(mode==='rainbow')rainbows--;
  shot={x:shooter.x,y:shooter.y-18,vx:Math.cos(angle)*MODES[difficulty].speed,vy:Math.sin(angle)*MODES[difficulty].speed,color,r:14,wild:mode==='rainbow',mode};
  special=null;loadedColor=queueColor;queueColor=randColor();swappedThisTurn=false;shots++;lastFrame=0;
- updateControls();if(!rafId)rafId=requestAnimationFrame(animate);
+ playFx('shoot');saveGame();updateControls();if(!rafId)rafId=requestAnimationFrame(animate);
 }
 function animate(timestamp){
  rafId=0;if(paused||!shot||gameOver){render();return}
@@ -383,7 +288,7 @@ function animate(timestamp){
 }
 function swap(){
  if(shot||paused||gameOver||swappedThisTurn)return;
- [loadedColor,queueColor]=[queueColor,loadedColor];swappedThisTurn=true;render();
+ [loadedColor,queueColor]=[queueColor,loadedColor];swappedThisTurn=true;render();saveGame();playFx('click');
  setMsg('Bolinha trocada! Essa troca fica disponível uma vez por disparo.');
 }
 function toggleSpecial(type){
@@ -391,7 +296,7 @@ function toggleSpecial(type){
  const available=type==='bomb'?bombs:rainbows;
  if(special===type){special=null;render();setMsg('Poder especial desativado.');return}
  if(!available){setMsg('Você não tem cargas desse poder. Conclua um nível para ganhar mais.');return}
- special=type;render();setMsg(type==='bomb'?'Bomba selecionada: explode as bolhas próximas ao impacto.':'Coringa selecionado: combina com a cor predominante ao redor do impacto.');
+ special=type;render();saveGame();playFx('click');setMsg(type==='bomb'?'Bomba selecionada: explode as bolhas próximas ao impacto.':'Coringa selecionado: combina com a cor predominante ao redor do impacto.');
 }
 function togglePause(){
  if(gameOver)return;
@@ -405,7 +310,19 @@ $('bubbleDifficulty').addEventListener('change',e=>{difficulty=MODES[e.target.va
 cv.addEventListener('pointermove',e=>{if(e.pointerType==='mouse'||e.buttons)setAim(e)});
 cv.addEventListener('pointerdown',e=>{e.preventDefault();cv.setPointerCapture?.(e.pointerId);setAim(e);fire()});
 on('shoot',fire);on('swap',swap);on('bomb',()=>toggleSpecial('bomb'));on('rainbow',()=>toggleSpecial('rainbow'));on('pause',togglePause);on('new',fresh);
-fresh();
+on('sound',()=>{soundOn=!soundOn;try{localStorage.setItem('jhon-bolhas-sound',soundOn?'1':'0')}catch(e){}updateControls();playFx('click')});
+on('vibe',()=>{vibrationOn=!vibrationOn;try{localStorage.setItem('jhon-bolhas-vibe',vibrationOn?'1':'0')}catch(e){}updateControls();playFx('click')});
+on('tutorial',showTutorial);on('tutorialClose',closeTutorial);on('achievements',showAchievements);on('achievementClose',()=>{$('bubbleAchievements').hidden=true});
+on('resultNew',()=>{$('bubbleResult').hidden=true;fresh()});on('resultAch',()=>{$('bubbleResult').hidden=true;showAchievements()});
+try{soundOn=localStorage.getItem('jhon-bolhas-sound')==='1';vibrationOn=localStorage.getItem('jhon-bolhas-vibe')==='1'}catch(e){}
+window.addEventListener('keydown',e=>{
+ const tag=document.activeElement?.tagName;if(tag==='INPUT'||tag==='SELECT'||tag==='TEXTAREA')return;
+ const k=e.key.toLowerCase();
+ if(k==='arrowleft'||k==='arrowright'){angle=Math.max(-Math.PI+.18,Math.min(-.18,angle+(k==='arrowleft'?-0.065:0.065)));render();e.preventDefault()}
+ else if(k===' '){fire();e.preventDefault()}else if(k==='x'){swap();e.preventDefault()}else if(k==='b'){toggleSpecial('bomb');e.preventDefault()}else if(k==='r'){toggleSpecial('rainbow');e.preventDefault()}else if(k==='p'){togglePause();e.preventDefault()}
+});
+if(!loadGame())fresh();else updateControls();
+try{if(localStorage.getItem('jhon-bolhas-tutorial')!=='1')showTutorial()}catch(e){showTutorial()}
 }
 function frogger(){
 shellStats(stat('Pontos','score')+stat('Chegadas','homes')+stat('Recorde','best'));
