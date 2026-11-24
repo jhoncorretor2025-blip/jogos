@@ -52,6 +52,7 @@
   .panel h2{margin:0 0 8px;font-size:23px}
   .panel p{margin:0 0 6px;color:var(--muted);font-size:14.5px;line-height:1.6}
   .panel .btn{margin-top:14px;width:100%;padding:13px}
+.btn:focus-visible, button:focus-visible{outline: 2px solid #67e8f9; outline-offset: 2px;}input:focus-visible, select:focus-visible{outline: 2px solid #67e8f9; outline-offset: 2px;}
 </style>
 </head>
 <body>
@@ -107,7 +108,10 @@
 
   let mine, foe, phase, placing, horiz, playerTurn, hitsOnFoe, aiTargets, aiHits, over;
 
-  function blank(){
+  
+
+// Web Audio API - Som Retrô
+let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}}function tone(f,d,t='square',v=.05){if(!soundOn||!audioCtx)return;const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=t;o.frequency.value=f;g.gain.value=v;g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d)}function blank(){
     return Array.from({length: N}, function(){ return {ship: -1, shot: false}; });
   }
 
