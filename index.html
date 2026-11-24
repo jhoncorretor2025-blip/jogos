@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Jogos do Jhon">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Jogos do Jhon · v3.50</title>
+<title>Jogos do Jhon · v3.54</title>
 <meta property="og:title" content="Jogos do Jhon · Arcade">
 <meta property="og:description" content="Arcade de jogos web do Jhon com 36 jogos para jogar no celular ou PC.">
 <meta property="og:type" content="website">
@@ -34,7 +34,7 @@
     --a1:#22d3ee; --a2:#a78bfa; --a3:#34d399; --a4:#fbbf24; --a5:#fb7185; --a6:#60a5fa;
   }
   *{box-sizing:border-box}button,a,input,select,textarea{touch-action:manipulation}
-  html,body{margin:0;padding:0}
+  html,body{margin:0;padding:0}html{scroll-behavior:smooth}
   body{
     min-height:100vh; background:
       radial-gradient(900px 500px at 15% -10%, rgba(34,211,238,.16), transparent 60%),
@@ -310,6 +310,7 @@
   body[data-theme="retro"]{--bg:#170e08;--card:#2b1b0f;--line:#77512e;--txt:#fff0cf;--muted:#e2c49c;--a1:#fb923c;--a2:#facc15;--a3:#a3e635;--a4:#fbbf24;--a5:#fb7185;--a6:#60a5fa}
   body[data-theme="minimal"]{--bg:#111827;--card:#1f2937;--line:#4b5563;--txt:#f9fafb;--muted:#cbd5e1;--a1:#e5e7eb;--a2:#9ca3af;--a3:#d1d5db;--a4:#f3f4f6;--a5:#9ca3af;--a6:#cbd5e1}
   body[data-theme="colorful"]{--bg:#160d2a;--card:#251442;--line:#68449a;--txt:#fff7ff;--muted:#e9d5ff;--a1:#22d3ee;--a2:#f0abfc;--a3:#86efac;--a4:#fde047;--a5:#fb7185;--a6:#93c5fd}
+  body[data-theme="light"]{--bg:#f8fafc;--card:#ffffff;--line:#cbd5e1;--txt:#0f172a;--muted:#475569;--a1:#0891b2;--a2:#7c3aed;--a3:#059669;--a4:#d97706;--a5:#e11d48;--a6:#2563eb;background-color:#f8fafc!important;color:#0f172a!important}
   body.arcade-high-contrast{--bg:#000!important;--card:#080808!important;--line:#fff!important;--txt:#fff!important;--muted:#fff!important}
   body.arcade-high-contrast .card,body.arcade-high-contrast .family-panel,body.arcade-high-contrast .feature-panel,body.arcade-high-contrast .setting,body.arcade-high-contrast .achievement{border:2px solid #fff!important;background:#000!important;color:#fff!important}
   body.arcade-large-text{font-size:118%}
@@ -325,7 +326,7 @@
     <span class="hero-kicker">ARCADE PESSOAL</span>
     <h1>Jogos do Jhon</h1>
     <p class="sub">🎮 Seu cantinho de diversão: escolha um jogo e comece a jogar no celular ou no PC.</p>
-    <div class="version"><span class="dot"></span> Versão <b>v3.50</b> · atualizado em <b>23/11/2026</b></div>
+    <div class="version"><span class="dot"></span> Versão <b>v3.54</b> · atualizado em <b>23/11/2026</b></div>
     <div class="home-hero-actions">
       <a class="primary-cta" href="#catalogStart">🎮 Explorar jogos <span aria-hidden="true">↓</span></a>
       <span class="hero-count" id="heroGameCount">36 jogos no catálogo</span>
@@ -562,7 +563,7 @@
     <summary>⚙️ Configurações de experiência</summary>
     <div class="feature-content">
       <div class="settings-grid">
-        <div class="setting"><label for="themeSetting">🎨 Tema visual</label><select id="themeSetting"><option value="neon">Neon (padrão)</option><option value="retro">Retrô</option><option value="minimal">Minimalista</option><option value="colorful">Colorido</option></select></div>
+        <div class="setting"><label for="themeSetting">🎨 Tema visual</label><select id="themeSetting"><option value="neon">Neon (padrão)</option><option value="retro">Retrô</option><option value="minimal">Minimalista</option><option value="colorful">Colorido</option><option value="light">Claro</option></select></div>
         <div class="setting"><label for="textSetting">🔎 Tamanho dos textos</label><select id="textSetting"><option value="normal">Normal</option><option value="large">Maior</option></select></div>
         <div class="setting"><label for="controlsSetting">📱 Controles nos jogos</label><select id="controlsSetting"><option value="auto">Automático (recomendado)</option><option value="show">Sempre mostrar</option><option value="hide">Ocultar controles táteis</option></select></div>
         <div class="setting"><label for="volumeSetting">🔊 Volume dos sons: <span id="volumeValue">45%</span></label><input id="volumeSetting" type="range" min="0" max="100" step="5" value="45"></div>
@@ -609,8 +610,12 @@
     </div>
   </details>
   <div class="notes">
-    <h2>📝 Novidades da tela inicial · v3.50</h2>
+    <h2>📝 Novidades da tela inicial · v3.54</h2>
     <ul>
+      <li><b>v3.54 — Navegação:</b> scroll suave (smooth scroll) no HTML e melhorias de acessibilidade no menu mobile.</li>
+      <li><b>v3.53 — Auditoria de Conversão:</b> adicionado link "Voltar ao Jogos do Jhon" em 14 jogos que não tinham, melhorando o fluxo abrir-jogar-voltar.</li>
+      <li><b>v3.52 — Brainstorm (Tema Claro):</b> adicionado tema "Claro" como 5ª opção de tema visual, disponível no menu de configurações e aplicado em todos os jogos via arcade-common.js.</li>
+      <li><b>v3.51 — Auditoria (Top 3):</b> aria-current nas categorias ativas, atalho Esc para limpar busca, melhorias de acessibilidade.</li>
       <li><b>v3.50 — Consultor Estratégico:</b> botão "Voltar ao topo" fixo no canto inferior direito, aparece após rolar 400px; melhora navegação em páginas longas.</li>
       <li><b>v3.49 — SEO Essencial:</b> meta tags robots, author, Open Graph image, Twitter Card e og:image:alt adicionadas para melhor indexação e compartilhamento.</li>
       <li><b>v3.48 — Páginas para unir:</b> criado PAGINAS-PARA-UNIR.md com análise de quais jogos podem ser agrupados (2 jogadores, tabuleiro simples) e recomendação de adiar a união.</li>
@@ -782,7 +787,7 @@ function renderCategoryNav(){
   const p=active();
   const count=key==='all'?names.length:key==='senior'?names.filter(g=>classics.has(g.href)).length:key==='board'?names.filter(g=>boardGames.has(g.href)).length:key==='cards'?names.filter(g=>cardGames.has(g.href)).length:key==='favorites'?p.favs.length:names.filter(g=>g.cat===key).length;
   const small=key==='senior'?count+' jogos tranquilos':count+' '+(count===1?'jogo':'jogos');
-  const btn=document.createElement('button');btn.type='button';btn.className='category-chip'+(filter===key?' active':'');btn.dataset.filter=key;btn.setAttribute('aria-pressed',String(filter===key));
+  const btn=document.createElement('button');btn.type='button';btn.className='category-chip'+(filter===key?' active':'');btn.dataset.filter=key;btn.setAttribute('aria-pressed',String(filter===key));btn.setAttribute('aria-current',filter===key?'true':'false');
   btn.innerHTML='<span class="cat-icon">'+icon+'</span><span><b>'+label+'</b><small>'+small+'</small></span>';
   btn.title=label+' · '+count+' '+(count===1?'jogo':'jogos');
   btn.addEventListener('click',()=>{filter=key;renderCards();document.getElementById('catalogStart').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});playUi()});
@@ -901,6 +906,7 @@ searchInput.addEventListener('keydown',e=>{
  if(e.key==='Enter'){const selected=activeSuggestionIndex>=0?options[activeSuggestionIndex]:options[0];if(selected){e.preventDefault();launch(selected.dataset.href)}}
 });
 document.getElementById('searchClear').addEventListener('click',()=>{searchInput.value='';renderCards();renderSuggestions();searchInput.focus()});
+searchInput.addEventListener('keydown',e=>{if(e.key==='Escape'){searchInput.value='';renderCards();renderSuggestions();searchInput.focus()}});
 document.getElementById('emptyReset').addEventListener('click',()=>{filter='all';searchInput.value='';renderCategoryNav();renderCards();renderSuggestions();searchInput.focus()});
 document.addEventListener('click',e=>{if(!e.target.closest('.search-shell'))closeSuggestions()});
 document.getElementById('seeAllFavorites').addEventListener('click',()=>{filter='favorites';renderCards();document.getElementById('playerPanel').open=true;document.getElementById('favoriteSection').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})});
@@ -949,7 +955,7 @@ function isGameStorageKey(key){return GAME_STORAGE_KEYS.has(key)||GAME_STORAGE_P
 function setBackupFeedback(message,state='info'){const box=document.getElementById('backupFeedback');box.textContent=message;box.dataset.state=state}
 function sanitizeBackupSettings(raw){
  const s=raw&&typeof raw==='object'?raw:{};
- return {theme:['neon','retro','minimal','colorful'].includes(s.theme)?s.theme:defaultSettings.theme,
+ return {theme:['neon','retro','minimal','colorful','light'].includes(s.theme)?s.theme:defaultSettings.theme,
  sound:typeof s.sound==='boolean'?s.sound:defaultSettings.sound,
  volume:Number.isFinite(Number(s.volume))?Math.max(0,Math.min(100,Math.round(Number(s.volume)))):defaultSettings.volume,
  contrast:typeof s.contrast==='boolean'?s.contrast:defaultSettings.contrast,
@@ -1031,7 +1037,7 @@ function validateBackup(raw){
 }
 function exportBackup(){
  try{
-  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v3.50',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
+  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v3.54',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
   const content=JSON.stringify(backup,null,2),blob=new Blob([content],{type:'application/json'});
   if(blob.size>MAX_BACKUP_BYTES)throw new Error('O backup ultrapassa 2 MB.');
   const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='jogos-do-jhon-backup-'+new Date().toISOString().slice(0,10)+'.json';
