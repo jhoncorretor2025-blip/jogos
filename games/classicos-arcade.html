@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#070b14"><title>Clássicos Arcade · Jogos do Jhon v1.9</title>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#070b14"><title>Clássicos Arcade · Jogos do Jhon v1.10</title>
 <style>
 :root{color-scheme:dark;--bg:#070b14;--panel:#111b2d;--line:#29364c;--txt:#e2e8f0;--muted:#94a3b8;--cyan:#22d3ee;--gold:#fbbf24;--green:#34d399;--red:#fb7185}
 *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(850px 500px at 50% -10%,#172554 0,transparent 70%),var(--bg);color:var(--txt);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;padding:14px 12px 30px}button{font:inherit;cursor:pointer;color:inherit}.wrap{width:min(100%,820px);margin:auto}.top{display:flex;align-items:center;justify-content:space-between;gap:10px}.back{color:var(--muted);text-decoration:none;font-size:13px}.ver{font-size:11px;color:#a5f3fc;border:1px solid #155e75;border-radius:99px;padding:5px 10px}.hero{text-align:center;padding:13px 0 16px}.logo{font-size:clamp(45px,12vw,76px);line-height:1.1}.hero h1{margin:4px 0;font-size:clamp(25px,6vw,36px)}.sub{margin:0;color:var(--muted);font-size:14px}.panel{background:linear-gradient(145deg,#172338,#101827);border:1px solid var(--line);border-radius:18px;padding:13px;box-shadow:0 14px 32px #0004}.stats{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:12px}.stat{background:#0b1424;border:1px solid #26364c;border-radius:12px;padding:7px 12px;text-align:center;min-width:80px}.stat small{display:block;color:var(--muted);font-size:10px}.stat b{font-size:20px;font-variant-numeric:tabular-nums}.actions,.controls{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:12px}.btn{background:#1d2c42;border:1px solid #3b4b63;border-radius:11px;padding:10px 14px;font-weight:750}.btn.primary{background:#075466;border-color:#0891b2}.btn.gold{background:#563f08;border-color:#d6a51d}.btn:active{transform:scale(.97)}.hint{text-align:center;color:var(--muted);font-size:12px;margin:10px 0 0}.board{margin:auto;max-width:100%;overflow:auto}.message{text-align:center;min-height:25px;color:#bae6fd;font-weight:700;margin:8px 0}.pad{display:grid;grid-template-columns:repeat(3,56px);gap:7px;justify-content:center;margin:12px auto 0}.pad button{height:48px;border-radius:12px;background:#16263d;border:1px solid #334155;font-size:19px}.pad .empty{visibility:hidden}
@@ -35,7 +35,7 @@ canvas{display:block;max-width:100%;height:auto;touch-action:none;border-radius:
 @media(max-width:430px){.bubble-stage{padding:9px 5px 12px;border-radius:17px}.bubble-stage canvas#bubble{border-radius:14px}.bubble-stage .stat{min-width:68px!important;padding:5px 7px!important}.bubble-stage .stat b{font-size:16px}}
 @media(prefers-reduced-motion:no-preference){.bubble-stage .btn{transition:transform .16s ease,filter .16s ease,box-shadow .16s ease}}
 </style></head><body><main class="wrap">
-<div class="top"><a class="back" href="../index.html">← Voltar ao Arcade</a><span class="ver">JOGO v1.9</span></div>
+<div class="top"><a class="back" href="../index.html">← Voltar ao Arcade</a><span class="ver">JOGO v1.10</span></div>
 <header class="hero"><div id="logo" class="logo">🎮</div><h1 id="title">Clássicos Arcade</h1><p id="subtitle" class="sub">Diversão para todos os momentos</p></header>
 <section class="panel"><div id="stats" class="stats"></div><div id="stage"></div><div id="message" class="message" aria-live="polite"></div><div id="controls" class="controls"></div><p id="hint" class="hint"></p></section>
 </main><script>
@@ -51,7 +51,7 @@ const info={
 };
 if(!info[mode])location.replace('../index.html');
 if(mode==='frogger')document.body.dataset.arcadeControls='both';
-const [logo,title,subtitle,hint]=info[mode];$('logo').textContent=logo;$('title').textContent=title;$('subtitle').textContent=subtitle;$('hint').textContent=hint;document.title=title+' · Jogos do Jhon v1.9';
+const [logo,title,subtitle,hint]=info[mode];$('logo').textContent=logo;$('title').textContent=title;$('subtitle').textContent=subtitle;$('hint').textContent=hint;document.title=title+' · Jogos do Jhon v1.10';
 const stat=(label,value)=>'<div class="stat"><small>'+label+'</small><b id="'+value+'">0</b></div>';
 function shellStats(html){$('stats').innerHTML=html}
 function setMsg(t){$('message').textContent=t}
@@ -255,7 +255,7 @@ function render(){
  ctx.save();ctx.fillStyle='#071426cc';ctx.strokeStyle='#38bdf866';ctx.lineWidth=1;ctx.beginPath();ctx.roundRect(279,3,70,45,10);ctx.fill();ctx.stroke();ctx.font='9px system-ui';ctx.fillStyle='#bae6fd';ctx.fillText('PRÓXIMA',288,14);drawBubble(320,31,10,queueColor);ctx.restore();
  grid.forEach(row=>row.forEach(b=>{if(b)drawBubble(b.x,b.y,16,b.color)}));
  drawPopEffects();
- if(!shot&&!gameOver)trajectory();
+ if(level===1&&!shot&&!gameOver)trajectory();
  // 6. Base mecânica do lançador com anéis concêntricos.
  ctx.save();ctx.shadowColor='#22d3ee';ctx.shadowBlur=18;ctx.fillStyle='#0b2940';ctx.strokeStyle='#38bdf899';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(shooter.x,shooter.y+8,33,12,0,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.shadowBlur=0;ctx.strokeStyle='#a5f3fc66';ctx.beginPath();ctx.ellipse(shooter.x,shooter.y+8,23,7,0,0,Math.PI*2);ctx.stroke();ctx.restore();
  ctx.save();ctx.translate(shooter.x,shooter.y);ctx.rotate(angle+Math.PI/2);ctx.shadowColor='#22d3ee';ctx.shadowBlur=12;ctx.fillStyle='#155e75';ctx.strokeStyle='#67e8f0';ctx.lineWidth=2;ctx.beginPath();ctx.roundRect(-8,-43,16,35,7);ctx.fill();ctx.stroke();ctx.restore();
