@@ -41,11 +41,20 @@ canvas{display:block;width:100%;height:auto;aspect-ratio:480/680;border-radius:1
 .hidden{display:none!important}
 @media(max-width:420px){.hud{gap:5px}.stat{padding:6px 3px}.stat b{font-size:17px}.stat small{font-size:9px}.pad{grid-template-columns:repeat(3,42px);gap:5px}.pad button{height:42px}.fire{width:82px;height:66px}}
 @media(min-width:650px){body{padding-top:20px}.stage{width:480px}.hud{width:480px}}
+.btn:focus-visible, button:focus-visible{
+  outline: 2px solid #67e8f9;
+  outline-offset: 2px;
+}
+
+input:focus-visible, select:focus-visible{
+  outline: 2px solid #67e8f9;
+  outline-offset: 2px;
+}
 </style></head><body>
 <main class="wrap">
 <header><a class="back" href="../index.html">← Voltar ao Arcade</a><h1>🚀 Galáxia Invasora</h1><p class="sub">A formação alienígena está chegando. Defenda a Terra!</p><span class="version">Arcade clássico · inspirado nos shooters de 1979 · v1.0</span></header>
 <div class="hud">
- <div class="stat"><small>PONTOS</small><b id="score">0</b></div>
+ <div class="stat"><small>PONTOS</small><b id="score" aria-live="polite">0</b></div>
  <div class="stat"><small>RECORDE</small><b id="best">0</b></div>
  <div class="stat"><small>VIDAS</small><b id="lives">♥ ♥ ♥</b></div>
  <div class="stat"><small>ONDA</small><b id="wave">1</b></div>

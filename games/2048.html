@@ -59,6 +59,15 @@ let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.
   .panel h2{margin:0 0 8px;font-size:23px}
   .panel p{margin:0 0 6px;color:var(--muted);font-size:14.5px;line-height:1.6}
   .panel .btn{margin-top:14px;width:100%;padding:13px}
+.btn:focus-visible, button:focus-visible{
+  outline: 2px solid #67e8f9;
+  outline-offset: 2px;
+}
+
+input:focus-visible, select:focus-visible{
+  outline: 2px solid #67e8f9;
+  outline-offset: 2px;
+}
 </style>
 </head>
 <body>
@@ -68,7 +77,7 @@ let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.
   </div>
 
   <div class="hud">
-    <div class="stat"><span>Pontos</span><b id="score">0</b></div>
+    <div class="stat"><span>Pontos</span><b id="score" aria-live="polite">0</b></div>
     <div class="stat"><span>Recorde</span><b id="best">0</b></div>
   </div>
 

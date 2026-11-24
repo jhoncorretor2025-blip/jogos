@@ -66,6 +66,15 @@ let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.
   .panel p{margin:0 0 5px;color:var(--muted);font-size:14px;line-height:1.6}
   .panel p b{color:var(--txt)}
   .panel .btn{margin-top:14px;width:100%;padding:13px}
+.btn:focus-visible, button:focus-visible{
+  outline: 2px solid #67e8f9;
+  outline-offset: 2px;
+}
+
+input:focus-visible, select:focus-visible{
+  outline: 2px solid #67e8f9;
+  outline-offset: 2px;
+}
 </style>
 </head>
 <body>
