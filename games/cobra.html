@@ -126,7 +126,7 @@ input:focus-visible, select:focus-visible{
   let diff = 'normal';
   const diffSpeed = { easy: 180, normal: 150, hard: 115 };
   let turboOn=false,speedBonus=0;
-  function applySpeed(){const base=Math.max(60,diffSpeed[diff]-(level-1)*8-speedBonus);tick=Math.max(45,Math.round(base*(turboOn?.72:1)));speedEl.textContent=(Math.round(diffSpeed[diff]/tick*10)/10)+'x'+(turboOn?' ⚡':'')}
+  function applySpeed(){const base=Math.max(60,diffSpeed[diff]-(level-1)*8-speedBonus);tick=Math.max(45,Math.round(base*(turboOn ? 0.72 : 1)));speedEl.textContent=(Math.round(diffSpeed[diff]/tick*10)/10)+'x'+(turboOn?' ⚡':'')}
 
   function fit(){
     size = Math.floor(cv.clientWidth) || 400;
