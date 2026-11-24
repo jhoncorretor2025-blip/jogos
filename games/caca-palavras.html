@@ -1,7 +1,4 @@
-
-
-// Web Audio API - Som Retrô
-let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}}function tone(f,d,t='square',v=.05){if(!soundOn||!audioCtx)return;const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=t;o.frequency.value=f;g.gain.value=v;g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d)}function sfxMove(){tone(220,.04,'square',.03)}function sfxClick(){tone(440,.08,'triangle',.05)}<!doctype html>
+<!doctype html>
 <html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#07111b"><title>Caça-Palavras · Jogos do Jhon · v1.0</title>
 <style>
 :root{color-scheme:dark;--bg:#07111b;--panel:#101e2d;--line:#294158;--text:#edf6f8;--muted:#9bb1c2;--cyan:#45d9e8;--gold:#f6c96a}
@@ -16,6 +13,10 @@ button:focus-visible,select:focus-visible{outline:3px solid #67e8f9;outline-offs
 .word-layout{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:14px;align-items:start}.word-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:4px;max-width:620px;margin:auto;touch-action:none;user-select:none}.letter{aspect-ratio:1;border:1px solid #34516a;border-radius:7px;background:#102236;color:#e8f5fb;font-size:clamp(12px,2vw,20px);font-weight:800;cursor:pointer;padding:0}.letter.selected{background:#0e7490;border-color:#67e8f9}.letter.found{background:#17614e;border-color:#34d399;color:#c7f9e8}.word-list{display:grid;grid-template-columns:1fr 1fr;gap:7px}.word-chip{padding:8px 9px;border-radius:9px;background:#091521;border:1px solid #20384c;color:#c5d7e2;font-size:12px}.word-chip.done{color:#6ee7b7;text-decoration:line-through;border-color:#1e765d}
 @media(max-width:700px){.word-layout{grid-template-columns:1fr}.word-list{grid-template-columns:repeat(2,1fr)}}
 </style><div class="word-layout"><div class="word-grid" id="grid" aria-label="Grade de caça-palavras"></div><aside><h3 style="margin:0 0 9px;font-size:15px">🔎 Encontre estas palavras</h3><div class="word-list" id="words"></div><p style="color:#9bb1c2;font-size:11px;line-height:1.5">Clique na primeira e na última letra. Também pode clicar e arrastar. As palavras podem estar na horizontal, vertical ou diagonal.</p></aside></div><div class="message" id="message" role="status" aria-live="polite">Bom jogo!</div></section><div style="text-align:center"><a class="back" href="../index.html">← Voltar ao Jogos do Jhon</a></div></main><script>(()=>{
+
+// Web Audio API - Som Retrô
+let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}}function tone(f,d,t='square',v=.05){if(!soundOn||!audioCtx)return;const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=t;o.frequency.value=f;g.gain.value=v;g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d)}function sfxMove(){tone(220,.04,'square',.03)}function sfxClick(){tone(440,.08,'triangle',.05)}
+
 const gridEl=document.getElementById('grid'),wordsEl=document.getElementById('words'),msg=document.getElementById('message');
 const banks={easy:['CASA','GATO','LUA','FLOR','BOLA','SOL','PATO','MESA'],normal:['JANELA','MUSICA','FAMILIA','FLORESTA','AMIZADE','CACHORRO','ESTRELA','VIAGEM'],hard:['BORBOLETA','BIBLIOTECA','CHOCOLATE','AVENTURA','GIRASSOL','MONTANHA','PLANETA','TECLADO','PIRAMIDE','CAMINHO']};
 let grid=[],words=[],found=new Set(),start=null,dragging=false,seconds=0,timer=null;
