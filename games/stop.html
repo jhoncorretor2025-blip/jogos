@@ -27,9 +27,9 @@ input:focus-visible, select:focus-visible{
 <header class="hero"><div class="logo">S<span>T</span>OP!</div><p class="tagline">Adedonha: pense rápido e complete as categorias antes do STOP! 🧠</p></header>
 <section id="homeScreen">
 <div class="menuStats">
- <div class="stat"><small>PARTIDAS</small><b id="homeGames">0</b></div>
- <div class="stat"><small>MELHOR PONTUAÇÃO</small><b id="homeBest">0</b></div>
- <div class="stat"><small>VITÓRIAS</small><b id="homeWins">0</b></div>
+ <div class="stat" aria-live="polite"><small>PARTIDAS</small><b id="homeGames">0</b></div>
+ <div class="stat" aria-live="polite"><small>MELHOR PONTUAÇÃO</small><b id="homeBest">0</b></div>
+ <div class="stat" aria-live="polite"><small>VITÓRIAS</small><b id="homeWins">0</b></div>
 </div>
 <div class="panel">
  <h2 class="sectionTitle">🎮 Escolha como jogar</h2>
@@ -182,7 +182,7 @@ function finishMatch(){
 function showRanking(){
  const rows=Object.values(data.players||{}).sort((a,b)=>b.points-a.points);modal('🏆 Ranking local',rows.length?'<table class="table"><thead><tr><th>Jogador</th><th>Partidas</th><th>Pontos</th><th>Recorde</th></tr></thead><tbody>'+rows.map(p=>'<tr><td>'+esc(p.name)+'</td><td>'+p.games+'</td><td>'+p.points+'</td><td>'+p.best+'</td></tr>').join('')+'</tbody></table>':'<p class="help">Ainda não há partidas registradas. Jogue uma partida para começar o ranking!</p>');
 }
-function showStats(){const h=data.history||[];modal('📊 Estatísticas','<div class="menuStats"><div class="stat"><small>PARTIDAS</small><b>'+data.games+'</b></div><div class="stat"><small>PONTOS SOMADOS</small><b>'+data.totalPoints+'</b></div><div class="stat"><small>RECORDES</small><b>'+data.best+'</b></div></div><h3 class="sectionTitle">Últimas partidas</h3>'+ (h.length?h.slice(0,8).map(m=>'<div class="status">'+new Date(m.date).toLocaleString('pt-BR')+' · '+m.players.map(p=>esc(p.name)+' '+p.score+' pts').join(' — ')+'</div>').join(''):'<p class="help">Seu histórico aparecerá aqui.</p>'))}
+function showStats(){const h=data.history||[];modal('📊 Estatísticas','<div class="menuStats"><div class="stat" aria-live="polite"><small>PARTIDAS</small><b>'+data.games+'</b></div><div class="stat" aria-live="polite"><small>PONTOS SOMADOS</small><b>'+data.totalPoints+'</b></div><div class="stat" aria-live="polite"><small>RECORDES</small><b>'+data.best+'</b></div></div><h3 class="sectionTitle">Últimas partidas</h3>'+ (h.length?h.slice(0,8).map(m=>'<div class="status">'+new Date(m.date).toLocaleString('pt-BR')+' · '+m.players.map(p=>esc(p.name)+' '+p.score+' pts').join(' — ')+'</div>').join(''):'<p class="help">Seu histórico aparecerá aqui.</p>'))}
 function showSettings(){modal('⚙️ Configurações','<label class="category"><input type="checkbox" id="stSound" '+(config.sound?'checked':'')+'> Sons do STOP</label><label class="category"><input type="checkbox" id="stLight" '+(config.light?'checked':'')+'> Tema claro</label><p class="help">As configurações são salvas neste dispositivo.</p><div class="actions"><button class="btn" id="backup">⬇ Exportar backup</button><button class="btn" id="restore">⬆ Importar backup</button><button class="btn" id="clearData">🗑 Limpar dados</button></div><input type="file" id="backupFile" accept="application/json" class="hidden">');
  $('stSound').onchange=e=>{config.sound=e.target.checked;save()};$('stLight').onchange=e=>{config.light=e.target.checked;document.body.classList.toggle('light',config.light);save()};
  $('backup').onclick=()=>{const blob=new Blob([JSON.stringify({data,config},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='backup-stop-jhon.json';a.click();URL.revokeObjectURL(a.href)};

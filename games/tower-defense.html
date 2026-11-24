@@ -1,80 +1,6 @@
-<!doctype html>
-<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#07111b"><title>Tower Defense · Jogos do Jhon · v3.1</title>
-<style>
-:root{color-scheme:dark;--bg:#07111b;--panel:#101e2d;--line:#294158;--text:#edf6f8;--muted:#9bb1c2;--cyan:#45d9e8;--gold:#f6c96a}
-*{box-sizing:border-box}body{margin:0;min-height:100vh;padding:18px 12px 30px;background:radial-gradient(900px 520px at 50% -10%,#173c50,#07111b 70%);color:var(--text);font-family:Inter,system-ui,Arial,sans-serif}
-.wrap{width:min(1120px,100%);margin:auto}header{text-align:center;margin:0 auto 15px}h1{font-size:clamp(25px,4vw,38px);margin:0 0 5px}header p{color:var(--muted);margin:0;font-size:14px}.version{display:inline-block;margin-top:8px;padding:4px 10px;border:1px solid #315064;border-radius:30px;color:#9fdce5;font-size:11px}
-.panel{background:linear-gradient(145deg,#13273a,#0d1927);border:1px solid var(--line);border-radius:18px;padding:13px;box-shadow:0 18px 50px #0005}
-.hud{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:11px}.stat{background:#091521;border:1px solid #20384c;border-radius:12px;padding:8px 10px;text-align:center;color:var(--muted);font-size:11px}.stat b{display:block;color:#fff;font-size:19px;margin-top:2px;font-variant-numeric:tabular-nums}
-.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center;margin:10px 0}.btn,select{border:1px solid #35516a;background:#14283a;color:var(--text);border-radius:10px;padding:9px 12px;font:600 12px system-ui;cursor:pointer}.btn.primary{background:linear-gradient(120deg,#0e7490,#155e75);border-color:#38bdf8}.btn.danger{border-color:#85475a;background:#3b1e2b}.btn.active{border-color:#45d9e8;background:#164153;color:#baf7ff}.btn:disabled,select:disabled{opacity:.4;cursor:not-allowed}
-.gamegrid{display:grid;grid-template-columns:minmax(0,1fr) 235px;gap:12px;align-items:start}.arena{min-width:0;background:#081722;border:1px solid #294158;border-radius:14px;padding:7px}#td{display:block;width:100%;height:auto;aspect-ratio:9/5;border-radius:9px;touch-action:manipulation;cursor:crosshair}
-.side{display:grid;gap:10px}.sidebox{background:#0a1723;border:1px solid #20384c;border-radius:13px;padding:10px}.sidebox h2{font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:#b9d3df;margin:0 0 9px}.tower-list{display:grid;grid-template-columns:1fr 1fr;gap:6px}.tower-choice{display:flex;align-items:center;gap:7px;text-align:left;min-height:48px;padding:7px;border:1px solid #294158;border-radius:10px;background:#122438;color:var(--text);cursor:pointer;font:inherit}.tower-choice.active{border-color:#45d9e8;background:#134154;box-shadow:0 0 0 1px #45d9e855}.tower-choice:disabled{opacity:.35;cursor:not-allowed}.tower-emoji{font-size:21px}.tower-choice b{display:block;font-size:11px}.tower-choice small{display:block;color:var(--muted);font-size:10px;margin-top:2px}.selected-info{font-size:11px;color:var(--muted);line-height:1.5;min-height:52px}.selected-info strong{color:#f5f8fb}.specialize{border-top:1px solid #20384c;margin-top:8px;padding-top:8px}.specialize>small{display:block;color:#9bb1c2;font-size:10px;text-align:center}.specialize .toolbar{margin:7px 0 0}.spec{flex:1;min-width:0;padding:8px 6px;font-size:10px}.reward-choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:11px 0;padding:11px;border:1px solid #80652f;border-radius:14px;background:linear-gradient(145deg,#342914,#17202a)}.reward-choices[hidden]{display:none}.reward-title{grid-column:1/-1;text-align:center;font-size:13px;font-weight:800;color:#ffe5a0}.reward-card{border:1px solid #80652f;border-radius:11px;background:#251f19;color:#f8ead0;padding:11px 9px;text-align:center;cursor:pointer;min-height:112px}.reward-card:hover{border-color:#facc15;background:#3b301d}.reward-card b{display:block;font-size:12px;margin:4px 0}.reward-card span{display:block;font-size:24px}.reward-card small{font-size:10px;line-height:1.4;color:#d6c39e}.synergy{color:#8ee8d1}.resist{color:#fbbf24}.skill-row{display:grid;grid-template-columns:1fr 1fr;gap:6px}.skill-row .btn{min-height:46px;white-space:normal}.help{color:#9bb1c2;font-size:11px;line-height:1.5;margin:10px 2px 0}.message{margin:11px 0 0;padding:10px 12px;border-radius:11px;background:#0a1723;border:1px solid #20384c;color:#cbe5ed;font-size:12px;line-height:1.5;text-align:center;min-height:40px}
-.back{display:inline-block;margin-top:14px;color:#9edee8;text-decoration:none;font-size:13px}.back:hover{text-decoration:underline}
-@media(max-width:780px){.gamegrid{grid-template-columns:1fr}.side{grid-template-columns:repeat(2,minmax(0,1fr))}.sidebox:last-child{grid-column:1/-1}.tower-list{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:520px){body{padding:10px 7px 22px}.panel{padding:8px}.hud{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}.stat{padding:7px 4px}.stat b{font-size:16px}.side{grid-template-columns:1fr}.sidebox:last-child{grid-column:auto}.tower-list{grid-template-columns:repeat(2,minmax(0,1fr))}.toolbar .btn,.toolbar select{flex:1}.arena{padding:4px}.reward-choices{grid-template-columns:1fr}.reward-title{grid-column:auto}.reward-card{min-height:75px;display:grid;grid-template-columns:38px 1fr;align-items:center;text-align:left;column-gap:8px}.reward-card span{grid-row:1/3}.reward-card b{margin:0}.reward-card small{grid-column:2}}
-button:focus-visible,select:focus-visible{outline:3px solid #67e8f9;outline-offset:2px}
-</style></head><body><main class="wrap"><header><h1>🏹 Tower Defense</h1><p>Especialize suas torres, combine defesas e enfrente chefes com habilidades únicas.</p><span class="version">Jogos do Jhon · v3.1</span></header>
-<section class="panel">
-<div class="hud">
- <div class="stat">🪙 OURO<b id="gold">180</b></div><div class="stat">❤️ BASE<b id="hp">25</b></div><div class="stat">🌊 ONDA<b id="wave">0/20</b></div><div class="stat">💀 DERROTADOS<b id="kills">0</b></div><div class="stat">🏆 RECORDE<b id="best">0</b></div>
-</div>
-<div class="toolbar">
- <select id="modeSelect" aria-label="Modo de jogo"><option value="campaign">🏆 Campanha · 20 ondas</option><option value="survival">♾️ Sobrevivência infinita</option></select>
- <select id="difficultySelect" aria-label="Dificuldade"><option value="normal">🟢 Normal</option><option value="hard" selected>🟠 Difícil</option><option value="insane">🔴 Insano</option></select>
- <select id="mapSelect" aria-label="Selecionar mapa"><option value="0">🌲 Floresta</option><option value="1">🏜️ Deserto</option><option value="2">❄️ Nevasca</option><option value="3">🌋 Vulcão</option><option value="4">🏰 Fortaleza</option></select>
- <button class="btn primary" id="startWave">▶ Iniciar onda</button><button class="btn" id="pauseBtn" disabled>Ⅱ Pausar</button><button class="btn" id="speedBtn">Velocidade 1×</button><button class="btn" id="restart">↻ Reiniciar</button>
-</div>
-<div class="gamegrid">
- <div>
-  <div class="arena"><canvas id="td" width="900" height="500" aria-label="Campo de batalha Tower Defense"></canvas></div>
-  <div class="reward-choices" id="rewardChoices" hidden></div><div class="message" id="message" role="status" aria-live="polite">Escolha uma torre, clique em um espaço livre do mapa e inicie a primeira onda.</div>
- </div>
- <aside class="side">
-  <section class="sidebox"><h2>🏗️ Construir torre</h2><div class="tower-list" id="towerList"></div><p class="help">Escolha uma torre e clique no terreno fora do caminho. Clique em uma torre construída para selecioná-la.</p></section>
-  <section class="sidebox"><h2>⚙️ Torre selecionada</h2><div class="selected-info" id="towerInfo">Nenhuma torre selecionada.</div><div class="toolbar"><button class="btn" id="priorityBtn" disabled>🎯 Alvo: Avançado</button></div><div class="toolbar"><button class="btn primary" id="upgrade" disabled>⬆ Evoluir</button><button class="btn danger" id="sell" disabled>🪙 Vender</button></div><div class="specialize"><small>🌳 Especialização (desbloqueia no nível 3)</small><div class="toolbar"><button class="btn spec" id="specA" disabled>🔀 Ramo A</button><button class="btn spec" id="specB" disabled>🔀 Ramo B</button></div></div></section>
-  <section class="sidebox"><h2>🔭 Inteligência da próxima onda</h2><div class="selected-info" id="waveIntel">Prepare suas defesas e confira os inimigos que estão chegando.</div><p class="help">A composição muda a cada onda. Chefes aparecem a cada cinco ondas.</p></section>
-  <section class="sidebox"><h2>✨ Poderes especiais</h2><div class="skill-row"><button class="btn" id="freeze">❄️ Congelar<br><small>Pronto</small></button><button class="btn" id="bomb">💥 Bombardeio<br><small>Pronto</small></button></div><p class="help">Congelar paralisa os inimigos por alguns instantes. Bombardeio causa dano em todos os inimigos visíveis.</p></section>
- </aside>
-</div>
-</section><div style="text-align:center"><a class="back" href="../index.html">← Voltar ao Jogos do Jhon</a></div></main>
-<script>
-(()=>{'use strict';
-const canvas=document.getElementById('td'),ctx=canvas.getContext('2d'),msg=document.getElementById('message');
-const $=id=>document.getElementById(id);
-const maps=[
- {name:'Floresta',bg:'#174b35',grid:'#ffffff09',path:[[-20,260],[115,260],[115,95],[300,95],[300,400],[505,400],[505,175],[720,175],[720,260],[920,260]]},
- {name:'Deserto',bg:'#76532c',grid:'#ffffff08',path:[[-20,100],[165,100],[165,350],[355,350],[355,150],[565,150],[565,410],[760,410],[760,260],[920,260]]},
- {name:'Nevasca',bg:'#31536a',grid:'#ffffff0a',path:[[-20,395],[145,395],[145,250],[315,250],[315,70],[510,70],[510,310],[700,310],[700,145],[920,145]]},
- {name:'Vulcão',bg:'#4c2926',grid:'#ffffff0a',path:[[-20,250],[120,250],[120,75],[315,75],[315,420],[505,420],[505,75],[735,75],[735,250],[920,250]]},
- {name:'Fortaleza',bg:'#35434a',grid:'#ffffff0a',path:[[-20,120],[180,120],[180,360],[360,360],[360,120],[550,120],[550,380],[745,380],[745,240],[920,240]]}
-];
-const towerTypes={
- archer:{name:'Arqueiro',icon:'🏹',cost:45,range:150,damage:14,rate:.48,color:'#60a5fa',shot:'#bfdbfe'},
- cannon:{name:'Canhão',icon:'💣',cost:105,range:128,damage:48,rate:1.55,color:'#f59e0b',shot:'#fed7aa',splash:58},
- ice:{name:'Gelo',icon:'❄️',cost:85,range:132,damage:8,rate:.72,color:'#67e8f9',shot:'#cffafe',slow:.48},
- electric:{name:'Elétrica',icon:'⚡',cost:135,range:145,damage:22,rate:1.05,color:'#c4b5fd',shot:'#ede9fe',chain:2},
- fire:{name:'Fogo',icon:'🔥',cost:115,range:130,damage:11,rate:.7,color:'#fb7185',shot:'#fdba74',burn:9},
- sniper:{name:'Sniper',icon:'🎯',cost:160,range:245,damage:82,rate:2.05,color:'#4ade80',shot:'#bbf7d0'}
-};
-const enemyTypes={
- basic:{name:'Soldado',hp:32,speed:46,reward:9,r:11,color:'#e87979',leak:1},
- runner:{name:'Veloz',hp:24,speed:91,reward:10,r:9,color:'#fbbf24',leak:1},
- tank:{name:'Blindado',hp:125,speed:27,reward:20,r:15,color:'#94a3b8',leak:2,resist:{archer:.68,sniper:.78}},
- phantom:{name:'Fantasma',hp:57,speed:62,reward:15,r:12,color:'#c4b5fd',leak:1,resist:{cannon:.65,fire:.82}},
- healer:{name:'Curandeiro',hp:72,speed:39,reward:18,r:13,color:'#4ade80',leak:1},
- swarm:{name:'Enxame',hp:17,speed:76,reward:5,r:7,color:'#fda4af',leak:1},
- brute:{name:'Brutamontes',hp:210,speed:22,reward:31,r:17,color:'#fb923c',leak:3,resist:{cannon:.78,ice:.8}},
- boss:{name:'CHEFE',hp:650,speed:19,reward:120,r:24,color:'#dc2626',leak:5,resist:{cannon:.76,electric:.82}}
-};
-const bossForms=[
- {name:'Golem Ancestral',ability:'Escudo de pedra',type:'shield'},
- {name:'Dragão Rubro',ability:'Sopro de fogo',type:'disable'},
- {name:'Rei Esqueleto',ability:'Invocar lacaios',type:'summon'},
- {name:'Demônio Supremo',ability:'Aura de fúria',type:'rage'}
-];
-let towers=[],enemies=[],shots=[],particles=[],gold=165,baseHp=22,baseMaxHp=22,wave=0,kills=0,score=0,active=false,paused=false,gameOver=false,won=false,spawnQueue=[],spawnTimer=0,last=0,raf=0,selectedTower=null,buildType='archer',speed=1,freezeCd=0,bombCd=0,freezeTime=0,uiTimer=0,started=false,pointerPos=null,runPerks={damage:1,rate:1,range:1},rewardPending=false,rewardChoices=[];
-const difficultyProfiles={normal:{label:'Normal',hpGrowth:.20,countBase:6,countStep:2.1,spawn:.72,speed:1,reward:1,gold:180,hp:25,boss:1,bomb:.24,freeze:3.2,rewardDamage:.10,rewardRate:.08,rewardRange:.08,rewardGold:45,repair:4,fortify:4},hard:{label:'Difícil',hpGrowth:.26,countBase:7,countStep:2.5,spawn:.62,speed:1.06,reward:.88,gold:165,hp:22,boss:1.25,bomb:.20,freeze:2.8,rewardDamage:.08,rewardRate:.06,rewardRange:.06,rewardGold:35,repair:3,fortify:3},insane:{label:'Insano',hpGrowth:.34,countBase:8,countStep:2.8,spawn:.52,speed:1.14,reward:.78,gold:145,hp:20,boss:1.55,bomb:.16,freeze:2.3,rewardDamage:.055,rewardRate:.04,rewardRange:.04,rewardGold:25,repair:2,fortify:2}};
-function difficulty(){return difficultyProfiles[$('difficultySelect').value]||difficultyProfiles.hard}
+
+// Web Audio API - Som Retrô
+let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}}function tone(f,d,t='square',v=.05){if(!soundOn||!audioCtx)return;const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=t;o.frequency.value=f;g.gain.value=v;g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d)}function difficulty(){return difficultyProfiles[$('difficultySelect').value]||difficultyProfiles.hard}
 const statKeys={wave:'arcade_best_td_waves',kills:'arcade_best_td_kills',score:'arcade_best_td_score'};
 function readBest(){return Number(localStorage.getItem(statKeys.wave))||0}
 function saveRecords(){try{localStorage.setItem(statKeys.wave,String(Math.max(readBest(),wave)));localStorage.setItem(statKeys.kills,String(Math.max(Number(localStorage.getItem(statKeys.kills))||0,kills)));localStorage.setItem(statKeys.score,String(Math.max(Number(localStorage.getItem(statKeys.score))||0,score)))}catch(e){}}
@@ -143,4 +69,6 @@ $('difficultySelect').addEventListener('change',()=>{reset();say('⚔️ Dificul
 document.addEventListener('keydown',e=>{if(['INPUT','SELECT','TEXTAREA'].includes(document.activeElement?.tagName))return;if(e.code==='Space'&&active){e.preventDefault();$('pauseBtn').click()}else if(e.code==='Enter'&&!active&&!gameOver&&!won){e.preventDefault();startWave()}else if(/^Digit[1-6]$/.test(e.code)){const keys=Object.keys(towerTypes),key=keys[Number(e.code.slice(-1))-1];if(key){buildType=key;selectedTower=null;renderTowerChoices();renderInfo();renderUI();draw()}}});
 renderTowerChoices();renderUI();renderInfo();draw();
 })();
-</script><script src="../arcade-common.js"></script></body></html>
+.btn:focus-visible, button:focus-visible{outline: 2px solid #67e8f9; outline-offset: 2px;}input:focus-visible, select:focus-visible{outline: 2px solid #67e8f9; outline-offset: 2px;}
+</script><script src="../arcade-common.js"></script>aria-live="polite"
+</body></html>
