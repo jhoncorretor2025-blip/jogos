@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#070b14">
-<title>Banco Imobiliário — Jogos do Jhon v4.5</title>
+<title>Banco Imobiliário — Jogos do Jhon v4.6</title>
 <style>
 :root{--bg:#081b17;--card:#10271f;--line:#315747;--txt:#f4f3e8;--muted:#a8b9a8;--you:#4de1d0;--ia:#fb8d9c}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%}
@@ -237,7 +237,7 @@ body{min-height:100vh;min-height:100dvh;padding:16px 12px 28px;display:flex;flex
 @keyframes coinFly{0%{opacity:0;transform:translate(0,10px) scale(.5) rotate(0)}16%{opacity:1;transform:translate(0,0) scale(1) rotate(90deg)}100%{opacity:0;transform:translate(22px,-55px) scale(.65) rotate(430deg)}}
 @media(prefers-reduced-motion:reduce){.money-coin,.money-float{animation:none!important;opacity:1}}
 
-/* Banco Imobiliário v4.5 — dados mais visíveis e peça do jogador ampliada */
+/* Banco Imobiliário v4.6 — dados mais visíveis e peça do jogador ampliada */
 .dice-tray{gap:10px;min-height:clamp(44px,6vw,58px)}
 .dice-cube{width:clamp(32px,6vw,48px);height:clamp(32px,6vw,48px);font-size:clamp(25px,4.8vw,37px);border-radius:11px;box-shadow:0 5px 0 #a8a18e,0 8px 12px #40351d66,inset 0 1px #fff}
 .dice-total{min-width:48px;font-size:clamp(10px,1.5vw,13px);font-weight:1000}
@@ -248,7 +248,7 @@ body{min-height:100vh;min-height:100dvh;padding:16px 12px 28px;display:flex;flex
 @media(prefers-reduced-motion:reduce){.pawn-you{animation:none}}
 
 
-/* Banco Imobiliário v4.5 — refinamento visual premium */
+/* Banco Imobiliário v4.6 — refinamento visual premium */
 :root{--gold:#f5d58d;--glass:rgba(18,43,32,.88);--soft-line:rgba(229,207,153,.28)}
 body{background:radial-gradient(ellipse at 50% -14%,#527d55 0,transparent 48%),radial-gradient(ellipse at 0 40%,#173e31 0,transparent 45%),linear-gradient(145deg,#071710,#102a20 52%,#071710);background-attachment:fixed}
 .top{padding:5px 2px 10px}
@@ -296,6 +296,44 @@ body{background:radial-gradient(ellipse at 50% -14%,#527d55 0,transparent 48%),r
 }
 @media(prefers-reduced-motion:reduce){.pawn-ia{animation:none}}
 
+
+/* Banco Imobiliário v4.6 — identidade visual, profundidade e microinterações */
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.2;background-image:radial-gradient(#d8c58b 1px,transparent 1px);background-size:23px 23px;mask-image:linear-gradient(to bottom,#000,transparent 72%)}
+.top{position:relative;padding:9px 10px 13px;border:1px solid #d9c18a35;border-radius:18px;background:linear-gradient(110deg,#173b2b99,#10271b55);box-shadow:0 8px 25px #0002,inset 0 1px #ffffff12}
+.top:after{content:"";position:absolute;left:68px;right:12px;bottom:0;height:1px;background:linear-gradient(90deg,#e9ce8c88,transparent)}
+.brandcopy h1{font-size:clamp(20px,4.3vw,26px);text-shadow:0 2px 12px #0008}.kicker{letter-spacing:1.8px}
+.quick-guide{box-shadow:0 7px 22px #0003,inset 0 1px #ffffff0c}.quick-guide summary{display:flex;align-items:center;gap:8px}.quick-guide summary:before{content:"✦";color:#f3d28a}
+.board-frame{isolation:isolate}.board-frame:after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(115deg,#fff3,transparent 22%,transparent 72%,#fff2);mix-blend-mode:screen}
+#board{isolation:isolate}.space{transform:translateZ(0);background-image:linear-gradient(145deg,#fff8,transparent 34%),linear-gradient(150deg,#f4f0dc,#d8d3b6)}
+.space:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;background:radial-gradient(circle at 50% 40%,#fff9,transparent 70%);transition:opacity .2s}.space:hover:before{opacity:.7}
+.space[data-type="start"]{box-shadow:inset 0 0 0 2px #fff8,0 3px 8px #0005,0 0 12px #f1c76b55}
+.space[data-type="chance"],.space[data-type="tax"],.space[data-type="rest"]{box-shadow:inset 0 0 0 1px #fff9,0 3px 8px #0005}
+.space.group-complete{outline:1px solid #f4d17e;outline-offset:-3px}.space.group-complete .space-band{height:8px;flex-basis:8px}
+.space .space-icon{filter:drop-shadow(0 2px 2px #0003)}.space .pr{font-variant-numeric:tabular-nums}.space .pawns{position:relative;z-index:4}
+.pawn{flex-shrink:0;display:grid;place-items:center;text-shadow:0 1px #fff8}
+.pawn-you{background:radial-gradient(circle at 32% 25%,#fff 0 10%,#d4fff5 30%,#73d8c4 100%)}
+.pawn-ia{background:radial-gradient(circle at 32% 25%,#fff 0 10%,#ffe7e9 30%,#f29ba6 100%)}
+.center{isolation:isolate}.center:before{z-index:0;border-color:#8a754566;box-shadow:0 0 20px #fff4}.center:after{z-index:0;border-color:#8a754533}
+.center-kicker,.round-pill,.city-art,.center-logo,.center-groups,.turn-chip,.dice-tray,.center .btn{filter:drop-shadow(0 1px 1px #fff5)}
+.center-kicker{letter-spacing:1.7px}.round-pill{border:1px solid #9c7b3e66;box-shadow:0 2px 5px #6e552833}
+.turn-chip{padding:6px 12px;border:1px solid #ffffff40;box-shadow:0 3px 8px #0003}
+.dice-cube{position:relative;border-color:#fff;box-shadow:0 7px 0 #999384,0 11px 17px #30271966,inset 0 2px 4px #fff,inset -3px -4px 7px #b6b1a5}
+.dice-tray.rolling .dice-cube{filter:drop-shadow(0 0 9px #ffdc78)}
+.activity-bar{position:relative;overflow:hidden}.activity-bar:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(#f5d58d,#8ab99a)}
+.activity-icon{box-shadow:inset 0 1px #fff3,0 3px 8px #0002}.toolbar .btn{min-height:42px}
+.btn{position:relative;overflow:hidden}.btn:not(:disabled):after{content:"";position:absolute;inset:0;transform:translateX(-120%);background:linear-gradient(105deg,transparent 30%,#fff5 48%,transparent 66%);transition:transform .5s}.btn:not(:disabled):hover:after{transform:translateX(120%)}
+.modal-cover,.modal-card{overscroll-behavior:contain}.modal-card{border-color:#e2c17e;box-shadow:0 28px 90px #000c,inset 0 1px #ffffff2b}.modal-card h2{letter-spacing:-.5px;text-shadow:0 2px 9px #0004}
+.form-field select{box-shadow:inset 0 2px 5px #0004}.property-row{transition:transform .18s,border-color .18s}.property-row:hover{transform:translateY(-2px);border-color:#e5c783}
+.deed-hero{box-shadow:inset 0 1px #fff8,0 6px 16px #0003}.deed-stat,.result-stat{background:linear-gradient(145deg,#ffffff14,#ffffff06)}
+#historyBox{box-shadow:0 7px 20px #0003}#historyBox summary{display:flex;align-items:center;justify-content:space-between}#historyBox summary:after{content:"⌄";font-size:17px;color:#f0d79d}#historyBox[open] summary:after{content:"⌃"}
+.legend{padding:9px 12px;border:1px solid #ffffff13;border-radius:99px;background:#0b211988}.legend-dot{box-shadow:0 0 0 2px #ffffff18,0 1px 4px #0006}.ver{opacity:.8}
+.event-card{border-width:2px;background:linear-gradient(120deg,#fff0c9,#d1a45e);box-shadow:0 18px 45px #000b,0 0 0 4px #f5dfa51c}
+.money-float{font-size:18px;letter-spacing:.2px;text-shadow:0 2px 5px #000a,0 0 10px #0005}
+@media(min-width:760px){.top,.quick-guide{max-width:720px}.board-frame{padding:15px}#board{gap:7px;padding:8px}.space{border-radius:11px}.activity-bar{padding:14px 17px}}
+@media(max-width:480px){.top{padding:7px 7px 10px;border-radius:14px}.board-frame:after{display:none}.quick-guide{padding:9px 11px}.legend{border-radius:13px;gap:8px}.toolbar .btn{min-height:40px}.center-kicker{letter-spacing:.7px}}
+@media(hover:none){.space:hover{transform:none}.btn:not(:disabled):hover:after{display:none}}
+@media(prefers-reduced-motion:reduce){.space,.property-row,.btn:after{transition:none!important}}
+
 </style>
 <style>.quick-guide{max-width:1120px;margin:0 auto 10px;background:#101e2d;border:1px solid #2a435c;border-radius:13px;padding:10px 14px;color:#eaf2f7}.quick-guide summary{cursor:pointer;font-weight:800;color:#8de3dc}.quick-guide ol{margin:9px 0 2px;padding-left:22px;color:#c5d4df;font-size:13px;line-height:1.65}.quick-guide li{margin:3px 0}</style></head>
 <body>
@@ -303,7 +341,7 @@ body{background:radial-gradient(ellipse at 50% -14%,#527d55 0,transparent 48%),r
     <a class="back" href="../index.html" title="Voltar ao Arcade" aria-label="Voltar ao Arcade">←</a>
     <div class="brandmark">🏘️</div>
     <div class="brandcopy"><h1>Banco Imobiliário</h1><p class="kicker">NEGÓCIOS · PROPRIEDADES · ESTRATÉGIA</p></div>
-    <span class="version-pill">JOGO v4.5</span>
+    <span class="version-pill">JOGO v4.6</span>
   </header>
   <details class="quick-guide"><summary>❔ Como jogar — guia rápido</summary><ol><li>Escolha se vai jogar contra a máquina ou em dupla, além de dados virtuais ou reais.</li><li>Toque em <b>Começar partida</b>.</li><li>Com dados virtuais, o jogo faz o lançamento. Com dados reais, informe os valores físicos de 1 a 6 quando solicitado.</li><li>No modo de dois jogadores, passe o aparelho para a outra pessoa quando aparecer a vez dela.</li><li>Ao cair num imóvel livre, o participante da vez escolhe comprar ou passar. Use <b>Imóveis</b> para construir, vender melhorias ou hipotecar.</li></ol></details>
   <section class="hud" aria-label="Patrimônio dos jogadores">
