@@ -67,7 +67,7 @@ function mountTouchKit(){
  for(const [d,sym] of [['up','▲'],['left','◀'],['right','▶'],['down','▼']]){
   const b=document.createElement('button');b.type='button';b.className=d;b.textContent=sym;b.setAttribute('aria-label',({up:'Cima',down:'Baixo',left:'Esquerda',right:'Direita'})[d]);b.dataset.dir=d;pad.appendChild(b);
  }
- kit.append(base,pad);document.body.appendChild(kit);document.body.classList.add('has-arcade-touch-kit');
+ if(mode!=='arrows')kit.appendChild(base);if(mode!=='joystick')kit.appendChild(pad);document.body.appendChild(kit);document.body.classList.add('has-arcade-touch-kit');
  const pressed=new Set();let activeDir=null,repeatTimer=null,pointerId=null;
  function event(type,key,isRepeat=false){try{window.dispatchEvent(new KeyboardEvent(type,{key,code:key,bubbles:true,cancelable:true,repeat:isRepeat}))}catch(e){}}
  function release(){if(repeatTimer){clearInterval(repeatTimer);repeatTimer=null}if(activeDir){event('keyup',directions[activeDir]);pressed.delete(activeDir);activeDir=null}}
