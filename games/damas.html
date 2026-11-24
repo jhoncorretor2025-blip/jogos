@@ -1,7 +1,4 @@
-
-
-// Web Audio API - Som Retrô
-let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}}function tone(f,d,t='square',v=.05){if(!soundOn||!audioCtx)return;const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=t;o.frequency.value=f;g.gain.value=v;g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d)}function sfxMove(){tone(220,.04,'square',.03)}function sfxClick(){tone(440,.08,'triangle',.05)}<!doctype html>
+<!doctype html>
 <html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#07111b"><title>Damas · Jogos do Jhon · v1.0</title>
 <style>
 :root{color-scheme:dark;--bg:#07111b;--panel:#101e2d;--line:#294158;--text:#edf6f8;--muted:#9bb1c2;--cyan:#45d9e8;--gold:#f6c96a}
@@ -15,6 +12,10 @@ button:focus-visible,select:focus-visible{outline:3px solid #67e8f9;outline-offs
 <style>
 .checkers{width:min(620px,100%);margin:auto;display:grid;grid-template-columns:repeat(8,1fr);border:7px solid #68462e;border-radius:12px;overflow:hidden;box-shadow:0 12px 30px #0006}.sq{aspect-ratio:1;display:grid;place-items:center;border:0;padding:0;position:relative}.light{background:#e7d5b5}.dark{background:#744b32;cursor:pointer}.sq.sel{outline:4px solid #45d9e8;outline-offset:-4px}.sq.hint::after{content:"";width:25%;height:25%;border-radius:50%;background:#8cf0c5;box-shadow:0 0 9px #8cf0c5}.piece{width:76%;height:76%;border-radius:50%;box-shadow:inset 0 3px 5px #fff8,inset 0 -6px 8px #0008,0 4px 5px #0008;border:3px solid #f2d9aa;display:grid;place-items:center;color:#fff;font-size:clamp(12px,2vw,22px);font-weight:900}.red{background:radial-gradient(circle at 30% 25%,#ff8c88,#b51f39 70%)}.black{background:radial-gradient(circle at 30% 25%,#8da3ae,#192735 70%)}.piece.king::after{content:"♛";text-shadow:0 2px 4px #000}
 </style><div class="checkers" id="board" aria-label="Tabuleiro de damas"></div><div class="message" id="message" role="status" aria-live="polite">Bom jogo!</div></section><div style="text-align:center"><a class="back" href="../index.html">← Voltar ao Jogos do Jhon</a></div></main><script>(()=>{
+
+// Web Audio API - Som Retrô
+let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}}function tone(f,d,t='square',v=.05){if(!soundOn||!audioCtx)return;const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=t;o.frequency.value=f;g.gain.value=v;g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d)}function sfxMove(){tone(220,.04,'square',.03)}function sfxClick(){tone(440,.08,'triangle',.05)}
+
 const boardEl=document.getElementById('board'),msg=document.getElementById('message');let board=[],turn='r',selected=null,moves=[],captures={r:0,b:0},busy=false;
 const dirs=p=>p.k?[-1,1]:[p.c==='r'?-1:1];
 function init(){board=Array.from({length:8},()=>Array(8).fill(null));for(let y=0;y<3;y++)for(let x=0;x<8;x++)if((x+y)%2===1)board[y][x]={c:'b',k:false};for(let y=5;y<8;y++)for(let x=0;x<8;x++)if((x+y)%2===1)board[y][x]={c:'r',k:false};turn='r';selected=null;moves=[];captures={r:0,b:0};busy=false;render();say('Sua vez! Selecione uma peça vermelha.')}
