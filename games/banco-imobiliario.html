@@ -226,7 +226,7 @@ body{min-height:100vh;min-height:100dvh;padding:16px 12px 28px;display:flex;flex
 @keyframes coinFly{0%{opacity:0;transform:translate(0,10px) scale(.5) rotate(0)}16%{opacity:1;transform:translate(0,0) scale(1) rotate(90deg)}100%{opacity:0;transform:translate(22px,-55px) scale(.65) rotate(430deg)}}
 @media(prefers-reduced-motion:reduce){.money-coin,.money-float{animation:none!important;opacity:1}}
 </style>
-</head>
+<style>.quick-guide{max-width:1120px;margin:0 auto 10px;background:#101e2d;border:1px solid #2a435c;border-radius:13px;padding:10px 14px;color:#eaf2f7}.quick-guide summary{cursor:pointer;font-weight:800;color:#8de3dc}.quick-guide ol{margin:9px 0 2px;padding-left:22px;color:#c5d4df;font-size:13px;line-height:1.65}.quick-guide li{margin:3px 0}</style></head>
 <body>
   <header class="top">
     <a class="back" href="../index.html" title="Voltar ao Arcade" aria-label="Voltar ao Arcade">←</a>
@@ -234,6 +234,7 @@ body{min-height:100vh;min-height:100dvh;padding:16px 12px 28px;display:flex;flex
     <div class="brandcopy"><h1>Banco Imobiliário</h1><p class="kicker">NEGÓCIOS · PROPRIEDADES · ESTRATÉGIA</p></div>
     <span class="version-pill">JOGO v4.0</span>
   </header>
+  <details class="quick-guide"><summary>❔ Como jogar — guia rápido</summary><ol><li>Escolha o saldo inicial e quantas rodadas quer jogar.</li><li>Toque em <b>Começar partida</b>.</li><li>Quando for sua vez, toque em <b>🎲 LANÇAR DADOS</b> no centro do tabuleiro.</li><li>Ao cair num imóvel livre, escolha comprar ou passar. Se cair num imóvel da IA, pague aluguel.</li><li>Use <b>Imóveis</b> para construir casas/hotéis, vender ou hipotecar. Ganha quem tiver maior patrimônio quando acabar o limite de rodadas.</li></ol></details>
   <section class="hud" aria-label="Patrimônio dos jogadores">
     <div class="pcard you active" id="player0"><div class="avatar">🚙</div><div class="player-info"><div class="player-name">VOCÊ <span class="turn-tag" id="turnTag0">SUA VEZ</span></div><b id="cash0">R$ 1.000</b><small id="assets0">Caixa inicial · sem imóveis</small></div></div>
     <div class="pcard ia" id="player1"><div class="avatar">🤖</div><div class="player-info"><div class="player-name">IA · ESTRATÉGICA <span class="turn-tag" id="turnTag1">AGUARDANDO</span></div><b id="cash1">R$ 1.000</b><small id="assets1">Caixa inicial · sem imóveis</small></div></div>
@@ -287,7 +288,7 @@ body{min-height:100vh;min-height:100dvh;padding:16px 12px 28px;display:flex;flex
   <div id="setupOv" class="modal-cover show">
     <div class="modal-card">
       <h2>🏦 Prepare sua partida</h2>
-      <p class="intro">Escolha o tamanho do caixa e a duração. Uma rodada equivale a uma jogada sua e uma da IA. A partida termina por falência ou pelo limite escolhido; nesse caso, vence quem tiver o maior patrimônio total.</p>
+      <p class="intro">Escolha o tamanho do caixa e a duração. Uma rodada equivale a uma jogada sua e uma da IA. A partida termina por falência ou pelo limite escolhido; nesse caso, vence quem tiver o maior patrimônio total. Depois de começar, procure o botão 🎲 LANÇAR DADOS no centro do tabuleiro para fazer sua primeira jogada.</p>
       <div class="form-row">
         <div class="form-field"><label for="startingCash">💰 Saldo inicial</label><select id="startingCash"><option value="800">R$ 800 · Rápida</option><option value="1000" selected>R$ 1.000 · Clássica</option><option value="1500">R$ 1.500 · Longa</option><option value="2000">R$ 2.000 · Investidor</option></select></div>
         <div class="form-field"><label for="roundLimit">🔄 Limite de rodadas</label><select id="roundLimit"><option value="20">20 rodadas</option><option value="30" selected>30 rodadas</option><option value="50">50 rodadas</option><option value="0">Sem limite · até falência</option></select></div>
