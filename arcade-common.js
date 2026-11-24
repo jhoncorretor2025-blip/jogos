@@ -38,9 +38,60 @@ body.arcade-reduced-motion *,body.arcade-reduced-motion *::before,body.arcade-re
 .arcade-force-touch.pad,.arcade-force-touch.dpad,.arcade-force-touch.control-pad{display:grid!important;visibility:visible!important}
 .arcade-force-touch.mobile-controls{display:grid!important;visibility:visible!important}
 .arcade-force-touch.touch-controls,.arcade-force-touch[data-touch-controls]{display:flex!important;visibility:visible!important}
+
+#arcadeTouchKit{position:fixed;z-index:9999;left:50%;bottom:calc(9px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);width:min(360px,calc(100vw - 20px));display:none;align-items:center;justify-content:space-between;gap:12px;padding:8px 10px;border:1px solid #7890aa55;border-radius:22px;background:linear-gradient(145deg,#071525ed,#0b172beF);box-shadow:0 12px 32px #0009;backdrop-filter:blur(9px);touch-action:none;user-select:none;-webkit-user-select:none}
+body.has-arcade-touch-kit{padding-bottom:150px!important}
+#arcadeTouchKit .joy-base{width:112px;height:112px;flex:0 0 112px;border-radius:50%;position:relative;border:2px solid #7dd3fc88;background:radial-gradient(circle at 35% 28%,#294867,#10243b 68%,#081423);box-shadow:inset 0 4px 14px #0009,0 4px 12px #0006;touch-action:none}
+#arcadeTouchKit .joy-base:before{content:"";position:absolute;inset:18px;border:1px dashed #b9dfff55;border-radius:50%}
+#arcadeTouchKit .joy-knob{position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px;border-radius:50%;background:linear-gradient(145deg,#e0f2fe,#38bdf8 55%,#0369a1);border:2px solid #e0f2fe;box-shadow:0 4px 10px #0009,inset 0 2px 4px #fff9;pointer-events:none;transform:translate(0,0)}
+#arcadeTouchKit .joy-label{position:absolute;left:0;right:0;bottom:4px;text-align:center;color:#c5d7eb;font:800 8px system-ui;letter-spacing:1px;pointer-events:none}
+#arcadeTouchKit .arrow-grid{display:grid;grid-template-columns:repeat(3,42px);grid-template-rows:repeat(3,36px);gap:4px;flex:0 0 auto}
+#arcadeTouchKit button{border:1px solid #58718d;background:linear-gradient(145deg,#203b58,#10243b);color:#eff8ff;border-radius:10px;font:900 18px system-ui;box-shadow:inset 0 1px #ffffff30,0 3px 6px #0005;touch-action:none;user-select:none;-webkit-user-select:none}
+#arcadeTouchKit button:active,#arcadeTouchKit button.is-down{background:linear-gradient(145deg,#0e7490,#164e63);transform:translateY(1px)}
+#arcadeTouchKit .up{grid-column:2;grid-row:1}#arcadeTouchKit .left{grid-column:1;grid-row:2}#arcadeTouchKit .right{grid-column:3;grid-row:2}#arcadeTouchKit .down{grid-column:2;grid-row:3}
+@media (pointer:coarse),(max-width:850px){#arcadeTouchKit{display:flex}}
+@media (max-width:370px){#arcadeTouchKit{gap:7px;padding:7px;width:calc(100vw - 12px)}#arcadeTouchKit .joy-base{width:96px;height:96px;flex-basis:96px}#arcadeTouchKit .joy-knob{width:40px;height:40px;margin:-20px}#arcadeTouchKit .arrow-grid{grid-template-columns:repeat(3,38px);grid-template-rows:repeat(3,34px)}}
 `;
 (document.head||document.documentElement).appendChild(style);
 apply();
+function mountTouchKit(){
+ const mode=document.body?.dataset?.arcadeControls;
+ if(!mode||mode==='none'||document.getElementById('arcadeTouchKit'))return;
+ const repeat=document.body.dataset.arcadeRepeat==='true';
+ const directions={up:'ArrowUp',left:'ArrowLeft',right:'ArrowRight',down:'ArrowDown'};
+ const kit=document.createElement('div');kit.id='arcadeTouchKit';kit.setAttribute('role','group');kit.setAttribute('aria-label','Joystick e setas de movimento');
+ const base=document.createElement('div');base.className='joy-base';base.setAttribute('role','application');base.setAttribute('aria-label','Joystick virtual; arraste para mover');
+ const knob=document.createElement('div');knob.className='joy-knob';base.appendChild(knob);
+ const label=document.createElement('span');label.className='joy-label';label.textContent='JOYSTICK';base.appendChild(label);
+ const pad=document.createElement('div');pad.className='arrow-grid';pad.setAttribute('aria-label','Setas direcionais');
+ for(const [d,sym] of [['up','▲'],['left','◀'],['right','▶'],['down','▼']]){
+  const b=document.createElement('button');b.type='button';b.className=d;b.textContent=sym;b.setAttribute('aria-label',({up:'Cima',down:'Baixo',left:'Esquerda',right:'Direita'})[d]);b.dataset.dir=d;pad.appendChild(b);
+ }
+ kit.append(base,pad);document.body.appendChild(kit);document.body.classList.add('has-arcade-touch-kit');
+ const pressed=new Set();let activeDir=null,repeatTimer=null,pointerId=null;
+ function event(type,key,isRepeat=false){try{window.dispatchEvent(new KeyboardEvent(type,{key,code:key,bubbles:true,cancelable:true,repeat:isRepeat}))}catch(e){}}
+ function release(){if(repeatTimer){clearInterval(repeatTimer);repeatTimer=null}if(activeDir){event('keyup',directions[activeDir]);pressed.delete(activeDir);activeDir=null}}
+ function press(dir){if(!directions[dir])return;if(activeDir===dir)return;release();activeDir=dir;event('keydown',directions[dir]);pressed.add(dir);if(repeat)repeatTimer=setInterval(()=>{if(activeDir===dir)event('keydown',directions[dir],true)},175)}
+ function moveStick(e){
+  const rect=base.getBoundingClientRect(),cx=rect.left+rect.width/2,cy=rect.top+rect.height/2;
+  let dx=e.clientX-cx,dy=e.clientY-cy,dist=Math.hypot(dx,dy),max=33;
+  if(dist>max){dx=dx/dist*max;dy=dy/dist*max}
+  knob.style.transform='translate('+dx+'px,'+dy+'px)';
+  if(dist<17){release();return}
+  press(Math.abs(dx)>Math.abs(dy)?(dx<0?'left':'right'):(dy<0?'up':'down'));
+ }
+ base.addEventListener('pointerdown',e=>{e.preventDefault();pointerId=e.pointerId;base.setPointerCapture?.(pointerId);moveStick(e)});
+ base.addEventListener('pointermove',e=>{if(pointerId===e.pointerId){e.preventDefault();moveStick(e)}});
+ const stopStick=e=>{if(pointerId!==null&&(e.pointerId===undefined||e.pointerId===pointerId)){release();pointerId=null;knob.style.transform='translate(0,0)'}};
+ ['pointerup','pointercancel','lostpointercapture'].forEach(ev=>base.addEventListener(ev,stopStick));
+ pad.querySelectorAll('button[data-dir]').forEach(b=>{
+  const down=e=>{e.preventDefault();b.classList.add('is-down');b.setPointerCapture?.(e.pointerId);press(b.dataset.dir)};
+  const up=e=>{e.preventDefault();b.classList.remove('is-down');release()};
+  b.addEventListener('pointerdown',down);['pointerup','pointercancel','lostpointercapture','pointerleave'].forEach(ev=>b.addEventListener(ev,up));
+ });
+ window.addEventListener('blur',()=>{release();pointerId=null;knob.style.transform='translate(0,0)'});
+}
+mountTouchKit();
 window.ArcadeCommon={getSettings,apply,soundAllowed,volume,playUi};
 window.addEventListener('storage',e=>{if(e.key===KEY)apply()});
 })();
