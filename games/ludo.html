@@ -30,4 +30,4 @@ function roll(){if(rolling||finished||die||turn!==0)return;die=1+Math.floor(Math
 function cpuTurn(){if(finished)return;rolling=false;die=1+Math.floor(Math.random()*6);const opts=available(turn);if(!opts.length){die=0;advance();return}const choice=opts[Math.floor(Math.random()*opts.length)];finishMove(turn,choice.i)}
 svg.addEventListener('click',e=>{const t=e.target.closest('[data-token]');if(!t||turn!==0||!die||finished)return;const pi=+t.dataset.player,ti=+t.dataset.token;if(pi!==0||!canMove(0,players[0].tokens[ti]))return;finishMove(0,ti)});
 document.getElementById('roll').addEventListener('click',roll);document.getElementById('newLudo').addEventListener('click',create);create();
-})();</script></body></html>
+})();</script><script src="../arcade-common.js"></script></body></html>

@@ -29,4 +29,4 @@ gridEl.addEventListener('pointerdown',e=>{const cell=e.target.closest('.letter')
 gridEl.addEventListener('pointerup',e=>{if(!dragging)return;dragging=false;const end=cellFromPoint(e.clientX,e.clientY)||start;if(end.r===start.r&&end.c===start.c){if(gridEl.dataset.first){const a=JSON.parse(gridEl.dataset.first);gridEl.dataset.first='';attempt(a,end)}else{gridEl.dataset.first=JSON.stringify(start);msg.textContent='Agora clique ou arraste até a última letra da palavra.'}}else{gridEl.dataset.first='';attempt(start,end)}});
 gridEl.addEventListener('pointercancel',()=>{dragging=false});
 document.getElementById('new').addEventListener('click',build);document.getElementById('level').addEventListener('change',build);build();
-})();</script></body></html>
+})();</script><script src="../arcade-common.js"></script></body></html>

@@ -301,4 +301,4 @@ function beep(freq,duration){if(!soundEnabled)return;try{const AC=window.AudioCo
 function lighten(hex,a){return shade(hex,a)}function darken(hex,a){return shade(hex,-a)}function shade(hex,amount){const n=parseInt(hex.slice(1),16),r=Math.max(0,Math.min(255,((n>>16)&255)+Math.round(255*amount*.25))),g=Math.max(0,Math.min(255,((n>>8)&255)+Math.round(255*amount*.25))),b=Math.max(0,Math.min(255,(n&255)+Math.round(255*amount*.25)));return 'rgb('+r+','+g+','+b+')'}
 rack();
 })();
-</script></body></html>
+</script><script src="../arcade-common.js"></script></body></html>

@@ -143,4 +143,4 @@ $('difficultySelect').addEventListener('change',()=>{reset();say('⚔️ Dificul
 document.addEventListener('keydown',e=>{if(['INPUT','SELECT','TEXTAREA'].includes(document.activeElement?.tagName))return;if(e.code==='Space'&&active){e.preventDefault();$('pauseBtn').click()}else if(e.code==='Enter'&&!active&&!gameOver&&!won){e.preventDefault();startWave()}else if(/^Digit[1-6]$/.test(e.code)){const keys=Object.keys(towerTypes),key=keys[Number(e.code.slice(-1))-1];if(key){buildType=key;selectedTower=null;renderTowerChoices();renderInfo();renderUI();draw()}}});
 renderTowerChoices();renderUI();renderInfo();draw();
 })();
-</script></body></html>
+</script><script src="../arcade-common.js"></script></body></html>

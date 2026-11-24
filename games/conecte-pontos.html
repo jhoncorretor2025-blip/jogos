@@ -11,4 +11,4 @@ if(c<n-1){let h=document.createElement('button');h.style.position='absolute';h.s
 if(r<n-1){let v=document.createElement('button');v.style.position='absolute';v.style.right='0';v.style.top='50%';v.style.transform='translateY(-50%)';v.style.width='12px';v.style.height='100%';v.style.padding='0';v.style.border='0';v.style.borderRadius='4px';v.style.background=edges[edgeId(r,c,'v')]===1?'#22d3ee':edges[edgeId(r,c,'v')]===2?'#a78bfa':'transparent';v.onclick=()=>lineClick(r,c,'v');cell.appendChild(v)}board.appendChild(cell)}
 $('s1').textContent=score[0];$('s2').textContent=score[1];$('turn').textContent=finished?'Final':('Jogador '+player);$('status').textContent=finished?'Fim! '+(player===0?'Empate!':'Jogador '+player+' venceu!'):'Jogador '+player+' joga. '+(score[0]+score[1])+' quadrados conquistados.'}
 $('new').onclick=init;$('reset').onclick=init;init();
-</script></main></body></html>
+</script></main><script src="../arcade-common.js"></script></body></html>
