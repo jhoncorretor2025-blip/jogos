@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Jogos do Jhon">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Jogos do Jhon · v3.69</title>
+<title>Jogos do Jhon · v3.70</title>
 <meta property="og:title" content="Jogos do Jhon · Arcade">
 <meta property="og:description" content="Arcade de jogos web do Jhon com 46 jogos para jogar no celular ou PC.">
 <meta property="og:type" content="website">
@@ -326,7 +326,7 @@
     <span class="hero-kicker">ARCADE PESSOAL</span>
     <h1>Jogos do Jhon</h1>
     <p class="sub">🎮 Seu cantinho de diversão: escolha um jogo e comece a jogar no celular ou no PC.</p>
-    <div class="version"><span class="dot"></span> Versão <b>v3.69</b> · atualizado em <b>23/11/2026</b></div>
+    <div class="version"><span class="dot"></span> Versão <b>v3.70</b> · atualizado em <b>23/11/2026</b></div>
     <div class="home-hero-actions">
       <a class="primary-cta" href="#catalogStart">🎮 Explorar jogos <span aria-hidden="true">↓</span></a>
       <span class="hero-count" id="heroGameCount">46 jogos no catálogo</span>
@@ -413,7 +413,7 @@
     </div>
 
     <div class="card" data-category="puzzle" data-href="games/memoria.html" style="--accent:#a78bfa;--glow:rgba(167,139,250,.20)">
-      <span class="tag">v1.1</span>
+      <span class="tag">v1.3</span>
       <span class="ico">🧠</span>
       <p class="name">Jogo da Memória</p>
       <p class="desc">Espiada, sons, recorde e confete. Encontre os pares.</p>
@@ -621,8 +621,9 @@
     </div>
   </details>
   <div class="notes">
-    <h2>📝 Novidades da tela inicial · v3.69</h2>
+    <h2>📝 Novidades da tela inicial · v3.70</h2>
     <ul>
+      <li><b>v3.70 — Jogo da Memória:</b> reconstruída a inicialização da partida, removida a espera obrigatória de espiada e corrigidos os controles de seleção e a lógica de pares; cartas jogáveis imediatamente.</li>
       <li><b>v3.69 — Estacionamento Desafiador:</b> veículos redesenhados com visual de carros vistos de cima, cores distintas, janelas, rodas e saída destacada; ajustes na apresentação do tabuleiro.</li>
       <li><b>v3.68 — Dez novos jogos:</b> Conecte as Cores, Reversi, Mancala, Arkanoid, Corte de Frutas, Salto Infinito, Arena de Bombas, Ritmo Neon, Arena de Tanques e Estacionamento Desafiador. Catálogo ampliado para 46 jogos, com controles adaptados para PC e celular e novos recordes incluídos no backup.</li>
       <li><b>v3.67 — Todos os Jogos:</b> 36 jogos com melhorias visuais, efeitos sonoros Web Audio, partículas, tremor de tela e novo sistema de áudio em todos os jogos (Arcade + Melhor Idade).</li>
@@ -1064,7 +1065,7 @@ function validateBackup(raw){
 }
 function exportBackup(){
  try{
-  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v3.68',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
+  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v3.70',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
   const content=JSON.stringify(backup,null,2),blob=new Blob([content],{type:'application/json'});
   if(blob.size>MAX_BACKUP_BYTES)throw new Error('O backup ultrapassa 2 MB.');
   const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='jogos-do-jhon-backup-'+new Date().toISOString().slice(0,10)+'.json';
