@@ -256,7 +256,7 @@ body{min-height:100vh;min-height:100dvh;padding:16px 12px 28px;display:flex;flex
     <div class="brandcopy"><h1>Banco Imobiliário</h1><p class="kicker">NEGÓCIOS · PROPRIEDADES · ESTRATÉGIA</p></div>
     <span class="version-pill">JOGO v4.3</span>
   </header>
-  <details class="quick-guide"><summary>❔ Como jogar — guia rápido</summary><ol><li>Escolha o saldo inicial e quantas rodadas quer jogar.</li><li>Toque em <b>Começar partida</b>.</li><li>Quando for sua vez, toque em <b>🎲 LANÇAR DADOS</b> no centro do tabuleiro.</li><li>Ao cair num imóvel livre, escolha comprar ou passar. Se cair num imóvel da IA, pague aluguel.</li><li>Use <b>Imóveis</b> para construir casas/hotéis, vender ou hipotecar. Ganha quem tiver maior patrimônio quando acabar o limite de rodadas.</li></ol></details>
+  <details class="quick-guide"><summary>❔ Como jogar — guia rápido</summary><ol><li>Escolha se vai jogar contra a máquina ou em dupla, além de dados virtuais ou reais.</li><li>Toque em <b>Começar partida</b>.</li><li>Com dados virtuais, o jogo faz o lançamento. Com dados reais, informe os valores físicos de 1 a 6 quando solicitado.</li><li>No modo de dois jogadores, passe o aparelho para a outra pessoa quando aparecer a vez dela.</li><li>Ao cair num imóvel livre, o participante da vez escolhe comprar ou passar. Use <b>Imóveis</b> para construir, vender melhorias ou hipotecar.</li></ol></details>
   <section class="hud" aria-label="Patrimônio dos jogadores">
     <div class="pcard you active" id="player0"><div class="avatar">🚙</div><div class="player-info"><div class="player-name">VOCÊ <span class="turn-tag" id="turnTag0">SUA VEZ</span></div><b id="cash0">R$ 1.000</b><small id="assets0">Caixa inicial · sem imóveis</small></div></div>
     <div class="pcard ia" id="player1"><div class="avatar">🤖</div><div class="player-info"><div class="player-name">IA · ESTRATÉGICA <span class="turn-tag" id="turnTag1">AGUARDANDO</span></div><b id="cash1">R$ 1.000</b><small id="assets1">Caixa inicial · sem imóveis</small></div></div>
@@ -797,7 +797,7 @@ function openManager(emergency){
  const managerIdx=pendingDebt?pendingDebt.idx:turn,managerName=playerName(managerIdx);
  $('managerTitle').textContent=emergency?'🆘 Caixa em emergência':'🏘️ Gestão imobiliária · '+managerName;
  $('managerIntro').textContent=emergency?'Use as opções abaixo para levantar dinheiro e quitar a obrigação. Imóveis hipotecados não recebem aluguel.':'Cada imóvel pode receber até 3 casas e depois 1 hotel. O aluguel cresce de 1× para 2×, 3,5×, 5× e 8×. Cada casa custa 35% do imóvel; o hotel custa 75%. Hipoteca rende 50% do preço e o resgate custa 65%.'+(gameMode==='ai'?' Você também pode negociar propriedades com a IA.':'');
- $('emergencyBox').innerHTML=emergency?'<div class="emergency">'+managerName+' precisa de '+money(pendingDebt.amount)+' para '+pendingDebt.reason+'. Saldo disponível: '+money(players[managerIdx].cash)+'. Levante recursos ou declare falência.</div><button class="btn secondary" id="declareBankruptcy" type="button">Declarar falência</button>':'';
+ $('emergencyBox').innerHTML=emergency?'<div class="emergency">'+managerName+' precisa de '+money(pendingDebt.amount)+' para '+pendingDebt.reason+'. Saldo disponível: '+money(players[managerIdx].cash)+'. Levante recursos ou declare falência.</div>':'';
  const rows=[];
  spaces.forEach((s,i)=>{
   if(s.type!=='prop')return;
@@ -818,7 +818,6 @@ function openManager(emergency){
  $('managerBody').innerHTML=rows.length?rows.join(''):'<div class="empty-list">Ainda não há propriedades para gerenciar neste jogador.</div>';
  $('managerCloseBtn').style.display=emergency?'none':'';
  managerOv.classList.add('show');
- if(emergency){const b=$('declareBankruptcy');if(b)b.addEventListener('click',finishBankruptcy)}
 }
 function handleManagerClick(e){
  const b=e.target.closest('button[data-act]');if(!b)return;
@@ -887,7 +886,7 @@ $('sheetNo').addEventListener('click',()=>{
   else{setMessage(playerName(a.player)+' decidiu passar. O imóvel continua disponível para a próxima oportunidade.');nextTurn()}
   return;
  }
- logEvent('Você adiou a melhoria em '+spaces[a.index].name+'.');nextTurn();
+ logEvent(playerName(a.player)+' adiou a melhoria em '+spaces[a.index].name+'.');nextTurn();
 });
 $('ovBtn').addEventListener('click',showSetup);
 $('managerOv').addEventListener('click',e=>{if(e.target===managerOv&&!pendingDebt){managerOv.classList.remove('show');if(managerFinishTurn){managerFinishTurn=false;nextTurn()}}});
