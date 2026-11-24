@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#070b14"><title>Clássicos Arcade · Jogos do Jhon v1.8</title>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#070b14"><title>Clássicos Arcade · Jogos do Jhon v1.9</title>
 <style>
 :root{color-scheme:dark;--bg:#070b14;--panel:#111b2d;--line:#29364c;--txt:#e2e8f0;--muted:#94a3b8;--cyan:#22d3ee;--gold:#fbbf24;--green:#34d399;--red:#fb7185}
 *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(850px 500px at 50% -10%,#172554 0,transparent 70%),var(--bg);color:var(--txt);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;padding:14px 12px 30px}button{font:inherit;cursor:pointer;color:inherit}.wrap{width:min(100%,820px);margin:auto}.top{display:flex;align-items:center;justify-content:space-between;gap:10px}.back{color:var(--muted);text-decoration:none;font-size:13px}.ver{font-size:11px;color:#a5f3fc;border:1px solid #155e75;border-radius:99px;padding:5px 10px}.hero{text-align:center;padding:13px 0 16px}.logo{font-size:clamp(45px,12vw,76px);line-height:1.1}.hero h1{margin:4px 0;font-size:clamp(25px,6vw,36px)}.sub{margin:0;color:var(--muted);font-size:14px}.panel{background:linear-gradient(145deg,#172338,#101827);border:1px solid var(--line);border-radius:18px;padding:13px;box-shadow:0 14px 32px #0004}.stats{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:12px}.stat{background:#0b1424;border:1px solid #26364c;border-radius:12px;padding:7px 12px;text-align:center;min-width:80px}.stat small{display:block;color:var(--muted);font-size:10px}.stat b{font-size:20px;font-variant-numeric:tabular-nums}.actions,.controls{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:12px}.btn{background:#1d2c42;border:1px solid #3b4b63;border-radius:11px;padding:10px 14px;font-weight:750}.btn.primary{background:#075466;border-color:#0891b2}.btn.gold{background:#563f08;border-color:#d6a51d}.btn:active{transform:scale(.97)}.hint{text-align:center;color:var(--muted);font-size:12px;margin:10px 0 0}.board{margin:auto;max-width:100%;overflow:auto}.message{text-align:center;min-height:25px;color:#bae6fd;font-weight:700;margin:8px 0}.pad{display:grid;grid-template-columns:repeat(3,56px);gap:7px;justify-content:center;margin:12px auto 0}.pad button{height:48px;border-radius:12px;background:#16263d;border:1px solid #334155;font-size:19px}.pad .empty{visibility:hidden}
@@ -35,7 +35,7 @@ canvas{display:block;max-width:100%;height:auto;touch-action:none;border-radius:
 @media(max-width:430px){.bubble-stage{padding:9px 5px 12px;border-radius:17px}.bubble-stage canvas#bubble{border-radius:14px}.bubble-stage .stat{min-width:68px!important;padding:5px 7px!important}.bubble-stage .stat b{font-size:16px}}
 @media(prefers-reduced-motion:no-preference){.bubble-stage .btn{transition:transform .16s ease,filter .16s ease,box-shadow .16s ease}}
 </style></head><body><main class="wrap">
-<div class="top"><a class="back" href="../index.html">← Voltar ao Arcade</a><span class="ver">JOGO v1.8</span></div>
+<div class="top"><a class="back" href="../index.html">← Voltar ao Arcade</a><span class="ver">JOGO v1.9</span></div>
 <header class="hero"><div id="logo" class="logo">🎮</div><h1 id="title">Clássicos Arcade</h1><p id="subtitle" class="sub">Diversão para todos os momentos</p></header>
 <section class="panel"><div id="stats" class="stats"></div><div id="stage"></div><div id="message" class="message" aria-live="polite"></div><div id="controls" class="controls"></div><p id="hint" class="hint"></p></section>
 </main><script>
@@ -51,7 +51,7 @@ const info={
 };
 if(!info[mode])location.replace('../index.html');
 if(mode==='frogger')document.body.dataset.arcadeControls='both';
-const [logo,title,subtitle,hint]=info[mode];$('logo').textContent=logo;$('title').textContent=title;$('subtitle').textContent=subtitle;$('hint').textContent=hint;document.title=title+' · Jogos do Jhon v1.8';
+const [logo,title,subtitle,hint]=info[mode];$('logo').textContent=logo;$('title').textContent=title;$('subtitle').textContent=subtitle;$('hint').textContent=hint;document.title=title+' · Jogos do Jhon v1.9';
 const stat=(label,value)=>'<div class="stat"><small>'+label+'</small><b id="'+value+'">0</b></div>';
 function shellStats(html){$('stats').innerHTML=html}
 function setMsg(t){$('message').textContent=t}
@@ -141,7 +141,7 @@ const MODES={
  normal:{label:'Normal',palette:5,rows:6,speed:520},
  hard:{label:'Difícil',palette:6,rows:7,speed:575}
 };
-let difficulty='normal',palette=COLORS.slice(0,5),grid=[],angle=-Math.PI/2,shot=null,score=0,level=1,shots=0,clears=0,combo=0,bestCombo=best('bolhas_combo'),bombs=1,rainbows=1,special=null,loadedColor=COLORS[0],queueColor=COLORS[1],swappedThisTurn=false,paused=false,gameOver=false,rafId=0,lastFrame=0;
+let effects=[],fxRaf=0,lastFxTime=0,lastDroppedPositions=[],difficulty='normal',palette=COLORS.slice(0,5),grid=[],angle=-Math.PI/2,shot=null,score=0,level=1,shots=0,clears=0,combo=0,bestCombo=best('bolhas_combo'),bombs=1,rainbows=1,special=null,loadedColor=COLORS[0],queueColor=COLORS[1],swappedThisTurn=false,paused=false,gameOver=false,rafId=0,lastFrame=0;
 const shooter={x:180,y:474,r:14};
 function cellX(c){return 20+c*40}
 function cellY(r){return 36+r*34}
@@ -186,6 +186,35 @@ function fresh(){
  makeField(mode.rows);loadedColor=randColor();queueColor=randColor();
  render();setMsg('Nível 1 · Mire e combine 3 ou mais bolhas da mesma cor. Você tem uma bomba e um coringa!');
 }
+
+function spawnPopEffects(points,label='POP!'){
+ if(!points||!points.length)return;
+ const now=performance.now();
+ points.forEach((p,index)=>{
+  const color=p.color||'#67e8f0',count=12;
+  const particles=Array.from({length:count},(_,i)=>{const a=(Math.PI*2*i/count)+(Math.random()-.5)*.22,speed=45+Math.random()*105;return {x:p.x,y:p.y,vx:Math.cos(a)*speed,vy:Math.sin(a)*speed-24,size:2+Math.random()*3,spin:Math.random()*6}});
+  effects.push({x:p.x,y:p.y,color,particles,life:0,duration:.62,ring:0,label:index===0?label:''});
+ });
+ if(!fxRaf){lastFxTime=now;fxRaf=requestAnimationFrame(animatePopEffects)}
+}
+function animatePopEffects(timestamp){
+ const dt=Math.min((timestamp-lastFxTime)/1000,.04);lastFxTime=timestamp;
+ effects.forEach(e=>{e.life+=dt;e.particles.forEach(p=>{p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=Math.pow(.985,dt*60);p.vy+=95*dt})});
+ effects=effects.filter(e=>e.life<e.duration);
+ render();
+ if(effects.length)fxRaf=requestAnimationFrame(animatePopEffects);else fxRaf=0;
+}
+function drawPopEffects(){
+ effects.forEach(e=>{
+  const t=Math.min(1,e.life/e.duration),fade=1-t,radius=10+34*t;
+  ctx.save();ctx.globalAlpha=fade;
+  ctx.beginPath();ctx.arc(e.x,e.y,radius,0,Math.PI*2);ctx.strokeStyle=e.color;ctx.lineWidth=3*(1-t)+.5;ctx.shadowColor=e.color;ctx.shadowBlur=16;ctx.stroke();ctx.shadowBlur=0;
+  ctx.beginPath();ctx.arc(e.x,e.y,Math.max(2,7*(1-t)),0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();
+  e.particles.forEach(p=>{ctx.globalAlpha=fade;ctx.beginPath();ctx.arc(p.x,p.y,p.size*(1-t*.45),0,Math.PI*2);ctx.fillStyle=e.color;ctx.shadowColor=e.color;ctx.shadowBlur=9;ctx.fill()});
+  if(e.label&&t<.8){ctx.globalAlpha=Math.min(1,fade*1.5);ctx.font='bold 11px system-ui';ctx.textAlign='center';ctx.fillStyle='#fff';ctx.shadowColor=e.color;ctx.shadowBlur=10;ctx.fillText(e.label,e.x,e.y-20-22*t)}
+  ctx.restore();
+ });
+}
 function drawBubble(x,y,r,color,wild=false){
  ctx.save();ctx.shadowColor=wild?'#a78bfa':color;ctx.shadowBlur=11;
  const grad=ctx.createRadialGradient(x-r*.38,y-r*.42,r*.08,x,y,r);
@@ -225,6 +254,7 @@ function render(){
  // 7. Prévia da próxima bolha em cápsula iluminada.
  ctx.save();ctx.fillStyle='#071426cc';ctx.strokeStyle='#38bdf866';ctx.lineWidth=1;ctx.beginPath();ctx.roundRect(279,3,70,45,10);ctx.fill();ctx.stroke();ctx.font='9px system-ui';ctx.fillStyle='#bae6fd';ctx.fillText('PRÓXIMA',288,14);drawBubble(320,31,10,queueColor);ctx.restore();
  grid.forEach(row=>row.forEach(b=>{if(b)drawBubble(b.x,b.y,16,b.color)}));
+ drawPopEffects();
  if(!shot&&!gameOver)trajectory();
  // 6. Base mecânica do lançador com anéis concêntricos.
  ctx.save();ctx.shadowColor='#22d3ee';ctx.shadowBlur=18;ctx.fillStyle='#0b2940';ctx.strokeStyle='#38bdf899';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(shooter.x,shooter.y+8,33,12,0,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.shadowBlur=0;ctx.strokeStyle='#a5f3fc66';ctx.beginPath();ctx.ellipse(shooter.x,shooter.y+8,23,7,0,0,Math.PI*2);ctx.stroke();ctx.restore();
@@ -261,6 +291,7 @@ function connectedGroup(r,c,color){
  return group;
 }
 function removeFloating(){
+ lastDroppedPositions=[];
  const connected=new Set(),queue=[];
  grid[0].forEach((v,c)=>{if(v){connected.add('0,'+c);queue.push([0,c])}});
  while(queue.length){
@@ -268,11 +299,12 @@ function removeFloating(){
   neighbors(r,c).forEach(([a,b])=>{const key=a+','+b;if(grid[a][b]&&!connected.has(key)){connected.add(key);queue.push([a,b])}});
  }
  let dropped=0;
- grid.forEach((row,r)=>row.forEach((v,c)=>{if(v&&!connected.has(r+','+c)){grid[r][c]=null;dropped++}}));
+ grid.forEach((row,r)=>row.forEach((v,c)=>{if(v&&!connected.has(r+','+c)){lastDroppedPositions.push({x:v.x,y:v.y,color:v.color});grid[r][c]=null;dropped++}}));
  return dropped;
 }
-function finishImpact(removed,bonus=0){
+function finishImpact(removed,bonus=0,visualPoints=[]){
  if(removed>=3){
+  spawnPopEffects(visualPoints,'+'+(removed*10)+' PONTOS');
   combo++;clears++;bestCombo=Math.max(bestCombo,combo);saveBest('bolhas_combo',bestCombo);
   const multiplier=Math.min(combo,5);score+=removed*10*multiplier+bonus;
   setMsg('✨ '+removed+' bolhas removidas · combo x'+combo+' · multiplicador x'+multiplier+'!');
@@ -296,16 +328,17 @@ function attach(b){
  if(!target){gameOver=true;render();setMsg('Não há espaço para encaixar a bolinha. Fim de jogo!');return}
  grid[target.r][target.c]={x:target.x,y:target.y,color:b.color};
  const group=connectedGroup(target.r,target.c,b.color);
- let removed=0;
- if(group.length>=3){group.forEach(([r,c])=>{grid[r][c]=null;removed++})}
- const dropped=removeFloating();removed+=dropped;
- finishImpact(removed,dropped*20);
+ let removed=0,visualPoints=[];
+ if(group.length>=3){group.forEach(([r,c])=>{const bubble=grid[r][c];visualPoints.push({x:bubble.x,y:bubble.y,color:bubble.color});grid[r][c]=null;removed++})}
+ const dropped=removeFloating();removed+=dropped;visualPoints.push(...lastDroppedPositions);
+ finishImpact(removed,dropped*20,visualPoints);
 }
 function bombImpact(b){
- const radius=78;let removed=0;
- grid.forEach((row,r)=>row.forEach((v,c)=>{if(v&&Math.hypot(v.x-b.x,v.y-b.y)<=radius){grid[r][c]=null;removed++}}));
- const dropped=removeFloating();removed+=dropped;
- finishImpact(removed,dropped*20+(removed?40:0));
+ const radius=78;let removed=0,visualPoints=[];
+ grid.forEach((row,r)=>row.forEach((v,c)=>{if(v&&Math.hypot(v.x-b.x,v.y-b.y)<=radius){visualPoints.push({x:v.x,y:v.y,color:v.color});grid[r][c]=null;removed++}}));
+ const dropped=removeFloating();removed+=dropped;visualPoints.push(...lastDroppedPositions);
+ spawnPopEffects([{x:b.x,y:b.y,color:'#fb923c'}],'BOOM!');
+ finishImpact(removed,dropped*20+(removed?40:0),visualPoints);
 }
 function rainbowImpact(b){
  const target=nearestEmpty(b);
@@ -314,10 +347,10 @@ function rainbowImpact(b){
  const counts={};adjacent.forEach(v=>counts[v.color]=(counts[v.color]||0)+1);
  const chosen=Object.keys(counts).sort((a,b)=>counts[b]-counts[a])[0]||randColor();
  grid[target.r][target.c]={x:target.x,y:target.y,color:chosen};
- const group=connectedGroup(target.r,target.c,chosen);let removed=0;
- if(group.length>=3){group.forEach(([r,c])=>{grid[r][c]=null;removed++})}
- const dropped=removeFloating();removed+=dropped;
- finishImpact(removed,dropped*20);
+ const group=connectedGroup(target.r,target.c,chosen);let removed=0,visualPoints=[];
+ if(group.length>=3){group.forEach(([r,c])=>{const bubble=grid[r][c];visualPoints.push({x:bubble.x,y:bubble.y,color:bubble.color});grid[r][c]=null;removed++})}
+ const dropped=removeFloating();removed+=dropped;visualPoints.push(...lastDroppedPositions);
+ finishImpact(removed,dropped*20,visualPoints);
 }
 function setAim(e){
  if(shot||paused||gameOver)return;
