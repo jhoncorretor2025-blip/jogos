@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#070b14">
-<title>Jogo da Memória — Jogos do Jhon v1.5</title>
+<title>Jogo da Memória — Jogos do Jhon v1.6</title>
 <style>
   :root{--bg:#070b14;--card:#0f172a;--line:#1e293b;--txt:#e2e8f0;--muted:#94a3b8;--acc:#a78bfa}
   *{box-sizing:border-box}
@@ -87,6 +87,54 @@
     .stat b{font-size:15px}
     h1{font-size:15px}
   }
+
+/* v1.6 — identidade visual premium e cartas com efeito 3D */
+:root{--bg:#080d1c;--card:#111c34;--line:#2b3c61;--txt:#f2f5ff;--muted:#a5b3d0;--acc:#a78bfa}
+body{background:radial-gradient(ellipse at 50% -15%,#403078 0,transparent 48%),radial-gradient(ellipse at 100% 55%,#123b55 0,transparent 38%),linear-gradient(145deg,#080d1c,#0b1428 58%,#10152d);padding-top:18px}
+.top{max-width:620px;margin-bottom:15px;padding:9px 12px;border:1px solid #ffffff18;border-radius:17px;background:linear-gradient(120deg,#172541dd,#111a31dd);box-shadow:0 9px 28px #0005,inset 0 1px #ffffff12}
+.back{width:38px;height:38px;display:grid;place-items:center;background:#ffffff0b;border:1px solid #ffffff16}
+h1{font-size:clamp(18px,3vw,22px);font-weight:850;letter-spacing:-.5px;color:#f5f0ff;text-shadow:0 2px 16px #a78bfa44}
+.icon-btn{border-color:#59618a;background:linear-gradient(145deg,#29375b,#17243f);box-shadow:0 3px 10px #0004}
+.bar,.stats,.progress,.msg{max-width:620px}
+.bar{gap:10px;margin-bottom:11px}
+.bar select{flex:1;min-width:0;border-color:#45527b;background:linear-gradient(145deg,#1b2948,#111d36);box-shadow:0 4px 12px #0003;font-weight:700}
+.bar .btn{min-width:128px;background:linear-gradient(120deg,#c4a7ff,#8c9bff 55%,#67d9e8);color:#171632;box-shadow:0 4px 0 #5552a0,0 7px 16px #0004;font-weight:900}
+.stats{gap:9px;margin-bottom:11px}
+.stat{padding:9px 7px 8px;border-radius:14px;border:1px solid #ffffff19;background:linear-gradient(145deg,#1b2946e8,#101a30e8);box-shadow:0 6px 17px #0003,inset 0 1px #ffffff10}
+.stat span{font-size:9px;letter-spacing:1px;color:#aebce0}
+.stat b{display:block;margin-top:2px;font-size:clamp(16px,3vw,21px);color:#f6f3ff;text-shadow:0 2px 12px #a78bfa30}
+.stat b small{font-size:10px}
+.progress{height:9px;margin-bottom:13px;padding:2px;border:1px solid #ffffff18;background:#111b31;box-shadow:inset 0 2px 5px #0007}
+#fill{background:linear-gradient(90deg,#38e0ba,#8f8bff,#65d8f1);box-shadow:0 0 12px #8f8bff99}
+#board{gap:clamp(6px,1.5vw,11px);padding:clamp(8px,1.8vw,13px);border:1px solid #ffffff25;border-radius:23px;background:linear-gradient(145deg,#172746d9,#101a31e8);box-shadow:0 18px 45px #0007,inset 0 1px #ffffff17,inset 0 -10px 30px #0003}
+.card{border-radius:15px;filter:drop-shadow(0 5px 5px #0005);transition:filter .2s,transform .2s}
+.card:hover{filter:drop-shadow(0 8px 8px #0007) brightness(1.08);transform:translateY(-2px)}
+.inner{border-radius:15px;transform-style:preserve-3d;transition:transform .48s cubic-bezier(.2,.75,.2,1)}
+.face{display:flex!important;border-radius:15px;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.front{background:radial-gradient(circle at 50% 35%,#354b78,#1a2a4a 58%,#111d35);border:1px solid #7185bd;color:#c8d2f5;box-shadow:inset 0 1px #ffffff2b,inset 0 -8px 18px #080f20}
+.front:before{content:"✦";position:absolute;top:13%;left:15%;font-size:clamp(10px,2vw,16px);color:#b8a3ff;opacity:.8}
+.front:after{content:"✧";font-size:clamp(24px,6vw,38px);font-weight:900;color:#d8d0ff;text-shadow:0 0 15px #a78bfa;position:relative}
+.back{display:flex!important;transform:rotateY(180deg);background:radial-gradient(circle at 35% 25%,#6654bd,#3d347f 55%,#211d50);border:1px solid #a99bff;box-shadow:inset 0 1px #ffffff35,inset 0 -9px 20px #141039;font-size:clamp(27px,7vw,43px);text-shadow:0 4px 10px #0005}
+.card.flipped .inner,.card.matched .inner{transform:rotateY(180deg)}
+.card.flipped .front,.card.matched .front{display:flex!important}
+.card.flipped .back,.card.matched .back{display:flex!important}
+.card.matched{filter:drop-shadow(0 0 10px #35e5b899);animation:matchGlow .55s ease}
+.card.matched .back{background:radial-gradient(circle at 35% 20%,#1cb88e,#08775f 62%,#064b43);border:1px solid #83f4d0;box-shadow:inset 0 1px #ffffff55,0 0 20px #2be2ae55}
+@keyframes matchGlow{50%{transform:scale(1.07);filter:drop-shadow(0 0 16px #35e5b8)}}
+.msg{min-height:38px;margin-top:13px;padding:8px 13px;border:1px solid #ffffff18;border-radius:99px;background:#111d35cc;color:#c3cce5;font-weight:650;box-shadow:0 5px 15px #0003}
+.msg b{color:#fff}
+.skip{background:#27395d;border-color:#6476a6}
+.panel{background:radial-gradient(circle at 50% 0,#293d69,#111c34 65%);border:1px solid #a78bfa88;border-radius:23px;box-shadow:0 25px 75px #000b,inset 0 1px #ffffff22}
+.panel h2{color:#f6efff;text-shadow:0 2px 16px #a78bfa55}
+.panel .btn{background:linear-gradient(120deg,#c4a7ff,#8c9bff 55%,#67d9e8);color:#171632}
+.ver{margin-top:15px;color:#7383a8;font-weight:700;letter-spacing:.7px}
+@media(max-width:430px){
+ body{padding:10px 9px 18px}.top{padding:7px 9px;margin-bottom:11px}.bar{gap:7px}.bar select,.bar .btn{padding:10px 9px;font-size:12px}.bar .btn{min-width:105px}
+ .stats{gap:6px}.stat{padding:7px 4px;border-radius:11px}.stat span{font-size:8px;letter-spacing:.5px}.stat b{font-size:16px}
+ #board{border-radius:17px;padding:7px;gap:6px}.card,.inner,.face{border-radius:10px}.msg{border-radius:13px;font-size:12px}
+}
+@media(prefers-reduced-motion:reduce){.inner,.card,.card.matched{transition:none;animation:none}}
+
 </style>
 </head>
 <body>
@@ -115,7 +163,7 @@
   <div class="progress" aria-hidden="true"><div id="fill"></div></div>
   <div id="board"></div>
   <div class="msg" id="msg" aria-live="polite"></div>
-  <div class="ver">v1.5 · 24/11/2026</div>
+  <div class="ver">v1.6 · 24/11/2026</div>
 
   <div id="ov">
     <div class="panel">
