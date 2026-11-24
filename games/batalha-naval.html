@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#070b14">
-<title>Batalha Naval — Jogos do Jhon v1.2</title>
+<title>Batalha Naval — Jogos do Jhon v1.3</title>
 <style>
   :root{--bg:#070b14;--card:#0f172a;--line:#1e293b;--txt:#e2e8f0;--muted:#94a3b8}
   *{box-sizing:border-box}
@@ -80,7 +80,7 @@
     </div>
   </div>
 
-  <div class="ver">v1.2 · 24/11/2026</div>
+  <div class="ver">v1.3 · 24/11/2026</div>
 
   <div id="ov">
     <div class="panel">
@@ -221,7 +221,7 @@ let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.
     startBtn.disabled = true;
     startBtn.textContent = 'Começar';
     ov.classList.remove('show');
-    msgEl.innerHTML = 'Posicione seus <b>5 navios</b>. Toque numa casa para colocar.';
+    msgEl.innerHTML = '1) Toque em <b>Posicionar frota</b> para colocar os 5 navios automaticamente. 2) Pressione <b>Começar</b>. 3) No <b>Radar inimigo</b>, toque nas casas para disparar.';
     paint();
   }
 
