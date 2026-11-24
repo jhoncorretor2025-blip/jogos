@@ -1,7 +1,4 @@
-
-
-// Web Audio API - Som Retrô
-let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}}function tone(f,d,t='square',v=.05){if(!soundOn||!audioCtx)return;const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=t;o.frequency.value=f;g.gain.value=v;g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d)}function sfxMove(){tone(220,.04,'square',.03)}function sfxClick(){tone(440,.08,'triangle',.05)}<!doctype html>
+<!doctype html>
 <html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#07111b"><title>Torre de Hanói · Jogos do Jhon · v1.0</title>
 <style>
 :root{color-scheme:dark;--bg:#07111b;--panel:#101e2d;--line:#294158;--text:#edf6f8;--muted:#9bb1c2;--cyan:#45d9e8;--gold:#f6c96a}
@@ -15,6 +12,10 @@ button:focus-visible,select:focus-visible{outline:3px solid #67e8f9;outline-offs
 <style>
 .towers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:end;min-height:300px}.tower{height:275px;position:relative;border:1px solid #294158;border-radius:15px;background:linear-gradient(180deg,#102236,#091521);cursor:pointer;display:flex;align-items:end;justify-content:center;padding:0 8px 17px}.tower::before{content:"";position:absolute;bottom:16px;width:8px;height:210px;border-radius:8px;background:#b98550}.tower::after{content:"";position:absolute;bottom:12px;left:8%;right:8%;height:12px;border-radius:8px;background:#c18a51}.stack{position:relative;z-index:1;display:flex;flex-direction:column-reverse;align-items:center;justify-content:flex-start;width:100%;height:210px;padding-bottom:0;gap:3px}.disk{height:24px;border-radius:9px;border:1px solid #ffffff44;box-shadow:0 3px 8px #0006;flex:none;max-width:100%}.tower small{position:absolute;top:10px;color:#b9ccd9;font-weight:800}.tower.selected{outline:3px solid #45d9e8;background:#123449}.hint{color:#9bb1c2;text-align:center;font-size:12px;margin:12px 0}
 </style><div class="towers" id="towers"><button class="tower" data-t="0"><small>TORRE A</small><span class="stack"></span></button><button class="tower" data-t="1"><small>TORRE B</small><span class="stack"></span></button><button class="tower" data-t="2"><small>TORRE C</small><span class="stack"></span></button></div><p class="hint">Clique na torre de origem e depois na torre de destino. Nunca coloque um disco maior sobre um menor.</p><div class="message" id="message" role="status" aria-live="polite">Bom jogo!</div></section><div style="text-align:center"><a class="back" href="../index.html">← Voltar ao Jogos do Jhon</a></div></main><script>(()=>{
+
+// Web Audio API - Som Retrô
+let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}}function tone(f,d,t='square',v=.05){if(!soundOn||!audioCtx)return;const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=t;o.frequency.value=f;g.gain.value=v;g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d)}function sfxMove(){tone(220,.04,'square',.03)}function sfxClick(){tone(440,.08,'triangle',.05)}
+
 const towers=[[7,6,5,4,3],[ ],[ ]],el=document.getElementById('towers'),msg=document.getElementById('message');let stacks=[],moves=0,selected=null,history=[];
 const colors=['#38bdf8','#8b5cf6','#ec4899','#f97316','#eab308','#22c55e','#14b8a6'];
 function reset(){const n=+document.getElementById('disks').value;stacks=[Array.from({length:n},(_,i)=>n-i),[],[]];moves=0;selected=null;history=[];document.getElementById('minimum').textContent=Math.pow(2,n)-1;render();msg.textContent='Mova todos os discos para a Torre C.'}
