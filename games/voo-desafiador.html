@@ -40,4 +40,41 @@ function loop(t){if(state!=='playing')return;const dt=Math.min(2.2,(t-last)/16.6
 function action(e){if(e)e.preventDefault();flap()}
 $('go').onclick=start;$('flap').addEventListener('pointerdown',action);c.addEventListener('pointerdown',action);$('restart').onclick=start;window.addEventListener('keydown',e=>{if([' ','ArrowUp','w','W'].includes(e.key)){e.preventDefault();action(e)}});document.querySelectorAll('[data-diff]').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();diff=b.dataset.diff;document.querySelectorAll('[data-diff]').forEach(x=>{x.className='btn alt';x.style.padding='8px 12px';x.style.fontSize='12px'});b.className='btn';b.style.padding='8px 12px';b.style.fontSize='12px'})});reset();
 })();
-</script><script src="../arcade-common.js"></script><div style="text-align:center;margin:12px 0"><a href="../index.html" style="color:#94a3b8;text-decoration:none;font-size:13px">← Voltar ao Jogos do Jhon</a></div></body></html>
+</script><script src="../arcade-common.js">
+// High Score System
+try{
+  highScore = Number(localStorage.getItem('highScore')) || 0;
+  lastScore = Number(localStorage.getItem('lastScore')) || 0;
+  gamesPlayed = Number(localStorage.getItem('gamesPlayed')) || 0;
+  recordDate = localStorage.getItem('recordDate') || '';
+} catch(e){ highScore = 0; lastScore = 0; gamesPlayed = 0; recordDate = ''; }
+
+function saveHighScore(score){
+  try{
+    if(score > highScore){
+      highScore = score;
+      recordDate = new Date().toLocaleDateString('pt-BR');
+      localStorage.setItem('highScore', String(highScore));
+      localStorage.setItem('recordDate', recordDate);
+    }
+    lastScore = score;
+    localStorage.setItem('lastScore', String(lastScore));
+    localStorage.setItem('gamesPlayed', String(++gamesPlayed));
+  }catch(e){}
+}
+
+function resetHighScore(){
+  if(confirm('Tem certeza que deseja zerar todos os recordes?')){
+    localStorage.removeItem('highScore');
+    localStorage.removeItem('lastScore');
+    localStorage.removeItem('gamesPlayed');
+    localStorage.removeItem('recordDate');
+    highScore = 0;
+    lastScore = 0;
+    gamesPlayed = 0;
+    recordDate = '';
+    saveHighScore(0);
+  }
+}
+
+</script><div style="text-align:center;margin:12px 0"><a href="../index.html" style="color:#94a3b8;text-decoration:none;font-size:13px">← Voltar ao Jogos do Jhon</a></div></body></html>
