@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Jogos do Jhon">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Jogos do Jhon · v3.54</title>
+<title>Jogos do Jhon · v3.55</title>
 <meta property="og:title" content="Jogos do Jhon · Arcade">
 <meta property="og:description" content="Arcade de jogos web do Jhon com 36 jogos para jogar no celular ou PC.">
 <meta property="og:type" content="website">
@@ -326,7 +326,7 @@
     <span class="hero-kicker">ARCADE PESSOAL</span>
     <h1>Jogos do Jhon</h1>
     <p class="sub">🎮 Seu cantinho de diversão: escolha um jogo e comece a jogar no celular ou no PC.</p>
-    <div class="version"><span class="dot"></span> Versão <b>v3.54</b> · atualizado em <b>23/11/2026</b></div>
+    <div class="version"><span class="dot"></span> Versão <b>v3.55</b> · atualizado em <b>23/11/2026</b></div>
     <div class="home-hero-actions">
       <a class="primary-cta" href="#catalogStart">🎮 Explorar jogos <span aria-hidden="true">↓</span></a>
       <span class="hero-count" id="heroGameCount">36 jogos no catálogo</span>
@@ -610,8 +610,9 @@
     </div>
   </details>
   <div class="notes">
-    <h2>📝 Novidades da tela inicial · v3.54</h2>
+    <h2>📝 Novidades da tela inicial · v3.55</h2>
     <ul>
+      <li><b>v3.55 — Antes e Depois:</b> criado ANTES-DEPOIS.md com comparacao v3.40 vs v3.54 (meta tags, acessibilidade, temas, navegacao, documentacao).</li>
       <li><b>v3.54 — Navegação:</b> scroll suave (smooth scroll) no HTML e melhorias de acessibilidade no menu mobile.</li>
       <li><b>v3.53 — Auditoria de Conversão:</b> adicionado link "Voltar ao Jogos do Jhon" em 14 jogos que não tinham, melhorando o fluxo abrir-jogar-voltar.</li>
       <li><b>v3.52 — Brainstorm (Tema Claro):</b> adicionado tema "Claro" como 5ª opção de tema visual, disponível no menu de configurações e aplicado em todos os jogos via arcade-common.js.</li>
@@ -1037,7 +1038,7 @@ function validateBackup(raw){
 }
 function exportBackup(){
  try{
-  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v3.54',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
+  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v3.55',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
   const content=JSON.stringify(backup,null,2),blob=new Blob([content],{type:'application/json'});
   if(blob.size>MAX_BACKUP_BYTES)throw new Error('O backup ultrapassa 2 MB.');
   const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='jogos-do-jhon-backup-'+new Date().toISOString().slice(0,10)+'.json';
