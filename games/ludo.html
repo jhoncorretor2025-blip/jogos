@@ -1,7 +1,4 @@
-
-
-// Web Audio API - Som Retrô
-let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}}function tone(f,d,t='square',v=.05){if(!soundOn||!audioCtx)return;const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=t;o.frequency.value=f;g.gain.value=v;g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d)}function sfxMove(){tone(220,.04,'square',.03)}function sfxClick(){tone(440,.08,'triangle',.05)}<!doctype html>
+<!doctype html>
 <html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#07111b"><title>Ludo · Jogos do Jhon · v1.0</title>
 <style>
 :root{color-scheme:dark;--bg:#07111b;--panel:#101e2d;--line:#294158;--text:#edf6f8;--muted:#9bb1c2;--cyan:#45d9e8;--gold:#f6c96a}
@@ -15,6 +12,10 @@ button:focus-visible,select:focus-visible{outline:3px solid #67e8f9;outline-offs
 <style>
 .ludo-board{width:min(650px,100%);margin:auto;display:block;background:#0a1723;border:1px solid #294158;border-radius:18px}.ludo-board svg{width:100%;height:auto;display:block}.token{cursor:pointer;stroke:#fff;stroke-width:3}.token:focus{stroke:#fff;stroke-width:7}.ludo-help{text-align:center;color:#9bb1c2;font-size:12px;margin:10px 0}
 </style><div class="ludo-board"><svg id="ludo" viewBox="0 0 600 600" role="img" aria-label="Tabuleiro de Ludo com quatro jogadores"></svg></div><p class="ludo-help">Você joga com as peças vermelhas. Tire 6 para sair da base. Clique em uma peça destacada para mover. Os outros três jogadores são controlados pelo computador.</p><div class="message" id="message" role="status" aria-live="polite">Bom jogo!</div></section><div style="text-align:center"><a class="back" href="../index.html">← Voltar ao Jogos do Jhon</a></div></main><script>(()=>{
+
+// Web Audio API - Som Retrô
+let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}}function tone(f,d,t='square',v=.05){if(!soundOn||!audioCtx)return;const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=t;o.frequency.value=f;g.gain.value=v;g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d)}function sfxMove(){tone(220,.04,'square',.03)}function sfxClick(){tone(440,.08,'triangle',.05)}
+
 const svg=document.getElementById('ludo'),msg=document.getElementById('message');const NS='http://www.w3.org/2000/svg',names=['Vermelho','Azul','Verde','Amarelo'],cols=['#ef4444','#3b82f6','#22c55e','#eab308'],offset=[0,13,26,39],safe=new Set([0,13,26,39]);let players=[],turn=0,die=0,rolling=false,finished=false;
 const polar=(i,r=205)=>{const a=(-Math.PI/2+i*2*Math.PI/52);return{x:300+Math.cos(a)*r,y:300+Math.sin(a)*r}};
 function create(){players=cols.map((c,p)=>({tokens:Array.from({length:4},(_,i)=>({steps:-1,id:i})),color:c}));turn=0;die=0;rolling=false;finished=false;draw();msg.textContent='Sua vez! Lance o dado. Você precisa tirar 6 para sair da base.';ui()}
