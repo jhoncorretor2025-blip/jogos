@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#070b14">
-<title>Cobra Neon — Jogos do Jhon</title>
+<title>Cobra Neon — Jogos do Jhon v2.2</title>
 <style>
   :root{--bg:#070b14;--card:#0f172a;--line:#1e293b;--txt:#e2e8f0;--muted:#94a3b8;--acc:#34d399}
   *{box-sizing:border-box}
@@ -99,8 +99,8 @@ input:focus-visible, select:focus-visible{
   </div>
 
   <p class="hint">Setas / WASD • deslize na tela • <b>espaço</b> pausa</p>
-  <div style="display:flex;gap:8px;align-items:center;margin-top:8px"><button id="soundBtn" style="border:1px solid var(--line);background:#101a2e;color:#cbd5e1;border-radius:10px;padding:6px 12px;font-size:12px;cursor:pointer">🔊 Som: on</button></div>
-  <div class="ver">v2.1 • 24/11/2026</div>
+  <div style="display:flex;gap:8px;align-items:center;margin-top:8px"><button id="soundBtn" style="border:1px solid var(--line);background:#101a2e;color:#cbd5e1;border-radius:10px;padding:6px 12px;font-size:12px;cursor:pointer">🔊 Som: on</button><button id="turboBtn" style="border:1px solid #0e7490;background:#102b3f;color:#bae6fd;border-radius:10px;padding:6px 12px;font-size:12px;font-weight:800;cursor:pointer">⚡ Turbo: off</button></div>
+  <div class="ver">v2.2 • 24/11/2026</div>
 
 <script>
 (function(){
@@ -125,6 +125,8 @@ input:focus-visible, select:focus-visible{
   bestEl.textContent = best;
   let diff = 'normal';
   const diffSpeed = { easy: 180, normal: 150, hard: 115 };
+  let turboOn=false,speedBonus=0;
+  function applySpeed(){const base=Math.max(60,diffSpeed[diff]-(level-1)*8-speedBonus);tick=Math.max(45,Math.round(base*(turboOn?.72:1)));speedEl.textContent=(Math.round(diffSpeed[diff]/tick*10)/10)+'x'+(turboOn?' ⚡':'')}
 
   function fit(){
     size = Math.floor(cv.clientWidth) || 400;
@@ -142,11 +144,10 @@ input:focus-visible, select:focus-visible{
     dir = {x:1,y:0};
     queue = [];
     score = 0; dead = false; paused = false; running = false; started = false;
-    tick = diffSpeed[diff]; acc = 0; last = 0;
+    speedBonus=0; acc = 0; last = 0; applySpeed();
     level = 1;
     obstacles = [];
     scoreEl.textContent = '0';
-    speedEl.textContent = '1x';
     levelEl.textContent = '1';
     placeFood();
     draw();
@@ -318,10 +319,9 @@ input:focus-visible, select:focus-visible{
         levelEl.textContent = level;
         addObstaclesForLevel(level);
         placeFood();
-        tick = Math.max(60, diffSpeed[diff] - (level-1)*8);
+        applySpeed();
       }
-      if (tick > 60) tick = Math.max(60, tick - 3);
-      speedEl.textContent = Math.round(diffSpeed[diff] / tick * 10) / 10 + 'x';
+      speedBonus += 3; applySpeed();
       placeFood();
       if (!golden && Math.random() < .22) {
         const free=[];for(let y=0;y<GRID;y++)for(let x=0;x<GRID;x++){if(!snake.some(s=>s.x===x&&s.y===y)&&!(food&&food.x===x&&food.y===y)&&!obstacles.some(o=>o.x===x&&o.y===y))free.push({x,y})}
@@ -388,6 +388,7 @@ input:focus-visible, select:focus-visible{
     start();
   });
   document.getElementById('soundBtn').addEventListener('click', function(){ soundOn=!soundOn; this.textContent=soundOn?'🔊 Som: on':'🔇 Som: off'; });
+  document.getElementById('turboBtn').addEventListener('click',function(){turboOn=!turboOn;this.textContent=turboOn?'⚡ Turbo: on':'⚡ Turbo: off';applySpeed()});
 
   document.getElementById('pauseBtn').addEventListener('click', togglePause);
 
