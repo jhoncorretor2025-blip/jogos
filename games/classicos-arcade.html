@@ -25,6 +25,7 @@ const info={
  resta:['🔵','Resta Um','Salte sobre as peças vizinhas até sobrar apenas uma no tabuleiro.','Selecione uma peça e depois o buraco vazio duas casas adiante.']
 };
 if(!info[mode])location.replace('../index.html');
+if(mode==='frogger')document.body.dataset.arcadeControls='both';
 const [logo,title,subtitle,hint]=info[mode];$('logo').textContent=logo;$('title').textContent=title;$('subtitle').textContent=subtitle;$('hint').textContent=hint;document.title=title+' · Jogos do Jhon v1.0';
 const stat=(label,value)=>'<div class="stat"><small>'+label+'</small><b id="'+value+'">0</b></div>';
 function shellStats(html){$('stats').innerHTML=html}
@@ -135,4 +136,4 @@ on('new',fresh);on('undo',()=>{if(history.length){board=history.pop();selected=n
 }
 start();
 })();
-</script></body></html>
+</script><script src="../arcade-common.js"></script></body></html>
