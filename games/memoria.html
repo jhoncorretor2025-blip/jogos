@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#070b14">
-<title>Jogo da Memória — Jogos do Jhon</title>
+<title>Jogo da Memória — Jogos do Jhon v1.3</title>
 <style>
   :root{--bg:#070b14;--card:#0f172a;--line:#1e293b;--txt:#e2e8f0;--muted:#94a3b8;--acc:#a78bfa}
   *{box-sizing:border-box}
@@ -118,7 +118,7 @@
   <div class="progress" aria-hidden="true"><div id="fill"></div></div>
   <div id="board"></div>
   <div class="msg" id="msg" aria-live="polite"></div>
-  <div class="ver">v1.2 · 22/11/2026</div>
+  <div class="ver">v1.3 · 23/11/2026</div>
 
   <div id="ov">
     <div class="panel">
@@ -131,322 +131,72 @@
   <canvas id="fx"></canvas>
 
 <script>
-(function(){
-  const SYMBOLS = ['🍎','🚀','🐍','🎧','⚽','🌵','🍕','🐙','💎','🎲','🌈','🔥','🦊','🍩','🎯','🧩','🐳','🍀'];
-  const boardEl = document.getElementById('board');
-  const movesEl = document.getElementById('moves');
-  const timeEl = document.getElementById('time');
-  const pairsEl = document.getElementById('pairs');
-  const bestEl = document.getElementById('best');
-  const fillEl = document.getElementById('fill');
-  const msgEl = document.getElementById('msg');
-  const sizeSel = document.getElementById('size');
-  const soundBtn = document.getElementById('sound');
-  const ov = document.getElementById('ov');
-  const ovTitle = document.getElementById('ovTitle');
-  const ovLine1 = document.getElementById('ovLine1');
-  const ovLine2 = document.getElementById('ovLine2');
-  const fx = document.getElementById('fx');
-  const fxc = fx.getContext('2d');
-
-  let cols = 5, rows = 4, deck = [], cards = [];
-  let first = null, lock = false, moves = 0, matched = 0;
-  let seconds = 0, timerId = null, started = false;
-  let pending = null, peeking = false, peekId = null, peekLeft = 0;
-  let muted = localStorage.getItem('memoria.muted') === '1';
-
-  /* ---------- 1. SOM ---------- */
-  let actx = null;
-  function audio(){
-    if (!actx) {
-      const AC = window.AudioContext || window.webkitAudioContext;
-      if (!AC) return null;
-      actx = new AC();
-    }
-    if (actx.state === 'suspended') actx.resume();
-    return actx;
-  }
-  function tone(freq, dur, type, vol, delay){
-    if (muted) return;
-    const a = audio();
-    if (!a) return;
-    const t0 = a.currentTime + (delay || 0);
-    const osc = a.createOscillator();
-    const gain = a.createGain();
-    osc.type = type || 'sine';
-    osc.frequency.setValueAtTime(freq, t0);
-    gain.gain.setValueAtTime(0, t0);
-    gain.gain.linearRampToValueAtTime(vol || .07, t0 + .01);
-    gain.gain.exponentialRampToValueAtTime(.0001, t0 + dur);
-    osc.connect(gain).connect(a.destination);
-    osc.start(t0); osc.stop(t0 + dur + .02);
-  }
-  const sfx = {
-    flip: function(){ tone(520, .09, 'triangle', .05); },
-    match: function(){ tone(660, .12, 'sine', .06); tone(880, .18, 'sine', .05, .1); },
-    miss: function(){ tone(190, .16, 'sawtooth', .035); },
-    win: function(){ [523,659,784,1047].forEach(function(f,i){ tone(f, .28, 'sine', .06, i*.12); }); },
-    peek: function(){ tone(420, .08, 'sine', .04); }
-  };
-  function paintSound(){
-    soundBtn.textContent = muted ? '🔇' : '🔊';
-    soundBtn.setAttribute('aria-pressed', String(!muted));
-    soundBtn.title = muted ? 'Som desligado' : 'Som ligado';
-  }
-  soundBtn.addEventListener('click', function(){
-    muted = !muted;
-    localStorage.setItem('memoria.muted', muted ? '1' : '0');
-    paintSound();
-    if (!muted) sfx.flip();
-  });
-
-  /* ---------- 2. TAMANHO ADAPTATIVO ---------- */
-  function fitBoard(){
-    const ratio = cols / rows;
-    const availH = Math.max(240, window.innerHeight - 250);
-    const maxW = Math.min(560, Math.floor(availH * ratio));
-    boardEl.style.maxWidth = maxW + 'px';
-  }
-  window.addEventListener('resize', fitBoard);
-
-  function fmt(s){
-    const m = Math.floor(s / 60), r = s % 60;
-    return m + ':' + String(r).padStart(2, '0');
-  }
-  function bestKey(){ return 'memoria.best.' + cols + 'x' + rows; }
-  function timeKey(){ return 'memoria.time.' + cols + 'x' + rows; }
-
-  function shuffle(a){
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      const t = a[i]; a[i] = a[j]; a[j] = t;
-    }
-    return a;
-  }
-
-  function paintBest(){
-    const b = Number(localStorage.getItem(bestKey()) || 0);
-    const t = Number(localStorage.getItem(timeKey()) || 0);
-    bestEl.innerHTML = b ? b + '<small> jog · ' + fmt(t) + '</small>' : '—';
-  }
-
-  /* ---------- 3. CONSTRUÇÃO + ESPIADA ---------- */
-  function build(){
-    const parts = sizeSel.value.split('x');
-    cols = Number(parts[0]); rows = Number(parts[1]);
-    const total = cols * rows;
-    const pairCount = total / 2;
-    const picked = shuffle(SYMBOLS.slice()).slice(0, pairCount);
-    deck = shuffle(picked.concat(picked).map(function(sym){ return {sym: sym, done: false}; }));
-
-    first = null; lock = false; moves = 0; matched = 0; seconds = 0; started = false;
-    pending = null; peeking = false;
-    clearInterval(timerId); timerId = null;
-    clearInterval(peekId); peekId = null;
-
-    movesEl.textContent = '0';
-    timeEl.textContent = '0:00';
-    pairsEl.textContent = '0/' + pairCount;
-    fillEl.style.width = '0%';
-    paintBest();
-    ov.classList.remove('show');
-    fx.classList.remove('show');
-
-    boardEl.style.setProperty('--cols', cols);
-    boardEl.innerHTML = '';
-    cards = [];
-    deck.forEach(function(item, i){
-      const btn = document.createElement('button');
-      btn.className = 'card';
-      btn.type = 'button';
-      btn.setAttribute('aria-label', 'Carta ' + (i + 1) + ', virada para baixo');
-      btn.innerHTML = '<div class="inner"><div class="face front"></div><div class="face back">' + item.sym + '</div></div>';
-      btn.addEventListener('click', function(){ flip(i); });
-      boardEl.appendChild(btn);
-      cards.push(btn);
-    });
-
-    fitBoard();
-    startPeek();
-  }
-
-  function startPeek(){
-    peeking = true;
-    lock = true;
-    peekLeft = 3;
-    cards.forEach(function(c){ c.classList.add('flipped'); });
-    msgEl.innerHTML = '<span id="peekText">👀 Memorize! <b>3</b></span><button class="skip" id="skip">Pular</button>';
-    sfx.peek();
-    peekId = setInterval(function(){
-      peekLeft--;
-      if (peekLeft <= 0) { endPeek(); return; }
-      const t = document.getElementById('peekText');
-      if (t) t.innerHTML = '👀 Memorize! <b>' + peekLeft + '</b>';
-      sfx.peek();
-    }, 1000);
-  }
-
-  function endPeek(){
-    if (!peeking) return;
-    peeking = false;
-    clearInterval(peekId); peekId = null;
-    cards.forEach(function(c, i){ if (!deck[i].done) c.classList.remove('flipped'); });
-    lock = false;
-    msgEl.innerHTML = 'Valendo! Encontre os <b>' + (deck.length / 2) + ' pares</b>.';
-    startTimer();
-  }
-
-  msgEl.addEventListener('click', function(e){
-    if (e.target && e.target.id === 'skip') endPeek();
-  });
-
-  /* ---------- 4. JOGO ---------- */
-  function startTimer(){
-    if (started) return;
-    started = true;
-    timerId = setInterval(function(){
-      seconds++;
-      timeEl.textContent = fmt(seconds);
-    }, 1000);
-  }
-
-  function label(i){
-    const g = deck[i], c = cards[i];
-    const up = g.done || c.classList.contains('flipped');
-    c.setAttribute('aria-label', 'Carta ' + (i + 1) + ', ' + (up ? 'mostrando ' + g.sym : 'virada para baixo'));
-  }
-
-  function flip(i){
-    if (peeking) { endPeek(); return; }
-    if (lock) { endMismatch(); return; }
-
-    const item = deck[i], card = cards[i];
-    if (item.done || card.classList.contains('flipped')) return;
-
-    startTimer();
-    card.classList.add('flipped');
-    label(i);
-    sfx.flip();
-
-    if (first === null) { first = i; return; }
-
-    const a = deck[first];
-    moves++;
-    movesEl.textContent = moves;
-
-    if (a.sym === item.sym) {
-      a.done = item.done = true;
-      cards[first].classList.add('matched');
-      card.classList.add('matched');
-      cards[first].setAttribute('aria-label', 'Carta ' + (first + 1) + ', par encontrado ' + a.sym);
-      card.setAttribute('aria-label', 'Carta ' + (i + 1) + ', par encontrado ' + item.sym);
-      first = null;
-      matched++;
-      pairsEl.textContent = matched + '/' + (deck.length / 2);
-      fillEl.style.width = (matched / (deck.length / 2) * 100) + '%';
-      sfx.match();
-      if (matched === deck.length / 2) finish();
-    } else {
-      lock = true;
-      pending = [first, i];
-      first = null;
-      card.classList.add('shake');
-      sfx.miss();
-      setTimeout(endMismatch, 820);
-    }
-  }
-
-  function endMismatch(){
-    if (!pending) return;
-    pending.forEach(function(i){
-      if (!deck[i].done) {
-        cards[i].classList.remove('flipped', 'shake');
-        label(i);
-      }
-    });
-    pending = null;
-    lock = false;
-  }
-
-  /* ---------- 5. VITÓRIA + CONFETE ---------- */
-  function finish(){
-    clearInterval(timerId); timerId = null;
-    const bKey = bestKey(), tKey = timeKey();
-    const prevMoves = Number(localStorage.getItem(bKey) || 0);
-    const prevTime = Number(localStorage.getItem(tKey) || 0);
-    let record = false;
-
-    if (!prevMoves || moves < prevMoves) {
-      localStorage.setItem(bKey, moves);
-      record = true;
-    }
-    if (!prevTime || seconds < prevTime) localStorage.setItem(tKey, seconds);
-
-    paintBest();
-    ovTitle.textContent = record ? 'Novo recorde! 🏆' : 'Parabéns! 🎉';
-    ovLine1.innerHTML = 'Você terminou em <b>' + moves + '</b> jogadas e <b>' + fmt(seconds) + '</b>.';
-    ovLine2.textContent = record
-      ? 'Esse é o seu melhor resultado nesse nível.'
-      : 'Seu recorde nesse nível: ' + (prevMoves ? prevMoves + ' jogadas em ' + fmt(prevTime) : '—');
-    ov.classList.add('show');
-    sfx.win();
-    confetti();
-  }
-
-  function confetti(){
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    fx.width = Math.round(window.innerWidth * dpr);
-    fx.height = Math.round(window.innerHeight * dpr);
-    fxc.setTransform(dpr, 0, 0, dpr, 0, 0);
-    fx.classList.add('show');
-
-    const colors = ['#a78bfa', '#34d399', '#22d3ee', '#fbbf24', '#fb7185', '#60a5fa'];
-    const W = window.innerWidth, H = window.innerHeight;
-    const parts = [];
-    for (let i = 0; i < 90; i++) {
-      parts.push({
-        x: W / 2 + (Math.random() - .5) * 120,
-        y: H * .42 + (Math.random() - .5) * 60,
-        vx: (Math.random() - .5) * 11,
-        vy: -6 - Math.random() * 9,
-        s: 4 + Math.random() * 6,
-        r: Math.random() * Math.PI,
-        vr: (Math.random() - .5) * .3,
-        c: colors[Math.floor(Math.random() * colors.length)],
-        life: 1
-      });
-    }
-    const t0 = performance.now();
-    function frame(now){
-      const dt = Math.min((now - t0) / 1000, 3);
-      fxc.clearRect(0, 0, W, H);
-      parts.forEach(function(p){
-        p.vy += 22 * 0.016;
-        p.x += p.vx; p.y += p.vy; p.r += p.vr;
-        p.life = Math.max(0, 1 - dt / 2.4);
-        fxc.save();
-        fxc.globalAlpha = p.life;
-        fxc.translate(p.x, p.y);
-        fxc.rotate(p.r);
-        fxc.fillStyle = p.c;
-        fxc.fillRect(-p.s / 2, -p.s / 2, p.s, p.s * .6);
-        fxc.restore();
-      });
-      if (now - t0 < 2600) requestAnimationFrame(frame);
-      else { fxc.clearRect(0, 0, W, H); fx.classList.remove('show'); }
-    }
-    requestAnimationFrame(frame);
-  }
-
-  sizeSel.addEventListener('change', build);
-  document.getElementById('new').addEventListener('click', build);
-  document.getElementById('ovBtn').addEventListener('click', build);
-
-  paintSound();
-  build();
+(()=>{
+'use strict';
+const $=id=>document.getElementById(id);
+const board=$('board'),movesEl=$('moves'),timeEl=$('time'),pairsEl=$('pairs'),bestEl=$('best'),fill=$('fill'),msg=$('msg');
+const size=$('size'),soundBtn=$('sound'),overlay=$('ov'),ovTitle=$('ovTitle'),ovLine1=$('ovLine1'),ovLine2=$('ovLine2'),fx=$('fx');
+const SYMBOLS=['🍎','🚀','🐍','🎧','⚽','🌵','🍕','🐙','💎','🎲','🌈','🔥','🦊','🍩','🎯','🧩','🐳','🍀'];
+let cols=5,rows=4,deck=[],cards=[],first=null,locked=false,moves=0,matched=0,seconds=0,timer=null,mismatchTimer=null,started=false,muted=false,audio=null,round=0;
+function safeGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function safeSet(k,v){try{localStorage.setItem(k,String(v))}catch(e){}}
+function audioTone(freq,duration=.08,type='sine'){if(muted)return;try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;audio=audio||new AC();if(audio.state==='suspended')audio.resume();const o=audio.createOscillator(),g=audio.createGain();o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(.045,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+duration);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+duration)}catch(e){}}
+function sound(kind){if(kind==='flip')audioTone(430,.045);if(kind==='match'){audioTone(650,.10);setTimeout(()=>audioTone(850,.11),70)}if(kind==='miss')audioTone(170,.10,'triangle');if(kind==='win'){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>audioTone(f,.18),i*100))}}
+function keyBest(){return 'memoria.best.'+cols+'x'+rows}
+function keyTime(){return 'memoria.time.'+cols+'x'+rows}
+function fmt(n){return Math.floor(n/60)+':'+String(n%60).padStart(2,'0')}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function paintSound(){soundBtn.textContent=muted?'🔇':'🔊';soundBtn.setAttribute('aria-pressed',String(!muted));soundBtn.title=muted?'Som desligado':'Som ligado'}
+function paintBest(){const b=Number(safeGet(keyBest())||0),t=Number(safeGet(keyTime())||0);bestEl.innerHTML=b?b+' jog. <small>· '+fmt(t)+'</small>':'—'}
+function stopClocks(){if(timer){clearInterval(timer);timer=null}if(mismatchTimer){clearTimeout(mismatchTimer);mismatchTimer=null}}
+function startTimer(){if(started)return;started=true;timer=setInterval(()=>{seconds++;timeEl.textContent=fmt(seconds)},1000)}
+function cardButton(item,index){
+ const b=document.createElement('button');b.type='button';b.className='card';b.setAttribute('aria-label','Carta '+(index+1)+', fechada');b.dataset.index=String(index);
+ b.innerHTML='<span class="inner"><span class="face front"><span class="question">?</span></span><span class="face back">'+item.sym+'</span></span>';
+ b.addEventListener('click',()=>flip(index));return b
+}
+function build(){
+ round++;stopClocks();cols=Number(size.value.split('x')[0])||5;rows=Number(size.value.split('x')[1])||4;
+ const pairCount=cols*rows/2,picked=shuffle(SYMBOLS.slice()).slice(0,pairCount);
+ deck=shuffle(picked.concat(picked).map((sym,id)=>({sym,done:false,id})));
+ first=null;locked=false;moves=0;matched=0;seconds=0;started=false;cards=[];
+ movesEl.textContent='0';timeEl.textContent='0:00';pairsEl.textContent='0/'+pairCount;fill.style.width='0%';paintBest();
+ overlay.classList.remove('show');fx.classList.remove('show');
+ board.style.setProperty('--cols',String(cols));board.innerHTML='';
+ deck.forEach((item,i)=>{const el=cardButton(item,i);board.appendChild(el);cards.push(el)});
+ fitBoard();msg.textContent='Escolha duas cartas para encontrar os pares.';msg.setAttribute('role','status')
+}
+function fitBoard(){const ratio=cols/rows;const available=Math.max(260,window.innerHeight-260);board.style.maxWidth=Math.min(560,Math.floor(available*ratio))+'px'}
+function flip(i){
+ if(locked)return;const item=deck[i],card=cards[i];if(!item||item.done||card.classList.contains('flipped'))return;
+ startTimer();card.classList.add('flipped');card.setAttribute('aria-label','Carta '+(i+1)+', '+item.sym);sound('flip');
+ if(first===null){first=i;return}
+ const prev=first;first=null;moves++;movesEl.textContent=String(moves);
+ if(deck[prev].sym===item.sym){
+  deck[prev].done=true;item.done=true;cards[prev].classList.add('matched');card.classList.add('matched');
+  cards[prev].setAttribute('aria-label','Par encontrado '+item.sym);card.setAttribute('aria-label','Par encontrado '+item.sym);
+  matched++;pairsEl.textContent=matched+'/'+(deck.length/2);fill.style.width=(matched/(deck.length/2)*100)+'%';msg.textContent='✅ Par encontrado! Continue assim.';sound('match');
+  if(matched===deck.length/2)finish();
+ }else{
+  locked=true;const token=round;msg.textContent='Não combinou. Tente outra vez.';sound('miss');
+  mismatchTimer=setTimeout(()=>{if(token!==round)return;[prev,i].forEach(n=>{if(!deck[n].done){cards[n].classList.remove('flipped');cards[n].setAttribute('aria-label','Carta '+(n+1)+', fechada')}});locked=false;mismatchTimer=null;msg.textContent='Escolha duas cartas para encontrar os pares.'},850)
+ }
+}
+function finish(){
+ stopClocks();const oldMoves=Number(safeGet(keyBest())||0),oldTime=Number(safeGet(keyTime())||0);let record=false;
+ if(!oldMoves||moves<oldMoves){safeSet(keyBest(),moves);record=true}
+ if(!oldTime||seconds<oldTime)safeSet(keyTime(),seconds);
+ paintBest();sound('win');ovTitle.textContent=record?'Novo recorde! 🏆':'Parabéns! 🎉';
+ ovLine1.textContent='Você encontrou todos os pares em '+moves+' jogadas e '+fmt(seconds)+'.';
+ ovLine2.textContent=record?'Esse é o seu melhor resultado nesta dificuldade.':'Melhor resultado: '+(oldMoves?oldMoves+' jogadas · '+fmt(oldTime):'este resultado');
+ overlay.classList.add('show');msg.textContent='🎉 Todos os pares encontrados!'
+}
+function celebrate(){}
+$('new').addEventListener('click',build);$('ovBtn').addEventListener('click',build);size.addEventListener('change',build);
+soundBtn.addEventListener('click',()=>{muted=!muted;safeSet('memoria.muted',muted?'1':'0');paintSound();if(!muted)sound('flip')});
+window.addEventListener('resize',fitBoard);
+muted=safeGet('memoria.muted')==='1';paintSound();build();
 })();
-
 </script>
 <script src="../arcade-common.js"></script></body>
 </html>
