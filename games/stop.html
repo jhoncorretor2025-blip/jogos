@@ -1,7 +1,4 @@
-
-
-// Web Audio API - Som Retrô
-let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}}function tone(f,d,t='square',v=.05){if(!soundOn||!audioCtx)return;const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=t;o.frequency.value=f;g.gain.value=v;g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d)}function sfxMove(){tone(220,.04,'square',.03)}function sfxClick(){tone(440,.08,'triangle',.05)}<!doctype html>
+<!doctype html>
 <html lang="pt-BR"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#111827"><title>STOP! · Adedonha · Jogos do Jhon v1.0</title>
@@ -79,6 +76,10 @@ input:focus-visible, select:focus-visible{
 </main>
 <script>
 (()=>{'use strict';
+
+// Web Audio API - Som Retrô
+let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}}function tone(f,d,t='square',v=.05){if(!soundOn||!audioCtx)return;const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=t;o.frequency.value=f;g.gain.value=v;g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d)}function sfxMove(){tone(220,.04,'square',.03)}function sfxClick(){tone(440,.08,'triangle',.05)}
+
 const $=id=>document.getElementById(id),DATA_KEY='jhonStopDataV1',CFG_KEY='jhonStopConfigV1';
 const BASE=[
  ['Nome','👤'],['Animal','🐶'],['Fruta','🍎'],['Cidade','🌎'],['País','🏳️'],['Cor','🎨'],['Comida','🍔'],['Profissão','👔'],['Objeto','💧'],['Esporte','⚽'],['Filme','🎬'],['Série','📺'],['Marca','🚗'],['Planta','🌿'],['Música','🎵'],['Parte do corpo','🧍'],['Lugar','🏠'],['Brinquedo','🧸'],['Aplicativo','📱'],['Personagem','🦸'],['Super-herói','🦸'],['Vilão','😈'],['Anime','🎌'],['Celebridade','🌟'],['Instrumento musical','🎹'],['Cantor','🎤'],['Banda','🎸'],['Desenho animado','📺'],['Jogo','🎮'],['Tecnologia','💻'],['Marca de roupa','👕'],['Doce','🍬'],['Bebida','🥤'],['Profissão diferente','🧑‍🔬'],['Coisa da cozinha','🍳'],['Coisa que dá medo','👻'],['Coisa que faz rir','😂'],['Coisa que existe em casa','🏠'],['Algo que não gostaria de encontrar','😱'],['Algo que levaria para uma ilha','🏝️'],['Algo que não pode faltar numa viagem','🧳'],['Algo que compraria','🛍️']
