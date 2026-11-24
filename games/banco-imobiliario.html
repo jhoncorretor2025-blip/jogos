@@ -384,8 +384,8 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
 .building.city-rival{background:linear-gradient(90deg,#ff9eaa,#a83c52)!important;border-color:#ffd0d6!important;box-shadow:0 0 12px #fb8d9c88,inset 2px 0 #fff8!important}
 .building.city-you:after{filter:drop-shadow(0 0 3px #baffef)}
 .building.city-rival:after{filter:drop-shadow(0 0 3px #ffd0d6)}
-.deed-hero.deed-owned[data-owner="you"]{box-shadow:inset 0 0 0 3px #4de1d0,0 0 0 2px #4de1d055}
-.deed-hero.deed-owned[data-owner="rival"]{box-shadow:inset 0 0 0 3px #fb8d9c,0 0 0 2px #fb8d9c55}
+.deed-hero.deed-owned[data-owner="VOCÊ"]{box-shadow:inset 0 0 0 3px #4de1d0,0 0 0 2px #4de1d055}
+.deed-hero.deed-owned[data-owner="ADVERSÁRIO"]{box-shadow:inset 0 0 0 3px #fb8d9c,0 0 0 2px #fb8d9c55}
 .deed-hero.deed-owned:before{content:attr(data-owner);position:absolute;top:9px;right:10px;z-index:3;padding:5px 9px;border-radius:99px;background:#10271ddd;color:#fff;font-size:9px;font-weight:1000;letter-spacing:1px;text-transform:uppercase}
 .pcard.active{animation:turnGlow 2.1s ease-in-out infinite}
 .pcard.active .avatar{box-shadow:0 0 0 3px color-mix(in srgb,var(--player-color) 40%,transparent),0 0 16px color-mix(in srgb,var(--player-color) 55%,transparent)}
@@ -636,7 +636,7 @@ function showDeed(i){
  $('deedIcon').textContent=iconFor(s);
  $('deedGroup').textContent=group?group.name.toUpperCase():'ESPECIAL';
  $('deedHero').style.background=group?'linear-gradient(145deg,'+group.color+'88,#bd9561)':'linear-gradient(145deg,#f0dfb0,#bd9561)';
- $('deedHero').dataset.owner=s.owner===0?'you':s.owner===1?'rival':'bank';
+ $('deedHero').dataset.owner=s.owner===0?'VOCÊ':s.owner===1?'ADVERSÁRIO':'BANCO';
  $('deedHero').classList.toggle('deed-owned',s.owner>=0);
  if(s.type==='prop'){
   const next=s.buildings<4?rentFor(Object.assign({},s,{buildings:s.buildings+1,mortgaged:false})):rentFor(s);
