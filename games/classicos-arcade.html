@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#070b14"><title>Clássicos Arcade · Jogos do Jhon v1.6</title>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#070b14"><title>Clássicos Arcade · Jogos do Jhon v1.8</title>
 <style>
 :root{color-scheme:dark;--bg:#070b14;--panel:#111b2d;--line:#29364c;--txt:#e2e8f0;--muted:#94a3b8;--cyan:#22d3ee;--gold:#fbbf24;--green:#34d399;--red:#fb7185}
 *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(850px 500px at 50% -10%,#172554 0,transparent 70%),var(--bg);color:var(--txt);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;padding:14px 12px 30px}button{font:inherit;cursor:pointer;color:inherit}.wrap{width:min(100%,820px);margin:auto}.top{display:flex;align-items:center;justify-content:space-between;gap:10px}.back{color:var(--muted);text-decoration:none;font-size:13px}.ver{font-size:11px;color:#a5f3fc;border:1px solid #155e75;border-radius:99px;padding:5px 10px}.hero{text-align:center;padding:13px 0 16px}.logo{font-size:clamp(45px,12vw,76px);line-height:1.1}.hero h1{margin:4px 0;font-size:clamp(25px,6vw,36px)}.sub{margin:0;color:var(--muted);font-size:14px}.panel{background:linear-gradient(145deg,#172338,#101827);border:1px solid var(--line);border-radius:18px;padding:13px;box-shadow:0 14px 32px #0004}.stats{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:12px}.stat{background:#0b1424;border:1px solid #26364c;border-radius:12px;padding:7px 12px;text-align:center;min-width:80px}.stat small{display:block;color:var(--muted);font-size:10px}.stat b{font-size:20px;font-variant-numeric:tabular-nums}.actions,.controls{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:12px}.btn{background:#1d2c42;border:1px solid #3b4b63;border-radius:11px;padding:10px 14px;font-weight:750}.btn.primary{background:#075466;border-color:#0891b2}.btn.gold{background:#563f08;border-color:#d6a51d}.btn:active{transform:scale(.97)}.hint{text-align:center;color:var(--muted);font-size:12px;margin:10px 0 0}.board{margin:auto;max-width:100%;overflow:auto}.message{text-align:center;min-height:25px;color:#bae6fd;font-weight:700;margin:8px 0}.pad{display:grid;grid-template-columns:repeat(3,56px);gap:7px;justify-content:center;margin:12px auto 0}.pad button{height:48px;border-radius:12px;background:#16263d;border:1px solid #334155;font-size:19px}.pad .empty{visibility:hidden}
@@ -23,8 +23,19 @@ canvas{display:block;max-width:100%;height:auto;touch-action:none;border-radius:
 .bubble-stage .stat{background:linear-gradient(150deg,#102943,#091827);border-color:#256080;box-shadow:inset 0 1px 0 #ffffff12,0 5px 12px #0003}
 .bubble-stage .stat b{color:#e0f2fe;text-shadow:0 0 12px #38bdf855}
 .bubble-stage .stat small{color:#7dd3fc;letter-spacing:.06em;text-transform:uppercase}
+
+/* Bubble Shooter v1.8 — acabamento visual adicional */
+.bubble-stage{background:radial-gradient(ellipse at 50% 4%,#164e63aa 0,transparent 46%),radial-gradient(ellipse at 50% 100%,#17255466,transparent 55%),linear-gradient(155deg,#071a30,#050b18 78%);border-color:#38bdf866}
+.bubble-stage canvas#bubble{background:#061326;border:1px solid #67e8f077;box-shadow:0 0 0 3px #0b2038,0 0 30px #06b6d455,inset 0 0 30px #38bdf411}
+.bubble-stage .stat{backdrop-filter:blur(8px);border-radius:14px}
+.bubble-stage #bubbleDifficulty{background:linear-gradient(180deg,#16314b,#0b1728)!important;border:1px solid #38bdf899!important;box-shadow:0 3px 12px #0005}
+.bubble-stage .hint{font-size:12px;text-shadow:0 0 12px #38bdf855}
+.bubble-stage .btn.gold{background:linear-gradient(180deg,#a16207,#713f12);border-color:#fbbf24;color:#fffbeb}
+.bubble-stage .btn:not(:disabled){text-shadow:0 1px 2px #0008}
+@media(max-width:430px){.bubble-stage{padding:9px 5px 12px;border-radius:17px}.bubble-stage canvas#bubble{border-radius:14px}.bubble-stage .stat{min-width:68px!important;padding:5px 7px!important}.bubble-stage .stat b{font-size:16px}}
+@media(prefers-reduced-motion:no-preference){.bubble-stage .btn{transition:transform .16s ease,filter .16s ease,box-shadow .16s ease}}
 </style></head><body><main class="wrap">
-<div class="top"><a class="back" href="../index.html">← Voltar ao Arcade</a><span class="ver">JOGO v1.6</span></div>
+<div class="top"><a class="back" href="../index.html">← Voltar ao Arcade</a><span class="ver">JOGO v1.8</span></div>
 <header class="hero"><div id="logo" class="logo">🎮</div><h1 id="title">Clássicos Arcade</h1><p id="subtitle" class="sub">Diversão para todos os momentos</p></header>
 <section class="panel"><div id="stats" class="stats"></div><div id="stage"></div><div id="message" class="message" aria-live="polite"></div><div id="controls" class="controls"></div><p id="hint" class="hint"></p></section>
 </main><script>
@@ -40,7 +51,7 @@ const info={
 };
 if(!info[mode])location.replace('../index.html');
 if(mode==='frogger')document.body.dataset.arcadeControls='both';
-const [logo,title,subtitle,hint]=info[mode];$('logo').textContent=logo;$('title').textContent=title;$('subtitle').textContent=subtitle;$('hint').textContent=hint;document.title=title+' · Jogos do Jhon v1.6';
+const [logo,title,subtitle,hint]=info[mode];$('logo').textContent=logo;$('title').textContent=title;$('subtitle').textContent=subtitle;$('hint').textContent=hint;document.title=title+' · Jogos do Jhon v1.8';
 const stat=(label,value)=>'<div class="stat"><small>'+label+'</small><b id="'+value+'">0</b></div>';
 function shellStats(html){$('stats').innerHTML=html}
 function setMsg(t){$('message').textContent=t}
@@ -181,7 +192,10 @@ function drawBubble(x,y,r,color,wild=false){
  if(wild){grad.addColorStop(0,'#fff');grad.addColorStop(.22,'#fbcfe8');grad.addColorStop(.48,'#a78bfa');grad.addColorStop(.72,'#38bdf8');grad.addColorStop(1,'#312e81')}
  else{grad.addColorStop(0,'#fff');grad.addColorStop(.18,color);grad.addColorStop(.72,color);grad.addColorStop(1,'#0f172a')}
  ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=grad;ctx.fill();ctx.shadowBlur=0;ctx.strokeStyle='#ffffffdd';ctx.lineWidth=1.7;ctx.stroke();
- ctx.beginPath();ctx.ellipse(x-r*.32,y-r*.38,r*.27,r*.15,-.55,0,Math.PI*2);ctx.fillStyle='#ffffffaa';ctx.fill();ctx.restore();
+ // 4. Reflexo duplo e aro interno de vidro.
+ ctx.beginPath();ctx.ellipse(x-r*.32,y-r*.38,r*.27,r*.15,-.55,0,Math.PI*2);ctx.fillStyle='#ffffffbb';ctx.fill();
+ ctx.beginPath();ctx.arc(x,y,r*.78,.22,Math.PI*.82);ctx.strokeStyle='#ffffff30';ctx.lineWidth=1;ctx.stroke();
+ ctx.beginPath();ctx.arc(x-r*.34,y-r*.3,r*.055,0,Math.PI*2);ctx.fillStyle='#ffffffaa';ctx.fill();ctx.restore();
 }
 function trajectory(){
  let x=shooter.x,y=shooter.y-18,vx=Math.cos(angle),vy=Math.sin(angle),step=5;
@@ -192,26 +206,41 @@ function trajectory(){
   if(i%2===0)ctx.lineTo(x,y);
   if(y<=20||grid.some(row=>row.some(b=>b&&Math.hypot(b.x-x,b.y-y)<=30)))break;
  }
- ctx.shadowColor='#67e8f0';ctx.shadowBlur=8;ctx.strokeStyle='#a5f3fcbb';ctx.lineWidth=2.5;ctx.stroke();ctx.shadowBlur=0;ctx.setLineDash([]);
+ // 8. Mira com trilha luminosa e marcador final.
+ ctx.shadowColor='#67e8f0';ctx.shadowBlur=9;ctx.strokeStyle='#a5f3fcdd';ctx.lineWidth=2.5;ctx.stroke();ctx.shadowBlur=0;ctx.setLineDash([]);
+ ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fillStyle='#cffafe';ctx.shadowColor='#22d3ee';ctx.shadowBlur=12;ctx.fill();ctx.shadowBlur=0;
 }
 function render(){
  ctx.clearRect(0,0,360,520);
  const bg=ctx.createLinearGradient(0,0,360,520);bg.addColorStop(0,'#102b4a');bg.addColorStop(.48,'#09182b');bg.addColorStop(1,'#050d1a');ctx.fillStyle=bg;ctx.fillRect(0,0,360,520);
  const halo=ctx.createRadialGradient(180,230,25,180,230,260);halo.addColorStop(0,'#164e6328');halo.addColorStop(1,'#02061700');ctx.fillStyle=halo;ctx.fillRect(0,0,360,520);
- for(let i=0;i<34;i++){const x=(i*83+19)%360,y=(i*137+31)%440;ctx.fillStyle=i%3?'#bfdbfe22':'#67e8f933';ctx.fillRect(x,y,2,2)}
+ // 1–3. Grade de mira, estrelas e marcas técnicas.
+ ctx.save();ctx.strokeStyle='#7dd3fc0b';ctx.lineWidth=1;
+ for(let x=40;x<360;x+=40){ctx.beginPath();ctx.moveTo(x,24);ctx.lineTo(x,450);ctx.stroke()}
+ for(let y=60;y<450;y+=34){ctx.beginPath();ctx.moveTo(12,y);ctx.lineTo(348,y);ctx.stroke()}
+ for(let i=0;i<48;i++){const x=(i*83+19)%360,y=(i*137+31)%440;ctx.fillStyle=i%4?'#bfdbfe2b':'#67e8f977';ctx.fillRect(x,y,i%4===0?2.5:1.5,i%4===0?2.5:1.5)}
+ ctx.strokeStyle='#67e8f044';for(let y=50;y<450;y+=68){ctx.beginPath();ctx.moveTo(8,y);ctx.lineTo(14,y);ctx.moveTo(346,y);ctx.lineTo(352,y);ctx.stroke()}ctx.restore();
  ctx.strokeStyle='#38bdf822';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(8,22);ctx.lineTo(8,450);ctx.moveTo(352,22);ctx.lineTo(352,450);ctx.stroke();
  const rail=ctx.createLinearGradient(0,0,360,0);rail.addColorStop(0,'#22d3ee00');rail.addColorStop(.5,'#22d3ee66');rail.addColorStop(1,'#22d3ee00');ctx.fillStyle=rail;ctx.fillRect(10,451,340,2);
- ctx.font='10px system-ui';ctx.fillStyle='#94a3b8';ctx.fillText('PRÓXIMA',286,13);drawBubble(320,31,10,queueColor);
+ // 7. Prévia da próxima bolha em cápsula iluminada.
+ ctx.save();ctx.fillStyle='#071426cc';ctx.strokeStyle='#38bdf866';ctx.lineWidth=1;ctx.beginPath();ctx.roundRect(279,3,70,45,10);ctx.fill();ctx.stroke();ctx.font='9px system-ui';ctx.fillStyle='#bae6fd';ctx.fillText('PRÓXIMA',288,14);drawBubble(320,31,10,queueColor);ctx.restore();
  grid.forEach(row=>row.forEach(b=>{if(b)drawBubble(b.x,b.y,16,b.color)}));
  if(!shot&&!gameOver)trajectory();
+ // 6. Base mecânica do lançador com anéis concêntricos.
+ ctx.save();ctx.shadowColor='#22d3ee';ctx.shadowBlur=18;ctx.fillStyle='#0b2940';ctx.strokeStyle='#38bdf899';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(shooter.x,shooter.y+8,33,12,0,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.shadowBlur=0;ctx.strokeStyle='#a5f3fc66';ctx.beginPath();ctx.ellipse(shooter.x,shooter.y+8,23,7,0,0,Math.PI*2);ctx.stroke();ctx.restore();
  ctx.save();ctx.translate(shooter.x,shooter.y);ctx.rotate(angle+Math.PI/2);ctx.shadowColor='#22d3ee';ctx.shadowBlur=12;ctx.fillStyle='#155e75';ctx.strokeStyle='#67e8f0';ctx.lineWidth=2;ctx.beginPath();ctx.roundRect(-8,-43,16,35,7);ctx.fill();ctx.stroke();ctx.restore();
+ // 9. Selo visual do poder especial selecionado.
+ if(special){ctx.save();ctx.fillStyle=special==='bomb'?'#fb923c':'#c4b5fd';ctx.font='bold 10px system-ui';ctx.textAlign='center';ctx.fillText(special==='bomb'?'BOMBA ATIVA':'CORINGA ATIVO',180,458);ctx.restore()}
  if(special==='bomb')drawBubble(shooter.x,shooter.y,shooter.r,'#f97316');
  else if(special==='rainbow')drawBubble(shooter.x,shooter.y,shooter.r,'#fff',true);
  else drawBubble(shooter.x,shooter.y,shooter.r,loadedColor);
  if(shot)drawBubble(shot.x,shot.y,shot.r,shot.color,shot.wild);
- if(paused){ctx.fillStyle='#020617bb';ctx.fillRect(0,0,360,520);ctx.fillStyle='#fff';ctx.font='bold 28px system-ui';ctx.textAlign='center';ctx.fillText('PAUSADO',180,260);ctx.textAlign='left'}
- if(gameOver){ctx.fillStyle='#020617bb';ctx.fillRect(0,0,360,520);ctx.fillStyle='#fff';ctx.font='bold 25px system-ui';ctx.textAlign='center';ctx.fillText('FIM DE JOGO',180,245);ctx.font='15px system-ui';ctx.fillText('Toque em Reiniciar',180,275);ctx.textAlign='left'}
- ctx.fillStyle='#0f2940';ctx.fillRect(0,505,360,15);ctx.fillStyle='#22d3ee55';ctx.fillRect(0,505,360,2);ctx.font='10px system-ui';ctx.fillStyle='#7dd3fc';ctx.fillText('NÍVEL '+level,14,493);ctx.fillText('PONTOS '+score,270,493);updateStats();
+ // 10. Cartão de pausa redesenhado.
+ if(paused){ctx.fillStyle='#020617bb';ctx.fillRect(0,0,360,520);ctx.fillStyle='#0b2038';ctx.strokeStyle='#67e8f0';ctx.lineWidth=2;ctx.beginPath();ctx.roundRect(65,220,230,82,18);ctx.fill();ctx.stroke();ctx.fillStyle='#fff';ctx.font='bold 28px system-ui';ctx.textAlign='center';ctx.fillText('PAUSADO',180,270);ctx.font='11px system-ui';ctx.fillStyle='#bae6fd';ctx.fillText('TOQUE EM CONTINUAR',180,288);ctx.textAlign='left'}
+ if(gameOver){ctx.fillStyle='#020617bb';ctx.fillRect(0,0,360,520);ctx.fillStyle='#111d35';ctx.strokeStyle='#fb7185';ctx.lineWidth=2;ctx.beginPath();ctx.roundRect(48,210,264,104,18);ctx.fill();ctx.stroke();ctx.fillStyle='#fff';ctx.font='bold 25px system-ui';ctx.textAlign='center';ctx.fillText('FIM DE JOGO',180,250);ctx.font='15px system-ui';ctx.fillStyle='#fecdd3';ctx.fillText('Toque em Reiniciar',180,280);ctx.textAlign='left'}
+ // 5. Faixa inferior de perigo iluminada.
+ ctx.fillStyle='#0f2940';ctx.fillRect(0,505,360,15);ctx.fillStyle='#22d3ee88';ctx.fillRect(0,505,360,2);ctx.fillStyle='#fb718555';ctx.fillRect(0,500,360,1);
+ for(let x=12;x<360;x+=24){ctx.fillStyle='#7dd3fc55';ctx.fillRect(x,508,10,2)}ctx.font='10px system-ui';ctx.fillStyle='#7dd3fc';ctx.fillText('NÍVEL '+level,14,493);ctx.fillText('PONTOS '+score,270,493);updateStats();
 }
 function nearestEmpty(b){
  let target=null,dist=Infinity;
