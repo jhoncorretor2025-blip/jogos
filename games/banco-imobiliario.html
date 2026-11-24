@@ -582,7 +582,7 @@ function animateDayNight(){
  const center=boardEl.querySelector('.center');
  if(center){center.dataset.time=nightMode?'night':'day';const label=center.querySelector('.center-kicker');if(label)label.textContent='CLUBE DOS INVESTIDORES · '+(nightMode?'CIDADE À NOITE':'CIDADE DE DIA')}
 }
-function showSetup(){started=false;busy=true;pendingDebt=null;pendingAction=null;managerFinishTurn=false;moveSequenceId++;if(auctionTimer)clearInterval(auctionTimer);if(auctionBidTimer)clearTimeout(auctionBidTimer);if(eventCardTimer)clearTimeout(eventCardTimer);$('eventCard').classList.remove('show');auction=null;$('auctionOv').classList.remove('show');$('deedOv').classList.remove('show');$('portfolioOv').classList.remove('show');sheet.classList.remove('show');setupOv.classList.add('show');managerOv.classList.remove('show');ov.classList.remove('show')}
+function showSetup(){started=false;busy=true;pendingDebt=null;pendingAction=null;managerFinishTurn=false;$('realDiceOv').classList.remove('show');moveSequenceId++;if(auctionTimer)clearInterval(auctionTimer);if(auctionBidTimer)clearTimeout(auctionBidTimer);if(eventCardTimer)clearTimeout(eventCardTimer);$('eventCard').classList.remove('show');auction=null;$('auctionOv').classList.remove('show');$('deedOv').classList.remove('show');$('portfolioOv').classList.remove('show');sheet.classList.remove('show');setupOv.classList.add('show');managerOv.classList.remove('show');ov.classList.remove('show')}
 function startGame(){
  gameMode=$('gameMode').value==='two'?'two':'ai';diceMode=$('diceMode').value==='real'?'real':'virtual';
  startingCash=Number($('startingCash').value)||1000;roundLimit=Number($('roundLimit').value)||0;rounds=0;history=[];wealthHistory=[];pendingDebt=null;pendingAction=null;managerFinishTurn=false;auction=null;
@@ -748,7 +748,8 @@ function trySettleDebt(){
   logEvent(playerName(d.idx)+' pagou '+money(d.amount)+' — '+d.reason+'.','loss');
   showToast('-'+money(d.amount),true,d.idx);pendingDebt=null;managerOv.classList.remove('show');render();nextTurn();return;
  }
- setMessage('⚠️ '+playerName(d.idx)+' está sem caixa suficiente. Use os imóveis para levantar dinheiro ou quitar a obrigação.');
+ if(gameMode==='ai'&&d.idx===1){pendingDebt=null;endGame('bankruptcy',0);return}
+ setMessage('⚠️ '+playerName(d.idx)+' está sem caixa suficiente. Use os imóveis para levantar dinheiro ou declare falência.');
  openManager(true);
 }
 function mortgageProperty(i){
@@ -796,7 +797,7 @@ function openManager(emergency){
  const managerIdx=pendingDebt?pendingDebt.idx:turn,managerName=playerName(managerIdx);
  $('managerTitle').textContent=emergency?'🆘 Caixa em emergência':'🏘️ Gestão imobiliária · '+managerName;
  $('managerIntro').textContent=emergency?'Use as opções abaixo para levantar dinheiro e quitar a obrigação. Imóveis hipotecados não recebem aluguel.':'Cada imóvel pode receber até 3 casas e depois 1 hotel. O aluguel cresce de 1× para 2×, 3,5×, 5× e 8×. Cada casa custa 35% do imóvel; o hotel custa 75%. Hipoteca rende 50% do preço e o resgate custa 65%.'+(gameMode==='ai'?' Você também pode negociar propriedades com a IA.':'');
- $('emergencyBox').innerHTML=emergency?'<div class="emergency">'+managerName+' precisa de '+money(pendingDebt.amount)+' para '+pendingDebt.reason+'. Saldo disponível: '+money(players[managerIdx].cash)+'. Levante recursos antes de declarar falência.</div>':'';
+ $('emergencyBox').innerHTML=emergency?'<div class="emergency">'+managerName+' precisa de '+money(pendingDebt.amount)+' para '+pendingDebt.reason+'. Saldo disponível: '+money(players[managerIdx].cash)+'. Levante recursos ou declare falência.</div><button class="btn secondary" id="declareBankruptcy" type="button">Declarar falência</button>':'';
  const rows=[];
  spaces.forEach((s,i)=>{
   if(s.type!=='prop')return;
@@ -817,6 +818,7 @@ function openManager(emergency){
  $('managerBody').innerHTML=rows.length?rows.join(''):'<div class="empty-list">Ainda não há propriedades para gerenciar neste jogador.</div>';
  $('managerCloseBtn').style.display=emergency?'none':'';
  managerOv.classList.add('show');
+ if(emergency){const b=$('declareBankruptcy');if(b)b.addEventListener('click',finishBankruptcy)}
 }
 function handleManagerClick(e){
  const b=e.target.closest('button[data-act]');if(!b)return;
