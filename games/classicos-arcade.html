@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#070b14"><title>Clássicos Arcade · Jogos do Jhon v1.11</title>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#070b14"><title>Clássicos Arcade · Jogos do Jhon v1.12</title>
 <style>
 :root{color-scheme:dark;--bg:#070b14;--panel:#111b2d;--line:#29364c;--txt:#e2e8f0;--muted:#94a3b8;--cyan:#22d3ee;--gold:#fbbf24;--green:#34d399;--red:#fb7185}
 *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(850px 500px at 50% -10%,#172554 0,transparent 70%),var(--bg);color:var(--txt);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;padding:14px 12px 30px}button{font:inherit;cursor:pointer;color:inherit}.wrap{width:min(100%,820px);margin:auto}.top{display:flex;align-items:center;justify-content:space-between;gap:10px}.back{color:var(--muted);text-decoration:none;font-size:13px}.ver{font-size:11px;color:#a5f3fc;border:1px solid #155e75;border-radius:99px;padding:5px 10px}.hero{text-align:center;padding:13px 0 16px}.logo{font-size:clamp(45px,12vw,76px);line-height:1.1}.hero h1{margin:4px 0;font-size:clamp(25px,6vw,36px)}.sub{margin:0;color:var(--muted);font-size:14px}.panel{background:linear-gradient(145deg,#172338,#101827);border:1px solid var(--line);border-radius:18px;padding:13px;box-shadow:0 14px 32px #0004}.stats{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:12px}.stat{background:#0b1424;border:1px solid #26364c;border-radius:12px;padding:7px 12px;text-align:center;min-width:80px}.stat small{display:block;color:var(--muted);font-size:10px}.stat b{font-size:20px;font-variant-numeric:tabular-nums}.actions,.controls{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:12px}.btn{background:#1d2c42;border:1px solid #3b4b63;border-radius:11px;padding:10px 14px;font-weight:750}.btn.primary{background:#075466;border-color:#0891b2}.btn.gold{background:#563f08;border-color:#d6a51d}.btn:active{transform:scale(.97)}.hint{text-align:center;color:var(--muted);font-size:12px;margin:10px 0 0}.board{margin:auto;max-width:100%;overflow:auto}.message{text-align:center;min-height:25px;color:#bae6fd;font-weight:700;margin:8px 0}.pad{display:grid;grid-template-columns:repeat(3,56px);gap:7px;justify-content:center;margin:12px auto 0}.pad button{height:48px;border-radius:12px;background:#16263d;border:1px solid #334155;font-size:19px}.pad .empty{visibility:hidden}
@@ -35,10 +35,33 @@ canvas{display:block;max-width:100%;height:auto;touch-action:none;border-radius:
 @media(max-width:430px){.bubble-stage{padding:9px 5px 12px;border-radius:17px}.bubble-stage canvas#bubble{border-radius:14px}.bubble-stage .stat{min-width:68px!important;padding:5px 7px!important}.bubble-stage .stat b{font-size:16px}}
 @media(prefers-reduced-motion:no-preference){.bubble-stage .btn{transition:transform .16s ease,filter .16s ease,box-shadow .16s ease}}
 .bubble-overlay{position:absolute;inset:6px;z-index:8;display:flex;align-items:center;justify-content:center;padding:10px;background:#020617ef;backdrop-filter:blur(7px);border:1px solid #38bdf866;border-radius:17px}.bubble-overlay[hidden]{display:none!important}.bubble-overlay-card{width:min(100%,330px);max-height:100%;overflow:auto;padding:15px;border:1px solid #38bdf8;border-radius:16px;background:linear-gradient(150deg,#122a46,#071426);box-shadow:0 15px 45px #000b;text-align:left}.bubble-overlay-card h3{margin:0 0 10px;color:#e0f2fe;font-size:19px}.bubble-overlay-card p,.bubble-overlay-card li{font-size:13px;line-height:1.5;color:#cbd5e1}.bubble-overlay-card ul{padding-left:20px;margin:8px 0 14px}.bubble-overlay-card .btn{margin:4px 4px 0 0}.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:12px 0}.result-item{padding:8px;background:#0b1c30;border:1px solid #294761;border-radius:10px}.result-item small{display:block;color:#7dd3fc;font-size:10px}.result-item b{font-size:17px;color:#f8fafc}.achievement{padding:8px 0;border-bottom:1px solid #294761}.achievement.locked{opacity:.4;filter:grayscale(1)}@media(max-width:430px){.bubble-overlay{inset:4px;padding:7px}.bubble-overlay-card{padding:12px}.bubble-stage .controls{gap:6px}.bubble-stage .btn{padding:9px 10px;font-size:12px}}
+
+/* Bubble Shooter v1.12 — progressão, missões e modos */
+.bubble-progress{display:grid;gap:8px;margin:0 auto 12px;width:min(100%,420px);padding:10px 12px;border:1px solid #24506b;border-radius:13px;background:linear-gradient(145deg,#102943,#091827);box-shadow:inset 0 1px #ffffff12}
+.bubble-progress-head{display:flex;align-items:center;justify-content:space-between;gap:8px;color:#bae6fd;font-size:12px;font-weight:800}
+.bubble-progress-head span{padding:5px 8px;border-radius:9px;background:#071426;border:1px solid #256080}
+.bubble-daily{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.daily-goal{min-width:0;padding:7px 8px;border:1px solid #294761;border-radius:9px;background:#0b1c30}
+.daily-goal b{display:block;font-size:10px;color:#e0f2fe;line-height:1.3}
+.daily-goal small{display:block;margin-top:4px;color:#7dd3fc;font-size:9px}
+.daily-goal.done{border-color:#059669;background:linear-gradient(145deg,#064e3b,#0b2b2a)}
+.daily-goal.done b,.daily-goal.done small{color:#a7f3d0}
+.result-meta{color:#bae6fd!important;font-size:12px!important;border-top:1px solid #294761;padding-top:8px}
+.bubble-stage .bubble-daily{gap:5px}
+.bubble-stage .bubble-progress{margin-bottom:10px}
+.bubble-stage #bubbleMode{box-shadow:0 0 0 3px #0e749022;border-color:#38bdf877!important}
+.bubble-stage canvas#bubble{touch-action:none}
+.bubble-stage .controls .btn{min-width:105px}
+.game-version-footer{margin:14px auto 0;text-align:center;color:#64748b;font-size:11px;letter-spacing:.04em}
+@keyframes bubblePulse{0%,100%{filter:drop-shadow(0 0 2px #67e8f0)}50%{filter:drop-shadow(0 0 9px #22d3ee)}}
+.bubble-stage .bubble-progress-head span:first-child{animation:bubblePulse 2.4s ease-in-out infinite}
+@media(max-width:430px){.bubble-daily{grid-template-columns:1fr}.daily-goal{display:flex;justify-content:space-between;align-items:center;gap:8px}.daily-goal small{margin:0;text-align:right}.bubble-stage .controls .btn{min-width:calc(33.333% - 6px);padding:9px 7px;font-size:11px}}
+@media(prefers-reduced-motion:reduce){.bubble-stage .bubble-progress-head span:first-child{animation:none}}
 </style></head><body><main class="wrap">
-<div class="top"><a class="back" href="../index.html">← Voltar ao Arcade</a><span class="ver">JOGO v1.11</span></div>
+<div class="top"><a class="back" href="../index.html">← Voltar ao Arcade</a><span class="ver">JOGO v1.12</span></div>
 <header class="hero"><div id="logo" class="logo">🎮</div><h1 id="title">Clássicos Arcade</h1><p id="subtitle" class="sub">Diversão para todos os momentos</p></header>
 <section class="panel"><div id="stats" class="stats"></div><div id="stage"></div><div id="message" class="message" aria-live="polite"></div><div id="controls" class="controls"></div><p id="hint" class="hint"></p></section>
+<footer class="game-version-footer">Jogos do Jhon · Bubble Shooter v1.12</footer>
 </main><script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id),params=new URLSearchParams(location.search),mode=params.get('game')||'domino';
@@ -52,7 +75,7 @@ const info={
 };
 if(!info[mode])location.replace('../index.html');
 if(mode==='frogger')document.body.dataset.arcadeControls='both';
-const [logo,title,subtitle,hint]=info[mode];$('logo').textContent=logo;$('title').textContent=title;$('subtitle').textContent=subtitle;$('hint').textContent=hint;document.title=title+' · Jogos do Jhon v1.11';
+const [logo,title,subtitle,hint]=info[mode];$('logo').textContent=logo;$('title').textContent=title;$('subtitle').textContent=subtitle;$('hint').textContent=hint;document.title=title+' · Jogos do Jhon v1.12';
 const stat=(label,value)=>'<div class="stat"><small>'+label+'</small><b id="'+value+'">0</b></div>';
 function shellStats(html){$('stats').innerHTML=html}
 function setMsg(t){$('message').textContent=t}
@@ -122,16 +145,19 @@ $('stage').innerHTML=
  '<label for="bubbleDifficulty" style="font-size:12px;color:#cbd5e1">Dificuldade</label>'+
  '<select id="bubbleDifficulty" style="background:#0b1424;color:#e2e8f0;border:1px solid #3b4b63;border-radius:9px;padding:8px 10px;font:inherit;font-size:12px">'+
  '<option value="easy">Fácil</option><option value="normal" selected>Normal</option><option value="hard">Difícil</option></select>'+
+ '<label for="bubbleMode" style="font-size:12px;color:#cbd5e1">Modo</label>'+
+ '<select id="bubbleMode" style="background:#0b1424;color:#e2e8f0;border:1px solid #3b4b63;border-radius:9px;padding:8px 10px;font:inherit;font-size:12px"><option value="classic">Clássico</option><option value="timed">90 segundos</option><option value="limited">30 disparos</option><option value="survival">Sobrevivência</option></select>'+
  '<span id="bubbleLevel" class="stat" style="min-width:74px;padding:5px 9px"><small>Nível</small><b>1</b></span>'+
  '<span id="bubbleAccuracy" class="stat" style="min-width:74px;padding:5px 9px"><small>Precisão / tiros</small><b>0% · 0</b></span>'+
  '<span id="bubbleCombo" class="stat" style="min-width:74px;padding:5px 9px"><small>Combo / recorde</small><b>x0 / x0</b></span>'+
  '<span id="bubbleLives" class="stat" style="min-width:74px;padding:5px 9px"><small>Vidas</small><b>♥ ♥ ♥</b></span>'+
  '<span id="bubbleChallenge" class="stat" style="min-width:112px;padding:5px 9px"><small>Desafio</small><b>Campo completo</b></span>'+
- '</div><canvas id="bubble" width="360" height="520" aria-label="Bubble Shooter"></canvas>'+
+ '</div><div class="bubble-progress"><div class="bubble-progress-head"><span id="bubbleStars">⭐ 0 estrelas</span><span id="bubbleTimer" hidden>⏱ 90s</span></div><div id="bubbleDaily" class="bubble-daily" aria-live="polite"></div></div><canvas id="bubble" width="360" height="520" aria-label="Bubble Shooter"></canvas>'+
  '<div class="hint">Mire no campo ou use ← →. Espaço dispara · X troca · B bomba · R coringa · P pausa.</div>'+
  '<div id="bubbleTutorial" class="bubble-overlay" hidden><div class="bubble-overlay-card"><h3>🎯 Como jogar</h3><p>Limpe o campo combinando pelo menos três bolhas da mesma cor.</p><ul><li>Toque ou clique no campo para mirar e disparar.</li><li>Troque a bolha atual com a próxima quando precisar.</li><li>A bomba elimina bolhas próximas do impacto; o coringa combina com a cor predominante.</li><li>Combinações seguidas aumentam o multiplicador. Você começa com três vidas.</li><li>Teclado: ← → miram, Espaço dispara, X troca, B bomba, R coringa e P pausa.</li></ul><button id="tutorialClose" class="btn primary" type="button">Entendi, vamos jogar!</button></div></div>'+
  '<div id="bubbleAchievements" class="bubble-overlay" hidden><div class="bubble-overlay-card"><h3>🏆 Conquistas</h3><div id="achievementList"></div><button id="achievementClose" class="btn primary" type="button">Fechar</button></div></div>'+
- '<div id="bubbleResult" class="bubble-overlay" hidden><div class="bubble-overlay-card"><h3>🏁 Fim de jogo</h3><p>Esta foi sua partida. Tente superar seu recorde!</p><div class="result-grid"><div class="result-item"><small>Pontuação</small><b id="resultScore">0</b></div><div class="result-item"><small>Fase alcançada</small><b id="resultLevel">1</b></div><div class="result-item"><small>Bolhas eliminadas</small><b id="resultPopped">0</b></div><div class="result-item"><small>Melhor combo</small><b id="resultCombo">x0</b></div></div><p id="resultAccuracy">Precisão: 0% · Disparos: 0</p><button id="resultNew" class="btn primary" type="button">🔄 Jogar novamente</button><button id="resultAch" class="btn" type="button">🏆 Conquistas</button></div></div>';
+ '<div id="bubbleHistory" class="bubble-overlay" hidden><div class="bubble-overlay-card"><h3>📊 Histórico de partidas</h3><div id="historyList"></div><button id="historyClose" class="btn primary" type="button">Fechar</button></div></div>'+
+ '<div id="bubbleResult" class="bubble-overlay" hidden><div class="bubble-overlay-card"><h3>🏁 Fim de jogo</h3><p>Esta foi sua partida. Tente superar seu recorde!</p><div class="result-grid"><div class="result-item"><small>Pontuação</small><b id="resultScore">0</b></div><div class="result-item"><small>Fase alcançada</small><b id="resultLevel">1</b></div><div class="result-item"><small>Bolhas eliminadas</small><b id="resultPopped">0</b></div><div class="result-item"><small>Melhor combo</small><b id="resultCombo">x0</b></div></div><p id="resultAccuracy">Precisão: 0% · Disparos: 0</p><p id="resultMeta" class="result-meta"></p><button id="resultNew" class="btn primary" type="button">🔄 Jogar novamente</button><button id="resultAch" class="btn" type="button">🏆 Conquistas</button></div></div>';
 buttons(
  btn('shoot','🫧 Atirar','btn primary')+
  btn('swap','🔄 Trocar')+
@@ -142,7 +168,8 @@ buttons(
  btn('sound','🔇 Som')+
  btn('vibe','📳 Vibração')+
  btn('tutorial','❔ Tutorial')+
- btn('achievements','🏆 Conquistas')
+ btn('achievements','🏆 Conquistas')+
+ btn('history','📊 Histórico')
 );
 const cv=$('bubble'),ctx=cv.getContext('2d');
 const COLORS=['#fb7185','#38bdf8','#fbbf24','#34d399','#c084fc','#fb923c'];
@@ -151,9 +178,24 @@ const MODES={
  normal:{label:'Normal',palette:5,rows:6,speed:520},
  hard:{label:'Difícil',palette:6,rows:7,speed:575}
 };
-let effects=[],fxRaf=0,lastFxTime=0,lastDroppedPositions=[],difficulty='normal',palette=COLORS.slice(0,5),grid=[],angle=-Math.PI/2,shot=null,score=0,level=1,shots=0,clears=0,combo=0,bestCombo=best('bolhas_combo'),bombs=1,rainbows=1,special=null,loadedColor=COLORS[0],queueColor=COLORS[1],swappedThisTurn=false,paused=false,gameOver=false,rafId=0,lastFrame=0,lives=3,totalPopped=0,soundOn=false,vibrationOn=false,audioCtx=null;
-const SAVE_KEY='jhon-bolhas-save',ACH_KEY='jhon-bolhas-achievements';
+let effects=[],fxRaf=0,lastFxTime=0,lastDroppedPositions=[],difficulty='normal',gameMode='classic',palette=COLORS.slice(0,5),grid=[],angle=-Math.PI/2,shot=null,score=0,level=1,shots=0,clears=0,combo=0,bestCombo=best('bolhas_combo'),bombs=1,rainbows=1,special=null,loadedColor=COLORS[0],queueColor=COLORS[1],swappedThisTurn=false,paused=false,gameOver=false,gameOverReason='',recordSaved=false,rafId=0,lastFrame=0,lives=3,totalPopped=0,levelShots=0,levelStars={},timeLeft=90,timerId=0,banner={text:'',at:0,color:'#67e8f0'},daily={date:'',popped:0,levels:0,shots:0,clears:0},soundOn=false,vibrationOn=false,audioCtx=null;
+const SAVE_KEY='jhon-bolhas-save',ACH_KEY='jhon-bolhas-achievements',HISTORY_KEY='jhon-bolhas-history',DAILY_KEY='jhon-bolhas-daily';
+const GAME_MODES={classic:{label:'Clássico'},timed:{label:'90 segundos',seconds:90},limited:{label:'30 disparos',shots:30},survival:{label:'Sobrevivência'}};
 const ACHIEVEMENTS=[{id:'first',name:'Primeira vitória',desc:'Conclua a primeira fase.'},{id:'combo5',name:'Combo lendário',desc:'Alcance combo x5.'},{id:'bomb10',name:'Explosão máxima',desc:'Elimine 10 bolhas com uma bomba.'},{id:'level5',name:'Em evolução',desc:'Alcance a fase 5.'},{id:'pop100',name:'Caçador de bolhas',desc:'Elimine 100 bolhas no total.'},{id:'accuracy80',name:'Mira afiada',desc:'Tenha 80% de precisão após 10 disparos.'}];
+function localDayKey(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function readDaily(){try{const d=JSON.parse(localStorage.getItem(DAILY_KEY)||'null');return d&&d.date===localDayKey()?d:{date:localDayKey(),popped:0,levels:0,shots:0,clears:0}}catch(e){return {date:localDayKey(),popped:0,levels:0,shots:0,clears:0}}}
+function saveDaily(){try{localStorage.setItem(DAILY_KEY,JSON.stringify(daily))}catch(e){}}
+function dailyProgress(){daily=readDaily();const accuracy=daily.shots?daily.clears/daily.shots:0;const goals=[{name:'Eliminar 30 bolhas',done:daily.popped>=30,detail:Math.min(30,daily.popped)+'/30'},{name:'Concluir uma fase',done:daily.levels>=1,detail:daily.levels?'Concluída':'Pendente'},{name:'Precisão de 60%',done:daily.shots>=10&&accuracy>=.6,detail:daily.shots<10?daily.shots+'/10 tiros':Math.round(accuracy*100)+'%'}];$('bubbleDaily').innerHTML=goals.map(g=>'<div class="daily-goal '+(g.done?'done':'')+'"><b>'+(g.done?'✓ ':'')+g.name+'</b><small>'+g.detail+'</small></div>').join('')}
+function currentRecordKey(){return 'bolhas_'+difficulty+'_'+gameMode}
+function currentBest(){return Math.max(best(currentRecordKey()),difficulty==='normal'&&gameMode==='classic'?best('bolhas'):0)}
+function saveRunBest(){saveBest(currentRecordKey(),score);if(difficulty==='normal'&&gameMode==='classic')saveBest('bolhas',score)}
+function showBanner(text,color='#67e8f0'){banner={text,at:performance.now(),color}}
+function saveMatchRecord(reason){if(recordSaved)return;recordSaved=true;let list=[];try{list=JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]')}catch(e){}if(!Array.isArray(list))list=[];list.unshift({date:new Date().toLocaleString('pt-BR'),score,level,popped:totalPopped,combo:bestCombo,accuracy:shots?Math.round(clears/shots*100):0,difficulty,mode:gameMode,reason});try{localStorage.setItem(HISTORY_KEY,JSON.stringify(list.slice(0,20)))}catch(e){}}
+function showHistory(){let list=[];try{list=JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]')}catch(e){}if(!Array.isArray(list))list=[];$('historyList').innerHTML=list.length?list.map((r,i)=>'<div class="achievement"><b>'+(i+1)+'. '+Number(r.score||0).toLocaleString('pt-BR')+' pontos · fase '+Number(r.level||1)+'</b><br><small>'+String(r.date||'').replace(/[<>]/g,'')+' · '+(GAME_MODES[r.mode]?.label||'Clássico')+' · '+(r.difficulty||'normal')+' · '+Number(r.accuracy||0)+'% precisão · '+Number(r.popped||0)+' bolhas</small></div>').join(''):'<p>Ainda não há partidas encerradas. Termine uma partida para criar seu histórico.</p>';$('bubbleHistory').hidden=false}
+function stopClock(){if(timerId){clearInterval(timerId);timerId=0}}
+function startClock(){stopClock();if(gameMode!=='timed'||gameOver)return;timerId=setInterval(()=>{if(paused||gameOver)return;timeLeft=Math.max(0,timeLeft-1);updateStats();saveGame();if(timeLeft===0){endGame('Tempo esgotado');setMsg('⏰ O tempo acabou! Sua partida foi encerrada.');render()}},1000)}
+function endGame(reason='Fim de jogo'){if(gameOver)return;gameOver=true;gameOverReason=reason;paused=false;stopClock();saveRunBest();saveMatchRecord(reason);saveGame()}
+daily=readDaily();
 const shooter={x:180,y:474,r:14};
 function cellX(c,r=0){return 18+c*36+(r%2)*18}
 function cellY(r){return 32+r*31}
@@ -180,7 +222,8 @@ function updateControls(){
  $('sound').textContent=soundOn?'🔊 Som ligado':'🔇 Som desligado';$('vibe').textContent=vibrationOn?'📳 Vibração ligada':'📳 Vibração desligada';
 }
 function updateStats(){
- $('score').textContent=score;$('count').textContent=countBubbles();$('best').textContent=best('bolhas');$('bubbleLevel').querySelector('b').textContent=level;
+ $('score').textContent=score;$('count').textContent=countBubbles();$('best').textContent=currentBest();$('bubbleLevel').querySelector('b').textContent=level;
+ const stars=Object.values(levelStars).reduce((a,v)=>a+Number(v||0),0);$('bubbleStars').textContent='⭐ '+stars+' estrela'+(stars===1?'':'s');$('bubbleTimer').hidden=!(gameMode==='timed'||gameMode==='limited');$('bubbleTimer').textContent=gameMode==='timed'?'⏱ '+timeLeft+'s':gameMode==='limited'?'🎯 '+Math.max(0,30-shots)+' tiros':'⏱ —';dailyProgress();
  $('bubbleAccuracy').querySelector('b').textContent=(shots?Math.round(clears/shots*100):0)+'% · '+shots;$('bubbleCombo').querySelector('b').textContent='x'+combo+' / x'+bestCombo;
  $('lives').textContent='♥ '.repeat(lives).trim()||'0';$('bubbleLives').querySelector('b').textContent='♥ '.repeat(lives).trim()||'0';$('bubbleChallenge').querySelector('b').textContent=levelChallenge();updateControls();
 }
@@ -206,21 +249,21 @@ function showTutorial(){$('bubbleTutorial').hidden=false}
 function closeTutorial(){$('bubbleTutorial').hidden=true;try{localStorage.setItem('jhon-bolhas-tutorial','1')}catch(e){}}
 function saveGame(){
  try{if(gameOver){localStorage.removeItem(SAVE_KEY);return}
- const d={v:1,difficulty,grid:grid.map(row=>row.map(b=>b?b.color:null)),angle,shot:shot?{x:shot.x,y:shot.y,vx:shot.vx,vy:shot.vy,color:shot.color,r:shot.r,wild:shot.wild,mode:shot.mode}:null,score,level,shots,clears,combo,bestCombo,bombs,rainbows,special,loadedColor,queueColor,swappedThisTurn,lives,totalPopped};
+ const d={v:2,difficulty,gameMode,timeLeft,levelShots,levelStars,grid:grid.map(row=>row.map(b=>b?b.color:null)),angle,shot:shot?{x:shot.x,y:shot.y,vx:shot.vx,vy:shot.vy,color:shot.color,r:shot.r,wild:shot.wild,mode:shot.mode}:null,score,level,shots,clears,combo,bestCombo,bombs,rainbows,special,loadedColor,queueColor,swappedThisTurn,lives,totalPopped};
  localStorage.setItem(SAVE_KEY,JSON.stringify(d));
  }catch(e){}
 }
 function loadGame(){
- try{const d=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(!d||d.v!==1||!Array.isArray(d.grid)||d.grid.length!==14)return false;
- difficulty=MODES[d.difficulty]?d.difficulty:'normal';palette=COLORS.slice(0,MODES[difficulty].palette);grid=d.grid.map((row,r)=>Array.from({length:9},(_,c)=>row[c]?{x:cellX(c,r),y:cellY(r),color:row[c]}:null));
+ try{const d=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(!d||![1,2].includes(d.v)||!Array.isArray(d.grid)||d.grid.length!==14)return false;
+ difficulty=MODES[d.difficulty]?d.difficulty:'normal';gameMode=GAME_MODES[d.gameMode]?d.gameMode:'classic';timeLeft=Math.max(0,Number(d.timeLeft)||90);levelShots=Math.max(0,Number(d.levelShots)||0);levelStars=d.levelStars&&typeof d.levelStars==='object'?d.levelStars:{};palette=COLORS.slice(0,MODES[difficulty].palette);grid=d.grid.map((row,r)=>Array.from({length:9},(_,c)=>row[c]?{x:cellX(c,r),y:cellY(r),color:row[c]}:null));
  angle=Number(d.angle)||-Math.PI/2;shot=d.shot?{...d.shot}:null;score=Number(d.score)||0;level=Math.max(1,Number(d.level)||1);shots=Number(d.shots)||0;clears=Number(d.clears)||0;combo=Number(d.combo)||0;bestCombo=Math.max(bestCombo,Number(d.bestCombo)||0);bombs=Math.max(0,Number(d.bombs)||0);rainbows=Math.max(0,Number(d.rainbows)||0);special=d.special||null;loadedColor=d.loadedColor||randColor();queueColor=d.queueColor||randColor();swappedThisTurn=!!d.swappedThisTurn;lives=Math.max(0,Math.min(5,Number(d.lives)||3));totalPopped=Math.max(0,Number(d.totalPopped)||0);paused=false;gameOver=false;effects=[];
- $('bubbleDifficulty').value=difficulty;render();setMsg('💾 Sua partida anterior foi recuperada. Continue de onde parou!');if(shot){lastFrame=0;rafId=requestAnimationFrame(animate)}return true;
+ $('bubbleDifficulty').value=difficulty;$('bubbleMode').value=gameMode;recordSaved=false;render();setMsg('💾 Sua partida anterior foi recuperada. Continue de onde parou!');startClock();if(shot){lastFrame=0;rafId=requestAnimationFrame(animate)}return true;
  }catch(e){return false}
 }
 function fresh(){
- if(rafId){cancelAnimationFrame(rafId);rafId=0}if(fxRaf){cancelAnimationFrame(fxRaf);fxRaf=0}
- try{localStorage.removeItem(SAVE_KEY)}catch(e){}effects=[];level=1;score=0;shots=0;clears=0;combo=0;bestCombo=Math.max(bestCombo,best('bolhas_combo'));bombs=1;rainbows=1;special=null;paused=false;gameOver=false;shot=null;lastFrame=0;swappedThisTurn=false;lives=3;totalPopped=0;
- const mode=MODES[difficulty];palette=COLORS.slice(0,mode.palette);makeField(mode.rows);loadedColor=randColor();queueColor=randColor();render();setMsg('Nível 1 · Combine três ou mais bolhas. Você tem três vidas, uma bomba e um coringa!');saveGame();
+ if(rafId){cancelAnimationFrame(rafId);rafId=0}if(fxRaf){cancelAnimationFrame(fxRaf);fxRaf=0}stopClock();
+ try{localStorage.removeItem(SAVE_KEY)}catch(e){}effects=[];level=1;score=0;shots=0;clears=0;combo=0;bestCombo=Math.max(bestCombo,best('bolhas_combo'));bombs=1;rainbows=1;special=null;paused=false;gameOver=false;gameOverReason='';recordSaved=false;shot=null;lastFrame=0;swappedThisTurn=false;lives=gameMode==='survival'?1:3;totalPopped=0;levelShots=0;levelStars={};timeLeft=90;banner={text:'',at:0,color:'#67e8f0'};
+ const mode=MODES[difficulty];palette=COLORS.slice(0,mode.palette);makeField(mode.rows+(gameMode==='survival'?1:0));loadedColor=randColor();queueColor=randColor();render();setMsg('Nível 1 · Combine três ou mais bolhas. Modo: '+GAME_MODES[gameMode].label+'.');saveGame();startClock();
 }
 function spawnPopEffects(points,label='POP!'){
  if(!points||!points.length)return;
@@ -273,7 +316,9 @@ function trajectory(){
  // 8. Mira com trilha luminosa e marcador final.
  ctx.shadowColor='#67e8f0';ctx.shadowBlur=9;ctx.strokeStyle='#a5f3fcdd';ctx.lineWidth=2.5;ctx.stroke();ctx.shadowBlur=0;ctx.setLineDash([]);
  ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fillStyle='#cffafe';ctx.shadowColor='#22d3ee';ctx.shadowBlur=12;ctx.fill();ctx.shadowBlur=0;
+ const target=nearestEmpty({x,y});if(target){ctx.save();ctx.globalAlpha=.58;ctx.beginPath();ctx.arc(target.x,target.y,15,0,Math.PI*2);ctx.strokeStyle='#e0f2fe';ctx.lineWidth=2;ctx.setLineDash([3,3]);ctx.stroke();ctx.setLineDash([]);ctx.beginPath();ctx.arc(target.x,target.y,5,0,Math.PI*2);ctx.fillStyle=special==='bomb'?'#fb923c':special==='rainbow'?'#c4b5fd':loadedColor;ctx.fill();ctx.restore()}
 }
+function drawBanner(){if(!banner.text)return;const t=(performance.now()-banner.at)/1150;if(t>=1.1){banner.text='';return}const fade=t<.12?t/.12:t>.82?(1.1-t)/.28:1;const scale=1+Math.sin(Math.min(1,t/.2)*Math.PI)*.12;ctx.save();ctx.globalAlpha=Math.max(0,fade);ctx.translate(180,112-(Math.min(t,1)*18));ctx.scale(scale,scale);ctx.fillStyle='#071426dd';ctx.strokeStyle=banner.color;ctx.lineWidth=2;ctx.beginPath();ctx.roundRect(-120,-19,240,38,12);ctx.fill();ctx.stroke();ctx.font='bold 15px system-ui';ctx.textAlign='center';ctx.fillStyle='#fff';ctx.shadowColor=banner.color;ctx.shadowBlur=12;ctx.fillText(banner.text,0,5);ctx.restore()}
 function render(){
  ctx.clearRect(0,0,360,520);
  const bg=ctx.createLinearGradient(0,0,360,520);bg.addColorStop(0,'#102b4a');bg.addColorStop(.48,'#09182b');bg.addColorStop(1,'#050d1a');ctx.fillStyle=bg;ctx.fillRect(0,0,360,520);
@@ -289,8 +334,8 @@ function render(){
  // 7. Prévia da próxima bolha em cápsula iluminada.
  ctx.save();ctx.fillStyle='#071426cc';ctx.strokeStyle='#38bdf866';ctx.lineWidth=1;ctx.beginPath();ctx.roundRect(279,3,70,45,10);ctx.fill();ctx.stroke();ctx.font='9px system-ui';ctx.fillStyle='#bae6fd';ctx.fillText('PRÓXIMA',288,14);drawBubble(320,31,10,queueColor);ctx.restore();
  grid.forEach(row=>row.forEach(b=>{if(b)drawBubble(b.x,b.y,16,b.color)}));
- drawPopEffects();
- if(level===1&&!shot&&!gameOver)trajectory();
+ drawPopEffects();drawBanner();
+ if(!shot&&!paused&&!gameOver)trajectory();
  // 6. Base mecânica do lançador com anéis concêntricos.
  ctx.save();ctx.shadowColor='#22d3ee';ctx.shadowBlur=18;ctx.fillStyle='#0b2940';ctx.strokeStyle='#38bdf899';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(shooter.x,shooter.y+8,33,12,0,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.shadowBlur=0;ctx.strokeStyle='#a5f3fc66';ctx.beginPath();ctx.ellipse(shooter.x,shooter.y+8,23,7,0,0,Math.PI*2);ctx.stroke();ctx.restore();
  ctx.save();ctx.translate(shooter.x,shooter.y);ctx.rotate(angle+Math.PI/2);ctx.shadowColor='#22d3ee';ctx.shadowBlur=12;ctx.fillStyle='#155e75';ctx.strokeStyle='#67e8f0';ctx.lineWidth=2;ctx.beginPath();ctx.roundRect(-8,-43,16,35,7);ctx.fill();ctx.stroke();ctx.restore();
@@ -305,7 +350,7 @@ function render(){
  if(gameOver){ctx.fillStyle='#020617bb';ctx.fillRect(0,0,360,520);ctx.fillStyle='#111d35';ctx.strokeStyle='#fb7185';ctx.lineWidth=2;ctx.beginPath();ctx.roundRect(48,210,264,104,18);ctx.fill();ctx.stroke();ctx.fillStyle='#fff';ctx.font='bold 25px system-ui';ctx.textAlign='center';ctx.fillText('FIM DE JOGO',180,250);ctx.font='15px system-ui';ctx.fillStyle='#fecdd3';ctx.fillText('Toque em Reiniciar',180,280);ctx.textAlign='left'}
  // 5. Faixa inferior de perigo iluminada.
  ctx.fillStyle='#0f2940';ctx.fillRect(0,505,360,15);ctx.fillStyle='#22d3ee88';ctx.fillRect(0,505,360,2);ctx.fillStyle='#fb718555';ctx.fillRect(0,500,360,1);
- for(let x=12;x<360;x+=24){ctx.fillStyle='#7dd3fc55';ctx.fillRect(x,508,10,2)}ctx.font='10px system-ui';ctx.fillStyle='#7dd3fc';ctx.fillText('NÍVEL '+level,14,493);ctx.fillText('PONTOS '+score,270,493);updateStats();const result=$('bubbleResult');if(result){result.hidden=!gameOver;if(gameOver){$('resultScore').textContent=score;$('resultLevel').textContent=level;$('resultPopped').textContent=totalPopped;$('resultCombo').textContent='x'+bestCombo;$('resultAccuracy').textContent='Precisão: '+(shots?Math.round(clears/shots*100):0)+'% · Disparos: '+shots}}
+ for(let x=12;x<360;x+=24){ctx.fillStyle='#7dd3fc55';ctx.fillRect(x,508,10,2)}ctx.font='10px system-ui';ctx.fillStyle='#7dd3fc';ctx.fillText('NÍVEL '+level,14,493);ctx.fillText('PONTOS '+score,270,493);updateStats();const result=$('bubbleResult');if(result){result.hidden=!gameOver;if(gameOver){$('resultScore').textContent=score;$('resultLevel').textContent=level;$('resultPopped').textContent=totalPopped;$('resultCombo').textContent='x'+bestCombo;$('resultAccuracy').textContent='Precisão: '+(shots?Math.round(clears/shots*100):0)+'% · Disparos: '+shots;$('resultMeta').textContent=(GAME_MODES[gameMode]?.label||'Clássico')+' · '+MODES[difficulty].label+' · '+gameOverReason+' · ⭐ '+Object.values(levelStars).reduce((a,v)=>a+Number(v||0),0)+' estrelas'}}
 }
 function nearestEmpty(b){
  let target=null,dist=Infinity;
@@ -340,25 +385,26 @@ function removeFloating(){
 function finishImpact(removed,bonus=0,visualPoints=[]){
  removed=Math.max(0,removed|0);
  if(removed>0){
-  spawnPopEffects(visualPoints,'+'+(removed*10)+' PONTOS');totalPopped+=removed;
-  if(removed>=3){combo++;clears++;bestCombo=Math.max(bestCombo,combo);saveBest('bolhas_combo',bestCombo);const multiplier=Math.min(combo,5);score+=removed*10*multiplier+bonus;setMsg('✨ '+removed+' bolhas eliminadas · combo x'+combo+' · multiplicador x'+multiplier+'!')}
+  spawnPopEffects(visualPoints,'+'+(removed*10)+' PONTOS');totalPopped+=removed;daily.popped+=removed;
+  if(removed>=3){combo++;clears++;daily.clears++;bestCombo=Math.max(bestCombo,combo);saveBest('bolhas_combo',bestCombo);const multiplier=Math.min(combo,5);score+=removed*10*multiplier+bonus;showBanner('COMBO x'+combo+'  ·  ×'+multiplier,'#fbbf24');setMsg('✨ '+removed+' bolhas eliminadas · combo x'+combo+' · multiplicador x'+multiplier+'!')}
   else{combo=0;score+=removed*10+bonus;setMsg('💥 '+removed+' bolha(s) eliminada(s). Pontos adicionados!')}
   playFx('pop');
  }else{combo=0;setMsg('Bolinha posicionada. Prepare a próxima combinação!')}
- score=Math.max(0,score);saveBest('bolhas',score);
+ score=Math.max(0,score);saveRunBest();saveDaily();
  if(!countBubbles()){
-  const completedLevel=level;level++;bombs=Math.min(3,bombs+1);rainbows=Math.min(3,rainbows+1);if(completedLevel%3===0)lives=Math.min(5,lives+1);
-  const rows=Math.min(9,MODES[difficulty].rows+Math.floor((level-1)/2));makeField(rows);loadedColor=randColor();queueColor=randColor();combo=0;special=null;playFx('level');
-  setMsg('🏆 Fase '+completedLevel+' concluída! Novo desafio: '+levelChallenge()+'. Você ganhou uma bomba e um coringa'+(completedLevel%3===0?' e uma vida!':'!'));
+  const completedLevel=level,starsEarned=levelShots<=Math.max(4,MODES[difficulty].rows)?3:levelShots<=MODES[difficulty].rows+5?2:1;levelStars[completedLevel]=Math.max(Number(levelStars[completedLevel])||0,starsEarned);daily.levels++;saveDaily();levelShots=0;level++;bombs=Math.min(3,bombs+1);rainbows=Math.min(3,rainbows+1);if(completedLevel%3===0&&gameMode!=='survival')lives=Math.min(5,lives+1);
+  const rows=Math.min(10,MODES[difficulty].rows+(gameMode==='survival'?1:0)+Math.floor((level-1)/2));makeField(rows);loadedColor=randColor();queueColor=randColor();combo=0;special=null;playFx('level');showBanner('FASE '+completedLevel+'  ·  '+'⭐'.repeat(starsEarned),'#fbbf24');
+  setMsg('🏆 Fase '+completedLevel+' concluída com '+starsEarned+' estrela(s)! Novo desafio: '+levelChallenge()+'. Você ganhou uma bomba e um coringa'+(completedLevel%3===0&&gameMode!=='survival'?' e uma vida!':'!'));
  }else if(grid.some((row,r)=>r>=11&&row.some(Boolean))){
   if(lives>1){lives--;const danger=[];grid.forEach((row,r)=>row.forEach((v,c)=>{if(v&&r>=9){danger.push({x:v.x,y:v.y,color:v.color});grid[r][c]=null}}));spawnPopEffects(danger,'VIDA -1');combo=0;playFx('life');setMsg('❤️ Você perdeu uma vida, mas ganhou outra chance! Vidas restantes: '+lives+'.')}
-  else{lives=0;gameOver=true;saveBest('bolhas',score);playFx('life');setMsg('Fim de jogo! Suas vidas acabaram. Pontuação: '+score+'.')}
+  else{lives=0;endGame('Vidas esgotadas');playFx('life');setMsg('Fim de jogo! Suas vidas acabaram. Pontuação: '+score+'.')}
  }
+ if(gameMode==='limited'&&shots>=30&&levelShots>0&&countBubbles()>0){endGame('Limite de 30 disparos atingido');setMsg('🎯 Você usou os 30 disparos. Tente uma nova partida!')}
  checkAchievements();render();saveGame();
 }
 function attach(b){
  const target=nearestEmpty(b);
- if(!target){gameOver=true;render();setMsg('Não há espaço para encaixar a bolinha. Fim de jogo!');return}
+ if(!target){endGame('Sem espaço no tabuleiro');render();setMsg('Não há espaço para encaixar a bolinha. Fim de jogo!');return}
  grid[target.r][target.c]={x:target.x,y:target.y,color:b.color};
  const group=connectedGroup(target.r,target.c,b.color);
  let removed=0,visualPoints=[];
@@ -375,7 +421,7 @@ function bombImpact(b){
 }
 function rainbowImpact(b){
  const target=nearestEmpty(b);
- if(!target){gameOver=true;render();return}
+ if(!target){endGame('Sem espaço no tabuleiro');render();return}
  const adjacent=neighbors(target.r,target.c).map(([r,c])=>grid[r][c]).filter(Boolean);
  const counts={};adjacent.forEach(v=>counts[v.color]=(counts[v.color]||0)+1);
  const chosen=Object.keys(counts).sort((a,b)=>counts[b]-counts[a])[0]||randColor();
@@ -394,8 +440,8 @@ function fire(){
  if(shot||paused||gameOver)return;
  const mode=special,color=mode==='bomb'?'#f97316':mode==='rainbow'?'#ffffff':loadedColor;
  if(mode==='bomb')bombs--;if(mode==='rainbow')rainbows--;
- shot={x:shooter.x,y:shooter.y-18,vx:Math.cos(angle)*MODES[difficulty].speed,vy:Math.sin(angle)*MODES[difficulty].speed,color,r:14,wild:mode==='rainbow',mode};
- special=null;loadedColor=queueColor;queueColor=randColor();swappedThisTurn=false;shots++;lastFrame=0;
+ shot={x:shooter.x,y:shooter.y-18,vx:Math.cos(angle)*MODES[difficulty].speed*(gameMode==='survival'?1.08:1),vy:Math.sin(angle)*MODES[difficulty].speed*(gameMode==='survival'?1.08:1),color,r:14,wild:mode==='rainbow',mode};
+ special=null;loadedColor=queueColor;queueColor=randColor();swappedThisTurn=false;shots++;levelShots++;daily.shots++;saveDaily();lastFrame=0;
  playFx('shoot');saveGame();updateControls();if(!rafId)rafId=requestAnimationFrame(animate);
 }
 function animate(timestamp){
@@ -430,17 +476,18 @@ function togglePause(){
  if(gameOver)return;
  paused=!paused;
  if(paused&&rafId){cancelAnimationFrame(rafId);rafId=0}
- render();
+ render();updateStats();saveGame();
  if(!paused&&shot&&!rafId){lastFrame=0;rafId=requestAnimationFrame(animate)}
  setMsg(paused?'Jogo pausado. Toque em Continuar para voltar.':'Jogo retomado. Boa partida!');
 }
 $('bubbleDifficulty').addEventListener('change',e=>{difficulty=MODES[e.target.value]?e.target.value:'normal';fresh()});
+$('bubbleMode').addEventListener('change',e=>{gameMode=GAME_MODES[e.target.value]?e.target.value:'classic';fresh()});
 cv.addEventListener('pointermove',e=>{if(e.pointerType==='mouse'||e.buttons)setAim(e)});
 cv.addEventListener('pointerdown',e=>{e.preventDefault();cv.setPointerCapture?.(e.pointerId);setAim(e);fire()});
 on('shoot',fire);on('swap',swap);on('bomb',()=>toggleSpecial('bomb'));on('rainbow',()=>toggleSpecial('rainbow'));on('pause',togglePause);on('new',fresh);
 on('sound',()=>{soundOn=!soundOn;try{localStorage.setItem('jhon-bolhas-sound',soundOn?'1':'0')}catch(e){}updateControls();playFx('click')});
 on('vibe',()=>{vibrationOn=!vibrationOn;try{localStorage.setItem('jhon-bolhas-vibe',vibrationOn?'1':'0')}catch(e){}updateControls();playFx('click')});
-on('tutorial',showTutorial);on('tutorialClose',closeTutorial);on('achievements',showAchievements);on('achievementClose',()=>{$('bubbleAchievements').hidden=true});
+on('tutorial',showTutorial);on('tutorialClose',closeTutorial);on('achievements',showAchievements);on('achievementClose',()=>{$('bubbleAchievements').hidden=true});on('history',showHistory);on('historyClose',()=>{$('bubbleHistory').hidden=true});
 on('resultNew',()=>{$('bubbleResult').hidden=true;fresh()});on('resultAch',()=>{$('bubbleResult').hidden=true;showAchievements()});
 try{soundOn=localStorage.getItem('jhon-bolhas-sound')==='1';vibrationOn=localStorage.getItem('jhon-bolhas-vibe')==='1'}catch(e){}
 window.addEventListener('keydown',e=>{
@@ -449,7 +496,7 @@ window.addEventListener('keydown',e=>{
  if(k==='arrowleft'||k==='arrowright'){angle=Math.max(-Math.PI+.18,Math.min(-.18,angle+(k==='arrowleft'?-0.065:0.065)));render();e.preventDefault()}
  else if(k===' '){fire();e.preventDefault()}else if(k==='x'){swap();e.preventDefault()}else if(k==='b'){toggleSpecial('bomb');e.preventDefault()}else if(k==='r'){toggleSpecial('rainbow');e.preventDefault()}else if(k==='p'){togglePause();e.preventDefault()}
 });
-if(!loadGame())fresh();else updateControls();
+if(!loadGame())fresh();else{updateControls();updateStats();}
 try{if(localStorage.getItem('jhon-bolhas-tutorial')!=='1')showTutorial()}catch(e){showTutorial()}
 }
 function frogger(){
