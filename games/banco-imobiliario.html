@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#070b14">
-<title>Banco Imobiliário — Jogos do Jhon v4.2</title>
+<title>Banco Imobiliário — Jogos do Jhon v4.3</title>
 <style>
 :root{--bg:#081b17;--card:#10271f;--line:#315747;--txt:#f4f3e8;--muted:#a8b9a8;--you:#4de1d0;--ia:#fb8d9c}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%}
@@ -237,7 +237,7 @@ body{min-height:100vh;min-height:100dvh;padding:16px 12px 28px;display:flex;flex
 @keyframes coinFly{0%{opacity:0;transform:translate(0,10px) scale(.5) rotate(0)}16%{opacity:1;transform:translate(0,0) scale(1) rotate(90deg)}100%{opacity:0;transform:translate(22px,-55px) scale(.65) rotate(430deg)}}
 @media(prefers-reduced-motion:reduce){.money-coin,.money-float{animation:none!important;opacity:1}}
 
-/* Banco Imobiliário v4.2 — dados mais visíveis e peça do jogador ampliada */
+/* Banco Imobiliário v4.3 — dados mais visíveis e peça do jogador ampliada */
 .dice-tray{gap:10px;min-height:clamp(44px,6vw,58px)}
 .dice-cube{width:clamp(32px,6vw,48px);height:clamp(32px,6vw,48px);font-size:clamp(25px,4.8vw,37px);border-radius:11px;box-shadow:0 5px 0 #a8a18e,0 8px 12px #40351d66,inset 0 1px #fff}
 .dice-total{min-width:48px;font-size:clamp(10px,1.5vw,13px);font-weight:1000}
@@ -254,7 +254,7 @@ body{min-height:100vh;min-height:100dvh;padding:16px 12px 28px;display:flex;flex
     <a class="back" href="../index.html" title="Voltar ao Arcade" aria-label="Voltar ao Arcade">←</a>
     <div class="brandmark">🏘️</div>
     <div class="brandcopy"><h1>Banco Imobiliário</h1><p class="kicker">NEGÓCIOS · PROPRIEDADES · ESTRATÉGIA</p></div>
-    <span class="version-pill">JOGO v4.2</span>
+    <span class="version-pill">JOGO v4.3</span>
   </header>
   <details class="quick-guide"><summary>❔ Como jogar — guia rápido</summary><ol><li>Escolha o saldo inicial e quantas rodadas quer jogar.</li><li>Toque em <b>Começar partida</b>.</li><li>Quando for sua vez, toque em <b>🎲 LANÇAR DADOS</b> no centro do tabuleiro.</li><li>Ao cair num imóvel livre, escolha comprar ou passar. Se cair num imóvel da IA, pague aluguel.</li><li>Use <b>Imóveis</b> para construir casas/hotéis, vender ou hipotecar. Ganha quem tiver maior patrimônio quando acabar o limite de rodadas.</li></ol></details>
   <section class="hud" aria-label="Patrimônio dos jogadores">
@@ -310,12 +310,28 @@ body{min-height:100vh;min-height:100dvh;padding:16px 12px 28px;display:flex;flex
   <div id="setupOv" class="modal-cover show">
     <div class="modal-card">
       <h2>🏦 Prepare sua partida</h2>
-      <p class="intro">Escolha o tamanho do caixa e a duração. Uma rodada equivale a uma jogada sua e uma da IA. A partida termina por falência ou pelo limite escolhido; nesse caso, vence quem tiver o maior patrimônio total. Depois de começar, procure o botão 🎲 LANÇAR DADOS no centro do tabuleiro para fazer sua primeira jogada.</p>
+      <p class="intro">Escolha se vai jogar contra a máquina ou em dupla no mesmo aparelho, além de usar dados virtuais ou físicos. Uma rodada completa tem a vez de cada participante. A partida termina por falência ou pelo limite escolhido; nesse caso, vence quem tiver o maior patrimônio total.</p>
+      <div class="form-row">
+        <div class="form-field"><label for="gameMode">👥 Modo de jogo</label><select id="gameMode"><option value="ai" selected>Contra a máquina</option><option value="two">2 jogadores · mesmo aparelho</option></select></div>
+        <div class="form-field"><label for="diceMode">🎲 Tipo de dados</label><select id="diceMode"><option value="virtual" selected>Dados virtuais</option><option value="real">Dados reais · informar resultado</option></select></div>
+      </div>
       <div class="form-row">
         <div class="form-field"><label for="startingCash">💰 Saldo inicial</label><select id="startingCash"><option value="800">R$ 800 · Rápida</option><option value="1000" selected>R$ 1.000 · Clássica</option><option value="1500">R$ 1.500 · Longa</option><option value="2000">R$ 2.000 · Investidor</option></select></div>
         <div class="form-field"><label for="roundLimit">🔄 Limite de rodadas</label><select id="roundLimit"><option value="20">20 rodadas</option><option value="30" selected>30 rodadas</option><option value="50">50 rodadas</option><option value="0">Sem limite · até falência</option></select></div>
       </div>
+      <p class="intro" style="margin-top:8px">Com dados reais, cada pessoa informa os valores que tirou. Contra a máquina, a IA continua usando dados virtuais.</p>
       <div class="modal-actions"><button class="btn" id="startGameBtn">🎲 Começar partida</button></div>
+    </div>
+  </div>
+  <div id="realDiceOv" class="modal-cover">
+    <div class="modal-card">
+      <h2>🎲 Informe os dados</h2>
+      <p class="intro" id="realDiceIntro">Digite os valores que saíram nos dois dados físicos.</p>
+      <div class="form-row">
+        <div class="form-field"><label for="realDie1">Dado 1</label><select id="realDie1"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div>
+        <div class="form-field"><label for="realDie2">Dado 2</label><select id="realDie2"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div>
+      </div>
+      <div class="modal-actions"><button class="btn secondary" id="realDiceCancel">Cancelar</button><button class="btn" id="realDiceConfirm">Confirmar resultado</button></div>
     </div>
   </div>
   <div id="managerOv" class="modal-cover">
@@ -370,10 +386,12 @@ const boardEl=$('board'),msgEl=$('msg'),sheet=$('sheet'),sheetText=$('sheetText'
 const setupOv=$('setupOv'),managerOv=$('managerOv'),ov=$('ov'),toast=$('toast');
 const cashEls=[$('cash0'),$('cash1')],playerEls=[$('player0'),$('player1')],assetEls=[$('assets0'),$('assets1')],turnTags=[$('turnTag0'),$('turnTag1')];
 let spaces=[],players=[],turn=0,busy=true,over=false,started=false,dice='',diceFaces=[],diceRolling=false,pendingAction=null,pendingDebt=null;
-let startingCash=1000,roundLimit=30,rounds=0,history=[],tradeOffer=null,toastTimer=null,managerFinishTurn=false;
+let startingCash=1000,roundLimit=30,rounds=0,history=[],tradeOffer=null,toastTimer=null,managerFinishTurn=false,gameMode='ai',diceMode='virtual';
 let wealthHistory=[],auction=null,auctionTimer=null,auctionBidTimer=null,eventCardTimer=null,nightMode=false,moveSequenceId=0;
 const DICE=['','⚀','⚁','⚂','⚃','⚄','⚅'];
 function money(v){return 'R$ '+Math.round(v).toLocaleString('pt-BR')}
+function playerName(idx){return idx===0?'Você':gameMode==='two'?'Jogador 2':'IA'}
+function playerEmoji(idx){return idx===0?'🚙':gameMode==='two'?'🚗':'🤖'}
 function accentFor(s){const map={Centro:'#60a5fa',Praia:'#38bdf8','Vila Nova':'#fb923c',Jardim:'#4ade80',Alameda:'#a78bfa',Colina:'#facc15',Periferia:'#f87171',Avenida:'#e879f9'};return map[s.name]||'#8eaf8a'}
 function iconFor(s){if(s.type==='start')return '🏁';if(s.type==='chance')return '🎴';if(s.type==='tax')return '🧾';if(s.type==='rest')return '☕';const map={Centro:'🏙️',Praia:'🏖️','Vila Nova':'🏡',Jardim:'🌳',Alameda:'🏘️',Colina:'⛰️',Periferia:'🏚️',Avenida:'🌆'};return map[s.name]||'🏠'}
 function kindFor(s){return s.type==='prop'?'IMÓVEL':s.type==='start'?'INÍCIO':s.type==='chance'?'SORTE':s.type==='tax'?'TAXA':'PAUSA'}
@@ -433,7 +451,9 @@ function updateHud(){
   cashEls[idx].textContent=money(players[idx].cash);
   assetEls[idx].textContent=owned.length+' '+(owned.length===1?'imóvel':'imóveis')+' · Patrimônio '+money(assetValue(idx));
   playerEls[idx].classList.toggle('active',turn===idx);
-  turnTags[idx].textContent=turn===idx?(idx===0?'SUA VEZ':'JOGANDO'):'AGUARDANDO';
+  turnTags[idx].textContent=turn===idx?'SUA VEZ':'AGUARDANDO';
+  const nameEl=playerEls[idx].querySelector('.player-name');if(nameEl&&nameEl.firstChild)nameEl.firstChild.textContent=(idx===0?'VOCÊ':gameMode==='two'?'JOGADOR 2':'IA · ESTRATÉGICA')+' ';
+  const avatar=playerEls[idx].querySelector('.avatar');if(avatar)avatar.textContent=playerEmoji(idx);
  }
 }
 function render(){
@@ -443,8 +463,8 @@ function render(){
   d.className='space space-'+sideFor(i)+(s.owner===0?' own0':s.owner===1?' own1':'')+(at0||at1?' here':'')+(s.mortgaged?' mortgaged':'')+(complete?' group-complete':'');
   d.dataset.type=s.type;d.dataset.index=i;d.style.setProperty('--accent',group?group.color:accentFor(s));d.style.gridRow=p.r;d.style.gridColumn=p.c;
   d.setAttribute('role','button');d.setAttribute('tabindex','0');d.setAttribute('aria-label',s.name+(s.type==='prop'?', aluguel '+money(rentFor(s)):''));
-  const owners=s.owner===0?'SEU':s.owner===1?'IA':'';
-  const pawns=(at0?'<span class="pawn pawn-you" title="Você">🚙</span>':'')+(at1?'<span class="pawn pawn-ia" title="IA">🤖</span>':'');
+  const owners=s.owner===0?'SEU':s.owner===1?(gameMode==='two'?'JOGADOR 2':'IA'):'';
+  const pawns=(at0?'<span class="pawn pawn-you" title="Você">🚙</span>':'')+(at1?'<span class="pawn pawn-ia" title="'+playerName(1)+'">'+playerEmoji(1)+'</span>':'');
   const value=s.type==='prop'?'<span>COMPRA</span> <strong>'+money(s.price)+'</strong>':'';
   const rent=s.type==='prop'?'<div class="rentline">ALUG. '+money(rentFor(s))+'</div>':'';
   const groupFlag=complete?'<div class="group-flag">BAIRRO COMPLETO</div>':'';
@@ -456,13 +476,13 @@ function render(){
  const propertyCount=spaces.filter(s=>s.owner!==-1).length,buildingCount=spaces.reduce((n,s)=>n+s.buildings,0);
  center.dataset.cityLevel=(propertyCount>=5||buildingCount>=3)?'high':'low';
  const f1=diceFaces.length?DICE[diceFaces[0]]:'⚄',f2=diceFaces.length?DICE[diceFaces[1]]:'⚄';
- const groupsMarkup=PROPERTY_GROUPS.map(g=>'<span class="center-group" style="--group:'+g.color+'">'+g.name+' · V'+groupProgress(0,g)+'/2 I'+groupProgress(1,g)+'/2</span>').join('');
- center.innerHTML='<div class="center-kicker">CLUBE DOS INVESTIDORES · '+(nightMode?'CIDADE À NOITE':'CIDADE DE DIA')+'</div><div class="round-pill">RODADA '+Math.min(rounds+1,roundLimit||rounds+1)+(roundLimit?' / '+roundLimit:'')+'</div>'+renderCityArt()+'<div class="center-logo">BANCO <em>IMOBILIÁRIO</em></div><div class="center-groups">'+groupsMarkup+'</div><div class="turn-chip">VEZ DE '+(turn===0?'VOCÊ 🚙':'IA 🤖')+'</div><div class="dice-tray'+(diceRolling?' rolling':'')+'"><span class="dice-cube">'+f1+'</span><span class="dice-cube">'+f2+'</span><span class="dice-total">'+(diceRolling?'ROLANDO':(dice?'= '+dice:''))+'</span></div><button class="btn" id="rollBtn"'+(busy||over||!started||turn===1?' disabled':'')+'>🎲 LANÇAR DADOS</button>';
+ const groupsMarkup=PROPERTY_GROUPS.map(g=>'<span class="center-group" style="--group:'+g.color+'">'+g.name+' · V'+groupProgress(0,g)+'/2 '+(gameMode==='two'?'J2':'IA')+groupProgress(1,g)+'/2</span>').join('');
+ center.innerHTML='<div class="center-kicker">CLUBE DOS INVESTIDORES · '+(nightMode?'CIDADE À NOITE':'CIDADE DE DIA')+'</div><div class="round-pill">RODADA '+Math.min(rounds+1,roundLimit||rounds+1)+(roundLimit?' / '+roundLimit:'')+'</div>'+renderCityArt()+'<div class="center-logo">BANCO <em>IMOBILIÁRIO</em></div><div class="center-groups">'+groupsMarkup+'</div><div class="turn-chip">VEZ DE '+playerName(turn).toUpperCase()+' '+playerEmoji(turn)+'</div><div class="dice-tray'+(diceRolling?' rolling':'')+'"><span class="dice-cube">'+f1+'</span><span class="dice-cube">'+f2+'</span><span class="dice-total">'+(diceRolling?'ROLANDO':(dice?'= '+dice:''))+'</span></div><button class="btn" id="rollBtn"'+(busy||over||!started||(turn===1&&gameMode==='ai')?' disabled':'')+'>🎲 LANÇAR DADOS</button>';
  boardEl.appendChild(center);$('rollBtn').addEventListener('click',()=>roll(false));
  updateHud();
 }
 function showDeed(i){
- const s=spaces[i],group=groupFor(s),owner=s.owner===0?'Você':s.owner===1?'IA':'Banco';
+ const s=spaces[i],group=groupFor(s),owner=s.owner>=0?playerName(s.owner):'Banco';
  $('deedName').textContent=s.name;
  $('deedIcon').textContent=iconFor(s);
  $('deedGroup').textContent=group?group.name.toUpperCase():'ESPECIAL';
@@ -479,7 +499,7 @@ function showDeed(i){
   $('deedStats').innerHTML='<div class="deed-stat"><small>TIPO DE CASA</small><b>'+kindFor(s)+'</b></div><div class="deed-stat"><small>EFEITO</small><b>'+(s.type==='start'?'R$ 200 / R$ 300':s.type==='rest'?'+R$ 75':s.type==='chance'?'Carta aleatória':'-'+money(s.amount))+'</b></div>';
   $('deedOwner').textContent='Casa especial do tabuleiro. Não pode ser comprada.';
  }
- $('deedManage').style.display=s.type==='prop'&&s.owner===0?'':'none';
+ $('deedManage').style.display=s.type==='prop'&&s.owner===turn&&started?'':'none';
  $('deedOv').classList.add('show');
 }
 function openPortfolio(){
@@ -491,7 +511,7 @@ function openPortfolio(){
   return {cash:players[idx].cash,property,developments,total:values[idx]};
  }
  const a=breakdown(0),b=breakdown(1);
- $('portfolioSummary').innerHTML='<div class="portfolio-player" style="--c:#4de1d0"><small>🚙 SEU PATRIMÔNIO</small><b>'+money(a.total)+'</b><span>Caixa '+money(a.cash)+' · Imóveis '+money(a.property+a.developments)+'</span></div><div class="portfolio-player" style="--c:#fb8d9c"><small>🤖 PATRIMÔNIO DA IA</small><b>'+money(b.total)+'</b><span>Caixa '+money(b.cash)+' · Imóveis '+money(b.property+b.developments)+'</span></div>';
+ $('portfolioSummary').innerHTML='<div class="portfolio-player" style="--c:#4de1d0"><small>🚙 SEU PATRIMÔNIO</small><b>'+money(a.total)+'</b><span>Caixa '+money(a.cash)+' · Imóveis '+money(a.property+a.developments)+'</span></div><div class="portfolio-player" style="--c:#fb8d9c"><small>'+playerEmoji(1)+' '+playerName(1).toUpperCase()+'</small><b>'+money(b.total)+'</b><span>Caixa '+money(b.cash)+' · Imóveis '+money(b.property+b.developments)+'</span></div>';
  const points=wealthHistory.length?wealthHistory.slice():[{round:0,you:a.total,ai:b.total}];
  if(points.length===1)points.unshift({round:0,you:startingCash,ai:startingCash});
  const all=points.flatMap(p=>[p.you,p.ai]),min=Math.min(...all)*.9,max=Math.max(...all)*1.1||1,range=Math.max(1,max-min),w=480,h=170,pad=25;
@@ -564,12 +584,16 @@ function animateDayNight(){
 }
 function showSetup(){started=false;busy=true;pendingDebt=null;pendingAction=null;managerFinishTurn=false;moveSequenceId++;if(auctionTimer)clearInterval(auctionTimer);if(auctionBidTimer)clearTimeout(auctionBidTimer);if(eventCardTimer)clearTimeout(eventCardTimer);$('eventCard').classList.remove('show');auction=null;$('auctionOv').classList.remove('show');$('deedOv').classList.remove('show');$('portfolioOv').classList.remove('show');sheet.classList.remove('show');setupOv.classList.add('show');managerOv.classList.remove('show');ov.classList.remove('show')}
 function startGame(){
+ gameMode=$('gameMode').value==='two'?'two':'ai';diceMode=$('diceMode').value==='real'?'real':'virtual';
  startingCash=Number($('startingCash').value)||1000;roundLimit=Number($('roundLimit').value)||0;rounds=0;history=[];wealthHistory=[];pendingDebt=null;pendingAction=null;managerFinishTurn=false;auction=null;
  spaces=START_SPACES.map(s=>Object.assign({},s,{owner:-1,buildings:0,mortgaged:false}));
  players=[{cash:startingCash,pos:0},{cash:startingCash,pos:0}];turn=0;busy=false;over=false;started=true;dice='';diceFaces=[];diceRolling=false;
  $('historyCount').textContent='0';$('historyList').innerHTML='<li>A partida começou.</li>';
  setupOv.classList.remove('show');managerOv.classList.remove('show');ov.classList.remove('show');sheet.classList.remove('show');
- setMessage('🏁 <b>Partida iniciada!</b> Você começa. Ao passar pelo Início recebe R$ 200; ao parar exatamente nele, recebe R$ 300.');
+ const modeText=gameMode==='two'?'modo para dois jogadores':'modo contra a máquina',diceText=diceMode==='real'?'dados físicos informados manualmente':'dados virtuais';
+ setMessage('🏁 <b>Partida iniciada!</b> '+modeText+' · '+diceText+'. Você começa. Ao passar pelo Início recebe R$ 200; ao parar exatamente nele, recebe R$ 300.');
+ $('player1').querySelector('.player-name').firstChild.textContent=(gameMode==='two'?'JOGADOR 2':'IA · ESTRATÉGICA')+' ';
+ $('player1').querySelector('.avatar').textContent=playerEmoji(1);
  logEvent('Partida iniciada com '+money(startingCash)+' por jogador e '+(roundLimit?roundLimit+' rodadas':'sem limite de rodadas')+'.');
  recordWealth();render();
 }
@@ -595,20 +619,26 @@ function animatePlayerMove(idx,steps,done){
  tick();
 }
 function roll(isAI){
- if(!started||busy||over||(turn===1&&!isAI))return;
- busy=true;const d1=1+Math.floor(Math.random()*6),d2=1+Math.floor(Math.random()*6);diceFaces=[d1,d2];dice=d1+d2;diceRolling=true;
- const idx=turn;setMessage((idx===0?'Você':'IA')+' lançou '+d1+' + '+d2+' = <b>'+dice+'</b>. A peça está percorrendo o tabuleiro…');
- logEvent((idx===0?'Você':'IA')+' rolou '+d1+' e '+d2+' (total '+dice+').');
- render();
+ if(!started||busy||over||(turn===1&&gameMode==='ai'&&!isAI)||(isAI&&gameMode==='two'))return;
+ if(diceMode==='real'&&!isAI){busy=true;$('realDiceIntro').textContent=playerName(turn)+': informe o resultado dos dois dados físicos.';$('realDiceOv').classList.add('show');return}
+ runDice(1+Math.floor(Math.random()*6),1+Math.floor(Math.random()*6),turn);
+}
+function confirmRealDice(){
+ const d1=Number($('realDie1').value),d2=Number($('realDie2').value);
+ if(!Number.isInteger(d1)||d1<1||d1>6||!Number.isInteger(d2)||d2<1||d2>6){setMessage('Informe valores entre 1 e 6 para os dois dados.');return}
+ $('realDiceOv').classList.remove('show');runDice(d1,d2,turn);
+}
+function runDice(d1,d2,idx){
+ busy=true;diceFaces=[d1,d2];dice=d1+d2;diceRolling=true;
+ const who=playerName(idx);setMessage('🎲 '+who+' lançou '+d1+' + '+d2+' = <b>'+dice+'</b>. Os dados estão rolando…');
+ logEvent(who+' rolou '+d1+' e '+d2+' (total '+dice+').');render();
  setTimeout(()=>{
   if(!started||over)return;
   diceRolling=false;render();
   animatePlayerMove(idx,dice,result=>{
    if(!started||over)return;
-   const dest=result.to;
-   setMessage((idx===0?'Você':'IA')+' avançou para <b>'+spaces[dest].name+'</b>.'+(result.bonus?' Bônus de Início: '+money(result.bonus)+'.':''));
-   logEvent((idx===0?'Você':'IA')+' chegou em '+spaces[dest].name+'.');
-   resolve(dest,false);
+   const dest=result.to;setMessage(playerName(idx)+' avançou para <b>'+spaces[dest].name+'</b>.'+(result.bonus?' Bônus de Início: '+money(result.bonus)+'.':''));
+   logEvent(playerName(idx)+' chegou em '+spaces[dest].name+'.');resolve(dest,false);
   });
  },1250);
 }
@@ -616,7 +646,9 @@ function nextTurn(){
  sheet.classList.remove('show');pendingAction=null;
  if(over)return;
  if(turn===0){
-  turn=1;busy=true;render();setTimeout(()=>{if(started&&!over)roll(true)},720);
+  turn=1;
+  if(gameMode==='ai'){busy=true;render();setTimeout(()=>{if(started&&!over)roll(true)},720)}
+  else{busy=false;render();setMessage('👥 Vez do Jogador 2. Passe o aparelho para a outra pessoa e faça o lançamento.')}
  }else{
   rounds++;recordWealth();
   if(roundLimit&&rounds>=roundLimit){endGame('rounds');return}
@@ -624,11 +656,14 @@ function nextTurn(){
  }
 }
 function resolve(i,fromCard){
- const s=spaces[i],idx=turn,who=idx===0?'Você':'IA';
+ const s=spaces[i],idx=turn,who=playerName(idx);
  if(s.type==='prop'){
   if(s.owner===-1){offerBuy(i);return}
   if(s.owner===idx){
-   if(!s.mortgaged&&s.buildings<4){if(idx===0){offerUpgrade(i);return}if(aiShouldBuild(s)){const cost=upgradeCost(s);players[1].cash-=cost;s.buildings++;logEvent('IA investiu em '+s.name+' e construiu '+(s.buildings===4?'um hotel':'uma casa')+'.');showToast('IA investiu',false);render()}}
+   if(!s.mortgaged&&s.buildings<4){
+    if(gameMode==='two'||idx===0){offerUpgrade(i);return}
+    if(aiShouldBuild(s)){const cost=upgradeCost(s);players[1].cash-=cost;s.buildings++;logEvent('IA investiu em '+s.name+' e construiu '+(s.buildings===4?'um hotel':'uma casa')+'.');showToast('IA investiu',false,1);render()}
+   }
    nextTurn();return;
   }
   if(s.mortgaged){setMessage('🏦 '+s.name+' está hipotecado. Não há aluguel a cobrar.');logEvent(who+' caiu em '+s.name+', mas o imóvel está hipotecado.');nextTurn();return}
@@ -644,7 +679,7 @@ function resolve(i,fromCard){
 }
 function offerBuy(i){
  const s=spaces[i],p=players[turn];
- if(turn===1){
+ if(turn===1&&gameMode==='ai'){
   const reserve=reserveForAI(),favorites=['Centro','Avenida','Jardim','Colina'];
   const score=s.rent/s.price+(favorites.includes(s.name) ? .05 : 0);
   const buy=p.cash-s.price>=reserve&&score>=.22;
@@ -653,15 +688,15 @@ function offerBuy(i){
   if(buy)nextTurn();return;
  }
  if(p.cash<s.price){setMessage('Saldo insuficiente para comprar '+s.name+'. Você pode negociar ou hipotecar outro imóvel.');managerFinishTurn=true;openManager(false);return}
- pendingAction={type:'buy',index:i};
+ pendingAction={type:'buy',index:i,player:turn};
  $('sheetIcon').textContent=iconFor(s);$('sheetLabel').textContent='OPORTUNIDADE · COMPRA';
  sheetText.innerHTML='<b>'+s.name+'</b> está à venda por <b>'+money(s.price)+'</b>.<br>Aluguel base: <b>'+money(s.rent)+'</b>. Com melhorias pode chegar a <b>'+money(s.rent*8)+'</b>.';
  sheetYes.textContent='Comprar';sheetNo.textContent='Passar';sheet.classList.add('show');
 }
 function offerUpgrade(i){
- const s=spaces[i],cost=upgradeCost(s),newLevel=s.buildings+1;
- if(s.mortgaged||s.buildings>=4||players[0].cash<cost){nextTurn();return}
- pendingAction={type:'upgrade',index:i};
+ const s=spaces[i],actor=turn,cost=upgradeCost(s),newLevel=s.buildings+1;
+ if(s.mortgaged||s.buildings>=4||players[actor].cash<cost){nextTurn();return}
+ pendingAction={type:'upgrade',index:i,player:actor};
  $('sheetIcon').textContent=s.buildings===3?'🏨':'🏗️';$('sheetLabel').textContent='INVESTIMENTO · '+(s.buildings===3?'HOTEL':'CASA');
  sheetText.innerHTML='<b>'+s.name+'</b>: investir '+money(cost)+' em '+(s.buildings===3?'um hotel':'uma casa')+'?<br>Aluguel atual: <b>'+money(rentFor(s))+'</b> → novo aluguel: <b>'+money(s.rent*RENT_MULTIPLIERS[newLevel])+'</b>.';
  sheetYes.textContent=s.buildings===3?'Construir hotel':'Construir casa';sheetNo.textContent='Depois';sheet.classList.add('show');
@@ -707,39 +742,37 @@ function aiRaiseCash(amount){
 function trySettleDebt(){
  if(!pendingDebt)return;
  const d=pendingDebt,p=players[d.idx];
- if(p.cash<d.amount&&d.idx===1)aiRaiseCash(d.amount);
+ if(p.cash<d.amount&&d.idx===1&&gameMode==='ai')aiRaiseCash(d.amount);
  if(p.cash>=d.amount){
   p.cash-=d.amount;if(d.creditor!==null)players[d.creditor].cash+=d.amount;
-  logEvent((d.idx===0?'Você':'IA')+' pagou '+money(d.amount)+' — '+d.reason+'.','loss');
-  showToast('-'+money(d.amount),true);pendingDebt=null;managerOv.classList.remove('show');render();nextTurn();return;
+  logEvent(playerName(d.idx)+' pagou '+money(d.amount)+' — '+d.reason+'.','loss');
+  showToast('-'+money(d.amount),true,d.idx);pendingDebt=null;managerOv.classList.remove('show');render();nextTurn();return;
  }
- if(d.idx===0){
-  setMessage('⚠️ Caixa insuficiente. Hipoteque ou venda melhorias para levantar o valor devido.');
-  openManager(true);return;
- }
- pendingDebt=null;endGame('bankruptcy',0);
+ setMessage('⚠️ '+playerName(d.idx)+' está sem caixa suficiente. Use os imóveis para levantar dinheiro ou quitar a obrigação.');
+ openManager(true);
 }
 function mortgageProperty(i){
- const s=spaces[i];if(s.owner!==0||s.mortgaged||s.buildings>0)return;
- s.mortgaged=true;const value=Math.round(s.price*.5);players[0].cash+=value;
- logEvent('Você hipotecou '+s.name+' e recebeu '+money(value)+'.','gain');showToast('+'+money(value),false);render();
+ const s=spaces[i],actor=pendingDebt?pendingDebt.idx:turn;if(s.owner!==actor||s.mortgaged||s.buildings>0)return;
+ s.mortgaged=true;const value=Math.round(s.price*.5);players[actor].cash+=value;
+ logEvent(playerName(actor)+' hipotecou '+s.name+' e recebeu '+money(value)+'.','gain');showToast('+'+money(value),false,actor);render();
  if(pendingDebt)trySettleDebt();else openManager(false);
 }
 function redeemProperty(i){
- const s=spaces[i],cost=Math.ceil(s.price*.65);if(s.owner!==0||!s.mortgaged||players[0].cash<cost)return;
- players[0].cash-=cost;s.mortgaged=false;logEvent('Você resgatou '+s.name+' por '+money(cost)+'.','loss');showToast('-'+money(cost),true);render();openManager(false);
+ const s=spaces[i],actor=pendingDebt?pendingDebt.idx:turn,cost=Math.ceil(s.price*.65);if(s.owner!==actor||!s.mortgaged||players[actor].cash<cost)return;
+ players[actor].cash-=cost;s.mortgaged=false;logEvent(playerName(actor)+' resgatou '+s.name+' por '+money(cost)+'.','loss');showToast('-'+money(cost),true,actor);render();openManager(false);
 }
 function buildOn(i){
- const s=spaces[i],cost=upgradeCost(s);if(s.owner!==0||s.mortgaged||s.buildings>=4||players[0].cash<cost)return;
- players[0].cash-=cost;s.buildings++;const what=s.buildings===4?'hotel':'casa';logEvent('Você construiu '+(what==='hotel'?'um hotel':'uma casa')+' em '+s.name+' por '+money(cost)+'.','gain');showToast('🏗️ '+(what==='hotel'?'Hotel construído':'Casa construída'),false);render();openManager(false);
+ const s=spaces[i],actor=pendingDebt?pendingDebt.idx:turn,cost=upgradeCost(s);if(s.owner!==actor||s.mortgaged||s.buildings>=4||players[actor].cash<cost)return;
+ players[actor].cash-=cost;s.buildings++;const what=s.buildings===4?'hotel':'casa';logEvent(playerName(actor)+' construiu '+(what==='hotel'?'um hotel':'uma casa')+' em '+s.name+' por '+money(cost)+'.','gain');showToast('🏗️ '+(what==='hotel'?'Hotel construído':'Casa construída'),false,actor);render();openManager(false);
 }
 function sellBuildings(i){
- const s=spaces[i];if(s.owner!==0||!s.buildings)return;
- const refund=Math.round(investmentInBuildings(s)*.45);s.buildings=0;players[0].cash+=refund;
- logEvent('Você vendeu as melhorias de '+s.name+' e recuperou '+money(refund)+'.','gain');showToast('+'+money(refund),false);render();
+ const s=spaces[i],actor=pendingDebt?pendingDebt.idx:turn;if(s.owner!==actor||!s.buildings)return;
+ const refund=Math.round(investmentInBuildings(s)*.45);s.buildings=0;players[actor].cash+=refund;
+ logEvent(playerName(actor)+' vendeu as melhorias de '+s.name+' e recuperou '+money(refund)+'.','gain');showToast('+'+money(refund),false,actor);render();
  if(pendingDebt)trySettleDebt();else openManager(false);
 }
 function tradeWithAI(i,mode){
+ if(gameMode==='two')return;
  const s=spaces[i],ai=players[1],reserve=reserveForAI();
  if(mode==='sell'){
   const price=Math.round((s.price+investmentInBuildings(s))*.9);
@@ -760,27 +793,28 @@ function tradeWithAI(i,mode){
  if(pendingDebt)trySettleDebt();
 }
 function openManager(emergency){
- $('managerTitle').textContent=emergency?'🆘 Caixa em emergência':'🏘️ Gestão imobiliária';
- $('managerIntro').textContent=emergency?'Use as opções abaixo para levantar dinheiro e quitar a obrigação. Imóveis hipotecados não recebem aluguel.':'Cada imóvel pode receber até 3 casas e depois 1 hotel. O aluguel cresce de 1× para 2×, 3,5×, 5× e 8×. Cada casa custa 35% do imóvel; o hotel custa 75%. Hipoteca rende 50% do preço e o resgate custa 65%. Você também pode negociar propriedades com a IA, que reserva pelo menos 22% do caixa (mínimo R$ 220) e prioriza Centro, Avenida, Jardim e Colina.';
- $('emergencyBox').innerHTML=emergency?'<div class="emergency">Você precisa de '+money(pendingDebt.amount)+' para '+pendingDebt.reason+'. Saldo disponível: '+money(players[0].cash)+'. Levante recursos antes de declarar falência.</div>':'';
+ const managerIdx=pendingDebt?pendingDebt.idx:turn,managerName=playerName(managerIdx);
+ $('managerTitle').textContent=emergency?'🆘 Caixa em emergência':'🏘️ Gestão imobiliária · '+managerName;
+ $('managerIntro').textContent=emergency?'Use as opções abaixo para levantar dinheiro e quitar a obrigação. Imóveis hipotecados não recebem aluguel.':'Cada imóvel pode receber até 3 casas e depois 1 hotel. O aluguel cresce de 1× para 2×, 3,5×, 5× e 8×. Cada casa custa 35% do imóvel; o hotel custa 75%. Hipoteca rende 50% do preço e o resgate custa 65%.'+(gameMode==='ai'?' Você também pode negociar propriedades com a IA.':'');
+ $('emergencyBox').innerHTML=emergency?'<div class="emergency">'+managerName+' precisa de '+money(pendingDebt.amount)+' para '+pendingDebt.reason+'. Saldo disponível: '+money(players[managerIdx].cash)+'. Levante recursos antes de declarar falência.</div>':'';
  const rows=[];
  spaces.forEach((s,i)=>{
   if(s.type!=='prop')return;
-  if(s.owner===0){
-   const cost=upgradeCost(s),canBuild=!pendingDebt&&!s.mortgaged&&s.buildings<4&&players[0].cash>=cost;
+  if(s.owner===managerIdx){
+   const cost=upgradeCost(s),canBuild=!pendingDebt&&!s.mortgaged&&s.buildings<4&&players[managerIdx].cash>=cost;
    let actions='';
    if(s.buildings>0)actions+='<button class="btn secondary" data-act="sell" data-i="'+i+'">Vender melhorias +'+money(Math.round(investmentInBuildings(s)*.45))+'</button>';
-   if(s.mortgaged)actions+='<button class="btn" data-act="redeem" data-i="'+i+'" '+(players[0].cash<Math.ceil(s.price*.65)||pendingDebt?'disabled':'')+'>Resgatar '+money(Math.ceil(s.price*.65))+'</button>';
-   else actions+='<button class="btn" data-act="mortgage" data-i="'+i+'" '+(s.buildings>0?'disabled':'')+'>Hipotecar +'+money(Math.round(s.price*.5))+'</button>';
+   if(s.mortgaged)actions+='<button class="btn" data-act="redeem" data-i="'+i+'" '+(players[managerIdx].cash<Math.ceil(s.price*.65)||pendingDebt?'disabled':'')+'>Resgatar '+money(Math.ceil(s.price*.65))+'</button>';
+   else actions+='<button class="btn secondary" data-act="mortgage" data-i="'+i+'" '+(s.buildings>0?'disabled':'')+'>Hipotecar +'+money(Math.round(s.price*.5))+'</button>';
    if(!s.mortgaged&&s.buildings<4)actions+='<button class="btn" data-act="build" data-i="'+i+'" '+(!canBuild?'disabled':'')+'>'+(s.buildings===3?'🏨 Hotel':'🏠 Casa')+' · '+money(cost)+'</button>';
-   if(!s.mortgaged)actions+='<button class="btn secondary" data-act="selltoai" data-i="'+i+'">Oferecer à IA · 90%</button>';
+   if(!s.mortgaged&&gameMode==='ai'&&managerIdx===0)actions+='<button class="btn secondary" data-act="selltoai" data-i="'+i+'">Oferecer à IA · 90%</button>';
    rows.push('<div class="property-row"><div class="property-head"><div class="property-emoji">'+iconFor(s)+'</div><div class="property-meta"><b>'+s.name+(s.mortgaged?' · HIPOTECADO':'')+'</b><small>Aluguel: '+money(rentFor(s))+' · '+(s.buildings===4?'Hotel':s.buildings+' casa(s)')+' · Valor: '+money(s.price)+'</small></div></div><div class="property-actions">'+actions+'</div></div>');
-  }else if(s.owner===1&&!s.mortgaged){
+  }else if(s.owner===1-managerIdx&&gameMode==='ai'&&managerIdx===0&&!s.mortgaged){
    const price=Math.round(s.price*1.25+investmentInBuildings(s)*.8);
-   rows.push('<div class="property-row"><div class="property-head"><div class="property-emoji">'+iconFor(s)+'</div><div class="property-meta"><b>'+s.name+' · propriedade da IA</b><small>Aluguel: '+money(rentFor(s))+' · Oferta para comprar: '+money(price)+'</small></div></div><div class="property-actions"><button class="btn secondary" data-act="buyfromai" data-i="'+i+'" '+(players[0].cash<price?'disabled':'')+'>Oferecer compra · 125%</button></div></div>');
+   rows.push('<div class="property-row"><div class="property-head"><div class="property-emoji">'+iconFor(s)+'</div><div class="property-meta"><b>'+s.name+' · propriedade da IA</b><small>Aluguel: '+money(rentFor(s))+' · Oferta para comprar: '+money(price)+'</small></div></div><div class="property-actions"><button class="btn secondary" data-act="buyfromai" data-i="'+i+'" '+(players[managerIdx].cash<price?'disabled':'')+'>Oferecer compra · 125%</button></div></div>');
   }
  });
- $('managerBody').innerHTML=rows.length?rows.join(''):'<div class="empty-list">Ainda não há propriedades para gerenciar.</div>';
+ $('managerBody').innerHTML=rows.length?rows.join(''):'<div class="empty-list">Ainda não há propriedades para gerenciar neste jogador.</div>';
  $('managerCloseBtn').style.display=emergency?'none':'';
  managerOv.classList.add('show');
 }
@@ -799,22 +833,22 @@ function endGame(reason,winner){
  over=true;busy=true;started=false;recordWealth();sheet.classList.remove('show');managerOv.classList.remove('show');$('deedOv').classList.remove('show');$('portfolioOv').classList.remove('show');$('auctionOv').classList.remove('show');$('eventCard').classList.remove('show');if(eventCardTimer)clearTimeout(eventCardTimer);if(auctionTimer)clearInterval(auctionTimer);if(auctionBidTimer)clearTimeout(auctionBidTimer);auction=null;
  const values=[assetValue(0),assetValue(1)];
  if(winner===undefined)winner=values[0]>=values[1]?0:1;
- const title=winner===0?'🏆 Você venceu!':'🤖 A IA venceu!';
+ const title=winner===0?'🏆 Você venceu!':gameMode==='two'?'🏆 Jogador 2 venceu!':'🤖 A IA venceu!';
  $('ovTitle').textContent=title;
  $('ovText').innerHTML=reason==='rounds'?'As '+roundLimit+' rodadas terminaram. O vencedor foi definido pelo patrimônio total.':'A partida terminou por falência. O patrimônio foi usado para desempate.';
- $('resultStats').innerHTML='<div class="result-grid"><div class="result-stat"><small>SEU PATRIMÔNIO</small><b>'+money(values[0])+'</b></div><div class="result-stat"><small>PATRIMÔNIO DA IA</small><b>'+money(values[1])+'</b></div></div>';
- logEvent('Fim de jogo: '+(winner===0?'você':'IA')+' venceu. Patrimônio '+money(values[0])+' x '+money(values[1])+'.');
+ $('resultStats').innerHTML='<div class="result-grid"><div class="result-stat"><small>VOCÊ</small><b>'+money(values[0])+'</b></div><div class="result-stat"><small>'+(gameMode==='two'?'JOGADOR 2':'IA')+'</small><b>'+money(values[1])+'</b></div></div>';
+ logEvent('Fim de jogo: '+playerName(winner)+' venceu. Patrimônio '+money(values[0])+' x '+money(values[1])+'.');
  ov.classList.add('show');render();
 }
 function performPending(){
  if(!pendingAction)return;
- const a=pendingAction,s=spaces[a.index];
+ const a=pendingAction,s=spaces[a.index],actor=Number.isInteger(a.player)?a.player:turn,who=playerName(actor);
  if(a.type==='buy'){
-  if(players[0].cash<s.price){setMessage('Saldo insuficiente para concluir a compra.');sheet.classList.remove('show');pendingAction=null;return}
-  players[0].cash-=s.price;s.owner=0;logEvent('Você comprou '+s.name+' por '+money(s.price)+'.','gain');showToast('🏡 Imóvel adquirido',false);
+  if(players[actor].cash<s.price){setMessage('Saldo insuficiente para concluir a compra.');sheet.classList.remove('show');pendingAction=null;return}
+  players[actor].cash-=s.price;s.owner=actor;logEvent(who+' comprou '+s.name+' por '+money(s.price)+'.','gain');showToast('🏡 '+who+' adquiriu '+s.name,false,actor);
  }else if(a.type==='upgrade'){
-  const cost=upgradeCost(s);if(players[0].cash<cost||s.mortgaged||s.buildings>=4){sheet.classList.remove('show');pendingAction=null;return}
-  players[0].cash-=cost;s.buildings++;logEvent('Você construiu '+(s.buildings===4?'um hotel':'uma casa')+' em '+s.name+' por '+money(cost)+'.','gain');showToast(s.buildings===4?'🏨 Hotel construído':'🏠 Casa construída',false);
+  const cost=upgradeCost(s);if(players[actor].cash<cost||s.mortgaged||s.buildings>=4){sheet.classList.remove('show');pendingAction=null;return}
+  players[actor].cash-=cost;s.buildings++;logEvent(who+' construiu '+(s.buildings===4?'um hotel':'uma casa')+' em '+s.name+' por '+money(cost)+'.','gain');showToast(s.buildings===4?'🏨 Hotel construído':'🏠 Casa construída',false,actor);
  }
  pendingAction=null;sheet.classList.remove('show');render();nextTurn();
 }
@@ -825,6 +859,8 @@ function init(){
  render();showSetup();setMessage('Configure o saldo inicial e a duração da partida.');
 }
 $('startGameBtn').addEventListener('click',startGame);
+$('realDiceConfirm').addEventListener('click',confirmRealDice);
+$('realDiceCancel').addEventListener('click',()=>{$('realDiceOv').classList.remove('show');busy=false;render();setMessage('Lançamento cancelado. '+playerName(turn)+', pode lançar novamente quando estiver pronto.')});
 $('restartBtn').addEventListener('click',showSetup);
 $('portfolioBtn').addEventListener('click',()=>{if(started&&!over)openPortfolio()});
 $('portfolioClose').addEventListener('click',()=>$('portfolioOv').classList.remove('show'));
@@ -843,7 +879,12 @@ $('sheetYes').addEventListener('click',performPending);
 $('sheetNo').addEventListener('click',()=>{
  if(!pendingAction)return;
  const a=pendingAction;pendingAction=null;sheet.classList.remove('show');
- if(a.type==='buy'){logEvent('Você decidiu não comprar '+spaces[a.index].name+'. O imóvel foi a leilão.');startAuction(a.index);return}
+ if(a.type==='buy'){
+  logEvent(playerName(a.player)+' decidiu não comprar '+spaces[a.index].name+'.');
+  if(gameMode==='ai'){setMessage('Você decidiu passar. O imóvel foi a leilão.');startAuction(a.index)}
+  else{setMessage(playerName(a.player)+' decidiu passar. O imóvel continua disponível para a próxima oportunidade.');nextTurn()}
+  return;
+ }
  logEvent('Você adiou a melhoria em '+spaces[a.index].name+'.');nextTurn();
 });
 $('ovBtn').addEventListener('click',showSetup);
