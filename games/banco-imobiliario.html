@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#070b14">
-<title>Banco Imobiliário — Jogos do Jhon v4.1</title>
+<title>Banco Imobiliário — Jogos do Jhon v4.2</title>
 <style>
 :root{--bg:#081b17;--card:#10271f;--line:#315747;--txt:#f4f3e8;--muted:#a8b9a8;--you:#4de1d0;--ia:#fb8d9c}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%}
@@ -60,7 +60,10 @@ body{min-height:100vh;min-height:100dvh;padding:16px 12px 28px;display:flex;flex
 .turn-chip{position:relative;z-index:1;padding:4px 9px;border-radius:99px;background:#34533d;color:#fff7dc;font-size:clamp(8px,1.3vw,11px);font-weight:850;box-shadow:0 2px 4px #0002}
 .dice-tray{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:7px;perspective:300px}
 .dice-cube{width:clamp(25px,5vw,40px);height:clamp(25px,5vw,40px);display:grid;place-items:center;border-radius:9px;border:1px solid #d8d4c5;background:linear-gradient(145deg,#fff,#e5e2d8);box-shadow:0 4px 0 #a8a18e,0 6px 8px #40351d55,inset 0 1px #fff;font-size:clamp(20px,4vw,31px);line-height:1;color:#263b32;text-shadow:0 1px #fff}
-.dice-tray.rolling .dice-cube{animation:diceRoll .48s ease-in-out}
+.dice-tray.rolling{filter:drop-shadow(0 9px 7px #6a3d1480)}
+.dice-tray.rolling .dice-cube{animation:diceRoll 1.2s cubic-bezier(.18,.82,.22,1) both;will-change:transform}
+.dice-tray.rolling .dice-cube:nth-child(2){animation-delay:.12s}
+.dice-cube{transform-style:preserve-3d;backface-visibility:visible}
 .dice-total{font-size:clamp(8px,1.2vw,11px);font-weight:950;color:#6b5b34;min-width:22px}
 .btn{font:inherit;font-size:clamp(10px,1.6vw,13px);font-weight:950;letter-spacing:.2px;border-radius:10px;padding:9px 13px;border:1px solid #a86f2a;cursor:pointer;background:linear-gradient(135deg,#f8dfa0,#d9a952);color:#382510;box-shadow:0 3px 0 #93642c,0 5px 9px #0002;transition:transform .12s,filter .12s}
 .btn:disabled{opacity:.42;cursor:default;filter:grayscale(.4);box-shadow:none}.btn:not(:disabled):active{transform:translateY(2px);box-shadow:0 1px 0 #93642c}
@@ -84,7 +87,15 @@ body{min-height:100vh;min-height:100dvh;padding:16px 12px 28px;display:flex;flex
 .panel:before{content:"🏆";display:grid;place-items:center;width:64px;height:64px;margin:0 auto 12px;border-radius:20px;background:linear-gradient(145deg,#f5dfa5,#b98542);font-size:34px;box-shadow:0 5px 15px #0004}
 .panel h2{margin:0 0 9px;font-size:clamp(22px,5vw,28px);color:#fff1ca}.panel p{margin:0 0 6px;color:#c2d0bc;font-size:14px;line-height:1.7}.panel p b{color:#ffe0a1}
 .panel .btn{margin-top:15px;width:100%;padding:13px}
-@keyframes diceRoll{0%{transform:rotateX(0) rotateY(0) translateY(0)}45%{transform:rotateX(260deg) rotateY(190deg) translateY(-10px)}100%{transform:rotateX(720deg) rotateY(360deg) translateY(0)}}
+@keyframes diceRoll{
+ 0%{transform:translateY(0) rotateX(0) rotateY(0) rotateZ(0) scale(1)}
+ 16%{transform:translateY(-25px) rotateX(190deg) rotateY(150deg) rotateZ(35deg) scale(1.18)}
+ 32%{transform:translateY(4px) rotateX(370deg) rotateY(300deg) rotateZ(75deg) scale(.98)}
+ 51%{transform:translateY(-17px) rotateX(570deg) rotateY(470deg) rotateZ(125deg) scale(1.12)}
+ 72%{transform:translateY(2px) rotateX(760deg) rotateY(650deg) rotateZ(170deg) scale(1)}
+ 88%{transform:translateY(-5px) rotateX(900deg) rotateY(810deg) rotateZ(195deg) scale(1.04)}
+ 100%{transform:translateY(0) rotateX(1080deg) rotateY(960deg) rotateZ(220deg) scale(1)}
+}
 @keyframes landPulse{0%,100%{box-shadow:0 0 0 0 #f6c94f00}50%{box-shadow:0 0 0 5px #f6c94f77}}
 @media(min-width:760px){body{padding-top:22px}.board-frame{padding:13px}.hud{gap:14px}.pcard{padding:13px 17px}.space{border-radius:10px}}
 @media(max-width:480px){body{padding:10px 8px 22px}.top{gap:7px;margin-bottom:10px}.back{width:34px;height:34px}.brandmark{width:37px;height:37px;font-size:21px}.kicker{font-size:7px;letter-spacing:1px}.version-pill{font-size:9px;padding:5px 7px}.hud{gap:7px;margin-bottom:10px}.pcard{padding:8px;gap:7px;border-radius:12px}.avatar{width:34px;height:34px;flex-basis:34px;border-radius:10px;font-size:20px}.player-name{font-size:9px}.turn-tag{font-size:7px;padding:2px 4px}.pcard small{font-size:8px}.board-frame{padding:6px;border-radius:18px}.board-frame:before{inset:3px;border-radius:14px}#board{gap:3px;padding:3px;border-radius:12px}.space{border-radius:5px}.space-band{height:4px;flex-basis:4px}.space .pawns{min-height:10px}.center{border-radius:9px;padding:4px;gap:3px}.center-kicker{letter-spacing:.8px}.city-art{height:clamp(22px,6vw,34px)}.dice-tray{gap:4px}.dice-cube{border-radius:6px;box-shadow:0 3px 0 #a8a18e,0 4px 5px #40351d55}.center .btn{padding:5px 8px;font-size:9px}.activity-bar{margin-top:10px;padding:9px 10px;gap:8px}.activity-icon{width:29px;height:29px;flex-basis:29px}.msg{font-size:11px}.legend{gap:9px;font-size:8px}}
@@ -225,6 +236,17 @@ body{min-height:100vh;min-height:100dvh;padding:16px 12px 28px;display:flex;flex
 .money-coin{position:fixed;z-index:22;width:12px;height:12px;border-radius:50%;border:1px solid #fff1a0;background:radial-gradient(circle at 35% 28%,#fff3a8 0 12%,#f5c84c 38%,#a96b20 100%);box-shadow:0 1px 5px #0008;pointer-events:none;animation:coinFly 1s cubic-bezier(.16,.7,.25,1) forwards}
 @keyframes coinFly{0%{opacity:0;transform:translate(0,10px) scale(.5) rotate(0)}16%{opacity:1;transform:translate(0,0) scale(1) rotate(90deg)}100%{opacity:0;transform:translate(22px,-55px) scale(.65) rotate(430deg)}}
 @media(prefers-reduced-motion:reduce){.money-coin,.money-float{animation:none!important;opacity:1}}
+
+/* Banco Imobiliário v4.2 — dados mais visíveis e peça do jogador ampliada */
+.dice-tray{gap:10px;min-height:clamp(44px,6vw,58px)}
+.dice-cube{width:clamp(32px,6vw,48px);height:clamp(32px,6vw,48px);font-size:clamp(25px,4.8vw,37px);border-radius:11px;box-shadow:0 5px 0 #a8a18e,0 8px 12px #40351d66,inset 0 1px #fff}
+.dice-total{min-width:48px;font-size:clamp(10px,1.5vw,13px);font-weight:1000}
+.space .pawns{min-height:31px;gap:5px;align-items:center;overflow:visible}
+.pawn-you{width:clamp(23px,3.6vw,31px);height:clamp(23px,3.6vw,31px);font-size:clamp(17px,2.7vw,22px);border:2px solid #078f80;box-shadow:0 3px 6px #0008,0 0 0 2px #c7fff5;z-index:3;transform:translateY(-2px);animation:pawnPlayerPulse 1.8s ease-in-out infinite}
+@keyframes pawnPlayerPulse{0%,100%{filter:drop-shadow(0 0 0 #55e3c000);transform:translateY(-2px) scale(1)}50%{filter:drop-shadow(0 0 5px #55e3c0aa);transform:translateY(-3px) scale(1.08)}}
+@media(max-width:480px){.space .pawns{min-height:27px}.pawn-you{width:24px;height:24px;font-size:18px}}
+@media(prefers-reduced-motion:reduce){.pawn-you{animation:none}}
+
 </style>
 <style>.quick-guide{max-width:1120px;margin:0 auto 10px;background:#101e2d;border:1px solid #2a435c;border-radius:13px;padding:10px 14px;color:#eaf2f7}.quick-guide summary{cursor:pointer;font-weight:800;color:#8de3dc}.quick-guide ol{margin:9px 0 2px;padding-left:22px;color:#c5d4df;font-size:13px;line-height:1.65}.quick-guide li{margin:3px 0}</style></head>
 <body>
@@ -232,7 +254,7 @@ body{min-height:100vh;min-height:100dvh;padding:16px 12px 28px;display:flex;flex
     <a class="back" href="../index.html" title="Voltar ao Arcade" aria-label="Voltar ao Arcade">←</a>
     <div class="brandmark">🏘️</div>
     <div class="brandcopy"><h1>Banco Imobiliário</h1><p class="kicker">NEGÓCIOS · PROPRIEDADES · ESTRATÉGIA</p></div>
-    <span class="version-pill">JOGO v4.1</span>
+    <span class="version-pill">JOGO v4.2</span>
   </header>
   <details class="quick-guide"><summary>❔ Como jogar — guia rápido</summary><ol><li>Escolha o saldo inicial e quantas rodadas quer jogar.</li><li>Toque em <b>Começar partida</b>.</li><li>Quando for sua vez, toque em <b>🎲 LANÇAR DADOS</b> no centro do tabuleiro.</li><li>Ao cair num imóvel livre, escolha comprar ou passar. Se cair num imóvel da IA, pague aluguel.</li><li>Use <b>Imóveis</b> para construir casas/hotéis, vender ou hipotecar. Ganha quem tiver maior patrimônio quando acabar o limite de rodadas.</li></ol></details>
   <section class="hud" aria-label="Patrimônio dos jogadores">
@@ -244,7 +266,7 @@ body{min-height:100vh;min-height:100dvh;padding:16px 12px 28px;display:flex;flex
   <div class="toolbar"><button class="btn secondary" id="manageBtn">🏘️ Imóveis</button><button class="btn secondary" id="portfolioBtn">📈 Patrimônio</button><button class="btn secondary" id="restartBtn">⚙️ Partida</button><button class="btn secondary" id="historyBtn">📜 Histórico</button></div>
   <details id="historyBox"><summary>📜 ÚLTIMAS JOGADAS · <span id="historyCount">0</span></summary><ol id="historyList"><li>A partida ainda não começou.</li></ol></details>
   <div class="legend"><span class="legend-item"><i class="legend-dot" style="--dot:var(--you)"></i> SEUS IMÓVEIS</span><span class="legend-item"><i class="legend-dot" style="--dot:var(--ia)"></i> IMÓVEIS DA IA</span><span class="legend-item">🏠 CASAS CONSTRUÍDAS</span></div>
-  <div class="ver">BANCO IMOBILIÁRIO · VERSÃO 4.0</div>
+  <div class="ver">BANCO IMOBILIÁRIO · VERSÃO 4.2</div>
   <div id="deedOv" class="modal-cover">
     <div class="modal-card deed-card">
       <div class="deed-top"><span class="deed-kicker">ESCRITURA IMOBILIÁRIA</span><span class="deed-group" id="deedGroup">BAIRRO</span></div>
@@ -435,7 +457,7 @@ function render(){
  center.dataset.cityLevel=(propertyCount>=5||buildingCount>=3)?'high':'low';
  const f1=diceFaces.length?DICE[diceFaces[0]]:'⚄',f2=diceFaces.length?DICE[diceFaces[1]]:'⚄';
  const groupsMarkup=PROPERTY_GROUPS.map(g=>'<span class="center-group" style="--group:'+g.color+'">'+g.name+' · V'+groupProgress(0,g)+'/2 I'+groupProgress(1,g)+'/2</span>').join('');
- center.innerHTML='<div class="center-kicker">CLUBE DOS INVESTIDORES · '+(nightMode?'CIDADE À NOITE':'CIDADE DE DIA')+'</div><div class="round-pill">RODADA '+Math.min(rounds+1,roundLimit||rounds+1)+(roundLimit?' / '+roundLimit:'')+'</div>'+renderCityArt()+'<div class="center-logo">BANCO <em>IMOBILIÁRIO</em></div><div class="center-groups">'+groupsMarkup+'</div><div class="turn-chip">VEZ DE '+(turn===0?'VOCÊ 🚙':'IA 🤖')+'</div><div class="dice-tray'+(diceRolling?' rolling':'')+'"><span class="dice-cube">'+f1+'</span><span class="dice-cube">'+f2+'</span><span class="dice-total">'+(dice?'= '+dice:'')+'</span></div><button class="btn" id="rollBtn"'+(busy||over||!started||turn===1?' disabled':'')+'>🎲 LANÇAR DADOS</button>';
+ center.innerHTML='<div class="center-kicker">CLUBE DOS INVESTIDORES · '+(nightMode?'CIDADE À NOITE':'CIDADE DE DIA')+'</div><div class="round-pill">RODADA '+Math.min(rounds+1,roundLimit||rounds+1)+(roundLimit?' / '+roundLimit:'')+'</div>'+renderCityArt()+'<div class="center-logo">BANCO <em>IMOBILIÁRIO</em></div><div class="center-groups">'+groupsMarkup+'</div><div class="turn-chip">VEZ DE '+(turn===0?'VOCÊ 🚙':'IA 🤖')+'</div><div class="dice-tray'+(diceRolling?' rolling':'')+'"><span class="dice-cube">'+f1+'</span><span class="dice-cube">'+f2+'</span><span class="dice-total">'+(diceRolling?'ROLANDO':(dice?'= '+dice:''))+'</span></div><button class="btn" id="rollBtn"'+(busy||over||!started||turn===1?' disabled':'')+'>🎲 LANÇAR DADOS</button>';
  boardEl.appendChild(center);$('rollBtn').addEventListener('click',()=>roll(false));
  updateHud();
 }
@@ -588,7 +610,7 @@ function roll(isAI){
    logEvent((idx===0?'Você':'IA')+' chegou em '+spaces[dest].name+'.');
    resolve(dest,false);
   });
- },520);
+ },1250);
 }
 function nextTurn(){
  sheet.classList.remove('show');pendingAction=null;
