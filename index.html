@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Jogos do Jhon">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Jogos do Jhon · v3.71</title>
+<title>Jogos do Jhon · v3.72</title>
 <meta property="og:title" content="Jogos do Jhon · Arcade">
 <meta property="og:description" content="Arcade de jogos web do Jhon com 46 jogos para jogar no celular ou PC.">
 <meta property="og:type" content="website">
@@ -326,7 +326,7 @@
     <span class="hero-kicker">ARCADE PESSOAL</span>
     <h1>Jogos do Jhon</h1>
     <p class="sub">🎮 Seu cantinho de diversão: escolha um jogo e comece a jogar no celular ou no PC.</p>
-    <div class="version"><span class="dot"></span> Versão <b>v3.71</b> · atualizado em <b>23/11/2026</b></div>
+    <div class="version"><span class="dot"></span> Versão <b>v3.72</b> · atualizado em <b>23/11/2026</b></div>
     <div class="home-hero-actions">
       <a class="primary-cta" href="#catalogStart">🎮 Explorar jogos <span aria-hidden="true">↓</span></a>
       <span class="hero-count" id="heroGameCount">46 jogos no catálogo</span>
@@ -413,7 +413,7 @@
     </div>
 
     <div class="card" data-category="puzzle" data-href="games/memoria.html" style="--accent:#a78bfa;--glow:rgba(167,139,250,.20)">
-      <span class="tag">v1.3</span>
+      <span class="tag">v1.4</span>
       <span class="ico">🧠</span>
       <p class="name">Jogo da Memória</p>
       <p class="desc">Encontre os pares, acompanhe seu tempo e bata recordes em três dificuldades.</p>
@@ -621,8 +621,9 @@
     </div>
   </details>
   <div class="notes">
-    <h2>📝 Novidades da tela inicial · v3.71</h2>
+    <h2>📝 Novidades da tela inicial · v3.72</h2>
     <ul>
+      <li><b>v3.72 — Jogo da Memória:</b> removida duplicação visual do símbolo nas cartas; acabamento final da versão v1.4.</li>
       <li><b>v3.71 — Acabamento visual:</b> redesenhados os 10 jogos mais recentes com tabuleiros, peças, veículos, personagens, cenário, iluminação, sombras e efeitos; Arena de Tanques recebe tanques vistos de cima, canhões e explosões.</li>
       <li><b>v3.70 — Auditoria técnica:</b> corrigidos erros de execução nos scripts do Tetris Neon, Jogo da Memória e Galáxia Invasora.</li>
       <li><b>v3.70 — Jogo da Memória:</b> reconstruída a inicialização da partida, removida a espera obrigatória de espiada e corrigidos os controles de seleção e a lógica de pares; cartas jogáveis imediatamente.</li>
@@ -1067,7 +1068,7 @@ function validateBackup(raw){
 }
 function exportBackup(){
  try{
-  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v3.71',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
+  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v3.72',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
   const content=JSON.stringify(backup,null,2),blob=new Blob([content],{type:'application/json'});
   if(blob.size>MAX_BACKUP_BYTES)throw new Error('O backup ultrapassa 2 MB.');
   const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='jogos-do-jhon-backup-'+new Date().toISOString().slice(0,10)+'.json';
