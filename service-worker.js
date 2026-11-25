@@ -1,4 +1,4 @@
-const CACHE_NAME="jogos-do-jhon-v4.08";
+const CACHE_NAME="jogos-do-jhon-v4.09";
 const CORE=[
  "./",
  "./index.html",
@@ -17,8 +17,6 @@ const CORE=[
  "./games/detetive.html",
  "./games/corrida.html",
  "./games/sinuca.html",
- "./games/futebol-de-mesa.html",
- "./games/futebol-de-mesa.html?build=foosball-1.1-20261125",
  "./games/caminhoneiro.html",
  "./games/cobra.html",
  "./games/memoria.html",
@@ -77,8 +75,8 @@ self.addEventListener("fetch",event=>{
  if(req.method!=="GET")return;
  const url=new URL(req.url);
  if(url.origin!==self.location.origin)return;
- if(url.pathname.endsWith("/games/memoria.html")||url.pathname.endsWith("/games/futebol-de-mesa.html")){
-  const fallback=url.pathname.endsWith("/games/memoria.html")?"./games/memoria.html":"./games/futebol-de-mesa.html";
+ if(url.pathname.endsWith("/games/memoria.html")){
+  const fallback="./games/memoria.html";
   event.respondWith(fetch(req,{cache:"no-store"}).then(response=>{
    if(response&&response.ok){const copy=response.clone();caches.open(CACHE_NAME).then(cache=>cache.put(req,copy))}
    return response;
