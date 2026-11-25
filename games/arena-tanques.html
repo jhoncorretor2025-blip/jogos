@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#080d1a">
-<title>Arena de Tanques · Jogos do Jhon · v3.3</title>
+<title>Arena de Tanques · Jogos do Jhon · v3.4</title>
 <style>
 :root{color-scheme:dark;--bg:#080d1a;--panel:#132139;--line:#30445f;--txt:#edf5ff;--muted:#9fb0c8;--cyan:#22d3ee;--green:#34d399;--red:#fb7185}
 *{box-sizing:border-box}body{margin:0;padding:14px;background:radial-gradient(900px 450px at 10% 0,#12334a,transparent 65%),radial-gradient(750px 430px at 100% 0,#291a4b,transparent 65%),var(--bg);color:var(--txt);font-family:system-ui,-apple-system,Segoe UI,sans-serif;display:flex;justify-content:center}
@@ -23,7 +23,7 @@ button,select{font:inherit}.btn,select{border:1px solid #35506d;background:#1729
 </head>
 <body>
 <main class="wrap">
-<header><div class="brand"><span class="emoji">🛡️</span><div><h1>Arena de Tanques</h1><p>Combate tático: mire, dispare, desvie e sobreviva às ondas.</p><span class="ver">Jogos do Jhon · v3.3</span></div></div><a class="back" href="../index.html">← Catálogo</a></header>
+<header><div class="brand"><span class="emoji">🛡️</span><div><h1>Arena de Tanques</h1><p>Combate tático: mire, dispare, desvie e sobreviva às ondas.</p><span class="ver">Jogos do Jhon · v3.4</span></div></div><a class="back" href="../index.html">← Catálogo</a></header>
 <section class="panel">
 <div class="toolbar">
 <div class="stat"><b id="score">0</b><small>PONTOS</small></div><div class="stat"><b id="lives">3</b><small>VIDAS</small></div><div class="stat"><b id="wave">1</b><small>ONDA</small></div><div class="stat"><b id="kills">0</b><small>ELIMINADOS</small></div><div class="stat"><b id="spawnLeft">0</b><small>INIMIGOS RESTANTES</small></div><div class="stat"><b id="record">0</b><small>RECORDE</small></div><div class="stat"><b id="time">00:00</b><small>TEMPO</small></div>
@@ -87,7 +87,7 @@ function makeEnemy(x,y,type){
  const cfg=type==='boss'?{r:25,hp:30+wave*5,speed:.57,fire:.8}:type==='armored'?{r:17,hp:3+Math.floor(wave/5),speed:.62,fire:1.55}:type==='fast'?{r:12,hp:1,speed:1.25,fire:2.35}:{r:14,hp:1+Math.floor(wave/7),speed:.83,fire:1.8};
  return {x,y,r:cfg.r,hp:cfg.hp,maxHp:cfg.hp,speed:cfg.speed*(difficulty==='hard'?1.18:difficulty==='easy'?.82:1),fire:cfg.fire,cool:.7+Math.random(),type,boss:type==='boss',path:[],pathIndex:0,pathTimer:0,stuck:0,lastX:x,lastY:y};
 }
-function beginWave(){const bossStage=mode==='boss'||(mode!=='boss'&&wave%5===0);waveQuota=bossStage?0:8+Math.min(18,wave*2);normalSpawnRemaining=waveQuota;bossSpawned=false;bossDefeated=false;spawnClock=99;updateHud()}
+function beginWave(){const bossStage=mode==='boss'||(mode!=='boss'&&wave%5===0);waveQuota=bossStage?0:8+Math.min(18,wave*2);normalSpawnRemaining=waveQuota;bossSpawned=false;bossDefeated=false;spawnClock=0;if(!bossStage&&player){const openings=[[W/2,58],[62,58],[W-62,58]];for(let i=0;i<Math.min(3,normalSpawnRemaining);i++){const p=openings[i];if(!blocked(p[0],p[1],18))enemies.push(makeEnemy(p[0],p[1],i===1?'fast':'normal'));else enemies.push(makeEnemy(W/2+(i-1)*58,48,'normal'));normalSpawnRemaining--}}updateHud()}
 function reset(){
  player={x:W/2,y:H-48,a:-Math.PI/2,r:16,invuln:0};enemies=[];bullets=[];enemyBullets=[];particles=[];rings=[];pickups=[];keys={};firePointers.clear();pointerFire=false;pointerId=null;keyFire=false;fireButtonDown=false;
  blocks=maps[Math.floor(Math.random()*maps.length)].map(b=>({...b}));score=0;lives=3;wave=1;kills=0;elapsed=0;remaining=180;spawnClock=0;shotClock=0;shield=0;speedBoost=0;triple=0;shake=0;playing=false;paused=false;beginWave();updateHud();draw();$('pause').textContent='Ⅱ Pausar';$('bossWrap').classList.remove('show');
