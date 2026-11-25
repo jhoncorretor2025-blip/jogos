@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#080d1a">
-<title>Arena de Tanques · Jogos do Jhon · v3.1</title>
+<title>Arena de Tanques · Jogos do Jhon · v3.2</title>
 <style>
 :root{color-scheme:dark;--bg:#080d1a;--panel:#132139;--line:#30445f;--txt:#edf5ff;--muted:#9fb0c8;--cyan:#22d3ee;--green:#34d399;--red:#fb7185}
 *{box-sizing:border-box}body{margin:0;padding:14px;background:radial-gradient(900px 450px at 10% 0,#12334a,transparent 65%),radial-gradient(750px 430px at 100% 0,#291a4b,transparent 65%),var(--bg);color:var(--txt);font-family:system-ui,-apple-system,Segoe UI,sans-serif;display:flex;justify-content:center}
@@ -23,7 +23,7 @@ button,select{font:inherit}.btn,select{border:1px solid #35506d;background:#1729
 </head>
 <body>
 <main class="wrap">
-<header><div class="brand"><span class="emoji">🛡️</span><div><h1>Arena de Tanques</h1><p>Combate tático: mire, dispare, desvie e sobreviva às ondas.</p><span class="ver">Jogos do Jhon · v3.1</span></div></div><a class="back" href="../index.html">← Catálogo</a></header>
+<header><div class="brand"><span class="emoji">🛡️</span><div><h1>Arena de Tanques</h1><p>Combate tático: mire, dispare, desvie e sobreviva às ondas.</p><span class="ver">Jogos do Jhon · v3.2</span></div></div><a class="back" href="../index.html">← Catálogo</a></header>
 <section class="panel">
 <div class="toolbar">
 <div class="stat"><b id="score">0</b><small>PONTOS</small></div><div class="stat"><b id="lives">3</b><small>VIDAS</small></div><div class="stat"><b id="wave">1</b><small>ONDA</small></div><div class="stat"><b id="kills">0</b><small>ELIMINADOS</small></div><div class="stat"><b id="spawnLeft">0</b><small>NA FILA</small></div><div class="stat"><b id="record">0</b><small>RECORDE</small></div><div class="stat"><b id="time">00:00</b><small>TEMPO</small></div>
@@ -131,8 +131,8 @@ function moveEnemy(e,dt){
  const speed=e.speed*dt*60,step=Math.min(speed,d||speed),ux=(dx/(d||1))*step,uy=(dy/(d||1))*step;
  if(canEnemyMove(e,e.x+ux,e.y+uy)){e.x+=ux;e.y+=uy;e.stuck=0}else{e.stuck+=dt;e.pathTimer=0;if(e.stuck>.7){for(const a of [Math.PI/2,-Math.PI/2,Math.PI]){const nx=e.x+Math.cos(Math.atan2(dy,dx)+a)*speed,ny=e.y+Math.sin(Math.atan2(dy,dx)+a)*speed;if(canEnemyMove(e,nx,ny)){e.x=nx;e.y=ny;break}}}}
 }
-function spawnOne(){if(normalSpawnRemaining<=0)return;const roll=Math.random(),type=roll<.2?'fast':roll<.38?'armored':'normal';randomSpawn(type);normalSpawnRemaining--;updateHud()}
-function spawnBoss(){if(bossSpawned||enemies.some(e=>e.boss))return;randomSpawn('boss');bossSpawned=true;say('👑 CHEFE DA ONDA '+wave+'!');beep(95,.45,'sawtooth',.045)}
+function spawnOne(){if(normalSpawnRemaining<=0)return;const roll=Math.random(),type=roll<.2?'fast':roll<.38?'armored':'normal';const enemy=randomSpawn(type);if(enemy)enemies.push(enemy);normalSpawnRemaining--;updateHud()}
+function spawnBoss(){if(bossSpawned||enemies.some(e=>e.boss))return;const boss=randomSpawn('boss');if(boss)enemies.push(boss);bossSpawned=true;say('👑 CHEFE DA ONDA '+wave+'!');beep(95,.45,'sawtooth',.045);updateHud()}
 function advanceIfComplete(){
  if(enemies.length||normalSpawnRemaining>0)return;
  const bossStage=mode==='boss'||wave%5===0;
