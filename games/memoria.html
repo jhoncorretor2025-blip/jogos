@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#070b14">
-<title>Jogo da Memória — Jogos do Jhon v1.9</title>
+<title>Jogo da Memória — Jogos do Jhon v2.0</title>
 <style>
   :root{--bg:#070b14;--card:#0f172a;--line:#1e293b;--txt:#e2e8f0;--muted:#94a3b8;--acc:#a78bfa}
   *{box-sizing:border-box}
@@ -178,6 +178,25 @@ body{background:radial-gradient(ellipse at 50% -12%,#46327a 0,transparent 43%),r
 #board .card.flipped .card-back,#board .card.matched .card-back{visibility:visible}
 @media(max-width:430px){#board{width:100%;gap:7px;padding:8px}}
 
+
+/* v2.0 — faces simples e sempre visíveis; sem depender de backface 3D */
+#board{display:grid;width:100%;max-width:620px;grid-template-columns:repeat(var(--cols,4),minmax(0,1fr));gap:clamp(6px,1.6vw,11px);align-items:stretch;justify-items:stretch}
+#board .card{display:block;position:relative;width:100%;min-width:0;height:auto;aspect-ratio:1/1;padding:0;margin:0;border:0;border-radius:14px;background:transparent;appearance:none;-webkit-appearance:none;cursor:pointer;line-height:1;overflow:visible}
+#board .inner{display:block;position:absolute;inset:0;width:100%;height:100%;transform:none!important;transition:none!important}
+#board .face{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;width:100%;height:100%;border-radius:14px;box-sizing:border-box;overflow:hidden}
+#board .card-front{display:flex!important;visibility:visible!important;opacity:1!important;background:linear-gradient(145deg,#5274ad 0%,#304b7a 48%,#192d50 100%);border:2px solid #b7ccff;box-shadow:inset 0 2px 5px #ffffff55,inset 0 -10px 18px #08152d88,0 5px 12px #0007;color:#fff;font-size:clamp(28px,7vw,46px);font-weight:900;text-shadow:0 0 10px #fff,0 0 22px #a78bfa;z-index:2}
+#board .card-face-back{display:none!important;visibility:visible!important;opacity:1!important;background:linear-gradient(145deg,#8d73e8 0%,#5542a5 55%,#29205f 100%);border:2px solid #e0d7ff;box-shadow:inset 0 2px 7px #ffffff55,inset 0 -10px 20px #17103b,0 5px 12px #0007;color:#fff;font-size:clamp(29px,7.5vw,48px);text-shadow:0 3px 8px #0007;z-index:3}
+#board .card.flipped .card-front,#board .card.matched .card-front{display:none!important}
+#board .card.flipped .card-face-back,#board .card.matched .card-face-back{display:flex!important;animation:memoryReveal .22s ease-out}
+#board .card.matched .card-face-back{background:linear-gradient(145deg,#4adea5,#087c68 65%,#064e49);border-color:#c2ffe5;box-shadow:0 0 0 2px #34d39966,0 0 22px #34d39988,inset 0 2px 7px #ffffff66}
+#board .card:active{transform:scale(.96)}
+#board .card:focus-visible{outline:3px solid #fef08a;outline-offset:3px}
+#board .card.matched{animation:memoryMatch .38s ease}
+@keyframes memoryReveal{from{opacity:.35;transform:scale(.88) rotateY(18deg)}to{opacity:1;transform:scale(1) rotateY(0)}}
+@keyframes memoryMatch{50%{transform:scale(1.07)}}
+@media(max-width:430px){#board{gap:7px;padding:8px}#board .card,.face{border-radius:10px}}
+@media(prefers-reduced-motion:reduce){#board .card,#board .card-face-back{animation:none!important;transition:none!important}}
+
 </style>
 </head>
 <body>
@@ -206,7 +225,7 @@ body{background:radial-gradient(ellipse at 50% -12%,#46327a 0,transparent 43%),r
   <div class="progress" aria-hidden="true"><div id="fill"></div></div>
   <div id="board"></div>
   <div class="msg" id="msg" aria-live="polite"></div>
-  <div class="ver">v1.9 · 25/11/2026</div>
+  <div class="ver">v2.0 · 25/11/2026</div>
 
   <div id="ov">
     <div class="panel">
@@ -240,7 +259,7 @@ function stopClocks(){if(timer){clearInterval(timer);timer=null}if(mismatchTimer
 function startTimer(){if(started)return;started=true;timer=setInterval(()=>{seconds++;timeEl.textContent=fmt(seconds)},1000)}
 function cardButton(item,index){
  const b=document.createElement('button');b.type='button';b.className='card';b.setAttribute('aria-label','Carta '+(index+1)+', fechada');b.dataset.index=String(index);
- b.innerHTML='<span class="inner"><span class="face front"></span><span class="face card-back">'+item.sym+'</span></span>';
+ b.innerHTML='<span class="inner"><span class="face card-front" aria-hidden="true">✦</span><span class="face card-face-back">'+item.sym+'</span></span>';
  b.addEventListener('click',()=>flip(index));return b
 }
 function build(){
