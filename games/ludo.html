@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#07111b"><title>Ludo · Jogos do Jhon · v1.1</title>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#07111b"><title>Ludo · Jogos do Jhon · v1.2</title>
 <style>
 :root{color-scheme:dark;--bg:#07111b;--panel:#101e2d;--line:#294158;--text:#edf6f8;--muted:#9bb1c2;--cyan:#45d9e8;--gold:#f6c96a}
 *{box-sizing:border-box}body{margin:0;min-height:100vh;padding:20px 14px 30px;background:radial-gradient(900px 520px at 50% -10%,#173c50,#07111b 70%);color:var(--text);font-family:Inter,system-ui,Arial,sans-serif}
@@ -8,30 +8,183 @@
 .toolbar{display:flex;gap:9px;flex-wrap:wrap;align-items:center;justify-content:center;margin-bottom:13px}.btn,select{border:1px solid #35516a;background:#14283a;color:var(--text);border-radius:11px;padding:10px 14px;font:600 13px system-ui;cursor:pointer}.btn.primary{background:linear-gradient(120deg,#0e7490,#155e75);border-color:#38bdf8}.btn:disabled{opacity:.4;cursor:not-allowed}.stat{background:#091521;border:1px solid #20384c;border-radius:12px;padding:8px 13px;text-align:center;color:var(--muted);font-size:12px}.stat b{color:#fff;font-size:17px;margin-left:5px}.message{margin:12px 0 0;padding:11px 13px;border-radius:11px;background:#0a1723;border:1px solid #20384c;color:#cbe5ed;font-size:13px;line-height:1.5;text-align:center;min-height:43px}.back{display:inline-block;margin-top:14px;color:#9edee8;text-decoration:none;font-size:13px}.back:hover{text-decoration:underline}
 button:focus-visible,select:focus-visible{outline:3px solid #67e8f9;outline-offset:2px}
 @media(max-width:600px){body{padding:12px 8px 22px}.panel{padding:10px}.toolbar .btn{flex:1}.toolbar{gap:7px}}
-</style></head><body><main class="wrap"><header><h1>🎲 Ludo</h1><p>Tire seis, percorra o tabuleiro e leve suas quatro peças até a chegada.</p><span class="version">Jogos do Jhon · v1.1</span></header><section class="panel"><div class="toolbar"><span class="stat">Jogador <b id="ludoTurn">Vermelho</b></span><span class="stat">Dado <b id="die">–</b></span><button class="btn primary" id="roll">🎲 Lançar dado</button><button class="btn" id="newLudo">Nova partida</button></div>
+</style><style>
+.ludo-board{position:relative;isolation:isolate;padding:8px;border-radius:24px;background:linear-gradient(145deg,#19364a,#071522);border:1px solid #4a7188;box-shadow:inset 0 0 30px #4dd7e31c,0 20px 46px #0008;overflow:hidden}
+.ludo-board:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 50%,#ffffff10,transparent 57%);z-index:1}
+.ludo-board svg{position:relative;z-index:2;filter:drop-shadow(0 7px 10px #0005)}
+.ludo-help{line-height:1.55;max-width:680px;margin:13px auto 4px}
+.stat{min-width:96px;background:linear-gradient(145deg,#122b3d,#081724);border-color:#35576c;box-shadow:inset 0 1px #ffffff10}
+#die{display:inline-grid;min-width:28px;min-height:28px;place-items:center;padding:2px 8px;border-radius:8px;background:linear-gradient(145deg,#fff,#cbd5e1);color:#12263a;text-shadow:0 1px #fff;font-size:19px;box-shadow:0 3px 8px #0005}
+#die.dice-roll{animation:diceTumble .16s ease-in-out infinite alternate}
+@keyframes diceTumble{from{transform:rotate(-9deg) scale(.92)}to{transform:rotate(9deg) scale(1.08)}}
+.token{filter:drop-shadow(0 3px 3px #0008);transition:filter .18s}
+.token.selectable{animation:tokenGlow 1.15s ease-in-out infinite;cursor:pointer}
+@keyframes tokenGlow{0%,100%{filter:drop-shadow(0 0 2px #fff8)}50%{filter:drop-shadow(0 0 10px #fff)}}
+.ludo-tutorial{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:13px;background:#020c15df;backdrop-filter:blur(10px)}
+.ludo-tutorial.show{display:flex}
+.ludo-tutorial-card{width:min(620px,100%);max-height:90vh;overflow:auto;padding:19px;border-radius:22px;border:1px solid #4c91aa;background:linear-gradient(145deg,#163a4d,#0b1a2b);box-shadow:0 30px 90px #000c}
+.tutorial-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.tutorial-top span{font-size:10px;letter-spacing:1.4px;font-weight:900;color:#67e8f9}
+.tutorial-top h2{margin:4px 0;font-size:24px}
+.tutorial-intro{color:#d6f4fa;line-height:1.5;font-size:13px}
+.ludo-rules{display:grid;gap:8px;margin:14px 0}
+.ludo-rules article{padding:10px 12px;border:1px solid #ffffff18;border-radius:13px;background:#ffffff08}
+.ludo-rules b{display:flex;align-items:center;gap:8px;color:#f0fbff;font-size:13px}
+.ludo-rules i{width:24px;height:24px;display:grid;place-items:center;border-radius:50%;font-style:normal;background:linear-gradient(145deg,#67e8f9,#0e7490);color:#042b3b}
+.ludo-rules p{margin:5px 0 0 32px;color:#b7d0dc;font-size:12px;line-height:1.5}
+.ludo-tip{padding:11px;border:1px solid #facc1540;border-radius:12px;background:#facc1511;color:#fef3c7;font-size:12px;line-height:1.5}
+.ludo-tip b{display:block;margin-bottom:3px}
+.ludo-start{width:100%;margin-top:13px}
+@media(max-width:600px){.ludo-tutorial-card{padding:14px}.tutorial-top h2{font-size:20px}.toolbar .stat{flex:1}.toolbar .btn{min-width:calc(50% - 6px)}}
+@media(prefers-reduced-motion:reduce){.token.selectable,#die.dice-roll{animation:none!important}}
+</style></head><body><main class="wrap"><header><h1>🎲 Ludo</h1><p>Tire seis, percorra o tabuleiro e leve suas quatro peças até a chegada.</p><span class="version">Jogos do Jhon · v1.2</span></header><section class="panel"><div class="toolbar"><span class="stat">Jogador <b id="ludoTurn">Vermelho</b></span><span class="stat">Dado <b id="die">–</b></span><button class="btn primary" id="roll">🎲 Lançar dado</button><button class="btn" id="howTo">📘 Regras e tutorial</button><button class="btn" id="soundToggle">🔊 Som</button><button class="btn" id="newLudo">Nova partida</button></div>
 <style>
 .ludo-board{width:min(650px,100%);margin:auto;display:block;background:#0a1723;border:1px solid #294158;border-radius:18px}.ludo-board svg{width:100%;height:auto;display:block}.token{cursor:pointer;stroke:#fff;stroke-width:3}.token:focus{stroke:#fff;stroke-width:7}.ludo-help{text-align:center;color:#9bb1c2;font-size:12px;margin:10px 0}
-</style><div class="ludo-board"><svg id="ludo" viewBox="0 0 600 600" role="img" aria-label="Tabuleiro de Ludo com quatro jogadores"></svg></div><p class="ludo-help">Você joga com as peças vermelhas. Tire 6 para sair da base. Clique em uma peça destacada para mover. Os outros três jogadores são controlados pelo computador.</p><div class="message" id="message" role="status" aria-live="polite">Bom jogo!</div></section><div style="text-align:center"><a class="back" href="../index.html">← Voltar ao Jogos do Jhon</a></div></main><script>(()=>{
-
-// Web Audio API - Som Retrô
-let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}}function tone(f,d,t='square',v=.05){if(!soundOn||!audioCtx)return;const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=t;o.frequency.value=f;g.gain.value=v;g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d)}function sfxMove(){tone(220,.04,'square',.03)}function sfxClick(){tone(440,.08,'triangle',.05)}
-
-const svg=document.getElementById('ludo'),msg=document.getElementById('message');const NS='http://www.w3.org/2000/svg',names=['Vermelho','Azul','Verde','Amarelo'],cols=['#ef4444','#3b82f6','#22c55e','#eab308'],offset=[0,13,26,39],safe=new Set([0,13,26,39]);let players=[],turn=0,die=0,rolling=false,finished=false;
-const polar=(i,r=205)=>{const a=(-Math.PI/2+i*2*Math.PI/52);return{x:300+Math.cos(a)*r,y:300+Math.sin(a)*r}};
-function create(){players=cols.map((c,p)=>({tokens:Array.from({length:4},(_,i)=>({steps:-1,id:i})),color:c}));turn=0;die=0;rolling=false;finished=false;draw();msg.textContent='Sua vez! Lance o dado. Você precisa tirar 6 para sair da base.';ui()}
-function ui(){document.getElementById('ludoTurn').textContent=names[turn];document.getElementById('die').textContent=die||'–';document.getElementById('roll').disabled=rolling||finished||die!==0||turn!==0}
-function el(tag,attrs={},parent=svg){const n=document.createElementNS(NS,tag);Object.entries(attrs).forEach(([k,v])=>n.setAttribute(k,v));parent.appendChild(n);return n}
-function draw(){svg.innerHTML='';el('circle',{cx:300,cy:300,r:232,fill:'#12283a',stroke:'#3a566c','stroke-width':4});players.forEach((p,i)=>{const a=(-Math.PI/2+i*Math.PI/2),cx=300+Math.cos(a)*172,cy=300+Math.sin(a)*172;el('circle',{cx,cy,r:92,fill:p.color,opacity:.18,stroke:p.color,'stroke-width':3});el('text',{x:cx,y:cy-67,'text-anchor':'middle',fill:'#fff','font-size':15,'font-weight':800}).textContent=names[i]});
-for(let i=0;i<52;i++){const p=polar(i);el('circle',{cx:p.x,cy:p.y,r:12,fill:safe.has(i)?'#f4e5b8':'#d8e3e8',stroke:'#4b6474','stroke-width':2});if(safe.has(i))el('circle',{cx:p.x,cy:p.y,r:5,fill:cols[offset.indexOf(i)]})}
-players.forEach((p,pi)=>p.tokens.forEach((t,ti)=>{let x,y;if(t.steps<0){const a=(-Math.PI/2+pi*Math.PI/2),cx=300+Math.cos(a)*172,cy=300+Math.sin(a)*172,ang=ti*Math.PI/2+Math.PI/4;x=cx+Math.cos(ang)*35;y=cy+Math.sin(ang)*35}else if(t.steps>=57){x=300+(ti-1.5)*10;y=300+(pi-1.5)*10}else if(t.steps>=52){const a=(-Math.PI/2+pi*Math.PI/2),r=150-(t.steps-52)*23;x=300+Math.cos(a)*r;y=300+Math.sin(a)*r}else{const p0=polar((offset[pi]+t.steps)%52);x=p0.x;y=p0.y}const n=el('circle',{cx:x,cy:y,r:13,fill:p.color,class:'token',tabindex:0,'data-player':pi,'data-token':ti,stroke:turn===pi&&die&&canMove(pi,t)?'#fff':'#172b3a','stroke-width':turn===pi&&die&&canMove(pi,t)?5:2});el('circle',{cx:x,cy:y,r:4,fill:'#fff',opacity:.8,'pointer-events':'none'});n.style.cursor=turn===0&&pi===0&&die&&canMove(pi,t)?'pointer':'default'}));el('circle',{cx:300,cy:300,r:27,fill:'#f8fafc',stroke:'#cbd5e1','stroke-width':5});el('text',{x:300,y:305,'text-anchor':'middle',fill:'#17212b','font-size':16,'font-weight':900}).textContent='🏁'}
+</style><div class="ludo-board"><svg id="ludo" viewBox="0 0 600 600" role="img" aria-label="Tabuleiro de Ludo com quatro jogadores"></svg></div><p class="ludo-help">Você joga com as peças vermelhas. Lance o dado e toque em uma peça destacada para movê-la. Use “Regras e tutorial” para aprender a sair da base, capturar e chegar ao centro.</p><div class="message" id="message" role="status" aria-live="polite">Bom jogo!</div></section><div style="text-align:center"><a class="back" href="../index.html">← Voltar ao Jogos do Jhon</a></div><div class="ludo-tutorial" id="ludoTutorial" role="dialog" aria-modal="true" aria-labelledby="ludoTutorialTitle">
+ <section class="ludo-tutorial-card">
+  <div class="tutorial-top"><div><span>PRIMEIRA PARTIDA</span><h2 id="ludoTutorialTitle">Como jogar Ludo</h2></div><button class="btn" id="closeLudoTutorial">✕</button></div>
+  <p class="tutorial-intro">Você controla as peças vermelhas. Os jogadores azul, verde e amarelo são controlados pelo computador.</p>
+  <div class="ludo-rules">
+   <article><b><i>1</i> Tire 6 para sair da base</b><p>Cada jogador tem quatro peças. Quando o dado mostra 6, você pode colocar uma peça vermelha na casa inicial da sua cor.</p></article>
+   <article><b><i>2</i> Mova pelo caminho</b><p>Depois de lançar, escolha uma peça válida. Ela avança exatamente o número de casas indicado pelo dado. Um resultado 6 dá direito a jogar novamente.</p></article>
+   <article><b><i>3</i> Capture os adversários</b><p>Se parar numa casa ocupada por uma peça adversária, ela volta para a base. Nas casas seguras (marcadas com estrela), ninguém é capturado.</p></article>
+   <article><b><i>4</i> Entre na reta final</b><p>Depois de completar uma volta, sua peça entra na trilha colorida que leva ao centro. É necessário tirar o número exato para chegar ao final.</p></article>
+   <article><b><i>5</i> Vença a partida</b><p>O primeiro jogador a levar as quatro peças até o centro vence. Se não houver peça que possa andar, a vez passa automaticamente.</p></article>
+  </div>
+  <div class="ludo-tip"><b>💡 Dica</b> Não deixe todas as peças muito próximas: manter mais de uma peça no caminho aumenta suas opções de movimento e de captura.</div>
+  <button class="btn primary ludo-start" id="startAfterTutorial">Entendi, vamos jogar!</button>
+ </section>
+</div></main><script>(()=>{
+'use strict';
+const svg=document.getElementById('ludo'),msg=document.getElementById('message');
+const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg';
+const names=['Vermelho','Azul','Verde','Amarelo'],cols=['#ef4444','#3b82f6','#22c55e','#eab308'],offset=[0,13,26,39],safe=new Set([0,8,13,21,26,34,39,47]);
+const angles=[-Math.PI/2,0,Math.PI/2,Math.PI];
+let players=[],turn=0,die=0,rolling=false,finished=false,soundOn=true,audioCtx=null,lastMotion=null,cpuTimer=null;
+const polar=(i,r=205)=>{const a=-Math.PI/2+i*2*Math.PI/52;return{x:300+Math.cos(a)*r,y:300+Math.sin(a)*r}};
+const baseCenter=pi=>({x:300+Math.cos(angles[pi])*172,y:300+Math.sin(angles[pi])*172});
+function ensureAudio(){if(!audioCtx){try{audioCtx=new(window.AudioContext||window.webkitAudioContext)()}catch(e){audioCtx=null}}if(audioCtx?.state==='suspended')audioCtx.resume()}
+function tone(f,d=.06,wave='sine',v=.04){if(!soundOn||!audioCtx)return;try{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=wave;o.frequency.value=f;g.gain.setValueAtTime(v,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d)}catch(e){}}
+function sfxMove(){tone(260,.045,'triangle',.035)}
+function sfxCapture(){tone(540,.08,'square',.04);setTimeout(()=>tone(760,.09,'triangle',.035),70)}
+function el(tag,attrs={},parent=svg){const n=document.createElementNS(NS,tag);Object.entries(attrs).forEach(([k,v])=>n.setAttribute(k,String(v)));parent.appendChild(n);return n}
+function tokenPosition(pi,t){
+ if(t.steps<0){const center=baseCenter(pi),a=Math.PI/4+t.id*Math.PI/2;return{x:center.x+Math.cos(a)*34,y:center.y+Math.sin(a)*34}}
+ if(t.steps>=57){return{x:300+[-9,9,-9,9][t.id],y:300+[-9,-9,9,9][t.id]}}
+ if(t.steps>=52){const r=151-(t.steps-52)*22;return{x:300+Math.cos(angles[pi])*r,y:300+Math.sin(angles[pi])*r}}
+ return polar((offset[pi]+t.steps)%52);
+}
+function scheduleCpu(delay=540){clearTimeout(cpuTimer);cpuTimer=setTimeout(()=>{cpuTimer=null;if(!finished&&turn!==0)cpuTurn()},delay)}
+function create(){
+ clearTimeout(cpuTimer);cpuTimer=null;
+ players=cols.map(color=>({color,tokens:Array.from({length:4},(_,id)=>({steps:-1,id}))}));
+ turn=0;die=0;rolling=false;finished=false;lastMotion=null;
+ msg.textContent='Sua vez! Lance o dado. Você precisa tirar 6 para sair da base.';
+ draw();ui();
+}
+function ui(){
+ $('ludoTurn').textContent=names[turn]+(turn===0?' · Você':' · IA');
+ $('die').textContent=die||'–';$('die').classList.toggle('dice-roll',rolling);
+ $('roll').disabled=rolling||finished||die!==0||turn!==0;
+}
 function canMove(pi,t){if(t.steps>=57)return false;if(t.steps<0)return die===6;return t.steps+die<=57}
 function available(pi){return players[pi].tokens.map((t,i)=>({t,i})).filter(({t})=>canMove(pi,t))}
-function advance(){die=0;turn=(turn+1)%4;ui();draw();if(turn!==0){rolling=true;ui();setTimeout(cpuTurn,700)}else{msg.textContent='Sua vez! Lance o dado.'}}
-function finishMove(pi,ti){const t=players[pi].tokens[ti];if(t.steps<0)t.steps=0;else t.steps+=die;
-if(t.steps<52){const pos=(offset[pi]+t.steps)%52;if(!safe.has(pos)){players.forEach((p,op)=>{if(op===pi)return;p.tokens.forEach(enemy=>{if(enemy.steps>=0&&enemy.steps<52&&(offset[op]+enemy.steps)%52===pos)enemy.steps=-1})})}}
-const six=die===6;die=0;const winner=players.findIndex(p=>p.tokens.every(t=>t.steps===57));if(winner>=0){finished=true;msg.textContent=winner===0?'🏆 Você venceu o Ludo!':names[winner]+' venceu o Ludo. Tente novamente!';ui();draw();return}if(six&&pi===0){msg.textContent='Você tirou 6! Jogue novamente.';ui();draw()}else advance();if(pi===0){ui();draw()}}
-function roll(){if(rolling||finished||die||turn!==0)return;die=1+Math.floor(Math.random()*6);msg.textContent='Você tirou '+die+'. Escolha uma peça destacada.';draw();const moves=available(0);if(!moves.length){msg.textContent='Nenhuma peça pode avançar. Passando a vez.';die=0;setTimeout(advance,700)}ui()}
-function cpuTurn(){if(finished)return;rolling=false;die=1+Math.floor(Math.random()*6);const opts=available(turn);if(!opts.length){die=0;advance();return}const choice=opts[Math.floor(Math.random()*opts.length)];finishMove(turn,choice.i)}
-svg.addEventListener('click',e=>{const t=e.target.closest('[data-token]');if(!t||turn!==0||!die||finished)return;const pi=+t.dataset.player,ti=+t.dataset.token;if(pi!==0||!canMove(0,players[0].tokens[ti]))return;finishMove(0,ti)});
-document.getElementById('roll').addEventListener('click',roll);document.getElementById('newLudo').addEventListener('click',create);create();
+function draw(){
+ svg.innerHTML='';
+ const defs=el('defs');
+ const bg=el('radialGradient',{id:'boardBg',cx:'50%',cy:'42%',r:'72%'},defs);
+ el('stop',{offset:'0%','stop-color':'#24465b'},bg);el('stop',{offset:'100%','stop-color':'#081724'},bg);
+ const track=el('linearGradient',{id:'trackCell',x1:'0',y1:'0',x2:'1',y2:'1'},defs);
+ el('stop',{offset:'0%','stop-color':'#ffffff'},track);el('stop',{offset:'100%','stop-color':'#9db4c4'},track);
+ const shadow=el('filter',{id:'tokenShadow',x:'-50%',y:'-50%',width:'200%',height:'200%'},defs);
+ el('feDropShadow',{dx:'0',dy:'3',stdDeviation:'2.3','flood-color':'#020617','flood-opacity':'.75'},shadow);
+ el('rect',{x:4,y:4,width:592,height:592,rx:30,fill:'url(#boardBg)',stroke:'#5b8196','stroke-width':3});
+ el('circle',{cx:300,cy:300,r:229,fill:'#0b1f30',stroke:'#6b8da0','stroke-width':3});
+ el('circle',{cx:300,cy:300,r:179,fill:'#0a1a29',stroke:'#31556b','stroke-width':2});
+ players.forEach((p,pi)=>{
+  const c=baseCenter(pi);
+  el('circle',{cx:c.x,cy:c.y,r:82,fill:p.color,opacity:.17,stroke:p.color,'stroke-width':4});
+  el('circle',{cx:c.x,cy:c.y,r:69,fill:'#071827',opacity:.88,stroke:p.color,'stroke-width':1.5});
+  const label=el('text',{x:c.x,y:c.y-53,'text-anchor':'middle',fill:'#f8fafc','font-size':11,'font-weight':900,'letter-spacing':1});label.textContent=names[pi].toUpperCase();
+  for(let k=0;k<4;k++){const a=Math.PI/4+k*Math.PI/2,x=c.x+Math.cos(a)*34,y=c.y+Math.sin(a)*34;el('circle',{cx:x,cy:y,r:16,fill:'#e9f2f6',opacity:.11,stroke:p.color,'stroke-width':1.3})}
+ });
+ players.forEach((p,pi)=>{for(let step=0;step<5;step++){const r=151-step*22,x=300+Math.cos(angles[pi])*r,y=300+Math.sin(angles[pi])*r;el('circle',{cx:x,cy:y,r:11,fill:p.color,opacity:.83,stroke:'#ffffffaa','stroke-width':1.6});el('circle',{cx:x-3,cy:y-3,r:2.2,fill:'#ffffffaa'})}});
+ safe.forEach(i=>{const p=polar(i,205);el('circle',{cx:p.x,cy:p.y,r:17,fill:'#f6e5b6',stroke:'#a97932','stroke-width':2.3});const star=el('text',{x:p.x,y:p.y+5,'text-anchor':'middle',fill:'#8b5e24','font-size':17,'font-weight':900});star.textContent='★'});
+ for(let i=0;i<52;i++){
+  const p=polar(i,205),startIndex=offset.indexOf(i),fill=startIndex>=0?cols[startIndex]:'url(#trackCell)';
+  el('circle',{cx:p.x,cy:p.y,r:12.7,fill,stroke:'#243b4b','stroke-width':2});
+  if(startIndex>=0)el('circle',{cx:p.x,cy:p.y,r:5,fill:'#ffffffcc'});
+  else if(!safe.has(i))el('circle',{cx:p.x-3.5,cy:p.y-3.5,r:3.1,fill:'#ffffff77'});
+ }
+ el('circle',{cx:300,cy:300,r:47,fill:'#071522',stroke:'#9bb8c9','stroke-width':3});
+ el('path',{d:'M300 300 L260 260 L340 260 Z',fill:cols[0],stroke:'#fff8','stroke-width':1});
+ el('path',{d:'M300 300 L340 260 L340 340 Z',fill:cols[1],stroke:'#fff8','stroke-width':1});
+ el('path',{d:'M300 300 L340 340 L260 340 Z',fill:cols[2],stroke:'#fff8','stroke-width':1});
+ el('path',{d:'M300 300 L260 340 L260 260 Z',fill:cols[3],stroke:'#fff8','stroke-width':1});
+ el('circle',{cx:300,cy:300,r:15,fill:'#f8fafc',stroke:'#334155','stroke-width':2});
+ const finish=el('text',{x:300,y:304,'text-anchor':'middle',fill:'#0f172a','font-size':11,'font-weight':1000});finish.textContent='🏁';
+ players.forEach((p,pi)=>p.tokens.forEach((t,ti)=>{
+  const pos=tokenPosition(pi,t),movable=pi===turn&&die>0&&canMove(pi,t),g=el('g',{'data-player':pi,'data-token':ti,tabindex:pi===0&&movable?0:-1,role:'button','aria-label':names[pi]+' peça '+(ti+1)+(movable?', disponível para mover':'')});
+  if(movable)el('circle',{cx:pos.x,cy:pos.y,r:20,fill:'none',stroke:'#fff','stroke-width':2,class:'token selectable','pointer-events':'none'},g);
+  const from=lastMotion&&lastMotion.pi===pi&&lastMotion.ti===ti?lastMotion.from:pos,body=el('circle',{cx:from.x,cy:from.y,r:13.5,fill:p.color,stroke:'#ffffff','stroke-width':2.5,class:'token',filter:'url(#tokenShadow)'},g);
+  el('circle',{cx:from.x-4,cy:from.y-5,r:4,fill:'#ffffff99','pointer-events':'none'},g);
+  if(lastMotion&&lastMotion.pi===pi&&lastMotion.ti===ti){el('animate',{attributeName:'cx',from:from.x,to:pos.x,dur:'420ms',fill:'freeze'},body);el('animate',{attributeName:'cy',from:from.y,to:pos.y,dur:'420ms',fill:'freeze'},body)}
+ }));
+}
+function animateRoll(finalValue,callback){
+ ensureAudio();rolling=true;ui();let ticks=0;
+ const timer=setInterval(()=>{die=1+Math.floor(Math.random()*6);ui();tone(180+die*48,.035,'square',.018);ticks++;if(ticks>=9){clearInterval(timer);die=finalValue;rolling=false;ui();tone(520,.1,'triangle',.05);callback()}},58);
+}
+function noMove(pi,wasSix){
+ die=0;
+ if(wasSix){turn=pi;msg.textContent='Saiu 6, mas nenhuma peça pode avançar. Você ganhou outra jogada.';ui();draw();if(pi!==0){rolling=true;scheduleCpu(600)}return}
+ msg.textContent=names[pi]+' não tem movimento válido. A vez passa.';advance();
+}
+function advance(){
+ die=0;turn=(turn+1)%4;rolling=false;ui();draw();
+ if(turn!==0){rolling=true;ui();scheduleCpu(540)}
+ else{msg.textContent='Sua vez! Lance o dado.';ui()}
+}
+function finishMove(pi,ti){
+ const t=players[pi].tokens[ti],from=tokenPosition(pi,t);
+ if(t.steps<0)t.steps=0;else t.steps+=die;
+ let captured=false;
+ if(t.steps<52){const pos=(offset[pi]+t.steps)%52;if(!safe.has(pos)){players.forEach((p,op)=>{if(op===pi)return;p.tokens.forEach(enemy=>{if(enemy.steps>=0&&enemy.steps<52&&(offset[op]+enemy.steps)%52===pos){enemy.steps=-1;captured=true}})})}}
+ const to=tokenPosition(pi,t);lastMotion={pi,ti,from,to};setTimeout(()=>{if(lastMotion?.pi===pi&&lastMotion?.ti===ti){lastMotion=null;draw()}},470);
+ if(captured)sfxCapture();else sfxMove();
+ const six=die===6;die=0;
+ const winner=players.findIndex(p=>p.tokens.every(t=>t.steps===57));ui();draw();
+ if(winner>=0){finished=true;rolling=false;msg.textContent=winner===0?'🏆 Você venceu o Ludo!':names[winner]+' venceu o Ludo. Tente novamente!';ui();draw();return}
+ if(six){turn=pi;msg.textContent=pi===0?'Você tirou 6! Lance o dado novamente.':names[pi]+' tirou 6 e joga novamente.';rolling=false;ui();draw();if(pi!==0){rolling=true;ui();scheduleCpu(620)}return}
+ advance();
+}
+function roll(){
+ if(rolling||finished||die||turn!==0)return;
+ const result=1+Math.floor(Math.random()*6);
+ animateRoll(result,()=>{msg.textContent='Você tirou '+die+'. Escolha uma peça destacada.';const opts=available(0);if(!opts.length){noMove(0,die===6);return}draw();ui()});
+}
+function cpuTurn(){
+ if(finished||turn===0)return;
+ const pi=turn,result=1+Math.floor(Math.random()*6);
+ animateRoll(result,()=>{
+  const opts=available(pi);if(!opts.length){noMove(pi,die===6);return}
+  const ranked=opts.map(o=>{let value=o.t.steps<0?42:o.t.steps*1.2;const next=o.t.steps<0?0:o.t.steps+die;if(next<52){const pos=(offset[pi]+next)%52;if(!safe.has(pos)&&players.some((p,op)=>op!==pi&&p.tokens.some(en=>en.steps>=0&&en.steps<52&&(offset[op]+en.steps)%52===pos)))value+=65}if(next>=52)value+=35+(next-52)*5;return{...o,value}}).sort((a,b)=>b.value-a.value);
+  finishMove(pi,ranked[0].i);
+ });
+}
+function showTutorial(){$('ludoTutorial').classList.add('show');$('closeLudoTutorial').focus()}
+function closeTutorial(){$('ludoTutorial').classList.remove('show');try{localStorage.setItem('ludo_tutorial_seen','1')}catch(e){}}
+function moveTokenFromEvent(e){
+ const g=e.target.closest('[data-token]');if(!g||turn!==0||!die||finished||rolling)return;
+ const pi=Number(g.dataset.player),ti=Number(g.dataset.token);if(pi!==0||!canMove(0,players[0].tokens[ti]))return;
+ finishMove(0,ti);
+}
+svg.addEventListener('click',moveTokenFromEvent);
+svg.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('[data-token]')){e.preventDefault();moveTokenFromEvent(e)}});
+$('roll').addEventListener('click',roll);$('newLudo').addEventListener('click',create);
+$('howTo').addEventListener('click',showTutorial);$('closeLudoTutorial').addEventListener('click',closeTutorial);$('startAfterTutorial').addEventListener('click',closeTutorial);
+$('ludoTutorial').addEventListener('click',e=>{if(e.target===$('ludoTutorial'))closeTutorial()});
+$('soundToggle').addEventListener('click',()=>{soundOn=!soundOn;$('soundToggle').textContent=soundOn?'🔊 Som':'🔇 Som';if(soundOn){ensureAudio();tone(650,.08,'triangle')}});
+window.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('ludoTutorial').classList.contains('show'))closeTutorial()});
+create();try{if(localStorage.getItem('ludo_tutorial_seen')!=='1')setTimeout(showTutorial,280)}catch(e){setTimeout(showTutorial,280)}
 })();</script><script src="../arcade-common.js"></script></body></html>
