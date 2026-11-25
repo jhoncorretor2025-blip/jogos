@@ -299,7 +299,7 @@ function physics(){
  }));
  ball.vx=clamp(ball.vx,-12,12);ball.vy=clamp(ball.vy,-9,9);
 }
-function frame(t){if(!lastTime)lastTime=t;const delta=Math.min(34,t-lastTime);lastTime=t;const steps=Math.max(1,Math.round(delta/16.67));for(let i=0;i<steps;i++)physics();draw();requestAnimationFrame(frame)}
+function frame(t){if(!lastTime)lastTime=t;const delta=Math.min(34,t-lastTime);lastTime=t;const steps=Math.max(1,Math.round(delta/16.67));for(let i=0;i<steps;i++)physics();draw()}
 function loadCareer(){
  try{const v=JSON.parse(safeGet(STATS_KEY)||'{}');return {matches:Number(v.matches)||0,blueWins:Number(v.blueWins)||0,redWins:Number(v.redWins)||0,last:Array.isArray(v.last)?v.last.slice(0,5):[]}}
  catch(e){return {matches:0,blueWins:0,redWins:0,last:[]}}
