@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#070b14"><title>Clássicos Arcade · Jogos do Jhon v1.13</title>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#070b14"><title>Clássicos Arcade · Jogos do Jhon v1.14</title>
 <style>
 :root{color-scheme:dark;--bg:#070b14;--panel:#111b2d;--line:#29364c;--txt:#e2e8f0;--muted:#94a3b8;--cyan:#22d3ee;--gold:#fbbf24;--green:#34d399;--red:#fb7185}
 *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(850px 500px at 50% -10%,#172554 0,transparent 70%),var(--bg);color:var(--txt);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;padding:14px 12px 30px}button{font:inherit;cursor:pointer;color:inherit}.wrap{width:min(100%,820px);margin:auto}.top{display:flex;align-items:center;justify-content:space-between;gap:10px}.back{color:var(--muted);text-decoration:none;font-size:13px}.ver{font-size:11px;color:#a5f3fc;border:1px solid #155e75;border-radius:99px;padding:5px 10px}.hero{text-align:center;padding:13px 0 16px}.logo{font-size:clamp(45px,12vw,76px);line-height:1.1}.hero h1{margin:4px 0;font-size:clamp(25px,6vw,36px)}.sub{margin:0;color:var(--muted);font-size:14px}.panel{background:linear-gradient(145deg,#172338,#101827);border:1px solid var(--line);border-radius:18px;padding:13px;box-shadow:0 14px 32px #0004}.stats{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:12px}.stat{background:#0b1424;border:1px solid #26364c;border-radius:12px;padding:7px 12px;text-align:center;min-width:80px}.stat small{display:block;color:var(--muted);font-size:10px}.stat b{font-size:20px;font-variant-numeric:tabular-nums}.actions,.controls{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:12px}.btn{background:#1d2c42;border:1px solid #3b4b63;border-radius:11px;padding:10px 14px;font-weight:750}.btn.primary{background:#075466;border-color:#0891b2}.btn.gold{background:#563f08;border-color:#d6a51d}.btn:active{transform:scale(.97)}.hint{text-align:center;color:var(--muted);font-size:12px;margin:10px 0 0}.board{margin:auto;max-width:100%;overflow:auto}.message{text-align:center;min-height:25px;color:#bae6fd;font-weight:700;margin:8px 0}.pad{display:grid;grid-template-columns:repeat(3,56px);gap:7px;justify-content:center;margin:12px auto 0}.pad button{height:48px;border-radius:12px;background:#16263d;border:1px solid #334155;font-size:19px}.pad .empty{visibility:hidden}
@@ -61,11 +61,63 @@ canvas{display:block;max-width:100%;height:auto;touch-action:none;border-radius:
 .bubble-stage .bubble-progress-head span:first-child{animation:bubblePulse 2.4s ease-in-out infinite}
 @media(max-width:430px){.bubble-daily{grid-template-columns:1fr}.daily-goal{display:flex;justify-content:space-between;align-items:center;gap:8px}.daily-goal small{margin:0;text-align:right}.bubble-stage .controls .btn{min-width:calc(33.333% - 6px);padding:9px 7px;font-size:11px}}
 @media(prefers-reduced-motion:reduce){.bubble-stage .bubble-progress-head span:first-child{animation:none}}
+
+/* Clássicos Arcade v1.14 — Dominó tátil e Paciência premium */
+body[data-arcade-game="domino"]{background:radial-gradient(ellipse at 50% -10%,#164e63 0,transparent 48%),radial-gradient(ellipse at 100% 65%,#854d0e35,transparent 45%),linear-gradient(145deg,#07151d,#0b1d25 58%,#07111b)}
+body[data-arcade-game="domino"] .panel{background:linear-gradient(155deg,#12343a,#0b2029 60%,#0a1722);border-color:#367581;box-shadow:0 24px 55px #0009,inset 0 1px #ffffff18}
+body[data-arcade-game="domino"] .stat{background:linear-gradient(145deg,#153944,#0b202b);border-color:#34717c;box-shadow:inset 0 1px #ffffff15,0 7px 18px #0005}
+body[data-arcade-game="domino"] .stat b{color:#fef3c7;text-shadow:0 0 12px #fbbf2433}
+body[data-arcade-game="domino"] .domino-table-area{padding:12px;border:1px solid #2f6d6d;border-radius:20px;background:radial-gradient(ellipse at 50% 0%,#1b5360,#0b2a32 70%);box-shadow:inset 0 0 30px #0006,0 12px 25px #0005}
+body[data-arcade-game="domino"] .domino-table-title{display:flex;align-items:center;justify-content:space-between;gap:10px;color:#b7e2e4;font-size:11px;letter-spacing:1px;font-weight:900;text-transform:uppercase;margin:0 2px 9px}
+body[data-arcade-game="domino"] .domboard{display:flex;gap:8px;overflow-x:auto;min-height:88px;align-items:center;justify-content:flex-start;padding:13px 12px;border:1px solid #45818a;border-radius:15px;background:repeating-linear-gradient(0deg,#06323b,#06323b 24px,#073641 24px,#073641 48px);box-shadow:inset 0 6px 14px #0006}
+body[data-arcade-game="domino"] .domino-tile{display:flex;flex:none;align-items:center;justify-content:center;gap:0;width:72px;height:42px;padding:3px;border-radius:9px;background:linear-gradient(145deg,#fffef4,#d9e3e1);border:1px solid #ffffff;box-shadow:0 5px 0 #71838a,0 8px 12px #0006,inset 0 1px #fff;position:relative}
+body[data-arcade-game="domino"] .domino-table-tile{width:66px;height:39px;transform:rotate(-1deg)}
+body[data-arcade-game="domino"] .domino-half{width:50%;height:100%;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);place-items:center;padding:3px}
+body[data-arcade-game="domino"] .domino-pip{width:5px;height:5px;border-radius:50%;background:transparent}
+body[data-arcade-game="domino"] .domino-pip.on{background:radial-gradient(circle at 30% 25%,#334155,#020617 75%);box-shadow:0 1px 1px #fff8}
+body[data-arcade-game="domino"] .domino-divider{height:28px;width:1px;background:linear-gradient(#94a3b8,#334155,#94a3b8);box-shadow:1px 0 #fff}
+body[data-arcade-game="domino"] .domino-hand-title{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:15px 2px 7px;color:#d7eff0}
+body[data-arcade-game="domino"] .domino-hand-title h3{margin:0;font-size:13px}
+body[data-arcade-game="domino"] .hand{display:grid;grid-template-columns:repeat(auto-fit,minmax(78px,1fr));gap:9px;padding:11px;border-radius:16px;border:1px solid #2b5d68;background:linear-gradient(145deg,#0a202b,#102b34);box-shadow:inset 0 1px #ffffff0c}
+body[data-arcade-game="domino"] .hand button.domino-hand-card{display:flex;justify-content:center;align-items:center;min-width:0;min-height:56px;padding:7px 3px;border:1px solid #f8fafc;border-radius:12px;background:linear-gradient(145deg,#fffef4,#d9e3e1);color:#0f172a;box-shadow:0 5px 0 #6b7d84,0 8px 12px #0005;transition:transform .16s,box-shadow .16s,filter .16s}
+body[data-arcade-game="domino"] .hand button.domino-hand-card:hover{transform:translateY(-5px);box-shadow:0 8px 0 #6b7d84,0 15px 18px #0007;filter:brightness(1.05)}
+body[data-arcade-game="domino"] .hand button.domino-hand-card:active{transform:translateY(1px);box-shadow:0 2px 0 #6b7d84}
+body[data-arcade-game="domino"] .hand button.domino-hand-card .domino-tile{width:68px;height:38px;border:0;box-shadow:none;background:transparent}
+body[data-arcade-game="domino"] .side-choice{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin-top:10px}
+body[data-arcade-game="domino"] .side-choice[hidden]{display:none}
+body[data-arcade-game="domino"] .side-choice .btn{background:linear-gradient(145deg,#164e63,#0e3746);border-color:#67e8f9;color:#e0f2fe}
+body[data-arcade-game="domino"] .actions .btn{background:linear-gradient(145deg,#164e63,#0b3442);border-color:#3e7681}
+body[data-arcade-game="domino"] .actions .btn.primary{background:linear-gradient(110deg,#0e7490,#0f766e);border-color:#67e8f9}
+body[data-arcade-game="paciencia"]{background:radial-gradient(ellipse at 50% -8%,#166044 0,transparent 48%),radial-gradient(ellipse at 100% 70%,#14532d66,transparent 50%),linear-gradient(145deg,#061b18,#0b3026 58%,#071711)}
+body[data-arcade-game="paciencia"] .panel{background:linear-gradient(155deg,#123b30,#0a241f 70%);border-color:#3c8066;box-shadow:0 24px 55px #0009,inset 0 1px #ffffff17}
+body[data-arcade-game="paciencia"] .stat{background:linear-gradient(145deg,#164536,#0b2a22);border-color:#34745a;box-shadow:inset 0 1px #ffffff15,0 7px 18px #0005}
+body[data-arcade-game="paciencia"] .solmeta{gap:8px;margin-bottom:13px;padding:9px;border:1px solid #35765b;border-radius:17px;background:linear-gradient(145deg,#08291f,#0c3829);box-shadow:inset 0 5px 16px #0006}
+body[data-arcade-game="paciencia"] .solmeta .pile{min-height:92px;padding:5px;border:1px solid #4f8c6e;border-radius:12px;background:linear-gradient(145deg,#164b37,#0c3025);box-shadow:inset 0 1px #ffffff12}
+body[data-arcade-game="paciencia"] .solmeta .pilehead{height:24px;font-size:11px;font-weight:900;color:#b7e4c9}
+body[data-arcade-game="paciencia"] .solmeta .cardface{height:58px;width:100%}
+body[data-arcade-game="paciencia"] .solgrid{gap:7px;padding:9px;border:1px solid #35765b;border-radius:17px;background:linear-gradient(145deg,#0d3a2b,#08251f);box-shadow:inset 0 7px 20px #0007,0 12px 26px #0004}
+body[data-arcade-game="paciencia"] .solgrid .pile{min-height:280px;padding:4px;border:1px solid #5c9876;border-radius:10px;background:linear-gradient(145deg,#17604455,#0d3b2b66);box-shadow:inset 0 1px #ffffff12}
+body[data-arcade-game="paciencia"] .solgrid .pilehead{height:26px;color:#b9e8ce;font-weight:900}
+body[data-arcade-game="paciencia"] .cardface{height:63px;min-width:0;width:100%;position:relative;overflow:hidden;display:flex;align-items:stretch;justify-content:space-between;padding:4px 5px;border:1px solid #d5e0e7;border-radius:9px;background:linear-gradient(145deg,#fff,#e7eef2 70%,#cbd5e1);color:#111827;box-shadow:0 4px 0 #64748b,0 7px 12px #0006,inset 0 1px #fff;transition:transform .16s,filter .16s,box-shadow .16s}
+body[data-arcade-game="paciencia"] .cardface:hover{filter:brightness(1.05);box-shadow:0 6px 0 #64748b,0 11px 16px #0007}
+body[data-arcade-game="paciencia"] .cardface.red{color:#dc2626}
+body[data-arcade-game="paciencia"] .card-corner{display:flex;flex-direction:column;align-items:center;gap:0;font-size:12px;line-height:1;font-weight:1000}
+body[data-arcade-game="paciencia"] .card-corner i{font-style:normal;font-size:11px}
+body[data-arcade-game="paciencia"] .card-corner.bottom{align-self:flex-end;transform:rotate(180deg)}
+body[data-arcade-game="paciencia"] .card-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:clamp(19px,3vw,26px);opacity:.82;text-shadow:0 1px #fff}
+body[data-arcade-game="paciencia"] .cardface.back{display:grid;place-items:center;padding:4px;border:2px solid #d6e7e6;background:repeating-linear-gradient(45deg,#0f766e 0 5px,#115e59 5px 10px,#164e63 10px 15px);box-shadow:0 4px 0 #334e58,0 7px 12px #0007,inset 0 0 0 3px #d7fff733}
+body[data-arcade-game="paciencia"] .cardface.back:after{content:"✦";display:grid;place-items:center;width:27px;height:27px;border:1px solid #d1fae555;border-radius:50%;color:#d1fae5;background:#064e3b88;text-shadow:0 0 10px #a7f3d0}
+body[data-arcade-game="paciencia"] .cardface.back>*{display:none}
+body[data-arcade-game="paciencia"] .cardface.sel{outline:3px solid #facc15;outline-offset:1px;transform:translateY(-6px);box-shadow:0 9px 0 #64748b,0 15px 18px #0008,0 0 15px #facc1577;z-index:5}
+body[data-arcade-game="paciencia"] .solgrid .pile>div[style*="margin-top"]{position:relative}
+body[data-arcade-game="paciencia"] .actions .btn{background:linear-gradient(145deg,#165b43,#0a3428);border-color:#4b9870}
+body[data-arcade-game="paciencia"] .actions .btn.primary{background:linear-gradient(110deg,#059669,#0f766e);border-color:#6ee7b7}
+@media(max-width:430px){body[data-arcade-game="domino"] .domino-tile{width:60px;height:36px}body[data-arcade-game="paciencia"] .solgrid{gap:3px;padding:5px}body[data-arcade-game="paciencia"] .solgrid .pile{min-height:255px;padding:2px}body[data-arcade-game="paciencia"] .cardface{height:53px;padding:3px}.solmeta .cardface{height:51px!important}}
 </style></head><body><main class="wrap">
-<div class="top"><a class="back" href="../index.html">← Voltar ao Arcade</a><span class="ver">JOGO v1.13</span></div>
+<div class="top"><a class="back" href="../index.html">← Voltar ao Arcade</a><span class="ver">JOGO v1.14</span></div>
 <header class="hero"><div id="logo" class="logo">🎮</div><h1 id="title">Clássicos Arcade</h1><p id="subtitle" class="sub">Diversão para todos os momentos</p></header>
 <section class="panel"><div id="stats" class="stats"></div><div id="stage"></div><div id="message" class="message" aria-live="polite"></div><div id="controls" class="controls"></div><p id="hint" class="hint"></p></section>
-<footer class="game-version-footer">Jogos do Jhon · Bubble Shooter v1.13</footer>
+<footer class="game-version-footer">Jogos do Jhon · Clássicos Arcade v1.14</footer>
 </main><script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id),params=new URLSearchParams(location.search),mode=params.get('game')||'domino';
@@ -78,8 +130,9 @@ const info={
  resta:['🔵','Resta Um','Salte sobre as peças vizinhas até sobrar apenas uma no tabuleiro.','Selecione uma peça e depois o buraco vazio duas casas adiante.']
 };
 if(!info[mode])location.replace('../index.html');
+document.body.dataset.arcadeGame=mode;
 if(mode==='frogger')document.body.dataset.arcadeControls='both';
-const [logo,title,subtitle,hint]=info[mode];$('logo').textContent=logo;$('title').textContent=title;$('subtitle').textContent=subtitle;$('hint').textContent=hint;document.title=title+' · Jogos do Jhon v1.13';
+const [logo,title,subtitle,hint]=info[mode];$('logo').textContent=logo;$('title').textContent=title;$('subtitle').textContent=subtitle;$('hint').textContent=hint;document.title=title+' · Jogos do Jhon v1.14';
 const stat=(label,value)=>'<div class="stat"><small>'+label+'</small><b id="'+value+'">0</b></div>';
 function shellStats(html){$('stats').innerHTML=html}
 function setMsg(t){$('message').textContent=t}
@@ -90,20 +143,39 @@ function saveBest(key,value){try{const old=Number(localStorage.getItem('jhon-'+k
 function best(key){try{return Number(localStorage.getItem('jhon-'+key)||0)}catch(e){return 0}}
 function start(){if(mode==='domino')domino();if(mode==='paciencia')paciencia();if(mode==='pinball')pinball();if(mode==='bolhas')bolhas();if(mode==='frogger')frogger();if(mode==='resta')resta()}
 function domino(){
-shellStats(stat('Pontos','score')+stat('Suas peças','mine')+stat('Peças da IA','ai'));
-$('stage').innerHTML='<div class="ends"><span id="leftEnd">Ponta esquerda: —</span><span id="rightEnd">Ponta direita: —</span></div><div class="domboard" id="domboard">O tabuleiro começa aqui</div><h3 style="font-size:15px;margin:14px 0 3px">Sua mão</h3><div class="hand" id="hand"></div><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">'+btn('draw','Comprar peça')+btn('pass','Passar')+'</div>';
-buttons(btn('new','🔄 Nova partida','btn primary'));let deck=[],hand=[],ai=[],board=[],score=0,blocked=0,locked=false;
+shellStats(stat('Pontos','score')+stat('Suas peças','mine')+stat('Peças da IA','ai')+stat('Monte','stockCount'));
+$('stage').innerHTML='<section class="domino-table-area"><div class="domino-table-title"><span>🁣 Mesa de jogo</span><span id="dominoCount">28 peças</span></div><div class="ends"><span id="leftEnd">Ponta esquerda: —</span><span id="rightEnd">Ponta direita: —</span></div><div class="domboard" id="domboard">O tabuleiro começa aqui</div></section><div class="domino-hand-title"><h3>🀄 Sua mão</h3><small id="handCount">7 peças</small></div><div class="hand" id="hand"></div><div class="side-choice" id="sideChoice" hidden></div><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px">'+btn('draw','＋ Comprar peça')+btn('pass','Passar')+'</div>';
+buttons(btn('new','🔄 Nova partida','btn primary'));
+let deck=[],hand=[],ai=[],board=[],score=0,blocked=0,locked=false;
 function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
-function fresh(){deck=[];for(let a=0;a<=6;a++)for(let b=a;b<=6;b++)deck.push([a,b]);shuffle(deck);hand=deck.splice(0,7);ai=deck.splice(0,7);board=[deck.pop()];score=0;blocked=0;locked=false;render();setMsg('Sua vez! Comece com uma peça que combine com uma das pontas.')}
+function fresh(){deck=[];for(let a=0;a<=6;a++)for(let b=a;b<=6;b++)deck.push([a,b]);shuffle(deck);hand=deck.splice(0,7);ai=deck.splice(0,7);board=[deck.pop()];score=0;blocked=0;locked=false;render();setMsg('Sua vez! Escolha uma peça que combine com uma das pontas da mesa.')}
 function ends(){return [board[0][0],board[board.length-1][1]]}
-function render(){ $('score').textContent=score;$('mine').textContent=hand.length;$('ai').textContent=ai.length;const [l,r]=ends();$('leftEnd').textContent='Ponta esquerda: '+l;$('rightEnd').textContent='Ponta direita: '+r;$('domboard').innerHTML=board.map(p=>'<span class="domtile">'+p[0]+'<i></i>'+p[1]+'</span>').join('');$('hand').innerHTML='';hand.forEach((p,i)=>{const b=document.createElement('button');b.innerHTML=p[0]+' │ '+p[1];b.addEventListener('click',()=>choose(i));$('hand').appendChild(b)});$('draw').disabled=!deck.length||locked;$('pass').disabled=locked}
+function pipFace(n){const positions={0:[],1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]}[n]||[];return '<span class="domino-half">'+Array.from({length:9},(_,i)=>'<i class="domino-pip '+(positions.includes(i)?'on':'')+'"></i>').join('')+'</span>'}
+function tileMarkup(p,extra){return '<span class="domino-tile '+(extra||'')+'" aria-label="'+p[0]+' e '+p[1]+'">'+pipFace(p[0])+'<i class="domino-divider"></i>'+pipFace(p[1])+'</span>'}
+function render(){
+ $('score').textContent=score;$('mine').textContent=hand.length;$('ai').textContent=ai.length;$('stockCount').textContent=deck.length;$('handCount').textContent=hand.length+' peça(s)';$('dominoCount').textContent=(board.length+hand.length+ai.length+deck.length)+' peças na partida';
+ const [l,r]=ends();$('leftEnd').textContent='◀ Ponta esquerda: '+l;$('rightEnd').textContent='Ponta direita: '+r;
+ $('domboard').innerHTML=board.map(p=>tileMarkup(p,'domino-table-tile')).join('');
+ $('hand').innerHTML='';hand.forEach((p,i)=>{const b=document.createElement('button');b.type='button';b.className='domino-hand-card';b.setAttribute('aria-label','Peça '+p[0]+' e '+p[1]);b.innerHTML=tileMarkup(p,'');b.addEventListener('click',()=>choose(i));$('hand').appendChild(b)});
+ $('draw').disabled=!deck.length||locked;$('pass').disabled=locked;
+}
 function legal(p){const [l,r]=ends();return p[0]===l||p[1]===l||p[0]===r||p[1]===r}
 function put(p,side){const [l,r]=ends();if(side==='L'){if(p[1]===l)board.unshift(p);else board.unshift([p[1],p[0]])}else{if(p[0]===r)board.push(p);else board.push([p[1],p[0]])}}
-function choose(i){if(locked)return;const p=hand[i];if(!legal(p)){setMsg('Essa peça não encaixa. Escolha outra.');return}const [l,r]=ends();let side;if(p[0]===l||p[1]===l){if((p[0]===r||p[1]===r)&&l!==r){const s=prompt('Esta peça encaixa nos dois lados. Digite E para esquerda ou D para direita.','D');side=s&&s.toUpperCase().startsWith('E')?'L':'R'}else side='L'}else side='R';put(p,side);hand.splice(i,1);score+=p[0]+p[1];if(!hand.length){finish(true);return}render();setMsg('Boa jogada! Vez da IA…');locked=true;setTimeout(aiTurn,650)}
-function aiTurn(){if(!ai.length){finish(false);return}let idx=ai.findIndex(legal);while(idx<0&&deck.length){ai.push(deck.pop());idx=ai.findIndex(legal)}if(idx<0){blocked++;locked=false;render();setMsg('A IA passou. Sua vez!');return}const p=ai.splice(idx,1)[0];const [l,r]=ends();put(p,(p[0]===l||p[1]===l)?'L':'R');render();if(!ai.length){finish(false);return}locked=false;setMsg('A IA jogou '+p[0]+'|'+p[1]+'. Sua vez!')}
+function commitPiece(i,side){const p=hand[i];if(!p||!legal(p))return;put(p,side);hand.splice(i,1);$('sideChoice').hidden=true;score+=p[0]+p[1];if(!hand.length){finish(true);return}render();setMsg('Boa jogada! A IA está pensando…');locked=true;setTimeout(aiTurn,620)}
+function choose(i){
+ if(locked)return;const p=hand[i];if(!legal(p)){setMsg('Essa peça não encaixa em nenhuma das pontas.');return}
+ const [l,r]=ends(),fitsLeft=p[0]===l||p[1]===l,fitsRight=p[0]===r||p[1]===r;
+ if(fitsLeft&&fitsRight&&l!==r){$('sideChoice').innerHTML=btn('playLeft','◀ Colocar à esquerda')+btn('playRight','Colocar à direita ▶');$('sideChoice').hidden=false;on('playLeft',()=>commitPiece(i,'L'));on('playRight',()=>commitPiece(i,'R'));setMsg('Esta peça encaixa nas duas pontas. Escolha onde deseja colocá-la.');return}
+ commitPiece(i,fitsLeft?'L':'R');
+}
+function aiTurn(){
+ if(!ai.length){finish(false);return}let idx=ai.findIndex(legal);while(idx<0&&deck.length){ai.push(deck.pop());idx=ai.findIndex(legal)}
+ if(idx<0){blocked++;locked=false;render();setMsg('A IA passou. Sua vez!');return}
+ const p=ai.splice(idx,1)[0],[l,r]=ends();put(p,(p[0]===l||p[1]===l)?'L':'R');render();if(!ai.length){finish(false);return}locked=false;setMsg('A IA jogou '+p[0]+'|'+p[1]+'. Sua vez!');
+}
 function finish(win){locked=true;const my=hand.reduce((s,p)=>s+p[0]+p[1],0),opp=ai.reduce((s,p)=>s+p[0]+p[1],0);if(win){score+=opp;saveBest('domino',score);setMsg('🏆 Você venceu! Pontuação da rodada: '+score+'.')}else if(!ai.length){setMsg('A IA venceu desta vez. Tente outra rodada!')}else{setMsg(my<opp?'Rodada bloqueada: você venceu pelos pontos!':'Rodada bloqueada: a IA venceu pelos pontos.')}render()}
-on('draw',()=>{if(deck.length&&!locked){hand.push(deck.pop());render();setMsg('Você comprou uma peça.')}});
-on('pass',()=>{if(locked)return;if(hand.some(legal)){setMsg('Você ainda tem uma peça que encaixa.');return}if(deck.length){hand.push(deck.pop());render();setMsg('Compre uma peça antes de passar.')}else{locked=true;setTimeout(aiTurn,300)}});
+on('draw',()=>{if(deck.length&&!locked){hand.push(deck.pop());render();setMsg('Você comprou uma peça do monte.')}});
+on('pass',()=>{if(locked)return;if(hand.some(legal)){setMsg('Você ainda tem uma peça que pode ser encaixada.');return}if(deck.length){hand.push(deck.pop());render();setMsg('Compre uma peça antes de passar.')}else{locked=true;setMsg('Você passou. A IA vai jogar…');setTimeout(aiTurn,300)}});
 on('new',fresh);fresh();
 }
 function paciencia(){
@@ -111,7 +183,7 @@ shellStats(stat('Movimentos','moves')+stat('Vitórias','wins')+stat('Recorde','b
 let stock=[],waste=[],cols=[],found=[[],[],[],[]],sel=null,moves=0,wins=0;
 const suits=['♠','♥','♦','♣'],red=s=>s==='♥'||s==='♦',label=c=>c.v===1?'A':c.v===11?'J':c.v===12?'Q':c.v===13?'K':c.v;
 function fresh(){let d=[];for(let s of suits)for(let v=1;v<=13;v++)d.push({s,v,id:s+v});for(let i=d.length-1;i>0;i--){let j=Math.random()*(i+1)|0;[d[i],d[j]]=[d[j],d[i]]}stock=d;waste=[];cols=Array.from({length:7},(_,i)=>stock.splice(0,i+1).map((c,j)=>({...c,up:j===i})));found=[[],[],[],[]];sel=null;moves=0;render();setMsg('Comece revelando uma carta do monte.')}
-function card(c,clickable=true){return '<div class="cardface '+(red(c.s)?'red':'')+(c.up===false?' back':'')+(sel&&sel.card.id===c.id?' sel':'')+'" data-card="'+c.id+'">'+(c.up===false?'':label(c)+c.s)+'</div>'}
+function card(c,clickable=true){const back=c.up===false,val=label(c);return '<div class="cardface '+(red(c.s)?'red ':'')+(back?'back ':'')+(sel&&sel.card.id===c.id?'sel':'')+'" data-card="'+c.id+'">'+(back?'':'<span class="card-corner"><b>'+val+'</b><i>'+c.s+'</i></span><span class="card-center">'+c.s+'</span><span class="card-corner bottom"><b>'+val+'</b><i>'+c.s+'</i></span>')+'</div>'}
 function render(){ $('moves').textContent=moves;$('wins').textContent=wins;$('best').textContent=best('paciencia');let html='<div class="solmeta"><div class="pile" id="stock"><div class="pilehead">🂠</div>'+(stock.length?'<div class="cardface back">◆</div>':'')+'</div><div class="pile" id="waste"><div class="pilehead">Descarte</div>'+(waste.length?card({...waste[waste.length-1],up:true}):'')+'</div>';for(let i=0;i<4;i++)html+='<div class="pile" data-found="'+i+'"><div class="pilehead"> '+suits[i]+' </div>'+(found[i].length?card({...found[i][found[i].length-1],up:true}):'')+'</div>';html+='</div><div class="solgrid">'+cols.map((col,i)=>'<div class="pile" data-col="'+i+'">'+(col.length?col.map((c,j)=>'<div style="margin-top:'+(j?'-25px':'0')+'">'+card(c)+'</div>').join(''):'<div class="pilehead">K</div>')+'</div>').join('')+'</div>';$('stage').innerHTML=html;
 $('stock').onclick=draw;$('waste').onclick=()=>{if(waste.length)select({type:'waste',index:0,cardIndex:waste.length-1,card:waste[waste.length-1]})};document.querySelectorAll('[data-card]').forEach(el=>el.onclick=e=>{e.stopPropagation();const c=findCard(el.dataset.card);if(c)select(c)});document.querySelectorAll('[data-col]').forEach(el=>el.onclick=()=>destCol(+el.dataset.col));document.querySelectorAll('[data-found]').forEach(el=>el.onclick=()=>destFound(+el.dataset.found));}
 function findCard(id){for(let i=0;i<cols.length;i++){let j=cols[i].findIndex(c=>c.id===id);if(j>=0&&cols[i][j].up)return {type:'col',index:i,cardIndex:j,card:cols[i][j]}}let j=waste.findIndex(c=>c.id===id);if(j===waste.length-1&&j>=0)return {type:'waste',index:0,cardIndex:j,card:waste[j]};return null}
