@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Jogos do Jhon">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Jogos do Jhon · v3.92</title>
+<title>Jogos do Jhon · v3.93</title>
 <meta property="og:title" content="Jogos do Jhon · Arcade">
 <meta property="og:description" content="Arcade de jogos web do Jhon com 46 jogos para jogar no celular ou PC.">
 <meta property="og:type" content="website">
@@ -326,7 +326,7 @@
     <span class="hero-kicker">ARCADE PESSOAL</span>
     <h1>Jogos do Jhon</h1>
     <p class="sub">🎮 Seu cantinho de diversão: escolha um jogo e comece a jogar no celular ou no PC.</p>
-    <div class="version"><span class="dot"></span> Versão <b>v3.92</b> · atualizado em <b>25/11/2026</b></div>
+    <div class="version"><span class="dot"></span> Versão <b>v3.93</b> · atualizado em <b>25/11/2026</b></div>
     <div class="home-hero-actions">
       <a class="primary-cta" href="#catalogStart">🎮 Explorar jogos <span aria-hidden="true">↓</span></a>
       <span class="hero-count" id="heroGameCount">46 jogos no catálogo</span>
@@ -528,7 +528,7 @@
     <div class="card" data-category="action" data-href="games/corte-frutas.html" style="--accent:#fb7185;--glow:rgba(251,113,133,.20)"><span class="tag new">v1.1</span><span class="ico">🍉</span><p class="name">Corte de Frutas <em class="new">NOVO</em></p><p class="desc">Corte frutas em sequência, acumule pontos e desvie das bombas.</p></div>
     <div class="card" data-category="arcade" data-href="games/salto-infinito.html" style="--accent:#a78bfa;--glow:rgba(167,139,250,.20)"><span class="tag new">v1.1</span><span class="ico">🦘</span><p class="name">Salto Infinito <em class="new">NOVO</em></p><p class="desc">Pule automaticamente entre plataformas e tente alcançar uma altura recorde.</p></div>
     <div class="card" data-category="action" data-href="games/arena-bombas.html" style="--accent:#f97316;--glow:rgba(249,115,22,.20)"><span class="tag new">v1.1</span><span class="ico">💣</span><p class="name">Arena de Bombas <em class="new">NOVO</em></p><p class="desc">Plante bombas, abra caminho nas caixas e elimine os robôs inimigos.</p></div>
-    <div class="card" data-category="arcade" data-href="games/ritmo-neon.html" style="--accent:#e879f9;--glow:rgba(232,121,249,.20)"><span class="tag new">v1.1</span><span class="ico">🎵</span><p class="name">Ritmo Neon <em class="new">NOVO</em></p><p class="desc">Acerte as notas no tempo certo com teclado ou toque e construa combos.</p></div>
+    <div class="card" data-category="arcade" data-href="games/ritmo-neon.html" style="--accent:#e879f9;--glow:rgba(232,121,249,.20)"><span class="tag new">v1.2</span><span class="ico">🎵</span><p class="name">Ritmo Neon <em class="new">NOVO</em></p><p class="desc">Use D, F, J e K — ou toque nas colunas — para acertar as notas na linha de marcação e aumentar seu combo.</p></div>
     <div class="card" data-category="action" data-href="games/arena-tanques.html" style="--accent:#22d3ee;--glow:rgba(34,211,238,.20)"><span class="tag new">v3.4</span><span class="ico">🛡️</span><p class="name">Arena de Tanques <em class="new">NOVO</em></p><p class="desc">Enfrente grupos maiores de inimigos, sobreviva às ondas e derrote chefes.</p></div>
   </div>
   <section class="empty-state" id="emptyState" hidden aria-live="polite" aria-atomic="true">
@@ -620,8 +620,9 @@
     </div>
   </details>
   <div class="notes">
-    <h2>📝 Novidades da tela inicial · v3.92</h2>
+    <h2>📝 Novidades da tela inicial · v3.93</h2>
     <ul>
+       <li><b>v3.93 — Ritmo Neon v1.2:</b> textos revisados para explicar os comandos no teclado e no toque, o momento de acertar a nota, a pontuação por precisão, a perda de combo e o encerramento do desafio. Botão e mensagens usam linguagem coerente com a partida.</li>
        <li><b>v3.92 — Arena de Tanques v3.4:</b> corrigido o carregamento dos inimigos: três tanques já aparecem no início de cada onda, a geração das próximas levas continua e o cache PWA foi renovado; removida do pré-cache a página de estacionamento que foi excluída.</li>
        <li><b>v3.89 — Banco Imobiliário v4.4:</b> modos de partida contra a máquina ou para duas pessoas no mesmo aparelho; escolha entre dados virtuais ou físicos com registro manual dos dois resultados. Cada participante pode comprar, investir, hipotecar e administrar o próprio patrimônio.</li>
        <li><b>v3.88 — Banco Imobiliário v4.3:</b> escolha entre dados virtuais ou dados físicos com entrada manual dos dois resultados; escolha jogar contra a máquina ou em dupla no mesmo aparelho. No modo de duas pessoas, cada participante tem seus próprios turnos, compras, melhorias, hipotecas e patrimônio.</li>
@@ -1082,7 +1083,7 @@ function validateBackup(raw){
 }
 function exportBackup(){
  try{
-  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v3.92',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
+  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v3.93',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
   const content=JSON.stringify(backup,null,2),blob=new Blob([content],{type:'application/json'});
   if(blob.size>MAX_BACKUP_BYTES)throw new Error('O backup ultrapassa 2 MB.');
   const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='jogos-do-jhon-backup-'+new Date().toISOString().slice(0,10)+'.json';
