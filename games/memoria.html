@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#070b14">
-<title>Jogo da Memória — Jogos do Jhon v1.6</title>
+<title>Jogo da Memória — Jogos do Jhon v1.7</title>
 <style>
   :root{--bg:#070b14;--card:#0f172a;--line:#1e293b;--txt:#e2e8f0;--muted:#94a3b8;--acc:#a78bfa}
   *{box-sizing:border-box}
@@ -135,6 +135,36 @@ h1{font-size:clamp(18px,3vw,22px);font-weight:850;letter-spacing:-.5px;color:#f5
 }
 @media(prefers-reduced-motion:reduce){.inner,.card,.card.matched{transition:none;animation:none}}
 
+
+body{background:radial-gradient(ellipse at 50% -12%,#46327a 0,transparent 43%),radial-gradient(ellipse at 0% 70%,#0e749044,transparent 42%),linear-gradient(145deg,#070b16,#11182e 60%,#0b1830);overflow-x:hidden}
+.top{border:1px solid #ffffff22;background:linear-gradient(120deg,#1b2a49ee,#121d36ee);box-shadow:0 12px 30px #0006,inset 0 1px #ffffff16}
+#board{gap:clamp(7px,1.8vw,12px);padding:clamp(9px,2vw,14px);border:1px solid #b4a4ff44;border-radius:23px;background:linear-gradient(145deg,#1b2a4be8,#101a31ee);box-shadow:0 22px 48px #0008,inset 0 1px #ffffff1c,inset 0 -9px 24px #0004}
+.card{border-radius:16px;filter:drop-shadow(0 6px 7px #0006);transition:filter .2s,transform .2s}
+.card:hover{filter:drop-shadow(0 10px 11px #0008) brightness(1.08);transform:translateY(-3px)}
+.inner{border-radius:16px;transform-style:preserve-3d;transition:transform .52s cubic-bezier(.2,.8,.2,1)}
+.face{border-radius:16px;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.front{background:radial-gradient(circle at 30% 25%,#465e91,#253b64 48%,#101d37 100%);border:1px solid #a9c4ff;box-shadow:inset 0 1px #ffffff42,inset 0 -10px 20px #080f20,0 0 0 3px #24375c}
+.front:before{content:"✧";position:absolute;inset:10% auto auto 13%;font-size:clamp(12px,2vw,19px);color:#e9d5ff;text-shadow:0 0 12px #fff;opacity:.95}
+.front:after{content:"✦";font-size:clamp(25px,6vw,43px);font-weight:900;color:#e7e8ff;text-shadow:0 0 9px #fff,0 0 22px #a78bfa,0 0 32px #22d3ee;position:relative}
+.back{background:radial-gradient(circle at 35% 23%,#8466de,#4c3a9b 55%,#201b54);border:1px solid #d4c7ff;box-shadow:inset 0 1px #ffffff55,inset 0 -11px 22px #17103b,0 0 18px #a78bfa55}
+.back:before{content:"";position:absolute;inset:8%;border:1px solid #ffffff44;border-radius:11px;background:repeating-linear-gradient(45deg,#ffffff0b 0 5px,transparent 5px 10px);pointer-events:none}
+.back:after{content:"";position:absolute;width:35%;height:35%;border:1px solid #ffffff77;border-radius:50%;box-shadow:0 0 18px #fff8,inset 0 0 15px #fff4;background:radial-gradient(circle,#e9d5ff77,transparent 70%);pointer-events:none}
+.card.flipped .inner,.card.matched .inner{transform:rotateY(180deg)}
+.card.flipped .back,.card.matched .back{display:flex!important}
+.card.matched{animation:matchedCard .62s cubic-bezier(.2,.8,.2,1)}
+.card.matched .back{background:radial-gradient(circle at 35% 25%,#4ade80,#0f766e 60%,#064e3b);border-color:#bbf7d0;box-shadow:inset 0 1px #ffffff66,0 0 0 2px #34d39955,0 0 23px #34d39988}
+.card.matched .back:after{content:"✦";border:0;background:none;color:#fef9c3;font-size:clamp(28px,6vw,46px);text-shadow:0 0 10px #fff,0 0 22px #facc15}
+.bar select{border-color:#6474a9;background:linear-gradient(145deg,#1a2b4c,#111d36);box-shadow:0 5px 13px #0004;font-weight:750}
+.bar .btn{box-shadow:0 4px 0 #5552a0,0 8px 18px #0005}
+.stats{gap:10px}
+.stat{border-color:#ffffff22;background:linear-gradient(145deg,#1b2c4b,#101a30);box-shadow:0 7px 17px #0004,inset 0 1px #ffffff14}
+.stat b{text-shadow:0 0 12px #a78bfa44}
+.progress{height:9px;padding:2px;border:1px solid #ffffff22;background:#101a30;box-shadow:inset 0 2px 5px #0008}
+#fill{background:linear-gradient(90deg,#38e0ba,#8f8bff,#65d8f1);box-shadow:0 0 12px #8f8bffbb}
+.msg{background:linear-gradient(120deg,#182b49dd,#111d35dd);border-color:#ffffff23;color:#dbeafe;box-shadow:0 8px 20px #0005,inset 0 1px #ffffff13}
+#fx{z-index:8}
+@keyframes matchedCard{0%,100%{transform:scale(1)}35%{transform:scale(1.1) rotate(1deg)}65%{transform:scale(1.04) rotate(-1deg)}}
+@media(prefers-reduced-motion:reduce){.card,.inner,.card.matched{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
@@ -163,7 +193,7 @@ h1{font-size:clamp(18px,3vw,22px);font-weight:850;letter-spacing:-.5px;color:#f5
   <div class="progress" aria-hidden="true"><div id="fill"></div></div>
   <div id="board"></div>
   <div class="msg" id="msg" aria-live="polite"></div>
-  <div class="ver">v1.6 · 24/11/2026</div>
+  <div class="ver">v1.7 · 24/11/2026</div>
 
   <div id="ov">
     <div class="panel">
@@ -234,9 +264,25 @@ function finish(){
  paintBest();sound('win');ovTitle.textContent=record?'Novo recorde! 🏆':'Parabéns! 🎉';
  ovLine1.textContent='Você encontrou todos os pares em '+moves+' jogadas e '+fmt(seconds)+'.';
  ovLine2.textContent=record?'Esse é o seu melhor resultado nesta dificuldade.':'Melhor resultado: '+(oldMoves?oldMoves+' jogadas · '+fmt(oldTime):'este resultado');
- overlay.classList.add('show');msg.textContent='🎉 Todos os pares encontrados!'
+ celebrate();overlay.classList.add('show');msg.textContent='🎉 Todos os pares encontrados!'
 }
-function celebrate(){}
+let confettiFrame=0;
+function celebrate(){
+ const canvas=fx,ctx=canvas.getContext('2d');if(!ctx)return;
+ if(confettiFrame)cancelAnimationFrame(confettiFrame);
+ const dpr=Math.min(window.devicePixelRatio||1,2),w=window.innerWidth,h=window.innerHeight;
+ canvas.width=Math.floor(w*dpr);canvas.height=Math.floor(h*dpr);canvas.style.width=w+'px';canvas.style.height=h+'px';
+ ctx.setTransform(dpr,0,0,dpr,0,0);canvas.classList.add('show');
+ const palette=['#facc15','#a78bfa','#22d3ee','#fb7185','#34d399','#f8fafc'];
+ const bits=Array.from({length:110},()=>({x:Math.random()*w,y:-20-Math.random()*h*.3,vx:(Math.random()-.5)*3,vy:2+Math.random()*4,rot:Math.random()*6.28,spin:(Math.random()-.5)*.18,size:4+Math.random()*7,color:palette[Math.floor(Math.random()*palette.length)],shape:Math.random()>.45}));
+ const start=performance.now();
+ function frame(now){
+  ctx.clearRect(0,0,w,h);const elapsed=now-start;
+  bits.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.035;p.rot+=p.spin;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.globalAlpha=Math.max(0,1-elapsed/2200);ctx.fillStyle=p.color;if(p.shape)ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size*.62);else{ctx.beginPath();ctx.arc(0,0,p.size*.45,0,Math.PI*2);ctx.fill()}ctx.restore()});
+  if(elapsed<2200){confettiFrame=requestAnimationFrame(frame)}else{confettiFrame=0;ctx.clearRect(0,0,w,h);canvas.classList.remove('show')}
+ }
+ confettiFrame=requestAnimationFrame(frame);
+}
 $('new').addEventListener('click',build);$('ovBtn').addEventListener('click',build);size.addEventListener('change',build);
 soundBtn.addEventListener('click',()=>{muted=!muted;safeSet('memoria.muted',muted?'1':'0');paintSound();if(!muted)sound('flip')});
 window.addEventListener('resize',fitBoard);
