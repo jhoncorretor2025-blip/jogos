@@ -1,4 +1,4 @@
-const CACHE_NAME="jogos-do-jhon-v4.06";
+const CACHE_NAME="jogos-do-jhon-v4.07";
 const CORE=[
  "./",
  "./index.html",
@@ -17,6 +17,7 @@ const CORE=[
  "./games/detetive.html",
  "./games/corrida.html",
  "./games/sinuca.html",
+ "./games/futebol-de-mesa.html",
  "./games/caminhoneiro.html",
  "./games/cobra.html",
  "./games/memoria.html",
