@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#071b27">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>Futebol de Mesa · Jogos do Jhon · v1.0</title>
+<style>
+:root{color-scheme:dark;--bg:#07131d;--panel:#102435;--line:#2c4d5d;--text:#eef8fa;--muted:#a9c0ca;--blue:#38bdf8;--red:#fb7185}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:radial-gradient(900px 520px at 50% -15%,#17455a,#07131d 68%);color:var(--text)}
+body{padding:14px 12px 28px}
+button,select{font:inherit}
+.wrap{width:min(100%,1040px);margin:auto}
+header{text-align:center;margin:0 auto 14px}
+.topline{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.back{width:42px;height:42px;display:grid;place-items:center;border:1px solid #ffffff24;border-radius:13px;background:#ffffff0b;color:#e7f8ff;text-decoration:none;font-size:22px}
+h1{flex:1;margin:0;font-size:clamp(22px,4vw,36px);letter-spacing:-.8px}
+header p{margin:0;color:var(--muted);font-size:14px}
+.version{display:inline-block;margin-top:8px;padding:4px 10px;border:1px solid #315668;border-radius:30px;color:#a8e6ef;font-size:11px;font-weight:800;letter-spacing:.6px}
+.panel{padding:12px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,#132c3d,#0d1d2a);box-shadow:0 16px 40px #0005}
+.toolbar{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:11px}
+select,.action{min-height:42px;padding:10px 13px;border:1px solid #456577;border-radius:12px;background:#162e40;color:#f2fbff;font-weight:750}
+select{flex:1;min-width:170px}
+.action{cursor:pointer;background:linear-gradient(110deg,#38bdf8,#67e8f9);color:#062335;border:0;box-shadow:0 4px 0 #17617b}
+.action:active{transform:translateY(2px);box-shadow:0 2px 0 #17617b}
+.sound{min-width:44px;padding:8px;background:#1a3548;color:#fff;border:1px solid #456577;box-shadow:none}
+.scoreboard{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;margin-bottom:11px}
+.score{padding:10px 12px;border:1px solid #ffffff22;border-radius:14px;background:#0c1c29;text-align:center}
+.score.blue{box-shadow:inset 0 0 0 1px #38bdf822}
+.score.red{box-shadow:inset 0 0 0 1px #fb718522}
+.score strong{display:block;font-size:clamp(27px,5vw,36px);line-height:1.05;font-variant-numeric:tabular-nums}
+.score span{font-size:11px;letter-spacing:1px;text-transform:uppercase;font-weight:900}
+.score.blue span{color:var(--blue)}.score.red span{color:var(--red)}
+.vs{color:#a9c0ca;font-weight:950;font-size:14px;letter-spacing:1px}
+.canvas-wrap{position:relative;width:100%;overflow:hidden;border:2px solid #c6a66a;border-radius:16px;background:#0c573e;box-shadow:0 15px 35px #0008}
+#table{display:block;width:100%;height:auto;aspect-ratio:5/3;touch-action:none;cursor:grab}
+#table.dragging{cursor:grabbing}
+.tip{display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0 0;padding:10px 12px;border:1px solid #ffffff1c;border-radius:12px;background:#0b1b28;color:#c7dce5;font-size:12px;line-height:1.5;text-align:center}
+.tip b{color:#fff}
+.controls-info{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
+.info{padding:10px 12px;border:1px solid #ffffff1d;border-radius:12px;background:#0d1e2b;color:#b9ccd5;font-size:12px;line-height:1.5}
+.info strong{display:block;margin-bottom:3px;font-size:13px}
+.info.blue strong{color:var(--blue)}.info.red strong{color:var(--red)}
+.actions-bottom{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-top:10px;color:#8fa8b5;font-size:11px}
+#message{min-height:22px;color:#e1f5f7;text-align:center;font-weight:750;font-size:13px}
+#finish{position:fixed;inset:0;z-index:20;display:none;align-items:center;justify-content:center;padding:20px;background:#020910d9;backdrop-filter:blur(6px)}
+#finish.show{display:flex}
+.finish-card{width:min(100%,360px);padding:24px 20px;border:1px solid #8dcfe2;border-radius:22px;background:linear-gradient(150deg,#19425a,#102234 70%);box-shadow:0 22px 70px #000b;text-align:center}
+.finish-card h2{margin:0 0 8px;font-size:26px}
+.finish-card p{margin:0;color:#c2d9e2;line-height:1.55}
+.finish-card .action{width:100%;margin-top:16px}
+@media(max-width:560px){body{padding:9px 7px 20px}.panel{padding:8px;border-radius:14px}.topline{gap:7px}.back{width:38px;height:38px;flex-basis:38px}.toolbar{gap:7px}.toolbar select{min-width:100%;min-height:40px}.toolbar .action{flex:1;min-height:40px}.scoreboard{gap:6px;margin-bottom:8px}.score{padding:8px 5px;border-radius:11px}.score strong{font-size:29px}.score span{font-size:9px}.canvas-wrap{border-radius:11px}.controls-info{gap:6px}.info{padding:8px;font-size:10px}.info strong{font-size:11px}.tip{font-size:11px;padding:8px}.actions-bottom{font-size:10px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="wrap">
+<header>
+  <div class="topline"><a class="back" href="../index.html" aria-label="Voltar ao catálogo">←</a><h1>⚽ Futebol de Mesa</h1><span aria-hidden="true">🏆</span></div>
+  <p>Um pebolim digital para disputar gols com alguém ao seu lado!</p>
+  <div class="version">JOGOS DO JHON · v1.0 · 25/11/2026</div>
+</header>
+<section class="panel">
+  <div class="toolbar">
+    <select id="mode" aria-label="Modo de jogo">
+      <option value="local" selected>👥 Dois jogadores no mesmo dispositivo</option>
+      <option value="ai">🤖 Jogar contra o computador</option>
+    </select>
+    <button class="action" id="newMatch" type="button">↻ Nova partida</button>
+    <button class="action sound" id="sound" type="button" aria-label="Desligar som" aria-pressed="true">🔊</button>
+  </div>
+  <div class="scoreboard" aria-live="polite">
+    <div class="score blue"><span>🔵 Azul · casa</span><strong id="blueScore">0</strong></div>
+    <div class="vs">VS</div>
+    <div class="score red"><span>🔴 Vermelho · visitante</span><strong id="redScore">0</strong></div>
+  </div>
+  <div class="canvas-wrap">
+    <canvas id="table" width="1000" height="600" aria-label="Mesa de pebolim. Arraste os puxadores azuis no trilho superior e os vermelhos no trilho inferior para movimentar os jogadores."></canvas>
+  </div>
+  <div class="tip"><span>🖐️ <b>Celular:</b> arraste os puxadores nas bordas da mesa para movimentar cada fileira.</span><span>·</span><span>⚽ Os jogadores chutam quando alcançam a bola.</span></div>
+  <div class="controls-info">
+    <div class="info blue"><strong>🔵 Equipe Azul</strong>Teclado: <b>W / S</b> movimenta a fileira selecionada. Teclas <b>1–4</b> trocam a fileira.</div>
+    <div class="info red"><strong>🔴 Equipe Vermelha</strong>Teclado: <b>↑ / ↓</b> movimenta. Teclas <b>7–0</b> trocam a fileira. No modo computador, a equipe vermelha é automática.</div>
+  </div>
+  <div class="actions-bottom"><span>Primeiro a marcar <b>5 gols</b> vence.</span><span id="message">Partida pronta! Boa diversão.</span></div>
+</section>
+</main>
+<div id="finish" role="dialog" aria-modal="true" aria-labelledby="finishTitle"><div class="finish-card"><h2 id="finishTitle">🏆 Fim de jogo!</h2><p id="finishText"></p><button class="action" id="again" type="button">Jogar novamente</button></div></div>
+<script>
+(()=>{
+'use strict';
+const canvas=document.getElementById('table'),ctx=canvas.getContext('2d');
+const $=id=>document.getElementById(id);
+const W=1000,H=600,FIELD={left:52,right:948,top:62,bottom:538},CENTER=(FIELD.top+FIELD.bottom)/2,GOAL_TOP=226,GOAL_BOTTOM=374;
+const RODS=[
+ {team:'blue',x:104,count:1,label:'Goleiro'},
+ {team:'red',x:214,count:3,label:'Atacante'},
+ {team:'blue',x:324,count:2,label:'Defesa'},
+ {team:'red',x:434,count:5,label:'Meio'},
+ {team:'blue',x:566,count:5,label:'Meio'},
+ {team:'red',x:676,count:2,label:'Defesa'},
+ {team:'blue',x:786,count:3,label:'Ataque'},
+ {team:'red',x:896,count:1,label:'Goleiro'}
+];
+let rods=[],ball={x:500,y:300,vx:0,vy:0,r:11},scores={blue:0,red:0},round=0,goalPause=0,paused=false,finished=false,muted=false,audio=null,drag=null,lastTime=0;
+let selected={blue:0,red:3};
+const keys={};
+function clamp(v,min,max){return Math.max(min,Math.min(max,v))}
+function rand(a,b){return a+Math.random()*(b-a)}
+function safeGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function safeSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+function tone(freq,duration=.1){if(muted)return;try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;audio=audio||new AC();if(audio.state==='suspended')audio.resume();const o=audio.createOscillator(),g=audio.createGain();o.type='sine';o.frequency.value=freq;g.gain.setValueAtTime(.04,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+duration);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+duration)}catch(e){}}
+function sound(kind){if(kind==='kick')tone(260,.055);if(kind==='goal'){[523,659,784].forEach((f,i)=>setTimeout(()=>tone(f,.16),i*100))}}
+function paintScores(){$('blueScore').textContent=scores.blue;$('redScore').textContent=scores.red}
+function makeRods(){rods=RODS.map((r,i)=>({...r,offset:0,speed:0,index:r.team==='blue'?RODS.slice(0,i+1).filter(x=>x.team==='blue').length-1:RODS.slice(0,i+1).filter(x=>x.team==='red').length-1}))}
+function resetBall(direction){ball={x:500,y:300,vx:0,vy:0,r:11};goalPause=42;ball.kickDirection=direction|| (Math.random()>.5?1:-1)}
+function newMatch(){round++;scores={blue:0,red:0};makeRods();resetBall();finished=false;paused=false;$('finish').classList.remove('show');paintScores();$('message').textContent='Partida pronta! Boa diversão.'}
+function playerYs(rod){const spacing=rod.count===1?0:Math.min(78,330/(rod.count-1));return Array.from({length:rod.count},(_,i)=>clamp(CENTER+(i-(rod.count-1)/2)*spacing+rod.offset,FIELD.top+24,FIELD.bottom-24))}
+function point(e){const r=canvas.getBoundingClientRect();return {x:(e.clientX-r.left)/r.width*W,y:(e.clientY-r.top)/r.height*H}}
+function findHandle(p){let best=null,dist=Infinity;rods.forEach((rod,i)=>{const hy=rod.team==='blue'?26:574;const d=Math.hypot(p.x-rod.x,p.y-hy);if(d<40&&d<dist&&(rod.team!=='red'||$('mode').value!=='ai')){best=i;dist=d}});return best}
+canvas.addEventListener('pointerdown',e=>{if(finished)return;const p=point(e),idx=findHandle(p);if(idx===null)return;e.preventDefault();canvas.setPointerCapture(e.pointerId);drag={idx,lastY:p.y};canvas.classList.add('dragging');selected[rods[idx].team]=rods[idx].index});
+canvas.addEventListener('pointermove',e=>{if(!drag)return;const p=point(e),rod=rods[drag.idx];const dy=p.y-drag.lastY;rod.offset=clamp(rod.offset+dy, -150,150);rod.speed=clamp(dy,-20,20);drag.lastY=p.y});
+function endDrag(){drag=null;canvas.classList.remove('dragging');rods.forEach(r=>r.speed*=.25)}
+canvas.addEventListener('pointerup',endDrag);canvas.addEventListener('pointercancel',endDrag);canvas.addEventListener('lostpointercapture',endDrag);
+window.addEventListener('keydown',e=>{
+ const k=e.key.toLowerCase();keys[k]=true;
+ if(['arrowup','arrowdown',' '].includes(k))e.preventDefault();
+ if(k>='1'&&k<='4')selected.blue=Number(k)-1;
+ if(k==='7')selected.red=0;if(k==='8')selected.red=1;if(k==='9')selected.red=2;if(k==='0')selected.red=3;
+});
+window.addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=false});
+window.addEventListener('blur',()=>{Object.keys(keys).forEach(k=>delete keys[k]);endDrag()});
+function moveKeyboard(){
+ const blue=rods.filter(r=>r.team==='blue')[selected.blue],red=rods.filter(r=>r.team==='red')[selected.red],step=6;
+ if(blue){if(keys.w)blue.offset=clamp(blue.offset-step,-150,150);if(keys.s)blue.offset=clamp(blue.offset+step,-150,150)}
+ if($('mode').value==='local'&&red){if(keys.arrowup)red.offset=clamp(red.offset-step,-150,150);if(keys.arrowdown)red.offset=clamp(red.offset+step,-150,150)}
+}
+function moveAI(){
+ if($('mode').value!=='ai'||finished||goalPause>0)return;
+ rods.forEach(rod=>{if(rod.team!=='red')return;const target=clamp(ball.y-CENTER,-145,145);rod.offset+=clamp(target-rod.offset,-2.1,2.1);rod.speed=clamp((target-rod.offset)*.08,-5,5)});
+}
+function roundRect(c,x,y,w,h,r){c.beginPath();c.roundRect(x,y,w,h,r)}
+function drawPlayer(rod,y){
+ const blue=rod.team==='blue',color=blue?'#38bdf8':'#fb7185',dark=blue?'#075985':'#9f1239',dir=blue?1:-1;
+ ctx.save();ctx.translate(rod.x,y);
+ ctx.fillStyle='#03120dcc';ctx.beginPath();ctx.ellipse(2,12,20,10,0,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle=dark;roundRect(ctx,-13,-19,26,38,8);ctx.fill();
+ ctx.fillStyle=color;roundRect(ctx,-12,-20,24,34,7);ctx.fill();
+ ctx.fillStyle='#ffffffb0';roundRect(ctx,-7,-15,4,23,2);ctx.fill();roundRect(ctx,3,-15,4,23,2);ctx.fill();
+ ctx.fillStyle='#f6d7ba';ctx.beginPath();ctx.arc(0,-22,7,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle='#e2e8f0';roundRect(ctx,dir>0?8:-17,-5,9,10,3);ctx.fill();
+ ctx.restore();
+}
+function draw(){
+ ctx.clearRect(0,0,W,H);
+ const bg=ctx.createLinearGradient(0,0,W,H);bg.addColorStop(0,'#0a6a4b');bg.addColorStop(.5,'#08734d');bg.addColorStop(1,'#075b43');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+ ctx.fillStyle='#b99454';roundRect(ctx,22,42,956,516,24);ctx.fill();
+ ctx.fillStyle='#086b49';roundRect(ctx,FIELD.left,FIELD.top,FIELD.right-FIELD.left,FIELD.bottom-FIELD.top,9);ctx.fill();
+ ctx.strokeStyle='#e4f4d8cc';ctx.lineWidth=3;ctx.strokeRect(FIELD.left,FIELD.top,FIELD.right-FIELD.left,FIELD.bottom-FIELD.top);
+ ctx.beginPath();ctx.moveTo(500,FIELD.top);ctx.lineTo(500,FIELD.bottom);ctx.stroke();ctx.beginPath();ctx.arc(500,CENTER,72,0,Math.PI*2);ctx.stroke();
+ ctx.strokeRect(FIELD.left,205,95,190);ctx.strokeRect(FIELD.right-95,205,95,190);
+ ctx.fillStyle='#092c25';ctx.fillRect(4,GOAL_TOP,52,GOAL_BOTTOM-GOAL_TOP);ctx.fillRect(944,GOAL_TOP,52,GOAL_BOTTOM-GOAL_TOP);
+ ctx.strokeStyle='#c5e8da88';ctx.lineWidth=2;for(let x=8;x<52;x+=10){ctx.beginPath();ctx.moveTo(x,GOAL_TOP);ctx.lineTo(x,GOAL_BOTTOM);ctx.stroke();ctx.beginPath();ctx.moveTo(948+x-4,GOAL_TOP);ctx.lineTo(948+x-4,GOAL_BOTTOM);ctx.stroke()}
+ ctx.fillStyle='#e3d2a1';ctx.fillRect(35,FIELD.top,20,FIELD.bottom-FIELD.top);ctx.fillRect(945,FIELD.top,20,FIELD.bottom-FIELD.top);
+ rods.forEach(rod=>{
+  const color=rod.team==='blue'?'#9de8ff':'#ffc0c9';
+  ctx.strokeStyle='#c8d4d8';ctx.lineWidth=8;ctx.beginPath();ctx.moveTo(rod.x,FIELD.top+4);ctx.lineTo(rod.x,FIELD.bottom-4);ctx.stroke();
+  ctx.strokeStyle='#42545b';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(rod.x-5,FIELD.top+4);ctx.lineTo(rod.x-5,FIELD.bottom-4);ctx.stroke();
+  playerYs(rod).forEach(y=>drawPlayer(rod,y));
+  const hy=rod.team==='blue'?26:574;
+  ctx.fillStyle='#07131dcc';ctx.beginPath();ctx.arc(rod.x,hy,25,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle=color;ctx.beginPath();ctx.arc(rod.x,hy,17,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle='#ffffff';ctx.lineWidth=3;ctx.beginPath();ctx.arc(rod.x,hy,17,0,Math.PI*2);ctx.stroke();
+  ctx.fillStyle='#10202c';ctx.font='bold 16px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(String(rod.index+1),rod.x,hy+1);
+ });
+ ctx.save();ctx.shadowColor='#e8ffff';ctx.shadowBlur=17;ctx.fillStyle='#f7fbff';ctx.beginPath();ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2);ctx.fill();ctx.restore();
+ ctx.strokeStyle='#7b8993';ctx.lineWidth=2;ctx.beginPath();ctx.arc(ball.x-3,ball.y-2,4,0,Math.PI*2);ctx.stroke();
+ ctx.fillStyle='#ffffff22';ctx.beginPath();ctx.arc(ball.x-4,ball.y-5,3,0,Math.PI*2);ctx.fill();
+}
+function scored(team){
+ scores[team]++;paintScores();sound('goal');$('message').textContent=team==='blue'?'⚽ Gol da equipe AZUL!':'⚽ Gol da equipe VERMELHA!';
+ if(scores[team]>=5){finished=true;$('finishTitle').textContent=team==='blue'?'🏆 Azul venceu!':'🏆 Vermelho venceu!';$('finishText').textContent='Placar final: '+scores.blue+' × '+scores.red+'. Que partida!';$('finish').classList.add('show');return}
+ resetBall(team==='blue'?-1:1);
+}
+function physics(){
+ if(finished||paused)return;
+ moveKeyboard();moveAI();
+ if(goalPause>0){goalPause--;if(goalPause===0){ball.vx=ball.kickDirection*4.7;ball.vy=rand(-1.3,1.3)}return}
+ ball.x+=ball.vx;ball.y+=ball.vy;ball.vx*=.995;ball.vy*=.995;
+ if(ball.y<FIELD.top+ball.r){ball.y=FIELD.top+ball.r;ball.vy=Math.abs(ball.vy)*.92}
+ if(ball.y>FIELD.bottom-ball.r){ball.y=FIELD.bottom-ball.r;ball.vy=-Math.abs(ball.vy)*.92}
+ if(ball.x<48&&ball.y>GOAL_TOP&&ball.y<GOAL_BOTTOM){scored('red');return}
+ if(ball.x>952&&ball.y>GOAL_TOP&&ball.y<GOAL_BOTTOM){scored('blue');return}
+ if(ball.x<FIELD.left+ball.r||ball.x>FIELD.right-ball.r){ball.x=clamp(ball.x,FIELD.left+ball.r,FIELD.right-ball.r);ball.vx*=-.88}
+ rods.forEach(rod=>playerYs(rod).forEach(y=>{
+  const dx=ball.x-rod.x,dy=ball.y-y,dist=Math.hypot(dx,dy),reach=ball.r+18;
+  if(dist<reach&&Math.abs(dx)>1){
+   const dir=dx>0?1:-1;ball.x=rod.x+dir*(reach+1);
+   const kick=4.1+Math.min(3.4,Math.abs(rod.speed)*.16)+Math.min(2.0,Math.abs(ball.vx)*.12);
+   ball.vx=dir*kick;ball.vy=clamp(ball.vy+rod.speed*.72+dy*.06,-7.5,7.5);sound('kick');
+  }
+ }));
+ ball.vx=clamp(ball.vx,-10,10);ball.vy=clamp(ball.vy,-8,8);
+}
+function frame(t){if(!lastTime)lastTime=t;const delta=Math.min(34,t-lastTime);lastTime=t;const steps=Math.max(1,Math.round(delta/16.67));for(let i=0;i<steps;i++)physics();draw();requestAnimationFrame(frame)}
+$('newMatch').addEventListener('click',newMatch);$('again').addEventListener('click',newMatch);
+$('mode').addEventListener('change',newMatch);
+$('sound').addEventListener('click',()=>{muted=!muted;safeSet('foosball.muted',muted?'1':'0');$('sound').textContent=muted?'🔇':'🔊';$('sound').setAttribute('aria-pressed',String(!muted));$('sound').setAttribute('aria-label',muted?'Ligar som':'Desligar som')});
+muted=safeGet('foosball.muted')==='1';$('sound').textContent=muted?'🔇':'🔊';$('sound').setAttribute('aria-pressed',String(!muted));
+newMatch();requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
