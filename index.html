@@ -326,7 +326,7 @@
     <span class="hero-kicker">ARCADE PESSOAL</span>
     <h1>Jogos do Jhon</h1>
     <p class="sub">🎮 Seu cantinho de diversão: escolha um jogo e comece a jogar no celular ou no PC.</p>
-    <div class="version"><span class="dot"></span> Versão <b>v3.89</b> · atualizado em <b>24/11/2026</b></div>
+    <div class="version"><span class="dot"></span> Versão <b>v3.90</b> · atualizado em <b>25/11/2026</b></div>
     <div class="home-hero-actions">
       <a class="primary-cta" href="#catalogStart">🎮 Explorar jogos <span aria-hidden="true">↓</span></a>
       <span class="hero-count" id="heroGameCount">46 jogos no catálogo</span>
@@ -529,7 +529,7 @@
     <div class="card" data-category="arcade" data-href="games/salto-infinito.html" style="--accent:#a78bfa;--glow:rgba(167,139,250,.20)"><span class="tag new">v1.1</span><span class="ico">🦘</span><p class="name">Salto Infinito <em class="new">NOVO</em></p><p class="desc">Pule automaticamente entre plataformas e tente alcançar uma altura recorde.</p></div>
     <div class="card" data-category="action" data-href="games/arena-bombas.html" style="--accent:#f97316;--glow:rgba(249,115,22,.20)"><span class="tag new">v1.1</span><span class="ico">💣</span><p class="name">Arena de Bombas <em class="new">NOVO</em></p><p class="desc">Plante bombas, abra caminho nas caixas e elimine os robôs inimigos.</p></div>
     <div class="card" data-category="arcade" data-href="games/ritmo-neon.html" style="--accent:#e879f9;--glow:rgba(232,121,249,.20)"><span class="tag new">v1.1</span><span class="ico">🎵</span><p class="name">Ritmo Neon <em class="new">NOVO</em></p><p class="desc">Acerte as notas no tempo certo com teclado ou toque e construa combos.</p></div>
-    <div class="card" data-category="action" data-href="games/arena-tanques.html" style="--accent:#22d3ee;--glow:rgba(34,211,238,.20)"><span class="tag new">v3.2</span><span class="ico">🛡️</span><p class="name">Arena de Tanques <em class="new">NOVO</em></p><p class="desc">Dirija seu tanque, mire nos inimigos e sobreviva a ondas crescentes.</p></div>
+    <div class="card" data-category="action" data-href="games/arena-tanques.html" style="--accent:#22d3ee;--glow:rgba(34,211,238,.20)"><span class="tag new">v3.2</span><span class="ico">🛡️</span><p class="name">Arena de Tanques <em class="new">NOVO</em></p><p class="desc">Enfrente grupos maiores de inimigos, sobreviva às ondas e derrote chefes.</p></div>
   </div>
   <section class="empty-state" id="emptyState" hidden aria-live="polite" aria-atomic="true">
     <span class="empty-icon" aria-hidden="true">🔎</span>
@@ -620,7 +620,7 @@
     </div>
   </details>
   <div class="notes">
-    <h2>📝 Novidades da tela inicial · v3.89</h2>
+    <h2>📝 Novidades da tela inicial · v3.90</h2>
     <ul>
        <li><b>v3.90 — Arena de Tanques v3.2:</b> corrigida a geração de inimigos: tanques criados agora são inseridos na arena; ondas com mais inimigos, surgimento mais frequente, contador de inimigos pendentes e progressão automática após eliminar a leva. Chefes também entram corretamente nas ondas especiais.</li>
        <li><b>v3.89 — Banco Imobiliário v4.4:</b> modos de partida contra a máquina ou para duas pessoas no mesmo aparelho; escolha entre dados virtuais ou físicos com registro manual dos dois resultados. Cada participante pode comprar, investir, hipotecar e administrar o próprio patrimônio.</li>
@@ -1082,7 +1082,7 @@ function validateBackup(raw){
 }
 function exportBackup(){
  try{
-  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v3.89',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
+  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v3.90',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
   const content=JSON.stringify(backup,null,2),blob=new Blob([content],{type:'application/json'});
   if(blob.size>MAX_BACKUP_BYTES)throw new Error('O backup ultrapassa 2 MB.');
   const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='jogos-do-jhon-backup-'+new Date().toISOString().slice(0,10)+'.json';
