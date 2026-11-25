@@ -202,6 +202,7 @@ canvas.addEventListener('pointermove',e=>{if(!drag)return;const p=point(e),rod=r
 function endDrag(){drag=null;canvas.classList.remove('dragging');rods.forEach(r=>r.speed*=.25)}
 canvas.addEventListener('pointerup',endDrag);canvas.addEventListener('pointercancel',endDrag);canvas.addEventListener('lostpointercapture',endDrag);
 window.addEventListener('keydown',e=>{
+ if(e.target&&['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName))return;
  const k=e.key.toLowerCase();keys[k]=true;
  if(['arrowup','arrowdown',' '].includes(k))e.preventDefault();
  if(k>='1'&&k<='4'){selected.blue=Number(k)-1;$('blueRod').value=String(selected.blue)}
@@ -317,9 +318,9 @@ function finishMatch(winner){
  $('finish').classList.add('show');
 }
 function updateMatchClock(){
- const elapsed=matchDurationSeconds?Math.max(0,matchDurationSeconds-gameElapsed):gameElapsed;
+ const elapsed=overtime?Math.max(0,gameElapsed-matchDurationSeconds):(matchDurationSeconds?Math.max(0,matchDurationSeconds-gameElapsed):gameElapsed);
  const mins=Math.floor(elapsed/60),secs=Math.floor(elapsed%60);
- $('matchClock').textContent=(matchDurationSeconds&&overtime?'+':'')+String(mins).padStart(2,'0')+':'+String(secs).padStart(2,'0');
+ $('matchClock').textContent=(overtime?'+':'')+String(mins).padStart(2,'0')+':'+String(secs).padStart(2,'0');
 }
 function updatePauseButton(){
  $('pauseGame').textContent=paused?'▶ Continuar':'⏸ Pausar';$('pauseGame').setAttribute('aria-pressed',String(paused));
