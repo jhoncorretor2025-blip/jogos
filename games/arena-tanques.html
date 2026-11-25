@@ -78,9 +78,10 @@ function overlapTanks(x,y,r,list,except){return list.some(e=>e!==except&&Math.hy
 function burst(x,y,color,n=9,power=3){for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,v=.55+Math.random()*power;if(particles.length>300)particles.shift();particles.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:.3+Math.random()*.55,max:.85,color,size:1.5+Math.random()*3.5})}}
 function explosion(x,y,boss=false){rings.push({x,y,r:4,life:.42,max:.42,boss});if(rings.length>30)rings.shift();burst(x,y,boss?'#fbbf24':'#ffb347',boss?34:18,boss?5:3.6);shake=Math.min(12,shake+(boss?8:3));beep(boss?85:120,.2,'sawtooth',boss?.05:.03)}
 function randomSpawn(type='normal'){
- const edges=[[Math.random()*W,22],[Math.random()*W,H-22],[22,Math.random()*H],[W-22,Math.random()*H]];
- for(let i=0;i<40;i++){const p=edges[Math.floor(Math.random()*4)];if(!blocked(p[0],p[1],24)&&Math.hypot(p[0]-player.x,p[1]-player.y)>145&&!overlapTanks(p[0],p[1],20,enemies,null))return makeEnemy(p[0],p[1],type)}
- return makeEnemy(35+Math.random()*490,35+Math.random()*360,type);
+ const edges=[[Math.random()*W,24],[Math.random()*W,H-24],[24,Math.random()*H],[W-24,Math.random()*H]];
+ for(let i=0;i<48;i++){const p=edges[Math.floor(Math.random()*4)];if(!blocked(p[0],p[1],24)&&Math.hypot(p[0]-player.x,p[1]-player.y)>145&&!overlapTanks(p[0],p[1],22,enemies,null))return makeEnemy(p[0],p[1],type)}
+ for(let i=0;i<100;i++){const x=28+Math.random()*(W-56),y=28+Math.random()*(H-56);if(!blocked(x,y,24)&&Math.hypot(x-player.x,y-player.y)>120&&!overlapTanks(x,y,22,enemies,null))return makeEnemy(x,y,type)}
+ return makeEnemy(34,34,type);
 }
 function makeEnemy(x,y,type){
  const cfg=type==='boss'?{r:25,hp:30+wave*5,speed:.57,fire:.8}:type==='armored'?{r:17,hp:3+Math.floor(wave/5),speed:.62,fire:1.55}:type==='fast'?{r:12,hp:1,speed:1.25,fire:2.35}:{r:14,hp:1+Math.floor(wave/7),speed:.83,fire:1.8};
@@ -123,7 +124,7 @@ function findPath(e){
 }
 function canEnemyMove(e,x,y){return !blocked(x,y,e.r)&&!overlapTanks(x,y,e.r,enemies,e)&&Math.hypot(x-player.x,y-player.y)>e.r+player.r+1}
 function moveEnemy(e,dt){
- e.pathTimer-=dt;if(e.pathTimer<=0||!e.path.length){e.path=findPath(e);e.pathIndex=e.path.length>1?1:0;e.pathTimer=.65+Math.random()*.18}
+ e.pathTimer-=dt;if(e.pathTimer<=0){e.path=findPath(e);e.pathIndex=e.path.length>1?1:0;e.pathTimer=.65+Math.random()*.18}
  let target=e.path[e.pathIndex];if(!target){const a=Math.atan2(player.y-e.y,player.x-e.x);target={x:e.x+Math.cos(a)*30,y:e.y+Math.sin(a)*30}}
  let dx=target.x-e.x,dy=target.y-e.y,d=Math.hypot(dx,dy);
  if(d<5&&e.pathIndex<e.path.length-1){e.pathIndex++;target=e.path[e.pathIndex];dx=target.x-e.x;dy=target.y-e.y;d=Math.hypot(dx,dy)}
