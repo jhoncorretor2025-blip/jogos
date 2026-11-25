@@ -1,6 +1,193 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><meta name="theme-color" content="#080d1a"><title>Arkanoid · Jogos do Jhon · v1.2</title><style>
-:root{color-scheme:dark;--bg:#080d1a;--panel:#111c30;--line:#263750;--txt:#edf5ff;--muted:#9fb0c8;--cyan:#22d3ee;--purple:#a78bfa;--green:#34d399;--gold:#fbbf24}*{box-sizing:border-box}body{margin:0;min-height:100vh;padding:16px;background:radial-gradient(900px 450px at 12% -10%,#12334a 0,transparent 65%),radial-gradient(750px 430px at 100% 0,#291a4b 0,transparent 65%),var(--bg);color:var(--txt);font-family:system-ui,-apple-system,Segoe UI,sans-serif;display:flex;justify-content:center}.wrap{width:min(100%,960px)}header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 14px;flex-wrap:wrap}.brand{display:flex;align-items:center;gap:11px}.brand .emoji{font-size:34px}.brand h1{font-size:clamp(20px,4vw,30px);margin:0}.brand p{margin:4px 0 0;color:var(--muted);font-size:12px}.ver{display:inline-block;color:#9fb0c8;font-size:11px;border:1px solid var(--line);padding:4px 9px;border-radius:99px;margin-top:6px}.back{color:#a5f3fc;text-decoration:none;border:1px solid #276078;background:#0b2635;padding:10px 13px;border-radius:11px;font-weight:700;font-size:13px}.panel{background:linear-gradient(145deg,#142139,#0d1729);border:1px solid var(--line);border-radius:18px;padding:15px;box-shadow:0 12px 40px #0004}.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;margin-bottom:12px}.stat{background:#091321;border:1px solid var(--line);border-radius:11px;padding:8px 12px;min-width:88px;text-align:center}.stat b{display:block;font-size:18px}.stat small{display:block;color:var(--muted);font-size:10px}.btn,select{border:1px solid #35506d;background:#172944;color:#eff8ff;border-radius:10px;padding:10px 13px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}.btn.primary{background:linear-gradient(100deg,#087e98,#5b3bab);border-color:#4b9ab0}.btn:active{transform:scale(.98)}.note{text-align:center;color:var(--muted);font-size:12px;line-height:1.5;margin:12px auto 2px;max-width:700px}.game{display:flex;align-items:center;justify-content:center;min-height:260px;overflow:hidden}canvas{display:block;max-width:100%;border-radius:12px;background:#07111e;touch-action:none}.message{text-align:center;color:#a5f3fc;font-weight:800;min-height:25px;margin:8px 0}canvas{width:min(100%,560px);border:1px solid #23405b;background:linear-gradient(#0a1830,#07111d)}
-@media(max-width:560px){body{padding:10px}.panel{padding:10px}.back{padding:8px 10px}.stat{min-width:72px;padding:7px}.stat b{font-size:16px}}.panel{background:radial-gradient(ellipse at 50% 0%,#172e54,#0d1729 78%);border-color:#31547d;box-shadow:0 18px 48px #0008}.game canvas{box-shadow:inset 0 0 28px #22d3ee13,0 12px 28px #0007}</style></head><body data-arcade-controls="both" data-arcade-repeat="true"><main class="wrap"><header><div class="brand"><span class="emoji">🧱</span><div><h1>Arkanoid</h1><p>Quebre todos os blocos sem deixar a bolinha cair.</p><span class="ver">Jogos do Jhon · v1.2</span></div></div><a class="back" href="../index.html">← Catálogo</a></header><section class="panel"><div class="toolbar"><div class="stat"><b id="score">0</b><small>PONTOS</small></div><div class="stat"><b id="lives">3</b><small>VIDAS</small></div><div class="stat"><b id="level">1</b><small>FASE</small></div><button class="btn primary" id="start">▶ Iniciar / continuar</button><button class="btn" id="restart">↻ Reiniciar</button></div><div class="game"><canvas id="c" width="560" height="440" aria-label="Jogo Arkanoid"></canvas></div><p class="message" id="msg">Use ← →, A/D ou arraste a plataforma. Clique em iniciar.</p><p class="note">Destrua todos os blocos. A cada fase a bola fica um pouco mais rápida. No celular, arraste o dedo para mover a plataforma.</p></section></main><script>(()=>{'use strict';const c=document.getElementById('c'),x=c.getContext('2d'),msg=document.getElementById('msg');let paddle,ball,bricks,score=0,lives=3,level=1,running=false,raf=null;function setup(){paddle={x:230,y:414,w:100,h:12};ball={x:280,y:395,r:7,dx:2.5+level*.3,dy:-3.5-level*.25};bricks=[];for(let r=0;r<4+Math.min(level,3);r++)for(let col=0;col<9;col++)bricks.push({x:10+col*60,y:35+r*24,w:54,h:16,on:true,color:['#38bdf8','#a78bfa','#34d399','#fbbf24','#fb7185'][r%5]})}
-function draw(){x.clearRect(0,0,560,440);let bg=x.createLinearGradient(0,0,0,440);bg.addColorStop(0,'#101f40');bg.addColorStop(.55,'#0b1730');bg.addColorStop(1,'#07101d');x.fillStyle=bg;x.fillRect(0,0,560,440);x.strokeStyle='#5eead411';for(let y=0;y<440;y+=22){x.beginPath();x.moveTo(0,y);x.lineTo(560,y);x.stroke()}x.fillStyle='#67e8f911';x.fillRect(0,390,560,50);bricks.forEach(b=>{if(!b.on)return;let g=x.createLinearGradient(b.x,b.y,b.x,b.y+b.h);g.addColorStop(0,'#ffffff');g.addColorStop(.18,b.color);g.addColorStop(1,'#14253f');x.fillStyle=g;x.beginPath();x.roundRect(b.x,b.y,b.w,b.h,5);x.fill();x.strokeStyle=b.color;x.lineWidth=1.3;x.stroke();x.fillStyle='#ffffff66';x.fillRect(b.x+5,b.y+3,b.w-10,2);x.fillStyle='#0005';x.fillRect(b.x+5,b.y+b.h-3,b.w-10,2)});let pg=x.createLinearGradient(paddle.x,paddle.y,paddle.x,paddle.y+16);pg.addColorStop(0,'#e0fbff');pg.addColorStop(.25,'#22d3ee');pg.addColorStop(1,'#075985');x.shadowColor='#22d3ee';x.shadowBlur=18;x.fillStyle=pg;x.beginPath();x.roundRect(paddle.x,paddle.y,paddle.w,paddle.h,7);x.fill();x.shadowBlur=0;x.fillStyle='#e0faff';x.fillRect(paddle.x+12,paddle.y+3,paddle.w-24,2);let glow=x.createRadialGradient(ball.x-2,ball.y-3,1,ball.x,ball.y,ball.r*2.8);glow.addColorStop(0,'#fff');glow.addColorStop(.35,'#cffafe');glow.addColorStop(1,'#22d3ee00');x.fillStyle=glow;x.beginPath();x.arc(ball.x,ball.y,ball.r*2.8,0,Math.PI*2);x.fill();x.beginPath();x.arc(ball.x,ball.y,ball.r,0,Math.PI*2);x.fillStyle='#fff';x.fill();x.shadowBlur=0}
-function update(){if(!running)return;ball.x+=ball.dx;ball.y+=ball.dy;if(ball.x<ball.r||ball.x>560-ball.r)ball.dx*=-1;if(ball.y<ball.r)ball.dy=Math.abs(ball.dy);if(ball.dy>0&&ball.y+ball.r>=paddle.y&&ball.y<paddle.y+paddle.h&&ball.x>paddle.x&&ball.x<paddle.x+paddle.w){ball.dy=-Math.abs(ball.dy);ball.dx=((ball.x-(paddle.x+paddle.w/2))/(paddle.w/2))*5}for(let b of bricks){if(b.on&&ball.x+ball.r>b.x&&ball.x-ball.r<b.x+b.w&&ball.y+ball.r>b.y&&ball.y-ball.r<b.y+b.h){b.on=false;ball.dy*=-1;score+=10;document.getElementById('score').textContent=score;break}}if(ball.y>450){lives--;document.getElementById('lives').textContent=lives;if(lives<=0){running=false;msg.textContent='Fim de jogo! Pontuação: '+score;return}ball.x=280;ball.y=395;ball.dx=2.5+level*.3;ball.dy=-3.5-level*.25;running=false;msg.textContent='Vida perdida. Toque em iniciar para continuar.'}if(bricks.every(b=>!b.on)){level++;document.getElementById('level').textContent=level;setup();running=false;msg.textContent='Fase '+level+'! Toque em iniciar.'}draw();if(running)raf=requestAnimationFrame(update)}
-function move(px){paddle.x=Math.max(0,Math.min(560-paddle.w,px-paddle.w/2))}c.addEventListener('pointermove',e=>{let r=c.getBoundingClientRect();move((e.clientX-r.left)/r.width*560)});window.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key.toLowerCase()==='a')paddle.x=Math.max(0,paddle.x-28);if(e.key==='ArrowRight'||e.key.toLowerCase()==='d')paddle.x=Math.min(560-paddle.w,paddle.x+28)});document.getElementById('start').onclick=()=>{if(!running){running=true;msg.textContent='Boa sorte!';cancelAnimationFrame(raf);update()}};document.getElementById('restart').onclick=()=>{score=0;lives=3;level=1;running=false;document.getElementById('score').textContent=0;document.getElementById('lives').textContent=3;document.getElementById('level').textContent=1;setup();draw();msg.textContent='Partida reiniciada.'};setup();draw();})();</script><script src="../arcade-common.js"></script></body></html>
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><meta name="theme-color" content="#080d1a"><title>Arkanoid · Jogos do Jhon · v1.3</title><style>
+:root{color-scheme:dark;--bg:#080d1a;--panel:#111c30;--line:#263750;--txt:#edf5ff;--muted:#9fb0c8;--cyan:#22d3ee;--purple:#a78bfa;--green:#34d399;--gold:#fbbf24}*{box-sizing:border-box}body{margin:0;min-height:100vh;padding:16px;background:radial-gradient(900px 450px at 12% -10%,#12334a 0,transparent 65%),radial-gradient(750px 430px at 100% 0,#291a4b 0,transparent 65%),var(--bg);color:var(--txt);font-family:system-ui,-apple-system,Segoe UI,sans-serif;display:flex;justify-content:center}.wrap{width:min(100%,960px)}header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 14px;flex-wrap:wrap}.brand{display:flex;align-items:center;gap:11px}.brand .emoji{font-size:34px}.brand h1{font-size:clamp(20px,4vw,30px);margin:0}.brand p{margin:4px 0 0;color:var(--muted);font-size:12px}.ver{display:inline-block;color:#9fb0c8;font-size:11px;border:1px solid var(--line);padding:4px 9px;border-radius:99px;margin-top:6px}.back{color:#a5f3fc;text-decoration:none;border:1px solid #276078;background:#0b2635;padding:10px 13px;border-radius:11px;font-weight:700;font-size:13px}.panel{background:linear-gradient(145deg,#142139,#0d1729);border:1px solid var(--line);border-radius:18px;padding:15px;box-shadow:0 12px 40px #0004}.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;margin-bottom:12px}.stat{background:#091321;border:1px solid var(--line);border-radius:11px;padding:8px 12px;min-width:88px;text-align:center}.stat b{display:block;font-size:18px}.stat small{display:block;color:var(--muted);font-size:10px}.btn,select{border:1px solid #35506d;background:#172944;color:#eff8ff;border-radius:10px;padding:10px 13px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}.btn.primary{background:linear-gradient(100deg,#087e98,#5b3bab);border-color:#4b9ab0}.btn:active{transform:scale(.98)}.note{text-align:center;color:var(--muted);font-size:12px;line-height:1.5;margin:12px auto 2px;max-width:700px}.game{display:flex;align-items:center;justify-content:center;min-height:260px;overflow:hidden}canvas{display:block;max-width:100%;border-radius:12px;background:#07111e;touch-action:none}.message{text-align:center;color:#a5f3fc;font-weight:800;min-height:25px;margin:8px 0}canvas{width:min(100%,560px);height:auto;aspect-ratio:14/11;border:1px solid #5b83b9;background:linear-gradient(#0a1830,#07111d);touch-action:none;box-shadow:inset 0 0 36px #22d3ee18,0 16px 34px #0009}
+@media(max-width:560px){body{padding:10px}.panel{padding:10px}.back{padding:8px 10px}.stat{min-width:72px;padding:7px}.stat b{font-size:16px}}.panel{background:radial-gradient(ellipse at 50% 0%,#172e54,#0d1729 78%);border-color:#31547d;box-shadow:0 18px 48px #0008}.game canvas{box-shadow:inset 0 0 36px #22d3ee18,0 16px 34px #0009}.toolbar .stat{min-width:76px}.btn:focus-visible{outline:2px solid #67e8f9;outline-offset:3px}@media(max-width:560px){.toolbar .stat{min-width:64px}.toolbar .btn{padding:9px 10px}}</style></head><body data-arcade-controls="both" data-arcade-repeat="true"><main class="wrap"><header><div class="brand"><span class="emoji">🧱</span><div><h1>Arkanoid</h1><p>Quebre todos os blocos sem deixar a bolinha cair.</p><span class="ver">Jogos do Jhon · v1.3</span></div></div><a class="back" href="../index.html">← Catálogo</a></header><section class="panel"><div class="toolbar"><div class="stat"><b id="score">0</b><small>PONTOS</small></div><div class="stat"><b id="lives">3</b><small>VIDAS</small></div><div class="stat"><b id="level">1</b><small>FASE</small></div><div class="stat"><b id="combo">0×</b><small>COMBO</small></div><div class="stat"><b id="best">0</b><small>RECORDE</small></div><button class="btn primary" id="start">▶ Iniciar</button><button class="btn" id="pause">Ⅱ Pausar</button><button class="btn" id="sound">🔊 Som</button><button class="btn" id="restart">↻ Reiniciar</button></div><div class="game"><canvas id="c" width="560" height="440" aria-label="Jogo Arkanoid"></canvas></div><p class="message" id="msg">Use ← →, A/D ou arraste a plataforma. P ou Espaço pausa/continua; use os bônus para ganhar vantagem.</p><p class="note">Destrua os blocos, encaixe combos e pegue bônus. Blocos reforçados precisam de mais de um impacto. No celular, arraste o dedo sobre o jogo.</p></section></main><script>(()=>{'use strict';
+const c=document.getElementById('c'),ctx=c.getContext('2d'),msg=document.getElementById('msg');
+const $=id=>document.getElementById(id);
+const W=560,H=440,BASE_PADDLE=100,MAX_LIVES=5;
+let paddle,balls=[],bricks=[],drops=[],particles=[],score=0,lives=3,level=1,running=false,paused=false,raf=0,lastTime=0;
+let keys={left:false,right:false},combo=0,comboUntil=0,wideUntil=0,slowUntil=0,shake=0,soundOn=true,audio=null;
+let best=Number(localStorage.getItem('arkanoidBest')||0);
+$('best').textContent=best;
+const colors=['#38bdf8','#a78bfa','#34d399','#fbbf24','#fb7185','#2dd4bf'];
+const rand=(a,b)=>a+Math.random()*(b-a);
+const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+const alive=()=>bricks.filter(b=>b.on).length;
+function tone(freq=440,duration=.07,wave='sine'){
+ if(!soundOn)return;
+ try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();const o=audio.createOscillator(),g=audio.createGain();o.type=wave;o.frequency.setValueAtTime(freq,audio.currentTime);g.gain.setValueAtTime(.055,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+duration);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+duration)}catch(e){}
+}
+function makeBall(x=W/2,y=H-48,angle=rand(-.32,.32)){
+ const speed=3.9+Math.min(level,12)*.22;
+ return{x,y,r:7,dx:Math.sin(angle)*speed,dy:-Math.cos(angle)*speed,trail:[]};
+}
+function buildLevel(){
+ bricks=[];
+ const rows=4+Math.min(level,4),cols=9,gap=6,left=10,bw=54,bh=17;
+ for(let r=0;r<rows;r++)for(let col=0;col<cols;col++){
+  // Four readable formations that rotate as the player advances.
+  const pattern=level%4;
+  const skip=pattern===1?(r===rows-1&&(col===0||col===8)):pattern===2?(r%2===1&&col%3===0):pattern===3?(Math.abs(col-4)>Math.max(1,4-Math.floor(r/2))):false;
+  if(skip)continue;
+  const hp=Math.min(1+Math.floor(level/3)+(r===0?1:0),3);
+  bricks.push({x:left+col*(bw+gap),y:42+r*25,w:bw,h:bh,on:true,hp,maxHp:hp,color:colors[(r+level-1)%colors.length],flash:0});
+ }
+}
+function resetBall(){
+ paddle={x:(W-BASE_PADDLE)/2,y:H-28,w:BASE_PADDLE,h:13,targetX:W/2};
+ balls=[makeBall()];drops=[];particles=[];
+}
+function setup(){
+ resetBall();buildLevel();combo=0;wideUntil=0;slowUntil=0;shake=0;updateHud();draw();
+}
+function updateHud(){
+ $('score').textContent=score;$('lives').textContent=lives;$('level').textContent=level;
+ $('combo').textContent=combo+'×';$('best').textContent=best;
+}
+function burst(px,py,color,count=12,power=2.8){
+ for(let i=0;i<count;i++){const a=Math.random()*Math.PI*2,s=rand(.6,power);particles.push({x:px,y:py,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:rand(.25,.62),max:.62,r:rand(1.5,3.6),color})}
+}
+function makeDrop(b){
+ if(Math.random()>.19)return;
+ const types=['wide','slow','life','multi'];
+ const type=types[Math.floor(Math.random()*types.length)];
+ drops.push({x:b.x+b.w/2,y:b.y+b.h/2,vy:2.1,type,r:12,angle:0});
+}
+function applyDrop(d){
+ if(d.type==='wide'){wideUntil=performance.now()+12000;paddle.w=145;paddle.x=clamp(paddle.x,0,W-paddle.w);msg.textContent='⬌ Plataforma ampliada por 12 segundos!';tone(620,.14,'triangle')}
+ if(d.type==='slow'){slowUntil=performance.now()+9000;balls.forEach(b=>{b.dx*=.76;b.dy*=.76});msg.textContent='🐢 Bolinha mais lenta por 9 segundos!';tone(350,.16,'sine')}
+ if(d.type==='life'){lives=Math.min(MAX_LIVES,lives+1);msg.textContent='♥ Vida extra!';tone(780,.18,'sine')}
+ if(d.type==='multi'){
+  const copies=[];balls.forEach(b=>{if(balls.length+copies.length<6){copies.push({...b,dx:b.dx*.9-b.dy*.22,dy:b.dy*.9+b.dx*.22,trail:[]});copies.push({...b,dx:b.dx*.9+b.dy*.22,dy:b.dy*.9-b.dx*.22,trail:[]})}});
+  balls.push(...copies.slice(0,6-balls.length));msg.textContent='✦ Multibola!';tone(880,.2,'triangle');
+ }
+ updateHud();burst(d.x,d.y,d.type==='life'?'#f472b6':'#67e8f9',20,4);
+}
+function drawBackground(){
+ const bg=ctx.createLinearGradient(0,0,0,H);bg.addColorStop(0,'#101b42');bg.addColorStop(.48,'#0d2342');bg.addColorStop(1,'#050d1c');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+ const neb=ctx.createRadialGradient(270,130,5,270,130,330);neb.addColorStop(0,'#8b5cf626');neb.addColorStop(1,'#8b5cf600');ctx.fillStyle=neb;ctx.fillRect(0,0,W,H);
+ ctx.strokeStyle='#67e8f90c';ctx.lineWidth=1;for(let y=12;y<H;y+=22){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}for(let x=10;x<W;x+=28){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke()}
+ for(let i=0;i<48;i++){const sx=(i*97)%W,sy=(i*67+level*19)%H;ctx.fillStyle=i%6===0?'#fef08a77':'#c4e6ff44';ctx.beginPath();ctx.arc(sx,sy,.7+(i%3)*.35,0,Math.PI*2);ctx.fill()}
+ // Bottom danger zone.
+ const danger=ctx.createLinearGradient(0,H-54,0,H);danger.addColorStop(0,'#fb718500');danger.addColorStop(1,'#fb71851b');ctx.fillStyle=danger;ctx.fillRect(0,H-54,W,54);
+}
+function drawBricks(){
+ bricks.forEach(b=>{if(!b.on)return;ctx.save();
+  const g=ctx.createLinearGradient(b.x,b.y,b.x,b.y+b.h);g.addColorStop(0,'#ffffff');g.addColorStop(.18,b.color);g.addColorStop(1,'#101a35');
+  ctx.shadowColor=b.color;ctx.shadowBlur=8+(b.hp>1?5:0);ctx.fillStyle=g;ctx.beginPath();ctx.roundRect(b.x,b.y,b.w,b.h,5);ctx.fill();
+  ctx.shadowBlur=0;ctx.strokeStyle=b.color;ctx.lineWidth=1.2;ctx.stroke();
+  const shine=ctx.createLinearGradient(b.x,b.y,b.x+b.w,b.y);shine.addColorStop(0,'#ffffff00');shine.addColorStop(.5,'#ffffff99');shine.addColorStop(1,'#ffffff00');ctx.fillStyle=shine;ctx.fillRect(b.x+5,b.y+2,b.w-10,2);
+  if(b.maxHp>1){for(let k=0;k<b.maxHp;k++){ctx.fillStyle=k<b.hp?'#ffffffdd':'#02061788';ctx.beginPath();ctx.arc(b.x+ b.w/2+(k-(b.maxHp-1)/2)*8,b.y+b.h-4,1.7,0,Math.PI*2);ctx.fill()}}
+  if(b.hp===1){ctx.strokeStyle='#ffffff55';ctx.lineWidth=.8;ctx.beginPath();ctx.moveTo(b.x+9,b.y+7);ctx.lineTo(b.x+14,b.y+11);ctx.moveTo(b.x+14,b.y+7);ctx.lineTo(b.x+9,b.y+11);ctx.stroke()}
+  ctx.restore();
+ });
+}
+function drawPaddle(){
+ const pg=ctx.createLinearGradient(paddle.x,paddle.y,paddle.x,paddle.y+19);pg.addColorStop(0,'#f0fdff');pg.addColorStop(.2,'#67e8f9');pg.addColorStop(.55,'#0891b2');pg.addColorStop(1,'#164e63');
+ ctx.save();ctx.shadowColor='#22d3ee';ctx.shadowBlur=wideUntil>Date.now()?22:15;ctx.fillStyle=pg;ctx.beginPath();ctx.roundRect(paddle.x,paddle.y,paddle.w,paddle.h,8);ctx.fill();ctx.shadowBlur=0;
+ ctx.fillStyle='#ffffffaa';ctx.beginPath();ctx.roundRect(paddle.x+10,paddle.y+2,paddle.w-20,2,2);ctx.fill();ctx.fillStyle='#0e7490';for(let i=0;i<3;i++){ctx.beginPath();ctx.arc(paddle.x+paddle.w/2+(i-1)*9,paddle.y+8,1.5,0,Math.PI*2);ctx.fill()}ctx.restore();
+}
+function drawBalls(){
+ balls.forEach(b=>{
+  b.trail.forEach((t,i)=>{ctx.globalAlpha=(i+1)/b.trail.length*.25;ctx.fillStyle='#67e8f9';ctx.beginPath();ctx.arc(t.x,t.y,b.r*(.35+(i/b.trail.length)*.55),0,Math.PI*2);ctx.fill()});ctx.globalAlpha=1;
+  const glow=ctx.createRadialGradient(b.x-2,b.y-3,1,b.x,b.y,b.r*3.2);glow.addColorStop(0,'#fff');glow.addColorStop(.28,'#e0f2fe');glow.addColorStop(.58,'#67e8f9');glow.addColorStop(1,'#22d3ee00');ctx.fillStyle=glow;ctx.beginPath();ctx.arc(b.x,b.y,b.r*3.2,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.fillStyle='#f8fdff';ctx.fill();ctx.strokeStyle='#a5f3fc';ctx.lineWidth=1;ctx.stroke();
+ });
+}
+function drawDrops(){
+ drops.forEach(d=>{ctx.save();ctx.translate(d.x,d.y);ctx.rotate(d.angle);const hue={wide:'#38bdf8',slow:'#a78bfa',life:'#fb7185',multi:'#fbbf24'}[d.type];ctx.shadowColor=hue;ctx.shadowBlur=15;ctx.fillStyle='#0f2542';ctx.strokeStyle=hue;ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,0,d.r,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.shadowBlur=0;ctx.fillStyle='#f8fafc';ctx.font='bold 13px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText({wide:'↔',slow:'S',life:'+',multi:'×'}[d.type],0,1);ctx.restore()});
+}
+function drawParticles(){
+ particles.forEach(p=>{ctx.save();ctx.globalAlpha=Math.max(0,p.life/p.max);ctx.fillStyle=p.color;ctx.shadowColor=p.color;ctx.shadowBlur=8;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();ctx.restore()});
+}
+function draw(){
+ ctx.save();if(shake>0){ctx.translate(rand(-shake,shake),rand(-shake,shake))}
+ drawBackground();drawBricks();drawDrops();drawPaddle();drawBalls();drawParticles();
+ // Small progress strip at the top of the playfield.
+ const total=bricks.length,remaining=alive(),ratio=total?1-remaining/total:1;ctx.fillStyle='#02061799';ctx.fillRect(10,9,W-20,4);const pg=ctx.createLinearGradient(10,0,W-10,0);pg.addColorStop(0,'#22d3ee');pg.addColorStop(1,'#a78bfa');ctx.fillStyle=pg;ctx.fillRect(10,9,(W-20)*ratio,4);
+ ctx.fillStyle='#dbeafe99';ctx.font='10px system-ui';ctx.textAlign='right';ctx.fillText('BLOCOS '+remaining+'/'+total,W-12,25);
+ if(paused){ctx.fillStyle='#020617aa';ctx.fillRect(0,0,W,H);ctx.fillStyle='#f8fafc';ctx.textAlign='center';ctx.font='bold 30px system-ui';ctx.fillText('PAUSADO',W/2,H/2-4);ctx.font='13px system-ui';ctx.fillStyle='#bae6fd';ctx.fillText('Pressione P ou Espaço para continuar',W/2,H/2+23)}
+ ctx.restore();
+}
+function updateCombo(now){if(combo&&now>comboUntil){combo=0;$('combo').textContent='0×'}}
+function hitBrick(b,ball){
+ const prevX=ball.x-ball.dx,prevY=ball.y-ball.dy;
+ if(prevY+ball.r<=b.y||prevY-ball.r>=b.y+b.h)ball.dy*=-1;else ball.dx*=-1;
+ b.hp--;b.flash=.12;
+ combo=nowTime()<=comboUntil?Math.min(9,combo+1):1;comboUntil=nowTime()+1200;
+ const points=10*combo;score+=points;best=Math.max(best,score);updateHud();
+ burst(ball.x,ball.y,b.color,b.hp<=0?18:7,b.hp<=0?3.8:2.1);shake=Math.max(shake,b.hp<=0?3.4:1.6);
+ tone(b.hp<=0?520:300,.055,b.hp<=0?'triangle':'sine');
+ if(b.hp<=0){b.on=false;makeDrop(b);burst(b.x+b.w/2,b.y+b.h/2,b.color,12,3.2)}
+}
+function nowTime(){return performance.now()}
+function paddleBounce(b){
+ const offset=clamp((b.x-(paddle.x+paddle.w/2))/(paddle.w/2),-.92,.92);
+ const speed=clamp(Math.hypot(b.dx,b.dy),3.7,7.8);
+ const angle=offset*1.05+(keys.left?-.08:keys.right?.08:0);
+ b.dx=Math.sin(angle)*speed;b.dy=-Math.cos(angle)*speed;
+ burst(b.x,paddle.y,'#67e8f9',6,1.8);tone(420,.045,'sine');
+}
+function launchLife(){
+ balls=[makeBall()];running=false;paused=false;$('start').textContent='▶ Continuar';$('pause').textContent='Ⅱ Pausar';msg.textContent='Vida perdida! Clique em continuar para lançar novamente.';updateHud();draw();
+}
+function gameOver(){
+ running=false;paused=false;cancelAnimationFrame(raf);best=Math.max(best,score);localStorage.setItem('arkanoidBest',String(best));updateHud();msg.textContent='Fim de jogo! Pontuação: '+score+' pontos. Recorde: '+best+'.';$('start').textContent='▶ Jogar novamente';$('pause').textContent='Ⅱ Pausar';draw();
+}
+function levelComplete(){
+ running=false;paused=false;level++;updateHud();setup();$('start').textContent='▶ Próxima fase';msg.textContent='Fase '+level+'! Os blocos estão mais resistentes.';draw();
+}
+function update(now){
+ if(!running||paused)return;
+ const dt=Math.min(.032,Math.max(.001,(now-lastTime)/1000));lastTime=now;const step=dt*60,stamp=nowTime();
+ updateCombo(stamp);
+ if(wideUntil&&stamp>wideUntil){paddle.w=BASE_PADDLE;paddle.x=clamp(paddle.x,0,W-paddle.w);wideUntil=0}
+ if(slowUntil&&stamp>slowUntil){balls.forEach(b=>{b.dx/=.76;b.dy/= .76});slowUntil=0}
+ if(keys.left)paddle.x-=6.5*step;if(keys.right)paddle.x+=6.5*step;paddle.x=clamp(paddle.x,0,W-paddle.w);
+ balls.forEach(b=>{
+  b.trail.push({x:b.x,y:b.y});if(b.trail.length>8)b.trail.shift();
+  b.x+=b.dx*step;b.y+=b.dy*step;
+  if(b.x<b.r){b.x=b.r;b.dx=Math.abs(b.dx);tone(230,.025)}
+  if(b.x>W-b.r){b.x=W-b.r;b.dx=-Math.abs(b.dx);tone(230,.025)}
+  if(b.y<b.r){b.y=b.r;b.dy=Math.abs(b.dy);tone(230,.025)}
+  if(b.dy>0&&b.y+b.r>=paddle.y&&b.y-b.r<=paddle.y+paddle.h&&b.x+b.r>paddle.x&&b.x-b.r<paddle.x+paddle.w){b.y=paddle.y-b.r;paddleBounce(b)}
+  for(const brick of bricks){if(brick.on&&b.x+b.r>brick.x&&b.x-b.r<brick.x+brick.w&&b.y+b.r>brick.y&&b.y-b.r<brick.y+brick.h){hitBrick(brick,b);break}}
+ });
+ for(const d of drops){d.y+=d.vy*step;d.angle+=.035*step;if(d.y+d.r>=paddle.y&&d.y-d.r<=paddle.y+paddle.h&&d.x>=paddle.x&&d.x<=paddle.x+paddle.w){d.caught=true;applyDrop(d)}}
+ drops=drops.filter(d=>!d.caught&&d.y<H+20);
+ particles.forEach(p=>{p.x+=p.vx*step;p.y+=p.vy*step;p.vy+=.045*step;p.life-=dt});particles=particles.filter(p=>p.life>0);
+ shake=Math.max(0,shake-dt*18);
+ balls=balls.filter(b=>b.y<H+18);
+ if(!balls.length){lives--;updateHud();if(lives<=0){gameOver();return}launchLife();return}
+ if(bricks.every(b=>!b.on)){levelComplete();return}
+ draw();raf=requestAnimationFrame(update);
+}
+function start(){
+ if(running&&paused){paused=false;running=true;$('pause').textContent='Ⅱ Pausar';msg.textContent='Partida retomada!';lastTime=performance.now();draw();raf=requestAnimationFrame(update);return}
+ if(running)return;
+ paused=false;running=true;$('start').textContent='▶ Em jogo';$('pause').textContent='Ⅱ Pausar';msg.textContent='Boa sorte! Pegue os bônus e mantenha o combo.';lastTime=performance.now();cancelAnimationFrame(raf);raf=requestAnimationFrame(update);
+}
+function togglePause(){
+ if(!running){if(paused)start();return}
+ paused=!paused;$('pause').textContent=paused?'▶ Continuar':'Ⅱ Pausar';msg.textContent=paused?'Partida pausada.':'Partida retomada!';if(paused){cancelAnimationFrame(raf);draw()}else{lastTime=performance.now();raf=requestAnimationFrame(update)}
+}
+function restart(){
+ score=0;lives=3;level=1;combo=0;running=false;paused=false;keys={left:false,right:false};$('start').textContent='▶ Iniciar';$('pause').textContent='Ⅱ Pausar';setup();msg.textContent='Nova partida! Clique em iniciar.';draw();
+}
+function movePaddle(clientX){
+ const rect=c.getBoundingClientRect();paddle.x=clamp((clientX-rect.left)/rect.width*W-paddle.w/2,0,W-paddle.w);
+}
+c.addEventListener('pointerdown',e=>{e.preventDefault();c.setPointerCapture?.(e.pointerId);movePaddle(e.clientX)});
+c.addEventListener('pointermove',e=>{if(e.pointerType==='mouse'||e.buttons||e.pressure>0)movePaddle(e.clientX)});
+c.addEventListener('pointerup',e=>{try{c.releasePointerCapture?.(e.pointerId)}catch(err){}});
+window.addEventListener('keydown',e=>{
+ const k=e.key.toLowerCase();
+ if(k==='arrowleft'||k==='a'){keys.left=true;e.preventDefault()}
+ if(k==='arrowright'||k==='d'){keys.right=true;e.preventDefault()}
+ if(k==='p'||k===' '){e.preventDefault();if(running)togglePause();else if(k===' '&&paused)start()}
+});
+window.addEventListener('keyup',e=>{const k=e.key.toLowerCase();if(k==='arrowleft'||k==='a')keys.left=false;if(k==='arrowright'||k==='d')keys.right=false});
+window.addEventListener('blur',()=>{keys.left=keys.right=false;if(running&&!paused)togglePause()});
+$('start').addEventListener('click',start);$('pause').addEventListener('click',togglePause);$('restart').addEventListener('click',restart);
+$('sound').addEventListener('click',()=>{soundOn=!soundOn;$('sound').textContent=soundOn?'🔊 Som':'🔇 Som';if(soundOn)tone(660,.08)});
+buildLevel();setup();msg.textContent='Use ← →, A/D ou arraste a plataforma. P ou Espaço pausa a partida.';
+})();</script><script src="../arcade-common.js"></script></body></html>
