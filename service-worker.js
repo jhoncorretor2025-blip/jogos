@@ -1,4 +1,4 @@
-const CACHE_NAME="jogos-do-jhon-v3.89";
+const CACHE_NAME="jogos-do-jhon-v3.92";
 const CORE=[
  "./",
  "./index.html",
@@ -56,7 +56,6 @@ const CORE=[
  "./games/arena-bombas.html",
  "./games/ritmo-neon.html",
  "./games/arena-tanques.html",
- "./games/estacionamento.html",
  "./games/classicos-arcade.html?game=domino",
  "./games/classicos-arcade.html?game=paciencia",
  "./games/classicos-arcade.html?game=pinball",
