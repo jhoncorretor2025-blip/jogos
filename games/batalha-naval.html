@@ -435,17 +435,19 @@ let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.
 
   function finish(win){
     if(aiTimer){clearTimeout(aiTimer);aiTimer=0}
-    if(onlineMode&&cup.active){if(win){cup.wins++;cup.round++;if(cup.wins>=3){cup.active=false;cup.champion=true;xp+=300;ovTitle.textContent='🏆 CAMPEÃO DA COPA NAVAL!';ovText.textContent='Você venceu os três confrontos online e conquistou a taça! +300 XP de prêmio.'}else{ovText.textContent='Vitória no torneio! Avançou para '+(cup.round===1?'a semifinal':'a grande final')+'. Conecte-se para o próximo confronto.'}}else{cup.active=false;ovText.textContent='Você foi eliminado da Copa Naval após '+cup.wins+' vitória(s). Tente novamente!'}saveStats();renderCup()}
-    over = true;
-    phase = 'done';
-    ovTitle.textContent = win ? '🏆 Você venceu!' : (onlineMode ? '💥 Você perdeu!' : '💀 A IA venceu');
+    const cupMatch=onlineMode&&cup.active;
+    if(cupMatch){
+      if(win){cup.wins++;cup.round++;if(cup.wins>=3){cup.active=false;cup.champion=true;xp+=300}}
+      else{cup.active=false}
+      saveStats();renderCup();
+    }
+    over=true;phase='done';
+    ovTitle.textContent=cupMatch?(cup.champion?'🏆 CAMPEÃO DA COPA NAVAL!':win?'🏅 Vitória na Copa Naval!':'💥 Eliminado da Copa Naval'):(win?'🏆 Você venceu!':onlineMode?'💥 Você perdeu!':'💀 A IA venceu');
     recordMatch(win);
-    ovText.innerHTML = onlineMode
-      ? (win ? 'Você afundou toda a frota adversária em <b>'+shots+'</b> disparos. Boa estratégia!' : 'Sua frota foi totalmente afundada após <b>'+shots+'</b> disparos. Tente uma revanche!')
-      : (win ? 'Afundou a frota inimiga com <b>' + hitsOnFoe + '</b> acertos em <b>'+shots+'</b> tiros. Vitórias: <b>'+wins+'</b>. Melhor partida: <b>'+(bestShots||'—')+'</b> tiros.' : 'A IA afundou seus navios após <b>'+shots+'</b> tiros. Vitórias registradas: <b>'+wins+'</b>. Tente de novo.');
+    ovText.innerHTML=onlineMode?(win?'Você afundou toda a frota adversária em <b>'+shots+'</b> disparos. Boa estratégia!':'Sua frota foi totalmente afundada após <b>'+shots+'</b> disparos. Tente uma revanche!'):(win?'Afundou a frota inimiga com <b>'+hitsOnFoe+'</b> acertos em <b>'+shots+'</b> tiros. Vitórias: <b>'+wins+'</b>. Melhor partida: <b>'+(bestShots||'—')+'</b> tiros.':'A IA afundou seus navios após <b>'+shots+'</b> tiros. Vitórias registradas: <b>'+wins+'</b>. Tente de novo.');
+    if(cupMatch){ovText.textContent=cup.champion?'Você venceu os três confrontos online e conquistou a taça! +300 XP de prêmio.':win?'Vitória no torneio! Você avançou para '+(cup.round===1?'a semifinal':'a grande final')+'. Crie ou entre em outra sala para continuar.':'Você foi eliminado após '+cup.wins+' vitória(s). A Copa Naval terminou para você desta vez.';if(cup.champion)ovTitle.textContent='🏆 CAMPEÃO DA COPA NAVAL!'}
     document.getElementById('ovBtn').textContent=onlineMode?'Jogar revanche':'Jogar de novo';
-    ov.classList.add('show');
-    startBtn.textContent = 'Reiniciar';
+    ov.classList.add('show');startBtn.textContent='Reiniciar';
   }
 
   document.getElementById('cupEnter').addEventListener('click',()=>{cup={active:true,round:0,wins:0,champion:false};saveStats();renderCup();msgEl.textContent='🏆 Você entrou na Copa Naval! Crie uma sala ou entre na sala de um adversário para disputar as quartas de final.';onlineHelp.textContent='Copa Naval: cada vitória online avança uma fase. São três vitórias para conquistar a taça.'});
