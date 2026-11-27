@@ -1,5 +1,13 @@
 # Histórico de alterações — Jogos do Jhon
 
+## V4.22 — Batalha Naval revisada
+- Atualizado Batalha Naval para v1.4.
+- Corrigido o disparo atrasado da IA após reiniciar a partida; temporizadores são cancelados e a IA valida o estado atual antes de jogar.
+- Evitadas casas-alvo repetidas na estratégia de perseguição da IA e adicionada mensagem quando um navio é afundado.
+- Adicionados controle opcional de som, contador de tiros, vitórias persistentes e recorde de menor quantidade de tiros.
+- Atualizados o catálogo e o cache do aplicativo para v4.22.
+
+
 ## V4.21 — Ritmo Neon revisado
 - Atualizado Ritmo Neon para v1.3.
 - Corrigida a proporção do campo musical em telas menores, mantendo a escala do desenho.
