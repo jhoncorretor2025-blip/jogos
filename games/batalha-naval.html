@@ -475,7 +475,8 @@ let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.
     if (e.key.toLowerCase() === 'r' && phase === 'place') rotateBtn.click();
   });
 
-  document.getElementById('saveRankName').addEventListener('click',function(){rankPlayer=(document.getElementById('rankPlayerName').value.trim()||'Jogador').slice(0,18);saveStats();renderRanking();msgEl.textContent='✅ Nome do ranking salvo: '+rankPlayer});\n  reset();renderStats();
+  document.getElementById('saveRankName').addEventListener('click',function(){rankPlayer=(document.getElementById('rankPlayerName').value.trim()||'Jogador').slice(0,18);saveStats();renderRanking();msgEl.textContent='✅ Nome do ranking salvo: '+rankPlayer});
+  reset();renderStats();
 })();
 </script>
 <script src="../arcade-common.js"></script></body>
