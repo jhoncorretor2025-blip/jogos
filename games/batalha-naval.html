@@ -496,6 +496,7 @@ let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.
 
   document.getElementById('saveRankName').addEventListener('click',function(){rankPlayer=(document.getElementById('rankPlayerName').value.trim()||'Jogador').slice(0,18);saveStats();renderRanking();msgEl.textContent='✅ Nome do ranking salvo: '+rankPlayer});
   reset();renderStats();
+  const inviteCode=new URLSearchParams(location.search).get('room');if(inviteCode&&/^[A-Z0-9]{6}$/i.test(inviteCode)){roomCodeInput.value=inviteCode.toUpperCase();roomEntry.hidden=false;onlineHelp.textContent='Convite recebido! Toque em Entrar com código para aceitar o desafio.';}
 })();
 </script>
 <script src="../arcade-common.js"></script></body>
