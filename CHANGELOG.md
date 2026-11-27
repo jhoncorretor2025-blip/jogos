@@ -1,5 +1,13 @@
 # Histórico de alterações — Jogos do Jhon
 
+## V4.19 — Arena de Bombas revisada
+- Atualizado Arena de Bombas para v1.2 e padronizada a versão no título e na interface.
+- Corrigido o movimento dos robôs para que não atravessem bombas.
+- Corrigido o dano repetido: colisões e explosões agora respeitam um curto período de proteção após perder vida.
+- Explosões que atingem inimigos agora também contabilizam pontos.
+- Atualizado o cache do aplicativo para v4.19.
+
+
 ## V4.18 — Labirinto Fantasma revisado
 - Atualizado o Labirinto Fantasma para v1.1: agora a saída aparece após coletar todas as esferas e a vitória só é concluída ao alcançá-la.
 - Corrigida a colisão com fantasmas para impedir perda de várias vidas no mesmo instante.
