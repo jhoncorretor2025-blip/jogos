@@ -33,7 +33,7 @@ h1{margin:12px 0 3px;font-size:clamp(25px,6vw,36px);letter-spacing:-.7px}.sub{ma
 @keyframes pulse{from{filter:brightness(1)}to{filter:brightness(1.65)}}@keyframes boxpop{0%{transform:scale(.65)}75%{transform:scale(1.08)}100%{transform:scale(1)}}
 .legend{display:flex;justify-content:center;flex-wrap:wrap;gap:16px;font-size:11px;color:var(--muted);margin:10px}.legend span:before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:var(--cyan)}.legend span+span:before{background:var(--purple)}
 .actions{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin:12px 0 8px}.actions .btn{min-width:105px}.message{text-align:center;min-height:24px;margin:9px 0 0;color:#bae6fd;font-weight:750;font-size:13px;line-height:1.45}
-.record-title{font-size:12px;color:#cbd5e1;font-weight:800;margin:15px 0 7px}.records{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.record{padding:8px 5px;text-align:center;background:#091424;border:1px solid var(--line);border-radius:10px}.record b{display:block;font-size:16px}.record small{font-size:9px;color:var(--muted)}
+.record-title{font-size:12px;color:#cbd5e1;font-weight:800;margin:15px 0 7px}.records{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}.record{padding:8px 5px;text-align:center;background:#091424;border:1px solid var(--line);border-radius:10px}.record b{display:block;font-size:16px}.record small{font-size:9px;color:var(--muted)}
 details.help{border-top:1px solid var(--line);margin-top:14px;padding-top:10px;color:var(--muted);font-size:11px;line-height:1.6}details.help summary{color:#cbd5e1;font-weight:750;cursor:pointer}details.help p{margin:7px 0}.note{color:var(--muted);font-size:10px;line-height:1.5;margin:10px 0 0}
 @media(max-width:640px){body{padding:8px}.settings{grid-template-columns:1fr 1fr}.settings .btn{grid-column:1/-1}.scorebar{gap:5px}.stat{padding:7px 3px}.names{gap:6px}.actions .btn{flex:1;min-width:0;padding:9px 7px;font-size:12px}.records{grid-template-columns:repeat(2,1fr)}.turn-banner{font-size:12px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
@@ -76,6 +76,7 @@ details.help{border-top:1px solid var(--line);margin-top:14px;padding-top:10px;c
  <div class="record"><b id="wins">0</b><small>VITÓRIAS</small></div>
  <div class="record"><b id="losses">0</b><small>DERROTAS</small></div>
  <div class="record"><b id="best">0</b><small>MELHOR PLACAR</small></div>
+ <div class="record"><b id="draws">0</b><small>EMPATES</small></div>
 </div>
 <details class="help">
  <summary>Como jogar e atalhos</summary>
@@ -183,11 +184,11 @@ function render(){
  $('remaining').textContent=remaining;$('progressText').textContent=percent+'%';$('progressFill').style.width=percent+'%';$('progress').setAttribute('aria-valuenow',String(percent));
  const current=state.turn;$('turnBanner').classList.toggle('p2',current===1);$('turnText').textContent=state.finished?'Partida encerrada':(mode==='cpu'&&current===1?'A IA está pensando…':'Vez de '+playerName(current));
  $('undo').disabled=locked||(!history.length&&!humanTurnStart);$('hint').disabled=locked||state.finished||(mode==='cpu'&&state.turn===1);
- $('games').textContent=readNumber(KEY_G);$('wins').textContent=readNumber(KEY_W);$('losses').textContent=readNumber(KEY_L);$('best').textContent=readNumber(KEY_B);
+ $('games').textContent=readNumber(KEY_G);$('wins').textContent=readNumber(KEY_W);$('losses').textContent=readNumber(KEY_L);$('best').textContent=readNumber(KEY_B);$('draws').textContent=readNumber(KEY_D);
 }
 let lastBoxMove=-1;
 function finish(){
- if(roundSaved)return;roundSaved=true;state.finished=true;locked=false;clearTimeout(timer);
+ if(roundSaved)return;roundSaved=true;state.finished=true;locked=false;clearTimeout(timer);history=[];humanTurnStart=null;
  const [a,b]=state.scores;persist(KEY_G,readNumber(KEY_G)+1);
  let result;
  if(a===b){persist(KEY_D,readNumber(KEY_D)+1);result='🤝 Empate!'}
@@ -202,7 +203,7 @@ function play(edge){
  if(mode==='cpu'&&player===0)humanTurnStart=cloneState(state);
  if(mode==='local')history.push(cloneState(state));
  const result=applyEdge(state,edge,player);state=result.state;hintEdge=null;lastEdge=edge;lastBoxMove=result.gained?state.moves:-1;
- playTone(result.gained?740:430,result.gained?.15:.07,result.gained?'triangle':'sine');
+ playTone(result.gained?740:430,result.gained ? .15 : .07,result.gained?'triangle':'sine');
  if(state.finished){finish();return}
  if(mode==='cpu'&&state.turn===1){
   locked=true;$('message').textContent=result.gained?'Quadrado conquistado! A IA está pensando…':'A IA está analisando o tabuleiro…';render();
