@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Jogos do Jhon">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Jogos do Jhon · v4.26</title>
+<title>Jogos do Jhon · v4.27</title>
 <meta property="og:title" content="Jogos do Jhon · Arcade">
 <meta property="og:description" content="Arcade de jogos web do Jhon com jogos para jogar no celular ou PC.">
 <meta property="og:type" content="website">
@@ -446,7 +446,9 @@
   @media(max-width:760px){.recommendation-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.smart-filters{grid-template-columns:repeat(2,minmax(0,1fr))}}
   @media(max-width:420px){.recommendation-card{padding:9px;gap:7px}.recommendation-icon{width:38px;height:38px;flex-basis:38px;font-size:22px}.recommendation-copy b{font-size:11px}.smart-filters{padding:9px;gap:7px}}
 
-</style>
+/* v4.27 — XP, níveis e missões diárias */
+.gamification-panel{margin:14px 0 18px;padding:15px;border:1px solid rgba(167,139,250,.3);border-radius:15px;background:linear-gradient(125deg,rgba(34,211,238,.07),rgba(167,139,250,.09))}
+.level-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.level-kicker{font-size:9px;letter-spacing:1px;color:#67e8f9;font-weight:800}.level-head h3{margin:3px 0;font-size:21px}.level-head p{margin:0;color:var(--muted);font-size:11px}.level-emblem{font-size:34px}.xp-caption{margin:6px 0 13px;color:var(--muted);font-size:10px;text-align:right}.mission-head{display:flex;justify-content:space-between;gap:10px;margin-bottom:9px;font-size:12px}.mission-head small{color:var(--muted)}.mission-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.mission-item{padding:10px;border:1px solid var(--line);border-radius:11px;background:rgba(5,12,24,.35)}.mission-copy{display:flex;justify-content:space-between;gap:6px;font-size:10px}.mission-copy b{white-space:nowrap;color:#67e8f9}.mission-track{height:5px;margin:8px 0 5px;border-radius:99px;background:#1e293b;overflow:hidden}.mission-track span{display:block;height:100%;background:linear-gradient(90deg,#22d3ee,#a78bfa);border-radius:99px}.mission-item small{font-size:9px;color:var(--muted)}@media(max-width:560px){.mission-list{grid-template-columns:1fr}.mission-item{padding:9px}.mission-copy{font-size:11px}}</style>
 </head>
 <body>
 <div class="wrap">
@@ -455,7 +457,7 @@
     <span class="hero-kicker">ARCADE PESSOAL</span>
     <h1>Jogos do Jhon</h1>
     <p class="sub">🎮 Seu cantinho de diversão: escolha um jogo e comece a jogar no celular ou no PC.</p>
-    <div class="version"><span class="dot"></span> Versão <b>v4.26</b> · atualizado em <b>27/11/2026</b></div>
+    <div class="version"><span class="dot"></span> Versão <b>v4.27</b> · atualizado em <b>27/11/2026</b></div>
     <div class="home-hero-actions">
       <a class="primary-cta" href="#catalogStart">🎮 Explorar jogos <span aria-hidden="true">↓</span></a>
       <span class="hero-count" id="heroGameCount">jogos no catálogo</span>
@@ -725,7 +727,7 @@
       <div class="stat"><b id="favoriteCount">0</b><span>Favoritos ⭐</span></div>
       <div class="stat"><b id="recentCount">0</b><span>Recentes</span></div>
     </div>
-    <div class="collection-progress">
+    <div class="gamification-panel" id="gamificationPanel"><div class="level-head"><div><span class="level-kicker">⭐ PROGRESSO DO JOGADOR</span><h3 id="playerLevel">Nível 1</h3><p id="playerXp">0 XP acumulados</p></div><span class="level-emblem" id="levelEmblem">🌱</span></div><div class="collection-track"><div class="collection-fill" id="xpFill"></div></div><p class="xp-caption" id="xpCaption">100 XP para o próximo nível</p><div class="mission-head"><b>🎯 Missões de hoje</b><small id="missionDate"></small></div><div class="mission-list" id="dailyMissions"></div></div><div class="collection-progress">
       <div class="collection-progress-head"><span>🏆 Progresso da coleção</span><b id="collectionPercent">0%</b></div>
       <div class="collection-track"><div class="collection-fill" id="collectionFill"></div></div>
     </div>
@@ -934,7 +936,7 @@ function normalizeHomeLayout(raw){
  return {order,visible};
 }
 const defaultSettings={theme:'neon',sound:true,volume:45,contrast:false,textSize:'normal',reducedMotion:false,touchControls:'auto',homeLayout:normalizeHomeLayout(null)};
-const makeProfile=(id,name,emoji)=>({id,name,emoji,plays:0,counts:{},favs:[],recent:[],achievements:[]});
+const makeProfile=(id,name,emoji)=>({id,name,emoji,plays:0,counts:{},favs:[],recent:[],achievements:[],xp:0,daily:{date:"",plays:0,unique:[],bonusClaimed:[]}});
 let family={activeId:'jhon',profiles:[makeProfile('pai','Pai','👨'),makeProfile('irma','Irmã','👩'),makeProfile('jhon','Jhon','🧑')],settings:{...defaultSettings}};
 let familyExists=false;
 try{const saved=JSON.parse(localStorage.getItem(FAMILY_KEY)||'null');if(saved&&Array.isArray(saved.profiles)&&saved.profiles.length){family=Object.assign(family,saved);familyExists=true}}catch(e){}
@@ -1016,6 +1018,13 @@ function renderAchievements(){
  achievements.forEach(a=>{const unlocked=p.achievements.includes(a.id);const card=document.createElement('div');card.className='achievement'+(unlocked?'':' locked');card.innerHTML='<span class="medal">'+(unlocked?a.icon:'🔒')+'</span><span><b>'+a.name+'</b><small>'+a.desc+'</small></span>';box.appendChild(card)});
  document.getElementById('achievementCount').textContent=p.achievements.length+'/'+achievements.length+' desbloqueadas';
  if(newly.length){document.getElementById('achievementsPanel').open=true;document.getElementById('achievementCount').textContent=p.achievements.length+'/'+achievements.length+' · nova conquista!'}
+}
+function renderGamification(){
+ const p=active(),xp=Math.max(0,Number(p.xp)||0),level=Math.floor(Math.sqrt(xp/100))+1,current=(level-1)*(level-1)*100,next=level*level*100,progress=Math.max(0,Math.min(100,(xp-current)/(next-current)*100));
+ document.getElementById("playerLevel").textContent="Nível "+level;document.getElementById("playerXp").textContent=xp.toLocaleString("pt-BR")+" XP acumulados";document.getElementById("levelEmblem").textContent=level>=10?"👑":level>=5?"🏆":level>=3?"🔥":"🌱";document.getElementById("xpFill").style.width=progress+"%";document.getElementById("xpCaption").textContent=(next-xp).toLocaleString("pt-BR")+" XP para o próximo nível";
+ const today=new Date().toLocaleDateString("en-CA"),d=p.daily&&p.daily.date===today?p.daily:{plays:0,unique:[]};document.getElementById("missionDate").textContent=new Date().toLocaleDateString("pt-BR");
+ const missions=[{label:"Jogue 3 partidas hoje",value:Math.min(3,d.plays||0),goal:3,reward:"+25 XP"},{label:"Experimente 2 jogos diferentes",value:Math.min(2,(d.unique||[]).length),goal:2,reward:"+20 XP"},{label:"Adicione um favorito",value:Math.min(1,p.favs.length),goal:1,reward:"Meta pessoal"}];
+ const box=document.getElementById("dailyMissions");box.innerHTML="";missions.forEach(m=>{const item=document.createElement("div");item.className="mission-item";const pct=Math.round(m.value/m.goal*100);item.innerHTML='<div class="mission-copy"><span>'+m.label+'</span><b>'+m.value+'/'+m.goal+'</b></div><div class="mission-track"><span style="width:'+pct+'%"></span></div><small>'+(pct>=100?"✅ Concluída":m.reward)+'</small>';box.appendChild(item)});
 }
 function renderRecent(){
  const p=active(),box=document.getElementById('recentGames');box.innerHTML='';
@@ -1323,10 +1332,15 @@ function applyHomeLayout(){
  });
 }
 
-function renderAll(){renderProfiles();renderCategoryNav();renderCards();renderRecent();renderAchievements();renderRecommendations();renderSpotlight();renderContinueAndPopular();renderHomeLayoutControls();applySettings();syncSettingsUI();setView(viewMode);applyHomeLayout()}
+function renderAll(){renderProfiles();renderCategoryNav();renderCards();renderRecent();renderGamification();renderAchievements();renderRecommendations();renderSpotlight();renderContinueAndPopular();renderHomeLayoutControls();applySettings();syncSettingsUI();setView(viewMode);applyHomeLayout()}
 function playUi(){if(window.ArcadeCommon)window.ArcadeCommon.playUi()}
 function launch(href){
- const p=active();p.plays++;p.counts[href]=(p.counts[href]||0)+1;p.recent=[href,...p.recent.filter(x=>x!==href)].slice(0,5);save();renderAll();playUi();window.location.href=href;
+ const p=active(),today=new Date().toLocaleDateString("en-CA");p.plays++;p.counts[href]=(p.counts[href]||0)+1;p.recent=[href,...p.recent.filter(x=>x!==href)].slice(0,5);p.xp=(Number(p.xp)||0)+10;
+ if(!p.daily||p.daily.date!==today)p.daily={date:today,plays:0,unique:[],bonusClaimed:[]};p.daily.plays++;
+ if(!p.daily.unique.includes(href)){p.daily.unique.push(href);p.xp+=15}
+ if(p.daily.plays>=3&&!p.daily.bonusClaimed.includes("plays3")){p.daily.bonusClaimed.push("plays3");p.xp+=25}
+ if(p.daily.unique.length>=2&&!p.daily.bonusClaimed.includes("unique2")){p.daily.bonusClaimed.push("unique2");p.xp+=20}
+ save();renderAll();playUi();window.location.href=href;
 }
 function toggleFavorite(href){const p=active();if(p.favs.includes(href))p.favs=p.favs.filter(x=>x!==href);else p.favs.push(href);save();renderAll();playUi()}
 cards.forEach(card=>{
@@ -1431,7 +1445,8 @@ function sanitizeBackupProfile(raw){
  if(raw.counts&&typeof raw.counts==='object'&&!Array.isArray(raw.counts))Object.entries(raw.counts).forEach(([href,value])=>{const n=Number(value);if(knownGameHrefs.has(href)&&Number.isFinite(n)&&n>=0)counts[href]=Math.min(10000000,Math.floor(n))});
  const validGames=list=>Array.isArray(list)?[...new Set(list.filter(v=>typeof v==='string'&&knownGameHrefs.has(v)))]:[];
  const unlocked=Array.isArray(raw.achievements)?[...new Set(raw.achievements.filter(v=>typeof v==='string'&&knownAchievementIds.has(v)))]:[];
- return {id,name,emoji:String(raw.emoji||'🧑').slice(0,8),plays:Number.isFinite(Number(raw.plays))?Math.max(0,Math.min(10000000,Math.floor(Number(raw.plays)))):0,counts,favs:validGames(raw.favs),recent:validGames(raw.recent).slice(0,5),achievements:unlocked};
+ const dailyRaw=raw.daily&&typeof raw.daily==="object"?raw.daily:{},dailyDate=/^\d{4}-\d{2}-\d{2}$/.test(String(dailyRaw.date||""))?String(dailyRaw.date):"",daily={date:dailyDate,plays:Math.max(0,Math.min(1000000,Math.floor(Number(dailyRaw.plays)||0))),unique:validGames(dailyRaw.unique).slice(0,100),bonusClaimed:Array.isArray(dailyRaw.bonusClaimed)?[...new Set(dailyRaw.bonusClaimed.filter(x=>["plays3","unique2"].includes(x)))]:[]};
+ return {id,name,emoji:String(raw.emoji||'🧑').slice(0,8),plays:Number.isFinite(Number(raw.plays))?Math.max(0,Math.min(10000000,Math.floor(Number(raw.plays)))):0,counts,favs:validGames(raw.favs),recent:validGames(raw.recent).slice(0,5),achievements:unlocked,xp:Math.max(0,Math.min(100000000,Math.floor(Number(raw.xp)||0))),daily};
 }
 function parseStoredObject(value){try{const x=JSON.parse(String(value));return x&&typeof x==='object'&&!Array.isArray(x)?x:null}catch(e){return null}}
 function sanitizeGameStorageValue(key,value){
@@ -1502,7 +1517,7 @@ function validateBackup(raw){
 }
 function exportBackup(){
  try{
-  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v4.26',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
+  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v4.27',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
   const content=JSON.stringify(backup,null,2),blob=new Blob([content],{type:'application/json'});
   if(blob.size>MAX_BACKUP_BYTES)throw new Error('O backup ultrapassa 2 MB.');
   const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='jogos-do-jhon-backup-'+new Date().toISOString().slice(0,10)+'.json';
@@ -1511,7 +1526,7 @@ function exportBackup(){
  }catch(error){setBackupFeedback('Não foi possível gerar o backup: '+error.message,'error')}
 }
 function mergeProfile(existing,incoming){
- existing.plays=Math.max(existing.plays,incoming.plays);
+ existing.plays=Math.max(existing.plays,incoming.plays);existing.xp=Math.max(Number(existing.xp)||0,Number(incoming.xp)||0);if(incoming.daily&&incoming.daily.date===existing.daily?.date){existing.daily.plays=Math.max(existing.daily.plays||0,incoming.daily.plays||0);existing.daily.unique=[...new Set([...(existing.daily.unique||[]),...(incoming.daily.unique||[])])];existing.daily.bonusClaimed=[...new Set([...(existing.daily.bonusClaimed||[]),...(incoming.daily.bonusClaimed||[])])];}else if(incoming.daily?.date&&(!existing.daily?.date||incoming.daily.date>existing.daily.date))existing.daily=incoming.daily;
  Object.entries(incoming.counts).forEach(([href,n])=>{existing.counts[href]=Math.max(Number(existing.counts[href])||0,n)});
  existing.favs=[...new Set([...existing.favs,...incoming.favs])];
  existing.recent=[...new Set([...incoming.recent,...existing.recent])].slice(0,5);
@@ -1662,7 +1677,7 @@ installBtn.addEventListener('click',async()=>{
  if(deferredInstall){deferredInstall.prompt();const choice=await deferredInstall.userChoice;deferredInstall=null;installBtn.textContent=choice.outcome==='accepted'?'✅ Instalação solicitada':'📲 Instalar app';}
  else alert('Para instalar no celular:\n\nAndroid: abra o menu do navegador e escolha “Instalar aplicativo” ou “Adicionar à tela inicial”.\niPhone/iPad: no Safari, toque em Compartilhar e depois em “Adicionar à Tela de Início”.\n\nA opção aparece quando o navegador oferece suporte à instalação.');
 });
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=4.26',{scope:'./',updateViaCache:'none'}).catch(e=>console.warn('PWA: não foi possível registrar o modo offline.',e)))}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=4.27',{scope:'./',updateViaCache:'none'}).catch(e=>console.warn('PWA: não foi possível registrar o modo offline.',e)))}
 renderAll();
 })();
 </script></body>
