@@ -674,7 +674,8 @@
   <div class="notes">
     <h2>📝 Novidades da tela inicial · v4.10</h2>
     <ul>
-       <li><b>v4.10:</b> remoção do Futebol de Mesa do catálogo após avaliação da experiência de jogo.</li>
+       <li><b>v4.10:</b> refinamento visual com hierarquia tipográfica, cartões mais claros, feedback de interação, espaçamento consistente, foco acessível, botões táteis maiores, animações suaves, suporte a movimento reduzido, melhor adaptação a telas pequenas e contraste reforçado.</li>
+       <li><b>v4.09:</b> remoção do Futebol de Mesa do catálogo após avaliação da experiência de jogo.</li>
        <li><b>v4.06 — Jogo da Memória v2.1:</b> reconstruído o tabuleiro com botões de carta independentes, dimensões quadradas explícitas e link com versão para evitar abrir o HTML antigo.</li>
        <li><b>v4.05 — Jogo da Memória v2.0:</b> reconstruídas as cartas com faces visíveis sem depender de rotação 3D, corrigindo o tabuleiro que mostrava apenas pontos.</li>
        <li><b>v4.04 — Jogo da Memória v1.9:</b> corrigido o dimensionamento das cartas, separado o estilo do botão voltar e aumentado o tamanho inicial do tabuleiro para 4×4.</li>
@@ -1306,7 +1307,7 @@ installBtn.addEventListener('click',async()=>{
  if(deferredInstall){deferredInstall.prompt();const choice=await deferredInstall.userChoice;deferredInstall=null;installBtn.textContent=choice.outcome==='accepted'?'✅ Instalação solicitada':'📲 Instalar app';}
  else alert('Para instalar no celular:\n\nAndroid: abra o menu do navegador e escolha “Instalar aplicativo” ou “Adicionar à tela inicial”.\niPhone/iPad: no Safari, toque em Compartilhar e depois em “Adicionar à Tela de Início”.\n\nA opção aparece quando o navegador oferece suporte à instalação.');
 });
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=4.08',{scope:'./',updateViaCache:'none'}).catch(e=>console.warn('PWA: não foi possível registrar o modo offline.',e)))}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=4.10',{scope:'./',updateViaCache:'none'}).catch(e=>console.warn('PWA: não foi possível registrar o modo offline.',e)))}
 renderAll();
 })();
 </script></body>
