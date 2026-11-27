@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Jogos do Jhon">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Jogos do Jhon · v4.11</title>
+<title>Jogos do Jhon · v4.12</title>
 <meta property="og:title" content="Jogos do Jhon · Arcade">
 <meta property="og:description" content="Arcade de jogos web do Jhon com 47 jogos para jogar no celular ou PC.">
 <meta property="og:type" content="website">
@@ -420,7 +420,7 @@
     <span class="hero-kicker">ARCADE PESSOAL</span>
     <h1>Jogos do Jhon</h1>
     <p class="sub">🎮 Seu cantinho de diversão: escolha um jogo e comece a jogar no celular ou no PC.</p>
-    <div class="version"><span class="dot"></span> Versão <b>v4.11</b> · atualizado em <b>27/11/2026</b></div>
+    <div class="version"><span class="dot"></span> Versão <b>v4.12</b> · atualizado em <b>27/11/2026</b></div>
     <div class="home-hero-actions">
       <a class="primary-cta" href="#catalogStart">🎮 Explorar jogos <span aria-hidden="true">↓</span></a>
       <span class="hero-count" id="heroGameCount">47 jogos no catálogo</span>
@@ -753,8 +753,9 @@
     </div>
   </details>
   <div class="notes" id="notesSection" data-home-section="notes">
-    <h2>📝 Novidades da tela inicial · v4.11</h2>
+    <h2>📝 Novidades da tela inicial · v4.12</h2>
     <ul>
+       <li><b>v4.12:</b> ordem do catálogo reorganizada: 2048, Corrida Infinita, Ninja Forest Rescue, Caminhoneiro, Campo Minado e Mancala agora aparecem por último.</li>
        <li><b>v4.11:</b> recomendações que consideram o histórico e as categorias mais jogadas por perfil; filtros combináveis por duração estimada, dificuldade e multiplayer; capas ilustradas com ícone e cores de cada jogo; organização da tela inicial com opções para ocultar e reordenar seções, salva no navegador e incluída no backup.</li>
        <li><b>v4.10:</b> refinamento visual com hierarquia tipográfica, cartões mais claros, feedback de interação, espaçamento consistente, foco acessível, botões táteis maiores, animações suaves, suporte a movimento reduzido, melhor adaptação a telas pequenas e contraste reforçado.</li>
        <li><b>v4.09:</b> remoção do Futebol de Mesa do catálogo após avaliação da experiência de jogo.</li>
@@ -988,7 +989,7 @@ function refreshCardMeta(){
   if(meta)meta.innerHTML='<span class="meta-pill">'+(categories[g.cat]||'🎮 Jogo')+'</span><span class="meta-pill">⏱️ '+META_LABELS.duration[details.duration]+'</span><span class="meta-pill">🎯 '+META_LABELS.difficulty[details.difficulty]+'</span><span class="meta-pill">'+(details.players==='multi'?'👥 Multiplayer':'👤 Solo / IA')+'</span><span class="meta-pill">▶ '+(p.counts[href]||0)+'x aberto</span>'+(isFav?'<span class="meta-pill">⭐ Favorito</span>':'');
  });
 }
-const catalogOrder=['games/cobra.html','games/memoria.html','games/velha.html','games/tetris.html','games/palavras-cruzadas.html','games/bubble-shooter.html','games/galaxia-invasora.html','games/2048.html','games/batalha-naval.html','games/banco-imobiliario.html','games/forca.html','games/xadrez.html','games/stop.html','games/domino.html','games/sinuca.html','games/detetive.html','games/corrida.html','games/caminhoneiro.html','games/campo-minado.html','ninja_forest_run_v4_10.html','games/voo-desafiador.html','games/labirinto.html','games/sudoku.html','games/paciencia.html','games/pinball.html','games/travessia-maluca.html','games/resta-um.html','games/duelo-reflexos.html','games/conecte-pontos.html','games/acerte-numero.html','games/caca-palavras.html','games/torre-hanoi.html','games/damas.html','games/ludo.html','games/tower-defense.html','games/jewel-match.html'];
+const catalogOrder=['games/cobra.html','games/velha.html','games/tetris.html','games/palavras-cruzadas.html','games/bubble-shooter.html','games/galaxia-invasora.html','games/batalha-naval.html','games/banco-imobiliario.html','games/forca.html','games/xadrez.html','games/stop.html','games/domino.html','games/sinuca.html','games/detetive.html','games/voo-desafiador.html','games/labirinto.html','games/sudoku.html','games/paciencia.html','games/pinball.html','games/travessia-maluca.html','games/resta-um.html','games/duelo-reflexos.html','games/conecte-pontos.html','games/acerte-numero.html','games/caca-palavras.html','games/torre-hanoi.html','games/damas.html','games/ludo.html','games/tower-defense.html','games/jewel-match.html','games/memoria.html?build=memory-2.1-20261125','games/conecte-cores.html','games/reversi.html','games/arkanoid.html','games/corte-frutas.html','games/salto-infinito.html','games/arena-bombas.html','games/ritmo-neon.html','games/arena-tanques.html','games/2048.html','games/corrida.html','ninja_forest_run_v4_10.html','games/caminhoneiro.html','games/campo-minado.html','games/mancala.html'];
 let filter='all';
 const VIEW_KEY='jhonArcadeViewV1';
 let viewMode='grid';
@@ -1382,7 +1383,7 @@ function validateBackup(raw){
 }
 function exportBackup(){
  try{
-  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v4.11',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
+  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v4.12',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
   const content=JSON.stringify(backup,null,2),blob=new Blob([content],{type:'application/json'});
   if(blob.size>MAX_BACKUP_BYTES)throw new Error('O backup ultrapassa 2 MB.');
   const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='jogos-do-jhon-backup-'+new Date().toISOString().slice(0,10)+'.json';
@@ -1538,7 +1539,7 @@ installBtn.addEventListener('click',async()=>{
  if(deferredInstall){deferredInstall.prompt();const choice=await deferredInstall.userChoice;deferredInstall=null;installBtn.textContent=choice.outcome==='accepted'?'✅ Instalação solicitada':'📲 Instalar app';}
  else alert('Para instalar no celular:\n\nAndroid: abra o menu do navegador e escolha “Instalar aplicativo” ou “Adicionar à tela inicial”.\niPhone/iPad: no Safari, toque em Compartilhar e depois em “Adicionar à Tela de Início”.\n\nA opção aparece quando o navegador oferece suporte à instalação.');
 });
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=4.11',{scope:'./',updateViaCache:'none'}).catch(e=>console.warn('PWA: não foi possível registrar o modo offline.',e)))}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=4.12',{scope:'./',updateViaCache:'none'}).catch(e=>console.warn('PWA: não foi possível registrar o modo offline.',e)))}
 renderAll();
 })();
 </script></body>
