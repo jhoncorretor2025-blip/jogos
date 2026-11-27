@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Jogos do Jhon">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Jogos do Jhon · v4.33</title>
+<title>Jogos do Jhon · v4.34</title>
 <meta property="og:title" content="Jogos do Jhon · Arcade">
 <meta property="og:description" content="Arcade de jogos web do Jhon com jogos para jogar no celular ou PC.">
 <meta property="og:type" content="website">
@@ -457,7 +457,7 @@
     <span class="hero-kicker">ARCADE PESSOAL</span>
     <h1>Jogos do Jhon</h1>
     <p class="sub">🎮 Seu cantinho de diversão: escolha um jogo e comece a jogar no celular ou no PC.</p>
-    <div class="version"><span class="dot"></span> Versão <b>v4.33</b> · atualizado em <b>27/11/2026</b></div>
+    <div class="version"><span class="dot"></span> Versão <b>v4.34</b> · atualizado em <b>27/11/2026</b></div>
     <div class="home-hero-actions">
       <a class="primary-cta" href="#catalogStart">🎮 Explorar jogos <span aria-hidden="true">↓</span></a>
       <span class="hero-count" id="heroGameCount">jogos no catálogo</span>
@@ -548,7 +548,7 @@
     </div>
 
     <div class="card" data-category="strategy" data-href="games/batalha-naval.html" style="--accent:#60a5fa;--glow:rgba(96,165,250,.20)">
-      <span class="tag new">v2.0</span>
+      <span class="tag new">v2.1</span>
       <span class="ico">🚢</span>
       <p class="name">Batalha Naval <em class="new">ONLINE</em></p>
       <p class="desc">Jogue contra a IA ou desafie outra pessoa online com salas privadas e turnos sincronizados.</p>
@@ -803,8 +803,9 @@
     </div>
   </details>
   <div class="notes" id="notesSection" data-home-section="notes">
-    <h2>📝 Novidades da tela inicial · v4.33</h2>
+    <h2>📝 Novidades da tela inicial · v4.34</h2>
     <ul>
+       <li><b>v4.34:</b> Batalha Naval v2.1 com missões diárias, metas de partidas/vitórias/acertos e recompensas extras de XP.</li>
        <li><b>v4.33:</b> Batalha Naval v2.0 com XP, cinco níveis de carreira naval, barra de progresso e conquistas desbloqueáveis.</li>
        <li><b>v4.32:</b> Batalha Naval v1.9 com ranking local, nome de jogador, pontuação por desempenho e histórico atualizado com pontos.</li>
        <li><b>v4.31:</b> Batalha Naval v1.8 com estatísticas locais, taxa de acertos e histórico das dez partidas mais recentes.</li>
@@ -1684,7 +1685,7 @@ installBtn.addEventListener('click',async()=>{
  if(deferredInstall){deferredInstall.prompt();const choice=await deferredInstall.userChoice;deferredInstall=null;installBtn.textContent=choice.outcome==='accepted'?'✅ Instalação solicitada':'📲 Instalar app';}
  else alert('Para instalar no celular:\n\nAndroid: abra o menu do navegador e escolha “Instalar aplicativo” ou “Adicionar à tela inicial”.\niPhone/iPad: no Safari, toque em Compartilhar e depois em “Adicionar à Tela de Início”.\n\nA opção aparece quando o navegador oferece suporte à instalação.');
 });
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=4.33',{scope:'./',updateViaCache:'none'}).catch(e=>console.warn('PWA: não foi possível registrar o modo offline.',e)))}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=4.34',{scope:'./',updateViaCache:'none'}).catch(e=>console.warn('PWA: não foi possível registrar o modo offline.',e)))}
 renderAll();
 })();
 </script></body>
