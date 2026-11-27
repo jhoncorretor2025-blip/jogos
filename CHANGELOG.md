@@ -1,5 +1,12 @@
 # Histórico de alterações — Jogos do Jhon
 
+## V4.26 — Tetris Neon revisado
+- Atualizado Tetris Neon para v2.3.
+- Corrigidos os efeitos de partículas das linhas eliminadas: preservam as cores reais das peças removidas.
+- Pontuação de combos agora é arredondada para números inteiros.
+- A partida pausa automaticamente quando o jogador troca de aba ou minimiza o navegador.
+- Atualizados o catálogo, a versão do backup e o cache do aplicativo para v4.26.
+
 ## V4.25 — Forca revisada
 - Atualizado Forca para v2.5.
 - Corrigido erro ao pressionar letras no teclado antes de iniciar uma partida; entradas agora só são processadas com jogo ativo.
