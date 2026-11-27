@@ -1,5 +1,14 @@
 # Histórico de alterações — Jogos do Jhon
 
+## V4.20 — Clássicos Arcade revisado
+- Atualizado o motor Clássicos Arcade para v1.15, com correções nos jogos Dominó, Paciência, Pinball e Travessia Maluca.
+- Dominó: corrigida a sequência de passes sem jogadas, com encerramento por bloqueio e cancelamento da jogada atrasada ao iniciar outra partida.
+- Paciência: vitórias passam a ser registradas de forma persistente e o melhor resultado passa a exibir o menor número de movimentos.
+- Pinball: impedido o relançamento da bola enquanto ela está em movimento; corrigido o contato contínuo nas palhetas e liberados os comandos quando a janela perde foco.
+- Travessia Maluca: o sapinho retorna à base após ocupar uma chegada; a pontuação final, incluindo bônus, é salva no recorde.
+- Atualizados a versão do catálogo e o cache do aplicativo para v4.20.
+
+
 ## V4.19 — Arena de Bombas revisada
 - Atualizado Arena de Bombas para v1.2 e padronizada a versão no título e na interface.
 - Corrigido o movimento dos robôs para que não atravessem bombas.
