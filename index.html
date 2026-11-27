@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Jogos do Jhon">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Jogos do Jhon · v4.15</title>
+<title>Jogos do Jhon · v4.16</title>
 <meta property="og:title" content="Jogos do Jhon · Arcade">
 <meta property="og:description" content="Arcade de jogos web do Jhon com jogos para jogar no celular ou PC.">
 <meta property="og:type" content="website">
@@ -189,7 +189,7 @@
     .mobile-nav button.active{background:rgba(34,211,238,.12);color:#67e8f9}
   }
   @media(min-width:561px){.grid.compact{grid-template-columns:repeat(auto-fill,minmax(175px,1fr))}}
-  /* V4.15 — navegação e catálogo responsivos */
+  /* V4.16 — navegação e catálogo responsivos */
   @media(max-width:560px){
     .category-nav{display:flex;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;padding:2px 2px 10px;scrollbar-width:thin}
     .category-chip{flex:0 0 116px;min-height:66px;scroll-snap-align:start}
@@ -210,6 +210,19 @@
   .home-hero{isolation:isolate}
   .recommendations-section,.category-section,.menu-tools,#catalogSection{scroll-margin-top:18px}
   .recommendation-card{min-height:78px}
+  .spotlight-section,.continue-section,.popular-section{margin:16px 0 20px}
+  .spotlight-card{position:relative;display:flex;align-items:center;gap:18px;min-height:150px;padding:20px;border:1px solid rgba(34,211,238,.25);border-radius:18px;overflow:hidden;background:radial-gradient(260px 150px at 12% 20%,rgba(34,211,238,.17),transparent 75%),linear-gradient(130deg,#14243b,#0b1322)}
+  .spotlight-art{display:grid;place-items:center;flex:0 0 104px;width:104px;height:104px;border-radius:24px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.13);font-size:58px}
+  .spotlight-copy{min-width:0;flex:1}.spotlight-copy h3{margin:0 0 5px;font-size:20px}.spotlight-copy p{margin:0 0 12px;color:var(--muted);font-size:12px;line-height:1.5}
+  .spotlight-play,.continue-play{border:1px solid rgba(34,211,238,.5);background:rgba(34,211,238,.12);color:#a5f3fc;border-radius:10px;padding:9px 13px;font:inherit;font-size:12px;font-weight:800;cursor:pointer}
+  .continue-rail,.popular-rail{display:flex;gap:10px;overflow-x:auto;padding:3px 2px 10px;scroll-snap-type:x mandatory;scrollbar-width:thin}
+  .continue-tile,.popular-tile{flex:0 0 190px;scroll-snap-align:start;display:flex;flex-direction:column;gap:7px;padding:13px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(145deg,#142238,#0d1728)}
+  .continue-tile .tile-icon,.popular-tile .tile-icon{font-size:27px}
+  .continue-tile b,.popular-tile b{font-size:13px}.continue-tile small,.popular-tile small{color:var(--muted);font-size:10px}
+  .continue-tile .continue-play{margin-top:auto}.popular-rank{font-size:10px;color:#fbbf24;font-weight:800;letter-spacing:.4px}
+  .continue-empty{padding:16px;border:1px dashed #334155;border-radius:13px;color:var(--muted);font-size:12px}
+  @media(max-width:560px){.spotlight-card{gap:12px;padding:15px;min-height:130px}.spotlight-art{flex-basis:74px;width:74px;height:74px;border-radius:18px;font-size:42px}.spotlight-copy h3{font-size:16px}.continue-tile,.popular-tile{flex-basis:160px}}
+
 
 
 
@@ -442,7 +455,7 @@
     <span class="hero-kicker">ARCADE PESSOAL</span>
     <h1>Jogos do Jhon</h1>
     <p class="sub">🎮 Seu cantinho de diversão: escolha um jogo e comece a jogar no celular ou no PC.</p>
-    <div class="version"><span class="dot"></span> Versão <b>v4.15</b> · atualizado em <b>27/11/2026</b></div>
+    <div class="version"><span class="dot"></span> Versão <b>v4.16</b> · atualizado em <b>27/11/2026</b></div>
     <div class="home-hero-actions">
       <a class="primary-cta" href="#catalogStart">🎮 Explorar jogos <span aria-hidden="true">↓</span></a>
       <span class="hero-count" id="heroGameCount">jogos no catálogo</span>
@@ -450,6 +463,18 @@
   </header>
   <main id="mainContent">
     <p class="save-feedback" id="profileSaveFeedback" hidden role="status" aria-live="polite" aria-atomic="true"></p>
+  <section class="spotlight-section" id="featuredSection" data-home-section="featured" aria-label="Jogo em destaque">
+    <div class="section-head"><div><h2>🌟 Jogo em destaque</h2><p>Uma sugestão para começar a diversão.</p></div></div>
+    <div class="spotlight-card" id="spotlightCard"></div>
+  </section>
+  <section class="continue-section" id="continueSection" data-home-section="continue" aria-label="Continuar jogando">
+    <div class="section-head"><div><h2>▶️ Continuar jogando</h2><p id="continueCaption">Retome de onde você parou.</p></div></div>
+    <div class="continue-rail" id="continueRail"></div>
+  </section>
+  <section class="popular-section" id="popularSection" data-home-section="popular" aria-label="Jogos mais jogados">
+    <div class="section-head"><div><h2>🔥 Mais jogados</h2><p>Os jogos que você mais abriu neste perfil.</p></div><button class="toolbtn" id="showPopular" type="button">Ver no catálogo</button></div>
+    <div class="popular-rail" id="popularRail"></div>
+  </section>
   <section class="category-section" id="categorySection" data-home-section="categories" aria-label="Navegação por categoria">
     <div class="section-head"><div><h2>Explore por categoria</h2><p>Escolha um estilo e encontre seu próximo jogo — incluindo uma seleção de clássicos e jogos tranquilos.</p></div></div>
     <div class="category-nav" id="categoryNav" role="group" aria-label="Filtrar por categoria">
@@ -776,9 +801,9 @@
     </div>
   </details>
   <div class="notes" id="notesSection" data-home-section="notes">
-    <h2>📝 Novidades da tela inicial · v4.15</h2>
+    <h2>📝 Novidades da tela inicial · v4.16</h2>
     <ul>
-       <li><b>v4.15:</b> Conecte os Pontos v1.3 com dez melhorias: layout móvel mais confortável; nomes dos jogadores; destaque da vez; barra de progresso e quadrados restantes; animações de captura e última linha; dica estratégica; desfazer a vez completa contra a IA; três níveis de IA com estratégias diferentes; efeitos sonoros opcionais; estatísticas de partidas, vitórias, derrotas, empates e melhor placar. Inclui atalhos de teclado e instruções acessíveis.</li>
+       <li><b>v4.16:</b> Conecte os Pontos v1.3 com dez melhorias: layout móvel mais confortável; nomes dos jogadores; destaque da vez; barra de progresso e quadrados restantes; animações de captura e última linha; dica estratégica; desfazer a vez completa contra a IA; três níveis de IA com estratégias diferentes; efeitos sonoros opcionais; estatísticas de partidas, vitórias, derrotas, empates e melhor placar. Inclui atalhos de teclado e instruções acessíveis.</li>
        <li><b>v4.13:</b> cinco jogos aprimorados: 2048 restaurado com desfazer e recordes; Duelo de Reflexos com modo solo contra IA e três níveis; Detetive com pistas, dicas, pontuação e sequência de casos; Mancala com IA em três níveis e modo local para duas pessoas; Conecte os Pontos com IA e tabuleiros ajustáveis. Os recordes e estatísticas desses jogos passaram a integrar o backup.</li>
        <li><b>v4.12:</b> ordem do catálogo reorganizada: 2048, Corrida Infinita, Ninja Forest Rescue, Caminhoneiro, Campo Minado e Mancala agora aparecem por último.</li>
        <li><b>v4.11:</b> recomendações que consideram o histórico e as categorias mais jogadas por perfil; filtros combináveis por duração estimada, dificuldade e multiplayer; capas ilustradas com ícone e cores de cada jogo; organização da tela inicial com opções para ocultar e reordenar seções, salva no navegador e incluída no backup.</li>
@@ -889,6 +914,9 @@
 (()=>{'use strict';
 const grid=document.getElementById('gameGrid'),cards=[...grid.querySelectorAll('.card')],OLD_KEY='jhonArcadeMenuV21',FAMILY_KEY='jhonArcadeFamilyV1',SETTINGS_KEY='jhonArcadeSettingsV1';
 const HOME_SECTION_DEFS=[
+ {id:'featured',elementId:'featuredSection',label:'🌟 Destaque'},
+ {id:'continue',elementId:'continueSection',label:'▶️ Continuar jogando'},
+ {id:'popular',elementId:'popularSection',label:'🔥 Mais jogados'},
  {id:'categories',elementId:'categorySection',label:'🧭 Categorias'},
  {id:'recommendations',elementId:'recommendationsSection',label:'✨ Recomendações'},
  {id:'tools',elementId:'toolsSection',label:'🔎 Busca e filtros'},
@@ -1191,6 +1219,45 @@ function renderCards(){
  refreshCardMeta();
 }
 
+function renderSpotlight(){
+ const box=document.getElementById('spotlightCard');if(!box)return;
+ const featured=names.find(g=>g.href==='games/2048.html')||names[0];if(!featured)return;
+ const meta=getGameMeta(featured);box.innerHTML='';
+ const art=document.createElement('div');art.className='spotlight-art';art.textContent=featured.icon;
+ const copy=document.createElement('div');copy.className='spotlight-copy';
+ const title=document.createElement('h3');title.textContent=featured.name;
+ const desc=document.createElement('p');desc.textContent=(categories[featured.cat]||'Jogo')+' · '+META_LABELS.duration[meta.duration]+' · '+META_LABELS.difficulty[meta.difficulty]+'. Uma boa escolha para experimentar hoje.';
+ const button=document.createElement('button');button.type='button';button.className='spotlight-play';button.textContent='▶ Jogar agora';button.addEventListener('click',()=>launch(featured.href));
+ copy.append(title,desc,button);box.append(art,copy);
+}
+function renderContinueAndPopular(){
+ const p=active(),continueBox=document.getElementById('continueRail'),popularBox=document.getElementById('popularRail');
+ if(!continueBox||!popularBox)return;
+ continueBox.innerHTML='';popularBox.innerHTML='';
+ const recent=p.recent.map(h=>names.find(g=>g.href===h)).filter(Boolean);
+ document.getElementById('continueCaption').textContent=recent.length?'Retome um dos seus últimos jogos, sem precisar procurar novamente.':'Seus jogos recentes aparecerão aqui depois da primeira partida.';
+ if(!recent.length){const empty=document.createElement('div');empty.className='continue-empty';empty.textContent='Você ainda não abriu nenhum jogo neste perfil. Escolha um jogo no catálogo para começar!';continueBox.appendChild(empty)}
+ recent.forEach((g,index)=>{
+  const tile=document.createElement('article');tile.className='continue-tile';
+  const icon=document.createElement('span');icon.className='tile-icon';icon.textContent=g.icon;
+  const title=document.createElement('b');title.textContent=g.name;
+  const count=document.createElement('small');count.textContent=(p.counts[g.href]||0)+' partida(s) aberta(s) · '+(index===0?'Último jogo':'Acessado recentemente');
+  const play=document.createElement('button');play.type='button';play.className='continue-play';play.textContent='Continuar';play.addEventListener('click',()=>launch(g.href));
+  tile.append(icon,title,count,play);continueBox.appendChild(tile);
+ });
+ const ranked=names.map(g=>({game:g,count:Number(p.counts[g.href])||0})).filter(x=>x.count>0).sort((a,b)=>b.count-a.count||a.game.name.localeCompare(b.game.name,'pt-BR')).slice(0,5);
+ if(!ranked.length){const empty=document.createElement('div');empty.className='continue-empty';empty.textContent='Ainda não há partidas suficientes para montar seu ranking pessoal.';popularBox.appendChild(empty)}
+ ranked.forEach((item,index)=>{
+  const tile=document.createElement('article');tile.className='popular-tile';
+  const rank=document.createElement('span');rank.className='popular-rank';rank.textContent='#'+(index+1)+' MAIS JOGADO';
+  const icon=document.createElement('span');icon.className='tile-icon';icon.textContent=item.game.icon;
+  const title=document.createElement('b');title.textContent=item.game.name;
+  const count=document.createElement('small');count.textContent=item.count+' partida(s) aberta(s)';
+  tile.append(rank,icon,title,count);tile.addEventListener('click',()=>launch(item.game.href));tile.tabIndex=0;tile.setAttribute('role','button');
+  tile.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();launch(item.game.href)}});
+  popularBox.appendChild(tile);
+ });
+}
 function renderRecommendations(){
  const p=active(),box=document.getElementById('recommendationGrid'),caption=document.getElementById('recommendationCaption');
  const counts=p.counts||{},hasHistory=p.plays>0||Object.keys(counts).length>0,categoryScores={};
@@ -1256,7 +1323,7 @@ function applyHomeLayout(){
  });
 }
 
-function renderAll(){renderProfiles();renderCategoryNav();renderCards();renderRecent();renderAchievements();renderRecommendations();renderHomeLayoutControls();applySettings();syncSettingsUI();setView(viewMode);applyHomeLayout()}
+function renderAll(){renderProfiles();renderCategoryNav();renderCards();renderRecent();renderAchievements();renderRecommendations();renderSpotlight();renderContinueAndPopular();renderHomeLayoutControls();applySettings();syncSettingsUI();setView(viewMode);applyHomeLayout()}
 function playUi(){if(window.ArcadeCommon)window.ArcadeCommon.playUi()}
 function launch(href){
  const p=active();p.plays++;p.counts[href]=(p.counts[href]||0)+1;p.recent=[href,...p.recent.filter(x=>x!==href)].slice(0,5);save();renderAll();playUi();window.location.href=href;
@@ -1295,6 +1362,10 @@ document.addEventListener('click',e=>{if(!e.target.closest('.search-shell'))clos
 document.getElementById('seeAllFavorites').addEventListener('click',()=>{filter='favorites';renderCards();document.getElementById('playerPanel').open=true;document.getElementById('favoriteSection').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})});
 document.querySelectorAll('.filter').forEach(b=>b.addEventListener('click',()=>{filter=b.dataset.filter;renderCards();playUi()}));
 document.getElementById('randomGame').addEventListener('click',()=>{const visible=cards.filter(c=>c.style.display!=='none'),pool=visible.length?visible:cards;launch(pool[Math.floor(Math.random()*pool.length)].dataset.href)});
+document.getElementById('showPopular').addEventListener('click',()=>{
+ sortMode='popular';try{localStorage.setItem(SORT_KEY,sortMode)}catch(error){}
+ filter='all';searchInput.value='';renderCategoryNav();renderCards();document.getElementById('catalogStart').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});playUi();
+});
 document.getElementById('viewToggle').addEventListener('click',()=>{const modes=['grid','compact','list'];setView(modes[(modes.indexOf(viewMode)+1)%modes.length]);playUi()});
 document.getElementById('sortGames').addEventListener('change',e=>{
  const value=e.target.value;if(!['catalog','popular','recent','az','least'].includes(value))return;
@@ -1431,7 +1502,7 @@ function validateBackup(raw){
 }
 function exportBackup(){
  try{
-  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v4.15',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
+  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v4.16',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
   const content=JSON.stringify(backup,null,2),blob=new Blob([content],{type:'application/json'});
   if(blob.size>MAX_BACKUP_BYTES)throw new Error('O backup ultrapassa 2 MB.');
   const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='jogos-do-jhon-backup-'+new Date().toISOString().slice(0,10)+'.json';
@@ -1591,7 +1662,7 @@ installBtn.addEventListener('click',async()=>{
  if(deferredInstall){deferredInstall.prompt();const choice=await deferredInstall.userChoice;deferredInstall=null;installBtn.textContent=choice.outcome==='accepted'?'✅ Instalação solicitada':'📲 Instalar app';}
  else alert('Para instalar no celular:\n\nAndroid: abra o menu do navegador e escolha “Instalar aplicativo” ou “Adicionar à tela inicial”.\niPhone/iPad: no Safari, toque em Compartilhar e depois em “Adicionar à Tela de Início”.\n\nA opção aparece quando o navegador oferece suporte à instalação.');
 });
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=4.14',{scope:'./',updateViaCache:'none'}).catch(e=>console.warn('PWA: não foi possível registrar o modo offline.',e)))}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=4.16',{scope:'./',updateViaCache:'none'}).catch(e=>console.warn('PWA: não foi possível registrar o modo offline.',e)))}
 renderAll();
 })();
 </script></body>
