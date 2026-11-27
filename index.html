@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Jogos do Jhon">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Jogos do Jhon · v4.24</title>
+<title>Jogos do Jhon · v4.25</title>
 <meta property="og:title" content="Jogos do Jhon · Arcade">
 <meta property="og:description" content="Arcade de jogos web do Jhon com jogos para jogar no celular ou PC.">
 <meta property="og:type" content="website">
@@ -455,7 +455,7 @@
     <span class="hero-kicker">ARCADE PESSOAL</span>
     <h1>Jogos do Jhon</h1>
     <p class="sub">🎮 Seu cantinho de diversão: escolha um jogo e comece a jogar no celular ou no PC.</p>
-    <div class="version"><span class="dot"></span> Versão <b>v4.24</b> · atualizado em <b>27/11/2026</b></div>
+    <div class="version"><span class="dot"></span> Versão <b>v4.25</b> · atualizado em <b>27/11/2026</b></div>
     <div class="home-hero-actions">
       <a class="primary-cta" href="#catalogStart">🎮 Explorar jogos <span aria-hidden="true">↓</span></a>
       <span class="hero-count" id="heroGameCount">jogos no catálogo</span>
@@ -801,9 +801,9 @@
     </div>
   </details>
   <div class="notes" id="notesSection" data-home-section="notes">
-    <h2>📝 Novidades da tela inicial · v4.24</h2>
+    <h2>📝 Novidades da tela inicial · v4.25</h2>
     <ul>
-       <li><b>v4.24:</b> Conecte os Pontos v1.3 com dez melhorias: layout móvel mais confortável; nomes dos jogadores; destaque da vez; barra de progresso e quadrados restantes; animações de captura e última linha; dica estratégica; desfazer a vez completa contra a IA; três níveis de IA com estratégias diferentes; efeitos sonoros opcionais; estatísticas de partidas, vitórias, derrotas, empates e melhor placar. Inclui atalhos de teclado e instruções acessíveis.</li>
+       <li><b>v4.25:</b> Conecte os Pontos v1.3 com dez melhorias: layout móvel mais confortável; nomes dos jogadores; destaque da vez; barra de progresso e quadrados restantes; animações de captura e última linha; dica estratégica; desfazer a vez completa contra a IA; três níveis de IA com estratégias diferentes; efeitos sonoros opcionais; estatísticas de partidas, vitórias, derrotas, empates e melhor placar. Inclui atalhos de teclado e instruções acessíveis.</li>
        <li><b>v4.13:</b> cinco jogos aprimorados: 2048 restaurado com desfazer e recordes; Duelo de Reflexos com modo solo contra IA e três níveis; Detetive com pistas, dicas, pontuação e sequência de casos; Mancala com IA em três níveis e modo local para duas pessoas; Conecte os Pontos com IA e tabuleiros ajustáveis. Os recordes e estatísticas desses jogos passaram a integrar o backup.</li>
        <li><b>v4.12:</b> ordem do catálogo reorganizada: 2048, Corrida Infinita, Ninja Forest Rescue, Caminhoneiro, Campo Minado e Mancala agora aparecem por último.</li>
        <li><b>v4.11:</b> recomendações que consideram o histórico e as categorias mais jogadas por perfil; filtros combináveis por duração estimada, dificuldade e multiplayer; capas ilustradas com ícone e cores de cada jogo; organização da tela inicial com opções para ocultar e reordenar seções, salva no navegador e incluída no backup.</li>
@@ -1502,7 +1502,7 @@ function validateBackup(raw){
 }
 function exportBackup(){
  try{
-  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v4.24',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
+  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v4.25',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
   const content=JSON.stringify(backup,null,2),blob=new Blob([content],{type:'application/json'});
   if(blob.size>MAX_BACKUP_BYTES)throw new Error('O backup ultrapassa 2 MB.');
   const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='jogos-do-jhon-backup-'+new Date().toISOString().slice(0,10)+'.json';
@@ -1662,7 +1662,7 @@ installBtn.addEventListener('click',async()=>{
  if(deferredInstall){deferredInstall.prompt();const choice=await deferredInstall.userChoice;deferredInstall=null;installBtn.textContent=choice.outcome==='accepted'?'✅ Instalação solicitada':'📲 Instalar app';}
  else alert('Para instalar no celular:\n\nAndroid: abra o menu do navegador e escolha “Instalar aplicativo” ou “Adicionar à tela inicial”.\niPhone/iPad: no Safari, toque em Compartilhar e depois em “Adicionar à Tela de Início”.\n\nA opção aparece quando o navegador oferece suporte à instalação.');
 });
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=4.24',{scope:'./',updateViaCache:'none'}).catch(e=>console.warn('PWA: não foi possível registrar o modo offline.',e)))}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=4.25',{scope:'./',updateViaCache:'none'}).catch(e=>console.warn('PWA: não foi possível registrar o modo offline.',e)))}
 renderAll();
 })();
 </script></body>
