@@ -130,7 +130,7 @@
     roomConn=conn;
     conn.on('open',()=>{setOnlineStatus('Conectado com '+opponentName,true);setOnlineControls(true);onlineHelp.textContent='Conexão estabelecida! Posicione sua frota e toque em Começar. A partida inicia quando os dois estiverem prontos.';msgEl.textContent='🤝 Adversário conectado. Posicione sua frota e prepare-se!';});
     conn.on('data',handleOnlineData);
-    conn.on('close',()=>{setOnlineStatus('Adversário desconectado',false);onlineHelp.textContent='A conexão foi encerrada. Você pode criar ou entrar em outra sala.';msgEl.textContent='⚠️ O adversário saiu da sala.';roomConn=null;onlineMode=false;setOnlineControls(false);});
+    conn.on('close',()=>{setOnlineStatus('Adversário desconectado',false);onlineHelp.textContent='A conexão foi encerrada. Você pode criar ou entrar em outra sala.';msgEl.textContent='⚠️ O adversário saiu da sala.';roomConn=null;onlineMode=false;setOnlineControls(false);createRoomBtn.disabled=false;joinRoomBtn.disabled=false;});
     conn.on('error',e=>{onlineHelp.textContent='Erro na conexão: '+(e.message||'tente novamente.');});
   }
   function handleOnlineData(data){
@@ -162,7 +162,7 @@
   function connSend(data){if(roomConn&&roomConn.open)roomConn.send(data)}
   async function createOnlineRoom(){
     if(onlineMode)return;createRoomBtn.disabled=true;joinRoomBtn.disabled=true;setOnlineStatus('Criando sala…',false);onlineHelp.textContent='Preparando uma sala privada…';
-    try{await loadPeerJS();roomCode=makeRoomCode();peer=makePeer(roomPeerId(roomCode));peer.on('open',()=>{onlineMode=true;isHost=true;roomEntry.hidden=true;updateRoomShare();setOnlineStatus('Aguardando adversário',false);onlineHelp.textContent='Compartilhe o código '+roomCode+' com seu adversário. Quando ele entrar, vocês poderão iniciar.';setOnlineControls(false);});
+    try{await loadPeerJS();roomCode=makeRoomCode();peer=makePeer(roomPeerId(roomCode));peer.on('open',()=>{onlineMode=true;isHost=true;roomEntry.hidden=true;updateRoomShare();setOnlineStatus('Aguardando adversário',false);onlineHelp.textContent='Compartilhe o código '+roomCode+' com seu adversário. Quando ele entrar, vocês poderão iniciar.';setOnlineControls(true);});
       peer.on('connection',conn=>{if(roomConn){conn.close();return}opponentName='Adversário';connectRoom(conn);conn.on('open',()=>connSend({type:'hello',name:'Jogador'}));});
       peer.on('error',e=>{setOnlineStatus('Falha ao criar sala',false);onlineHelp.textContent=e.type==='unavailable-id'?'Código ocupado. Tente criar outra sala.':(e.message||'Não foi possível criar a sala.');createRoomBtn.disabled=false;joinRoomBtn.disabled=false;});
     }catch(e){setOnlineStatus('Offline',false);onlineHelp.textContent=e.message;createRoomBtn.disabled=false;joinRoomBtn.disabled=false}
@@ -170,7 +170,7 @@
   async function joinOnlineRoom(){
     const code=roomCodeInput.value.trim().toUpperCase();if(!/^[A-Z0-9]{6}$/.test(code)){onlineHelp.textContent='Digite um código válido de 6 caracteres.';roomEntry.hidden=false;return}
     if(onlineMode)return;createRoomBtn.disabled=true;joinRoomBtn.disabled=true;setOnlineStatus('Entrando na sala…',false);onlineHelp.textContent='Conectando ao anfitrião…';
-    try{await loadPeerJS();peer=makePeer();peer.on('open',()=>{roomCode=code;onlineMode=true;isHost=false;updateRoomShare();connectRoom(peer.connect(roomPeerId(code),{reliable:true}));});
+    try{await loadPeerJS();peer=makePeer();peer.on('open',()=>{roomCode=code;onlineMode=true;isHost=false;updateRoomShare();setOnlineControls(true);connectRoom(peer.connect(roomPeerId(code),{reliable:true}));});
       peer.on('error',e=>{setOnlineStatus('Falha na conexão',false);onlineHelp.textContent=e.message||'Não foi possível entrar na sala.';createRoomBtn.disabled=false;joinRoomBtn.disabled=false;});
     }catch(e){setOnlineStatus('Offline',false);onlineHelp.textContent=e.message;createRoomBtn.disabled=false;joinRoomBtn.disabled=false}
   }
