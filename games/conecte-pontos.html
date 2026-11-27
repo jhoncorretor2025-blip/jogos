@@ -1,32 +1,242 @@
 <!doctype html>
-<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#070b14"><title>Conecte os Pontos · Jogos do Jhon · v1.2</title>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#070b14">
+<title>Conecte os Pontos · Jogos do Jhon · v1.3</title>
 <style>
-:root{color-scheme:dark;--bg:#070b14;--panel:#101a2b;--line:#2d3b54;--txt:#e5edf8;--muted:#9aa9bd;--cyan:#22d3ee;--purple:#a78bfa}*{box-sizing:border-box}body{margin:0;min-height:100vh;padding:14px;background:radial-gradient(800px 420px at 20% -10%,#163b58,transparent 65%),var(--bg);color:var(--txt);font-family:system-ui,Segoe UI,sans-serif;display:flex;justify-content:center}.wrap{width:min(100%,800px)}.top{display:flex;justify-content:space-between;align-items:center}.top a{color:#67e8f9;text-decoration:none}.ver{font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:5px 9px}h1{margin:12px 0 4px;font-size:clamp(26px,6vw,36px)}.sub{margin:0 0 14px;color:var(--muted);font-size:13px}.panel{padding:14px;border:1px solid var(--line);border-radius:17px;background:linear-gradient(145deg,#142239,#0b1425);margin:10px 0}.settings{display:grid;grid-template-columns:repeat(3,1fr) auto;gap:8px;align-items:end}.field label{display:block;color:var(--muted);font-size:11px;margin-bottom:5px}.field select{width:100%;min-height:40px;padding:7px;border:1px solid #3d506a;border-radius:9px;background:#0b1423;color:var(--txt);font:inherit;font-size:12px}.btn{min-height:40px;padding:9px 12px;border:1px solid #3e526c;border-radius:10px;background:#1a2b44;color:var(--txt);font:inherit;font-weight:800;cursor:pointer}.btn.primary{background:linear-gradient(110deg,#0e7490,#6d28d9);border:0}.btn:focus-visible,select:focus-visible{outline:3px solid #67e8f9;outline-offset:2px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:12px 0}.stat{text-align:center;background:#0a1424;border:1px solid var(--line);border-radius:10px;padding:8px}.stat b{display:block;font-size:20px}.stat small{color:var(--muted);font-size:10px}.board-wrap{padding:10px;border-radius:15px;border:1px solid #354660;background:#080f1d;overflow:auto}.board{display:grid;margin:auto;touch-action:manipulation;user-select:none}.board-cell{position:relative;min-width:0;aspect-ratio:1;display:grid;place-items:center}.dot{width:clamp(7px,2vw,12px);height:clamp(7px,2vw,12px);border-radius:50%;background:#e2e8f0;box-shadow:0 0 7px #e2e8f080;z-index:2}.edge{width:100%;height:100%;min-width:0;min-height:0;padding:0;border:0;border-radius:6px;background:transparent;cursor:pointer;position:relative}.edge:after{content:'';position:absolute;background:#334155;border-radius:6px;transition:background .12s,box-shadow .12s}.edge.h:after{height:5px;left:0;right:0;top:50%;transform:translateY(-50%)}.edge.v:after{width:5px;top:0;bottom:0;left:50%;transform:translateX(-50%)}.edge.p1:after{background:#22d3ee;box-shadow:0 0 9px #22d3ee88}.edge.p2:after{background:#a78bfa;box-shadow:0 0 9px #a78bfa88}.edge:disabled{cursor:default}.boxcell{display:grid;place-items:center;border-radius:7px;background:#17243a;color:transparent;font-size:11px;font-weight:900}.boxcell.p1{background:#164e63;color:#cffafe}.boxcell.p2{background:#4c1d95;color:#ede9fe}.edge:focus-visible{outline:2px solid white;outline-offset:-2px;z-index:3}.message{text-align:center;min-height:23px;margin:10px 0 0;color:#bae6fd;font-weight:750;font-size:13px}.note{color:var(--muted);font-size:11px;line-height:1.55}.legend{display:flex;justify-content:center;gap:16px;font-size:11px;color:var(--muted);margin:8px}.legend span:before{content:'';display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;background:#22d3ee}.legend span+span:before{background:#a78bfa}@media(max-width:640px){body{padding:9px}.settings{grid-template-columns:1fr 1fr}.settings .btn{grid-column:1/-1}.stats{grid-template-columns:repeat(2,1fr)}.board-wrap{padding:4px}.edge.h:after{height:4px}.edge.v:after{width:4px}}
-</style></head><body><main class="wrap">
-<div class="top"><a href="../index.html">← Voltar ao Arcade</a><span class="ver">Jogos do Jhon · v1.2</span></div><h1>🔵 Conecte os Pontos</h1><p class="sub">Desenhe linhas entre pontos vizinhos. Quem completar um quadrado conquista o ponto e joga novamente.</p>
+:root{color-scheme:dark;--bg:#070b14;--panel:#101b2e;--panel2:#0b1424;--line:#2d3b54;--txt:#e5edf8;--muted:#9aa9bd;--cyan:#22d3ee;--purple:#a78bfa;--green:#34d399;--gold:#fbbf24}
+*{box-sizing:border-box}html{min-height:100%;background:var(--bg)}body{margin:0;min-height:100vh;padding:clamp(9px,2vw,20px);background:radial-gradient(850px 430px at 12% -8%,#173b59,transparent 64%),radial-gradient(700px 400px at 100% 8%,#30205266,transparent 65%),var(--bg);color:var(--txt);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;justify-content:center}
+button,input,select{font:inherit}button,select{touch-action:manipulation}.wrap{width:min(100%,850px)}.top{display:flex;align-items:center;justify-content:space-between;gap:12px}.top a{color:#67e8f9;text-decoration:none;font-size:13px}.ver{font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:5px 9px;white-space:nowrap}
+h1{margin:12px 0 3px;font-size:clamp(25px,6vw,36px);letter-spacing:-.7px}.sub{margin:0 0 15px;color:var(--muted);font-size:13px;line-height:1.45}
+.panel{padding:clamp(10px,2.2vw,17px);border:1px solid var(--line);border-radius:19px;background:linear-gradient(145deg,#142239f2,#0b1425f5);box-shadow:0 18px 55px #0004;margin:10px 0}
+.settings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) auto;gap:9px;align-items:end}.field label{display:block;color:var(--muted);font-size:11px;margin:0 0 5px}.field select,.name-input{width:100%;min-height:41px;padding:8px 10px;border:1px solid #3d506a;border-radius:10px;background:#0b1423;color:var(--txt);font-size:13px;min-width:0}
+.btn{min-height:40px;padding:9px 13px;border:1px solid #3e526c;border-radius:10px;background:#1a2b44;color:var(--txt);font-weight:800;font-size:13px;cursor:pointer;transition:transform .13s,border-color .13s,background .13s}.btn:hover:not(:disabled){transform:translateY(-1px);border-color:#67e8f9}.btn:active:not(:disabled){transform:scale(.98)}.btn.primary{background:linear-gradient(110deg,#0e7490,#6d28d9);border:0}.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn:focus-visible,select:focus-visible,input:focus-visible,.edge:focus-visible,summary:focus-visible{outline:3px solid #67e8f9;outline-offset:2px}
+.names{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}.name-input{min-height:37px}
+.scorebar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:14px 0 10px}.stat{min-width:0;text-align:center;background:#091424;border:1px solid var(--line);border-radius:12px;padding:9px 5px}.stat b{display:block;font-size:clamp(18px,4vw,23px);font-variant-numeric:tabular-nums}.stat small{color:var(--muted);font-size:10px}
+.turn-banner{display:flex;align-items:center;justify-content:center;gap:9px;min-height:42px;padding:8px 12px;border:1px solid #31516a;border-radius:12px;background:linear-gradient(90deg,#0e749044,#6d28d944);font-size:13px;font-weight:800;text-align:center}.turn-dot{width:10px;height:10px;border-radius:50%;background:var(--cyan);box-shadow:0 0 12px currentColor}.turn-banner.p2 .turn-dot{background:var(--purple)}
+.progress-wrap{margin:11px 2px 13px}.progress-head{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:10px;margin-bottom:5px}.progress-track{height:7px;border-radius:99px;background:#26364c;overflow:hidden}.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--purple));border-radius:99px;transition:width .2s}
+.board-wrap{padding:clamp(5px,1.4vw,12px);border-radius:16px;border:1px solid #354660;background:radial-gradient(ellipse at 50% 35%,#14243b,#080f1d 75%);overflow:hidden}
+.board{display:grid;margin:0 auto;width:min(100%,620px);aspect-ratio:1;touch-action:manipulation;user-select:none}.board-cell{position:relative;min-width:0;min-height:0;display:grid;place-items:center}
+.dot{width:clamp(7px,1.7vw,13px);height:clamp(7px,1.7vw,13px);border-radius:50%;background:#e2e8f0;box-shadow:0 0 8px #e2e8f0a0;z-index:2;pointer-events:none}
+.edge{width:100%;height:100%;min-width:0;min-height:0;padding:0;border:0;border-radius:7px;background:transparent;cursor:pointer;position:relative;z-index:1}
+.edge:after{content:"";position:absolute;background:#334155;border-radius:99px;transition:background .15s,box-shadow .15s,transform .15s}
+.edge.h:after{height:clamp(4px,.9vw,7px);left:5%;right:5%;top:50%;transform:translateY(-50%)}.edge.v:after{width:clamp(4px,.9vw,7px);top:5%;bottom:5%;left:50%;transform:translateX(-50%)}
+.edge:not(:disabled):hover:after{background:#94a3b8;box-shadow:0 0 12px #e2e8f0aa}
+.edge.p1:after{background:var(--cyan);box-shadow:0 0 10px #22d3ee9c}.edge.p2:after{background:var(--purple);box-shadow:0 0 10px #a78bfa9c}
+.edge.last:after{background:var(--gold);box-shadow:0 0 13px #fbbf24;animation:pulse .8s ease-in-out 2}
+.edge.hint:after{background:var(--green);box-shadow:0 0 15px #34d399;animation:pulse .65s ease-in-out infinite alternate}
+.edge:disabled{cursor:default}
+.boxcell{display:grid;place-items:center;width:100%;height:100%;border-radius:8px;background:#17243a;color:transparent;font-size:clamp(9px,1.8vw,16px);font-weight:900;transition:background .2s,transform .2s}.boxcell.p1{background:#164e63;color:#cffafe}.boxcell.p2{background:#4c1d95;color:#ede9fe}.boxcell.newbox{animation:boxpop .32s ease-out}
+@keyframes pulse{from{filter:brightness(1)}to{filter:brightness(1.65)}}@keyframes boxpop{0%{transform:scale(.65)}75%{transform:scale(1.08)}100%{transform:scale(1)}}
+.legend{display:flex;justify-content:center;flex-wrap:wrap;gap:16px;font-size:11px;color:var(--muted);margin:10px}.legend span:before{content:"";display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:var(--cyan)}.legend span+span:before{background:var(--purple)}
+.actions{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin:12px 0 8px}.actions .btn{min-width:105px}.message{text-align:center;min-height:24px;margin:9px 0 0;color:#bae6fd;font-weight:750;font-size:13px;line-height:1.45}
+.record-title{font-size:12px;color:#cbd5e1;font-weight:800;margin:15px 0 7px}.records{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.record{padding:8px 5px;text-align:center;background:#091424;border:1px solid var(--line);border-radius:10px}.record b{display:block;font-size:16px}.record small{font-size:9px;color:var(--muted)}
+details.help{border-top:1px solid var(--line);margin-top:14px;padding-top:10px;color:var(--muted);font-size:11px;line-height:1.6}details.help summary{color:#cbd5e1;font-weight:750;cursor:pointer}details.help p{margin:7px 0}.note{color:var(--muted);font-size:10px;line-height:1.5;margin:10px 0 0}
+@media(max-width:640px){body{padding:8px}.settings{grid-template-columns:1fr 1fr}.settings .btn{grid-column:1/-1}.scorebar{gap:5px}.stat{padding:7px 3px}.names{gap:6px}.actions .btn{flex:1;min-width:0;padding:9px 7px;font-size:12px}.records{grid-template-columns:repeat(2,1fr)}.turn-banner{font-size:12px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body><main class="wrap">
+<div class="top"><a href="../index.html">← Voltar ao Arcade</a><span class="ver">Jogos do Jhon · v1.3</span></div>
+<h1>🔵 Conecte os Pontos</h1>
+<p class="sub">Ligue pontos vizinhos, feche quadrados e acumule mais território que seu adversário.</p>
 <section class="panel">
-<div class="settings"><div class="field"><label for="mode">Modo</label><select id="mode"><option value="cpu">Você × IA</option><option value="local">2 jogadores</option></select></div><div class="field"><label for="size">Tabuleiro</label><select id="size"><option value="4">4 × 4 · Rápido</option><option value="5" selected>5 × 5 · Normal</option><option value="6">6 × 6 · Grande</option></select></div><div class="field"><label for="level">IA</label><select id="level"><option value="easy">Fácil</option><option value="medium" selected>Normal</option><option value="hard">Difícil</option></select></div><button class="btn primary" id="restart">＋ Novo jogo</button></div>
-<div class="stats"><div class="stat"><b id="score1">0</b><small>Você / Jogador 1</small></div><div class="stat"><b id="score2">0</b><small id="opName">IA</small></div><div class="stat"><b id="turn">1</b><small>Vez de</small></div><div class="stat"><b id="wins">0</b><small>Vitórias</small></div></div>
-<div class="legend"><span>Jogador 1</span><span>Jogador 2 / IA</span></div><div class="board-wrap"><div class="board" id="board" aria-label="Tabuleiro Conecte os Pontos"></div></div>
-<p class="message" id="message" role="status" aria-live="polite">Escolha uma linha disponível para começar.</p><p class="note">Quando uma linha fecha um quadrado, ele fica com a cor de quem completou e essa pessoa joga outra vez. No modo solo, a IA avalia capturas e evita entregar pontos fáceis.</p>
+<div class="settings">
+ <div class="field"><label for="mode">Modo de partida</label><select id="mode"><option value="cpu">Você × IA</option><option value="local">2 jogadores no mesmo aparelho</option></select></div>
+ <div class="field"><label for="size">Tamanho do tabuleiro</label><select id="size"><option value="4">4 × 4 pontos · rápido</option><option value="5" selected>5 × 5 pontos · normal</option><option value="6">6 × 6 pontos · grande</option></select></div>
+ <div class="field"><label for="level">Dificuldade da IA</label><select id="level"><option value="easy">Fácil</option><option value="medium" selected>Normal</option><option value="hard">Difícil</option></select></div>
+ <button class="btn primary" id="restart">＋ Novo jogo</button>
+</div>
+<div class="names">
+ <div class="field"><label for="name1">Jogador 1</label><input class="name-input" id="name1" maxlength="14" value="Você" autocomplete="off"></div>
+ <div class="field"><label for="name2">Adversário</label><input class="name-input" id="name2" maxlength="14" value="IA" autocomplete="off"></div>
+</div>
+<div class="scorebar">
+ <div class="stat"><b id="score1">0</b><small id="label1">Você</small></div>
+ <div class="stat"><b id="score2">0</b><small id="label2">IA</small></div>
+ <div class="stat"><b id="moves">0</b><small>Jogadas</small></div>
+ <div class="stat"><b id="remaining">16</b><small>Quadrados livres</small></div>
+</div>
+<div class="turn-banner" id="turnBanner" aria-live="polite"><span class="turn-dot"></span><span id="turnText">Sua vez de jogar</span></div>
+<div class="progress-wrap"><div class="progress-head"><span>PROGRESSO DO TABULEIRO</span><span id="progressText">0%</span></div><div class="progress-track" role="progressbar" aria-label="Quadrados conquistados" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress"><div class="progress-fill" id="progressFill"></div></div></div>
+<div class="board-wrap"><div class="board" id="board" role="group" aria-label="Tabuleiro de Conecte os Pontos"></div></div>
+<div class="legend"><span id="legend1">Jogador 1</span><span id="legend2">Jogador 2 / IA</span></div>
+<div class="actions">
+ <button class="btn" id="hint" type="button">💡 Dica</button>
+ <button class="btn" id="undo" type="button" disabled>↶ Desfazer</button>
+ <button class="btn" id="sound" type="button" aria-pressed="false">🔇 Som desligado</button>
+</div>
+<p class="message" id="message" role="status" aria-live="polite">Escolha uma linha entre dois pontos para começar.</p>
+<div class="record-title">SEUS RESULTADOS NESTE DISPOSITIVO</div>
+<div class="records">
+ <div class="record"><b id="games">0</b><small>PARTIDAS</small></div>
+ <div class="record"><b id="wins">0</b><small>VITÓRIAS</small></div>
+ <div class="record"><b id="losses">0</b><small>DERROTAS</small></div>
+ <div class="record"><b id="best">0</b><small>MELHOR PLACAR</small></div>
+</div>
+<details class="help">
+ <summary>Como jogar e atalhos</summary>
+ <p><b>Objetivo:</b> toque em uma linha vazia que liga dois pontos vizinhos. Quando você fecha o quarto lado de um quadrado, ele passa para sua cor e você joga novamente. Vence quem conquistar mais quadrados.</p>
+ <p><b>Estratégia:</b> tente fechar quadrados sem oferecer uma sequência grande ao adversário. No modo solo, a IA tem três níveis: Fácil (jogadas aleatórias), Normal (prioriza capturas e evita entregas imediatas) e Difícil (avalia capturas em sequência e o risco da resposta).</p>
+ <p><b>Controles:</b> no computador, use Tab e Enter para navegar pelas linhas. Atalhos: <b>H</b> para dica, <b>U</b> para desfazer e <b>N</b> para novo jogo.</p>
+ <p><b>Desfazer:</b> contra a IA, volta ao início da sua última vez, removendo também a resposta dela. Em dois jogadores, desfaz apenas a última jogada.</p>
+</details>
+<p class="note">As estatísticas ficam salvas neste navegador. Faça um backup pelo menu principal para preservar seus recordes ao trocar de aparelho.</p>
 </section></main>
 <script>
-(()=>{'use strict';const $=id=>document.getElementById(id),KEY_G='dots.games',KEY_W='dots.wins',KEY_B='dots.best';let n=5,mode='cpu',turn=0,state,locked=false,timer=null;
+(()=>{'use strict';
+const $=id=>document.getElementById(id);
+const KEY_G='dots.games',KEY_W='dots.wins',KEY_B='dots.best',KEY_L='dots.losses',KEY_D='dots.draws';
+let n=5,mode='cpu',state=null,locked=false,timer=null,history=[],humanTurnStart=null,hintEdge=null,lastEdge=null,roundSaved=false,audioContext=null;
 const has=(s,k)=>Object.prototype.hasOwnProperty.call(s.edges,k),keyH=(r,c)=>'h:'+r+':'+c,keyV=(r,c)=>'v:'+r+':'+c;
+function cleanName(value,fallback){return String(value||'').trim().slice(0,14)||fallback}
+function playerName(p){return p===0?cleanName($('name1').value,'Jogador 1'):cleanName($('name2').value,mode==='cpu'?'IA':'Jogador 2')}
 function newState(){return {edges:{},boxes:{},scores:[0,0],turn:0,moves:0,finished:false}}
+function cloneState(s){return {edges:{...s.edges},boxes:{...s.boxes},scores:s.scores.slice(),turn:s.turn,moves:s.moves,finished:s.finished}}
 function boxEdges(r,c){return [keyH(r,c),keyH(r+1,c),keyV(r,c),keyV(r,c+1)]}
 function adjacent(edge){const [type,rs,cs]=edge.split(':'),r=Number(rs),c=Number(cs);return type==='h'?[[r-1,c],[r,c]]:[[r,c-1],[r,c]]}
-function applyEdge(s,edge,player){if(s.finished||has(s,edge))return {state:s,gained:0};const out={edges:{...s.edges},boxes:{...s.boxes},scores:s.scores.slice(),turn:player,moves:s.moves+1,finished:false};out.edges[edge]=player+1;let gained=0;adjacent(edge).forEach(([r,c])=>{if(r<0||c<0||r>=n-1||c>=n-1)return;const id=r+':'+c;if(!out.boxes[id]&&boxEdges(r,c).every(k=>has(out,k)||k===edge)){out.boxes[id]=player+1;gained++}});out.scores[player]+=gained;if(!gained)out.turn=1-player;if(Object.keys(out.boxes).length===(n-1)*(n-1))out.finished=true;return {state:out,gained}}
+function applyEdge(s,edge,player){
+ if(s.finished||has(s,edge))return {state:s,gained:0};
+ const out={edges:{...s.edges},boxes:{...s.boxes},scores:s.scores.slice(),turn:player,moves:s.moves+1,finished:false};
+ out.edges[edge]=player+1;let gained=0;
+ adjacent(edge).forEach(([r,c])=>{if(r<0||c<0||r>=n-1||c>=n-1)return;const id=r+':'+c;if(!out.boxes[id]&&boxEdges(r,c).every(k=>has(out,k))){out.boxes[id]=player+1;gained++}});
+ out.scores[player]+=gained;if(!gained)out.turn=1-player;
+ if(Object.keys(out.boxes).length===(n-1)*(n-1))out.finished=true;
+ return {state:out,gained};
+}
 function available(s){const a=[];for(let r=0;r<n;r++)for(let c=0;c<n-1;c++){const k=keyH(r,c);if(!has(s,k))a.push(k)}for(let r=0;r<n-1;r++)for(let c=0;c<n;c++){const k=keyV(r,c);if(!has(s,k))a.push(k)}return a}
-function potentialCapture(s){let best=0;for(const edge of available(s)){const r=applyEdge(s,edge,s.turn);if(r.gained>best)best=r.gained}return best}
-function chooseAI(){const options=available(state);if(!options.length)return null;if($('level').value==='easy')return options[Math.floor(Math.random()*options.length)];let best=-Infinity,choices=[];for(const edge of options){const r=applyEdge(state,edge,1),next=r.state;let threat=0;if(!r.gained&&!next.finished){next.turn=0;threat=potentialCapture(next)}let own=0;if(r.gained&&!next.finished){next.turn=1;own=potentialCapture(next)}const value=r.gained*100-threat*($('level').value==='hard'?65:45)+own*12;if(value>best){best=value;choices=[edge]}else if(value===best)choices.push(edge)}return choices[Math.floor(Math.random()*choices.length)]}
-function persist(k,v){try{localStorage.setItem(k,String(v))}catch(e){}}
-function render(){const board=$('board');board.innerHTML='';const side=2*n-1;board.style.gridTemplateColumns='repeat('+side+',minmax(0,1fr))';board.style.width='min(100%, '+Math.min(600,side*43)+'px)';
-for(let r=0;r<side;r++)for(let c=0;c<side;c++){const cell=document.createElement('div');cell.className='board-cell';const er=r%2===0,ec=c%2===0;if(er&&ec){const dot=document.createElement('span');dot.className='dot';cell.append(dot)}else if(er&&!ec){const edge=keyH(r/2,(c-1)/2),b=document.createElement('button');b.className='edge h'+(state.edges[edge]?' p'+state.edges[edge]:'');b.disabled=Boolean(state.edges[edge])||locked||state.finished||(mode==='cpu'&&turn===1);b.setAttribute('aria-label','Linha horizontal '+(r/2+1)+', '+((c+1)/2));b.onclick=()=>play(edge);cell.append(b)}else if(!er&&ec){const edge=keyV((r-1)/2,c/2),b=document.createElement('button');b.className='edge v'+(state.edges[edge]?' p'+state.edges[edge]:'');b.disabled=Boolean(state.edges[edge])||locked||state.finished||(mode==='cpu'&&turn===1);b.setAttribute('aria-label','Linha vertical '+((r+1)/2)+', '+(c/2+1));b.onclick=()=>play(edge);cell.append(b)}else{const id=(r-1)/2+':'+(c-1)/2,box=document.createElement('div');box.className='boxcell'+(state.boxes[id]?' p'+state.boxes[id]:'');box.textContent=state.boxes[id]?'■':'';cell.append(box)}board.append(cell)}
-$('score1').textContent=state.scores[0];$('score2').textContent=state.scores[1];$('turn').textContent=state.finished?'Fim':(turn===0?'Jogador 1':mode==='cpu'?'IA':'Jogador 2');$('opName').textContent=mode==='cpu'?'IA':'Jogador 2';$('wins').textContent=Number(localStorage.getItem(KEY_W))||0}
-function finish(){state.finished=true;locked=false;const a=state.scores[0],b=state.scores[1];$('message').textContent=(a===b?'🤝 Empate!':a>b?'🏆 Você venceu!':mode==='cpu'?'🤖 A IA venceu!':'🏆 Jogador 2 venceu!')+' Placar '+a+' × '+b+'.';persist(KEY_G,(Number(localStorage.getItem(KEY_G))||0)+1);if(a>b)persist(KEY_W,(Number(localStorage.getItem(KEY_W))||0)+1);persist(KEY_B,Math.max(Number(localStorage.getItem(KEY_B))||0,a));render()}
-function play(edge){if(locked||state.finished||state.edges[edge])return;const r=applyEdge(state,edge,turn);state=r.state;turn=state.turn;if(state.finished){finish();return}if(mode==='cpu'&&turn===1){locked=true;$('message').textContent=r.gained?'Você fechou um quadrado. A IA está analisando…':'A IA está pensando…';render();clearTimeout(timer);timer=setTimeout(()=>{locked=false;const choice=chooseAI();if(choice)play(choice);else finish()},530)}else{$('message').textContent=r.gained?'Quadrado conquistado! Jogue novamente.':'Agora é a vez de '+(turn===0?'Jogador 1':'Jogador 2')+'.';render()}}
-function start(){clearTimeout(timer);n=Number($('size').value);mode=$('mode').value;turn=0;locked=false;state=newState();$('message').textContent='Partida iniciada. Escolha uma linha entre dois pontos.';render()}
-$('restart').onclick=start;$('mode').onchange=start;$('size').onchange=start;start();
+function sidesInBox(s,r,c){return boxEdges(r,c).reduce((sum,k)=>sum+(has(s,k)?1:0),0)}
+function countCaptures(s,player){return available(s).reduce((sum,e)=>sum+applyEdge(s,e,player).gained,0)}
+function captureOptions(s,player){return available(s).filter(e=>applyEdge(s,e,player).gained>0)}
+function dangerCount(s){let count=0;for(let r=0;r<n-1;r++)for(let c=0;c<n-1;c++)if(!s.boxes[r+':'+c]&&sidesInBox(s,r,c)===3)count++;return count}
+function twoSideCount(s){let count=0;for(let r=0;r<n-1;r++)for(let c=0;c<n-1;c++)if(!s.boxes[r+':'+c]&&sidesInBox(s,r,c)===2)count++;return count}
+function chooseAI(){
+ const options=available(state);if(!options.length)return null;
+ const level=$('level').value;
+ if(level==='easy')return options[Math.floor(Math.random()*options.length)];
+ let best=-Infinity,choices=[];
+ for(const edge of options){
+  const result=applyEdge(state,edge,1),next=result.state;
+  let value;
+  if(level==='medium'){
+   const danger=dangerCount(next);
+   value=result.gained*125-danger*42-twoSideCount(next)*1.5;
+  }else{
+   const continuation=result.gained?countCaptures(next,1):0;
+   const opponentBest=result.gained?0:countCaptures(next,0);
+   const danger=dangerCount(next),openPairs=twoSideCount(next);
+   value=result.gained*180+continuation*24-opponentBest*82-danger*19-openPairs*2;
+  }
+  if(value>best){best=value;choices=[edge]}else if(value===best)choices.push(edge);
+ }
+ return choices[Math.floor(Math.random()*choices.length)];
+}
+function chooseHint(){
+ const options=available(state);if(!options.length)return null;
+ let best=-Infinity,choice=options[0],other=state.turn;
+ options.forEach(edge=>{
+  const result=applyEdge(state,edge,state.turn),next=result.state;
+  const danger=countCaptures(next,1-other),threats=dangerCount(next);
+  const value=result.gained*140-danger*70-threats*12-twoSideCount(next);
+  if(value>best){best=value;choice=edge}
+ });
+ return choice;
+}
+function persist(key,value){try{localStorage.setItem(key,String(value))}catch(e){$('message').textContent='Não foi possível salvar as estatísticas neste navegador.'}}
+function readNumber(key){try{return Math.max(0,Number(localStorage.getItem(key))||0)}catch(e){return 0}}
+function playTone(freq=520,duration=.09,type='sine'){
+ if(!$('sound').getAttribute('aria-pressed')||$('sound').getAttribute('aria-pressed')!=='true')return;
+ try{
+  const Audio=window.AudioContext||window.webkitAudioContext;if(!Audio)return;
+  audioContext=audioContext||new Audio();if(audioContext.state==='suspended')audioContext.resume();
+  const osc=audioContext.createOscillator(),gain=audioContext.createGain();osc.type=type;osc.frequency.value=freq;gain.gain.setValueAtTime(.0001,audioContext.currentTime);gain.gain.exponentialRampToValueAtTime(.12,audioContext.currentTime+.012);gain.gain.exponentialRampToValueAtTime(.0001,audioContext.currentTime+duration);osc.connect(gain);gain.connect(audioContext.destination);osc.start();osc.stop(audioContext.currentTime+duration+.02);
+ }catch(e){/* Áudio indisponível: o jogo continua normalmente. */}
+}
+function updateNameLabels(){
+ const a=playerName(0),b=playerName(1);$('label1').textContent=a;$('label2').textContent=b;$('legend1').textContent=a;$('legend2').textContent=b;
+}
+function render(){
+ const board=$('board');board.innerHTML='';const side=2*n-1;board.style.gridTemplateColumns='repeat('+side+',minmax(0,1fr))';
+ for(let r=0;r<side;r++)for(let c=0;c<side;c++){
+  const cell=document.createElement('div');cell.className='board-cell';const evenR=r%2===0,evenC=c%2===0;
+  if(evenR&&evenC){const dot=document.createElement('span');dot.className='dot';cell.append(dot)}
+  else if(evenR&&!evenC){
+   const edge=keyH(r/2,(c-1)/2),b=document.createElement('button');b.type='button';b.className='edge h'+(state.edges[edge]?' p'+state.edges[edge]:'')+(lastEdge===edge?' last':'')+(hintEdge===edge?' hint':'');
+   b.disabled=Boolean(state.edges[edge])||locked||state.finished||(mode==='cpu'&&state.turn===1);
+   b.setAttribute('aria-label','Linha horizontal, linha '+(r/2+1)+', coluna '+((c+1)/2)+(state.edges[edge]?', ocupada':' disponível'));b.title=hintEdge===edge?'Sugestão de jogada': 'Conectar estes dois pontos';b.onclick=()=>play(edge);cell.append(b);
+  }else if(!evenR&&evenC){
+   const edge=keyV((r-1)/2,c/2),b=document.createElement('button');b.type='button';b.className='edge v'+(state.edges[edge]?' p'+state.edges[edge]:'')+(lastEdge===edge?' last':'')+(hintEdge===edge?' hint':'');
+   b.disabled=Boolean(state.edges[edge])||locked||state.finished||(mode==='cpu'&&state.turn===1);
+   b.setAttribute('aria-label','Linha vertical, linha '+((r+1)/2)+', coluna '+(c/2+1)+(state.edges[edge]?', ocupada':' disponível'));b.title=hintEdge===edge?'Sugestão de jogada':'Conectar estes dois pontos';b.onclick=()=>play(edge);cell.append(b);
+  }else{
+   const id=(r-1)/2+':'+(c-1)/2,box=document.createElement('div');box.className='boxcell'+(state.boxes[id]?' p'+state.boxes[id]:'')+(state.boxes[id]&&state.moves===lastBoxMove?' newbox':'');
+   box.textContent=state.boxes[id]?(state.boxes[id]===1?'●':'◆'):'';box.setAttribute('aria-label',state.boxes[id]?(state.boxes[id]===1?'Quadrado de '+playerName(0):'Quadrado de '+playerName(1)):'Quadrado vazio');cell.append(box);
+  }
+  board.append(cell);
+ }
+ updateNameLabels();
+ $('score1').textContent=state.scores[0];$('score2').textContent=state.scores[1];$('moves').textContent=state.moves;
+ const total=(n-1)*(n-1),claimed=Object.keys(state.boxes).length,remaining=total-claimed,percent=Math.round(claimed/total*100);
+ $('remaining').textContent=remaining;$('progressText').textContent=percent+'%';$('progressFill').style.width=percent+'%';$('progress').setAttribute('aria-valuenow',String(percent));
+ const current=state.turn;$('turnBanner').classList.toggle('p2',current===1);$('turnText').textContent=state.finished?'Partida encerrada':(mode==='cpu'&&current===1?'A IA está pensando…':'Vez de '+playerName(current));
+ $('undo').disabled=locked||(!history.length&&!humanTurnStart);$('hint').disabled=locked||state.finished||(mode==='cpu'&&state.turn===1);
+ $('games').textContent=readNumber(KEY_G);$('wins').textContent=readNumber(KEY_W);$('losses').textContent=readNumber(KEY_L);$('best').textContent=readNumber(KEY_B);
+}
+let lastBoxMove=-1;
+function finish(){
+ if(roundSaved)return;roundSaved=true;state.finished=true;locked=false;clearTimeout(timer);
+ const [a,b]=state.scores;persist(KEY_G,readNumber(KEY_G)+1);
+ let result;
+ if(a===b){persist(KEY_D,readNumber(KEY_D)+1);result='🤝 Empate!'}
+ else if(a>b){persist(KEY_W,readNumber(KEY_W)+1);result='🏆 '+playerName(0)+' venceu!'}
+ else{persist(KEY_L,readNumber(KEY_L)+1);result=(mode==='cpu'?'🤖 A IA venceu!':'🏆 '+playerName(1)+' venceu!')}
+ persist(KEY_B,Math.max(readNumber(KEY_B),a));
+ $('message').textContent=result+' Placar final: '+a+' × '+b+'.';playTone(a===b?460:a>b?760:260,.22,'triangle');render();
+}
+function play(edge){
+ if(locked||state.finished||state.edges[edge])return;
+ const player=state.turn;
+ if(mode==='cpu'&&player===0)humanTurnStart=cloneState(state);
+ if(mode==='local')history.push(cloneState(state));
+ const result=applyEdge(state,edge,player);state=result.state;hintEdge=null;lastEdge=edge;lastBoxMove=result.gained?state.moves:-1;
+ playTone(result.gained?740:430,result.gained?.15:.07,result.gained?'triangle':'sine');
+ if(state.finished){finish();return}
+ if(mode==='cpu'&&state.turn===1){
+  locked=true;$('message').textContent=result.gained?'Quadrado conquistado! A IA está pensando…':'A IA está analisando o tabuleiro…';render();
+  clearTimeout(timer);timer=setTimeout(()=>{locked=false;const choice=chooseAI();if(choice)play(choice);else finish()},460);
+ }else{
+  $('message').textContent=result.gained?'✨ Você fechou '+(result.gained===1?'um quadrado':' '+result.gained+' quadrados')+'! Jogue novamente.':'Linha conectada. Agora é a vez de '+playerName(state.turn)+'.';render();
+ }
+}
+function undo(){
+ if(locked)return;
+ if(mode==='cpu'&&humanTurnStart){state=cloneState(humanTurnStart);humanTurnStart=null;hintEdge=null;lastEdge=null;lastBoxMove=-1;roundSaved=false;$('message').textContent='Sua última vez e a resposta da IA foram desfeitas.';render();return}
+ if(mode==='local'&&history.length){state=history.pop();hintEdge=null;lastEdge=null;lastBoxMove=-1;roundSaved=false;$('message').textContent='Última jogada desfeita. Vez de '+playerName(state.turn)+'.';render()}
+}
+function giveHint(){
+ if(state.finished||locked)return;hintEdge=chooseHint();if(hintEdge){$('message').textContent='💡 Dica: a linha verde é a jogada sugerida. Ela não altera a partida.';render()}
+}
+function start(ask=false){
+ if(ask&&state&&state.moves>0&&!state.finished&&!confirm('Começar uma nova partida? O placar desta partida será encerrado sem ser contabilizado.'))return;
+ clearTimeout(timer);n=Number($('size').value);mode=$('mode').value;state=newState();locked=false;history=[];humanTurnStart=null;hintEdge=null;lastEdge=null;lastBoxMove=-1;roundSaved=false;
+ $('name2').value=mode==='cpu'?'IA':cleanName($('name2').value,'Jogador 2');$('name1').value=cleanName($('name1').value,'Você');
+ $('message').textContent='Partida iniciada. Escolha uma linha entre dois pontos.';render();
+ $('name2').disabled=false;$('level').disabled=mode!=='cpu';
+}
+$('restart').addEventListener('click',()=>start(true));$('mode').addEventListener('change',()=>start(false));$('size').addEventListener('change',()=>start(false));
+$('hint').addEventListener('click',giveHint);$('undo').addEventListener('click',undo);
+$('name1').addEventListener('input',updateNameLabels);$('name2').addEventListener('input',updateNameLabels);
+$('sound').addEventListener('click',()=>{const enabled=$('sound').getAttribute('aria-pressed')!=='true';$('sound').setAttribute('aria-pressed',String(enabled));$('sound').textContent=enabled?'🔊 Som ligado':'🔇 Som desligado';if(enabled)playTone(620)});
+document.addEventListener('keydown',event=>{
+ if(event.altKey||event.ctrlKey||event.metaKey)return;
+ const tag=event.target&&event.target.tagName;if(['INPUT','SELECT','TEXTAREA'].includes(tag))return;
+ const key=event.key.toLowerCase();if(key==='h'){event.preventDefault();giveHint()}else if(key==='u'){event.preventDefault();undo()}else if(key==='n'){event.preventDefault();start(true)}
+});
+start(false);
 })();
-</script><script src="../arcade-common.js"></script></body></html>
+</script>
+<script src="../arcade-common.js"></script>
+</body></html>
