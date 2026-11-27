@@ -1,5 +1,13 @@
 # Histórico de alterações — Jogos do Jhon
 
+## V4.23 — Jogo da Velha revisado
+- Atualizado Jogo da Velha para v1.3.
+- Corrigido o temporizador da IA ao reiniciar ou trocar o modo, impedindo jogadas atrasadas na rodada seguinte.
+- Adicionados controle opcional de áudio, sequência de vitórias e melhor sequência salvas no navegador.
+- Melhorada a validação dos placares salvos e adicionada proteção caso o armazenamento local esteja indisponível.
+- Atualizados o catálogo e o cache do aplicativo para v4.23.
+
+
 ## V4.22 — Batalha Naval revisada
 - Atualizado Batalha Naval para v1.4.
 - Corrigido o disparo atrasado da IA após reiniciar a partida; temporizadores são cancelados e a IA valida o estado atual antes de jogar.
