@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#070b14">
-<title>Forca — Jogos do Jhon</title>
+<title>Forca — Jogos do Jhon v2.5</title>
 <style>
   :root{--bg:#070b14;--card:#0f172a;--line:#1e293b;--txt:#e2e8f0;--muted:#94a3b8;--acc:#fb7185}
   *{box-sizing:border-box}
@@ -49,7 +49,9 @@
   .key.ok{background:#065f46;border-color:#10b981;color:#d1fae5}
   .key.bad{background:#3f1d24;border-color:#7f1d1d;color:#fda4af}
   .key:disabled{cursor:default}
-  .bar{width:100%;max-width:560px;display:flex;gap:8px;margin-top:16px}
+  .bar{width:100%;max-width:560px;display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+  .bar .btn{min-width:0}
+  .stats-note{width:100%;max-width:560px;text-align:center;color:#94a3b8;font-size:12px;margin-top:8px}
   .btn{
     flex:1;font:inherit;font-size:14.5px;font-weight:700;border-radius:12px;padding:12px;border:0;cursor:pointer;
     background:linear-gradient(90deg,#fb7185,#f59e0b);color:#2a0b10;
@@ -116,7 +118,8 @@ input:focus-visible, select:focus-visible{
   </div>
 
   <p class="hint">Acerte a palavra antes de completar o boneco. 6 erros e acabou.</p>
-  <div class="ver">v2.4 · 22/11/2026</div><div id="confetti"></div>
+  <div class="stats-note" id="bestStats">Recordes: —</div>
+  <div class="ver">v2.5 · 27/11/2026</div><div id="confetti"></div>
 
 <script>
 (function(){
@@ -185,7 +188,15 @@ const WORDS = [
   const lossesEl = document.getElementById('losses');
   const parts = Array.prototype.slice.call(document.querySelectorAll('.part'));
 
-  let current, guessed, errors, over, wins = 0, losses = 0, round = 0, streak=0, score=0, language='pt', started=false;
+  let current, guessed, errors, over, wins = 0, losses = 0, round = 0, streak=0, score=0, language='pt', started=false, soundOn=false, bestStreak=0;
+  const STATS_KEY='forca.stats.v2';
+  const bestStatsEl=document.getElementById('bestStats');
+  const soundBtn=document.createElement('button');soundBtn.className='btn ghost';soundBtn.type='button';soundBtn.textContent='🔇 Som';soundBtn.setAttribute('aria-label','Ativar som');document.querySelector('.bar').appendChild(soundBtn);
+  function tone(freq,duration=.09){if(!soundOn)return;try{const C=window.AudioContext||window.webkitAudioContext;if(!tone.ctx)tone.ctx=new C();if(tone.ctx.state==='suspended')tone.ctx.resume();const o=tone.ctx.createOscillator(),g=tone.ctx.createGain();o.type='sine';o.frequency.value=freq;g.gain.setValueAtTime(.035,tone.ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,tone.ctx.currentTime+duration);o.connect(g);g.connect(tone.ctx.destination);o.start();o.stop(tone.ctx.currentTime+duration)}catch(e){}}
+  function saveStats(){try{localStorage.setItem(STATS_KEY,JSON.stringify({wins,losses,streak,bestStreak,score}))}catch(e){}}
+  function updateBest(){bestStatsEl.textContent='Recordes: '+wins+' vitórias · '+losses+' derrotas · melhor sequência '+bestStreak+' · '+score+' pontos'}
+  try{const saved=JSON.parse(localStorage.getItem(STATS_KEY)||'{}');wins=Math.max(0,Number(saved.wins)||0);losses=Math.max(0,Number(saved.losses)||0);streak=Math.max(0,Number(saved.streak)||0);bestStreak=Math.max(0,Number(saved.bestStreak)||0);score=Math.max(0,Number(saved.score)||0)}catch(e){} 
+  soundBtn.addEventListener('click',function(){soundOn=!soundOn;soundBtn.textContent=soundOn?'🔊 Som':'🔇 Som';soundBtn.setAttribute('aria-label',soundOn?'Desativar som':'Ativar som');tone(440)});
   const langIcons={'Musical instruments':'🎸','Food':'🍕','Technology':'💻','Transportation':'🚗','Animals':'🐾','Nature':'🌿','Sports':'⚽','Games':'🎲','People':'👨‍👩‍👧','Professions':'🧑‍💼','Places':'📍','Arts':'🎨','Objects':'🧰','Tools':'🔧','Home':'🏡','Space':'🚀','Travel':'✈️','Feelings':'💭','Real estate':'🏠'};
   const categoryIcons={'Imóveis':'🏠','Tecnologia':'💻','Transportes':'🚗','Animais':'🐾','Natureza':'🌿','Alimentos':'🍕','Instrumentos musicais':'🎸','Esportes':'⚽','Viagens':'✈️','Sentimentos':'💭','Pessoas e relações':'👨‍👩‍👧','Arte e cultura':'🎨','Lugares':'📍','Objetos':'🧰','Alimentos · Vegetais':'🥦','Ferramentas':'🔧','Ferramentas e objetos':'🛠️','Profissões':'🧑‍💼','Jogos':'🎲','Tecnologia · Áudio':'🎧','Construção':'🧱','Casa':'🏡','Espaço':'🚀'};
   const clues={"apartamento":"Moradia em um prédio, com vizinhos em outras unidades.","aluguel":"Valor pago para morar ou usar um imóvel de outra pessoa.","condomínio":"Prédio ou conjunto com despesas e áreas compartilhadas.","imobiliária":"Empresa que trabalha com compra, venda e locação de imóveis.","contrato":"Documento que formaliza um acordo.","vistoria":"Inspeção para conferir o estado de um imóvel.","inquilino":"Pessoa que aluga um imóvel.","fiador":"Pessoa que garante uma obrigação de outra.","escritura":"Documento oficial relacionado à transferência de um imóvel.","cartório":"Local onde registros e documentos oficiais são feitos.","financiamento":"Compra paga parceladamente com ajuda de crédito.","corretor":"Profissional que intermedia negócios imobiliários.","garagem":"Lugar onde se guarda um carro.","varanda":"Área aberta ligada a uma casa ou apartamento.","reforma":"Obra para melhorar ou modificar algo.","javascript":"Linguagem usada para dar interatividade a páginas web.","algoritmo":"Sequência de passos para resolver um problema.","servidor":"Sistema que fornece serviços ou dados a outros dispositivos.","aplicativo":"Programa usado para realizar tarefas.","inteligência":"Capacidade de aprender, compreender e resolver problemas.","automação":"Tarefas realizadas automaticamente com pouca intervenção.","internet":"Rede mundial que conecta computadores e dispositivos.","senha":"Código secreto para entrar em uma conta.","robô":"Máquina que executa tarefas automaticamente.","planilha":"Arquivo organizado em linhas e colunas.","navegador":"Programa para acessar páginas da internet.","memória":"Capacidade ou componente que guarda informações.","bicicleta":"Veículo de duas rodas movido por pedais.","cachorro":"Animal doméstico conhecido como melhor amigo do homem.","floresta":"Grande área coberta por árvores.","montanha":"Grande elevação natural do terreno.","chocolate":"Doce feito com cacau.","guitarra":"Instrumento de cordas muito usado no rock.","oceano":"Imensa massa de água salgada.","futebol":"Esporte em que duas equipes tentam marcar gols.","pizza":"Massa redonda com molho e coberturas.","viagem":"Deslocamento para conhecer outro lugar.","saudade":"Sentimento de falta de alguém ou algo querido.","família":"Grupo de pessoas ligadas por parentesco ou afeto.","música":"Arte que combina sons e ritmos.","biblioteca":"Lugar onde livros podem ser consultados ou emprestados.","passarinho":"Pequena ave que costuma cantar e voar.","guarda-chuva":"Objeto usado para se proteger da chuva.","relâmpago":"Clarão que aparece durante uma tempestade.","vegetal":"Ser vivo do reino das plantas; também pode ser alimento.","violão":"Instrumento de cordas tocado com dedos ou palheta.","bateria":"Instrumento musical com tambores e pratos.","piano":"Instrumento musical com teclas brancas e pretas.","trompete":"Instrumento de sopro metálico.","cenoura":"Raiz alaranjada usada em receitas e saladas.","brócolis":"Vegetal verde que lembra pequenas árvores.","abóbora":"Fruto grande usado em sopas e doces.","tomate":"Fruto vermelho usado em saladas e molhos.","alface":"Folhas verdes comuns em saladas.","martelo":"Ferramenta usada para bater pregos.","tesoura":"Objeto com duas lâminas usado para cortar.","avião":"Veículo que voa e transporta pessoas ou cargas.","ônibus":"Veículo coletivo que transporta passageiros.","navio":"Grande embarcação que navega pelos mares.","astronauta":"Pessoa treinada para viajar e trabalhar no espaço.","professor":"Profissional que ensina.","médico":"Profissional que cuida da saúde.","dentista":"Profissional que cuida dos dentes.","enfermeira":"Profissional da saúde que cuida de pacientes.","campeonato":"Competição para decidir o vencedor de uma modalidade.","basquete":"Esporte em que a bola deve entrar numa cesta elevada.","voleibol":"Esporte em que a bola passa por cima de uma rede.","xadrez":"Jogo de estratégia com rei, rainha e outras peças.","dominó":"Jogo com peças retangulares marcadas por pontos.","pintura":"Arte de criar imagens usando tintas.","cinema":"Lugar onde se assistem filmes numa tela grande.","teatro":"Arte de representar histórias ao vivo no palco.","fotografia":"Arte de registrar imagens com uma câmera.","relógio":"Objeto que indica as horas.","telefone":"Aparelho usado para conversar à distância.","televisão":"Aparelho que transmite programas e imagens.","computador":"Máquina eletrônica usada para trabalhar, estudar e jogar.","microfone":"Dispositivo que capta voz e outros sons.","fone":"Acessório usado para ouvir áudio nos ouvidos.","montagem":"Processo de juntar peças para formar algo.","parafuso":"Peça com rosca usada para fixar materiais.","escada":"Estrutura com degraus para subir ou descer.","travesseiro":"Objeto macio que apoia a cabeça ao dormir.","geladeira":"Eletrodoméstico que mantém alimentos frios.","fogão":"Eletrodoméstico usado para cozinhar.","chuveiro":"Equipamento usado para tomar banho.","borboleta":"Inseto com asas coloridas que passa por metamorfose.","elefante":"Grande mamífero com tromba.","girafa":"Animal conhecido pelo pescoço muito comprido.","tartaruga":"Réptil que possui uma carapaça.","pinguim":"Ave que não voa e vive em regiões frias.","abelha":"Inseto que produz mel e poliniza flores.","deserto":"Região muito seca, com pouca chuva.","vulcão":"Abertura na crosta terrestre por onde pode sair lava.","cachoeira":"Queda de água de um rio ou riacho.","arco-íris":"Fenômeno colorido que pode aparecer após a chuva.","planeta":"Astro que orbita uma estrela.","galáxia":"Conjunto enorme de estrelas, gás e poeira cósmica.","cometa":"Corpo celeste que pode formar uma cauda perto do Sol.","satélite":"Objeto que orbita um planeta, natural ou artificial."};
@@ -242,6 +253,7 @@ const WORDS = [
     lossesEl.textContent = losses;
     streakEl.textContent=streak;
     scoreEl.textContent=score;
+    updateBest();
   }
 
   function newWord(){
@@ -264,13 +276,15 @@ const WORDS = [
   function guess(letter){
     if (over || guessed.has(letter)) return;
     guessed.add(letter);
+    tone(430,.05);
     const nw = norm(current.w);
     if (nw.indexOf(letter) === -1) {
+      tone(150,.14);
       errors++;
       stageEl.classList.remove('shake');void stageEl.offsetWidth;stageEl.classList.add('shake');
       if (errors >= MAX_ERRORS) {
         over = true;
-        losses++;streak=0;
+        losses++;streak=0;saveStats();
         stageEl.classList.add('lossGlow');msgEl.className='msg loss';
         msgEl.innerHTML = language==='en'?'No lives left. The word was <b>'+current.w+'</b>.':'Sem vidas. A palavra era <b>' + current.w + '</b>.';
         render();
@@ -282,7 +296,7 @@ const WORDS = [
     });
     if (allFound) {
       over = true;
-      wins++;streak++;score+=Math.max(10,(MAX_ERRORS-errors)*10);
+      wins++;streak++;bestStreak=Math.max(bestStreak,streak);score+=Math.max(10,(MAX_ERRORS-errors)*10);saveStats();tone(700,.18);
       stageEl.classList.add('winGlow');msgEl.className='msg win';celebrate();
       msgEl.innerHTML = language==='en'?'🎉 Correct: <b>'+current.w+'</b>! +'+Math.max(10,(MAX_ERRORS-errors)*10)+' points':'🎉 Acertou: <b>' + current.w + '</b>! +' + Math.max(10,(MAX_ERRORS-errors)*10) + ' pontos';
     }
@@ -294,17 +308,19 @@ const WORDS = [
   document.querySelectorAll('.language-btn').forEach(btn=>btn.addEventListener('click',()=>{selectedLanguage=btn.dataset.lang;document.querySelectorAll('.language-btn').forEach(b=>b.classList.toggle('selected',b===btn));}));
   document.getElementById('startGame').addEventListener('click',()=>{language=selectedLanguage;started=true;document.getElementById('startScreen').style.display='none';document.body.classList.remove('game-hidden');newWord();});
   document.getElementById('resetScore').addEventListener('click', function(){
-    wins = 0; losses = 0; round = 0;streak=0;score=0;
-    newWord();
+    wins = 0; losses = 0; round = 0;streak=0;bestStreak=0;score=0;saveStats();
+    if(started)newWord();else render();
   });
 
   window.addEventListener('keydown', function(e){
+    if(!started||document.getElementById('startScreen').style.display!=='none')return;
     if (e.key === 'Enter') { if (over) newWord(); return; }
     if (!/^[a-zA-Z]$/.test(e.key)) return;
     guess(e.key.toLowerCase());
   });
 
   document.body.classList.add('game-hidden');
+  updateBest();
 })();
 </script>
 <script src="../arcade-common.js"></script></body>
