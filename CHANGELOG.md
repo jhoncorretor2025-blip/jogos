@@ -1,5 +1,13 @@
 # Histórico de alterações — Jogos do Jhon
 
+## V4.18 — Labirinto Fantasma revisado
+- Atualizado o Labirinto Fantasma para v1.1: agora a saída aparece após coletar todas as esferas e a vitória só é concluída ao alcançá-la.
+- Corrigida a colisão com fantasmas para impedir perda de várias vidas no mesmo instante.
+- Adicionado breve período de proteção após perder uma vida, com indicação visual intermitente.
+- Ajustados os pontos de surgimento dos fantasmas para evitar que ocupem a casa da saída.
+- Atualizado o cache do aplicativo para v4.18; progresso e recorde local existentes foram preservados.
+
+
 ## V4.17 — Primeira rodada de revisão individual dos jogos
 - Voo Desafiador atualizado para v1.1: corrigida a identificação de novo recorde (empates não são mais anunciados como recorde novo), melhorados os efeitos de pontuação e cenário, ajustada a área de toque e impedida a repetição involuntária do comando de teclado.
 - Padronizada a versão exibida no título e na interface do Voo Desafiador.
