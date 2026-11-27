@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Jogos do Jhon">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Jogos do Jhon · v4.27</title>
+<title>Jogos do Jhon · v4.28</title>
 <meta property="og:title" content="Jogos do Jhon · Arcade">
 <meta property="og:description" content="Arcade de jogos web do Jhon com jogos para jogar no celular ou PC.">
 <meta property="og:type" content="website">
@@ -457,7 +457,7 @@
     <span class="hero-kicker">ARCADE PESSOAL</span>
     <h1>Jogos do Jhon</h1>
     <p class="sub">🎮 Seu cantinho de diversão: escolha um jogo e comece a jogar no celular ou no PC.</p>
-    <div class="version"><span class="dot"></span> Versão <b>v4.27</b> · atualizado em <b>27/11/2026</b></div>
+    <div class="version"><span class="dot"></span> Versão <b>v4.28</b> · atualizado em <b>27/11/2026</b></div>
     <div class="home-hero-actions">
       <a class="primary-cta" href="#catalogStart">🎮 Explorar jogos <span aria-hidden="true">↓</span></a>
       <span class="hero-count" id="heroGameCount">jogos no catálogo</span>
@@ -548,10 +548,10 @@
     </div>
 
     <div class="card" data-category="strategy" data-href="games/batalha-naval.html" style="--accent:#60a5fa;--glow:rgba(96,165,250,.20)">
-      <span class="tag new">v1.3</span>
+      <span class="tag new">v1.5</span>
       <span class="ico">🚢</span>
-      <p class="name">Batalha Naval <em class="new">NOVO</em></p>
-      <p class="desc">Posicione seus navios automaticamente, comece a partida e toque no radar inimigo para disparar.</p>
+      <p class="name">Batalha Naval <em class="new">ONLINE</em></p>
+      <p class="desc">Jogue contra a IA ou desafie outra pessoa online com salas privadas e turnos sincronizados.</p>
     </div>
 
     <div class="card" data-category="strategy" data-href="games/banco-imobiliario.html" style="--accent:#34d399;--glow:rgba(52,211,153,.20)">
@@ -803,8 +803,10 @@
     </div>
   </details>
   <div class="notes" id="notesSection" data-home-section="notes">
-    <h2>📝 Novidades da tela inicial · v4.26</h2>
+    <h2>📝 Novidades da tela inicial · v4.28</h2>
     <ul>
+       <li><b>v4.28:</b> Batalha Naval v1.5 com multiplayer online: criar sala privada, entrar por código, compartilhar convite, posicionar frotas, sincronizar disparos e jogar revanche.</li>
+       <li><b>v4.27:</b> sistema de XP, níveis progressivos e missões diárias por perfil, com dados incluídos no backup.</li>
        <li><b>v4.25:</b> Conecte os Pontos v1.3 com dez melhorias: layout móvel mais confortável; nomes dos jogadores; destaque da vez; barra de progresso e quadrados restantes; animações de captura e última linha; dica estratégica; desfazer a vez completa contra a IA; três níveis de IA com estratégias diferentes; efeitos sonoros opcionais; estatísticas de partidas, vitórias, derrotas, empates e melhor placar. Inclui atalhos de teclado e instruções acessíveis.</li>
        <li><b>v4.13:</b> cinco jogos aprimorados: 2048 restaurado com desfazer e recordes; Duelo de Reflexos com modo solo contra IA e três níveis; Detetive com pistas, dicas, pontuação e sequência de casos; Mancala com IA em três níveis e modo local para duas pessoas; Conecte os Pontos com IA e tabuleiros ajustáveis. Os recordes e estatísticas desses jogos passaram a integrar o backup.</li>
        <li><b>v4.12:</b> ordem do catálogo reorganizada: 2048, Corrida Infinita, Ninja Forest Rescue, Caminhoneiro, Campo Minado e Mancala agora aparecem por último.</li>
@@ -1677,7 +1679,7 @@ installBtn.addEventListener('click',async()=>{
  if(deferredInstall){deferredInstall.prompt();const choice=await deferredInstall.userChoice;deferredInstall=null;installBtn.textContent=choice.outcome==='accepted'?'✅ Instalação solicitada':'📲 Instalar app';}
  else alert('Para instalar no celular:\n\nAndroid: abra o menu do navegador e escolha “Instalar aplicativo” ou “Adicionar à tela inicial”.\niPhone/iPad: no Safari, toque em Compartilhar e depois em “Adicionar à Tela de Início”.\n\nA opção aparece quando o navegador oferece suporte à instalação.');
 });
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=4.27',{scope:'./',updateViaCache:'none'}).catch(e=>console.warn('PWA: não foi possível registrar o modo offline.',e)))}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=4.28',{scope:'./',updateViaCache:'none'}).catch(e=>console.warn('PWA: não foi possível registrar o modo offline.',e)))}
 renderAll();
 })();
 </script></body>
