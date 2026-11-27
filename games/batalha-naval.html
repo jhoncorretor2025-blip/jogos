@@ -157,7 +157,7 @@
       msgEl.textContent=data.hit?(data.sunk?'🚢 Você afundou um navio adversário!':'💥 Acertou o adversário!'):'🌊 Você errou. Aguarde o disparo adversário.';
       paint();if(data.gameOver){finish(true);return}return;
     }
-    if(data.type==='rematch'){reset();localReady=false;opponentReady=false;msgEl.textContent='🔄 Nova partida solicitada. Posicione sua frota.';return}
+    if(data.type==='rematch'){reset(true);msgEl.textContent='🔄 Nova partida solicitada. Posicione sua frota.';return}
   }
   function connSend(data){if(roomConn&&roomConn.open)roomConn.send(data)}
   async function createOnlineRoom(){
@@ -294,7 +294,9 @@ let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.
     mineInfo.textContent = phase === 'battle' ? alive + ' navios seus' : 'posicionando';
   }
 
-  function reset(){
+  function reset(skipOnlineNotify){
+    if(onlineMode&&!skipOnlineNotify&&phase==='done')connSend({type:'rematch'});
+    if(onlineMode){localReady=false;opponentReady=false}
     if(aiTimer){clearTimeout(aiTimer);aiTimer=0}
     mine = blank(); foe = blank();
     phase = 'place'; placing = 0; horiz = true;
