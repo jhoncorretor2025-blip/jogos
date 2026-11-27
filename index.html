@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Jogos do Jhon">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Jogos do Jhon · v4.09</title>
+<title>Jogos do Jhon · v4.10</title>
 <meta property="og:title" content="Jogos do Jhon · Arcade">
 <meta property="og:description" content="Arcade de jogos web do Jhon com 47 jogos para jogar no celular ou PC.">
 <meta property="og:type" content="website">
@@ -25,7 +25,7 @@
 <meta name="twitter:description" content="Arcade de jogos web com 47 jogos gratuitos para jogar no celular ou PC.">
 <meta name="twitter:image" content="https://jhoncorretor2025-blip.github.io/jogos/icons/arcade-icon.svg">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebApplication","name":"Jogos do Jhon","description":"Arcade de jogos web com 36 jogos gratuitos para jogar no celular ou PC.","url":"https://jhoncorretor2025-blip.github.io/jogos/index.html","applicationCategory":"Game","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"BRL"}}
+{"@context":"https://schema.org","@type":"WebApplication","name":"Jogos do Jhon","description":"Arcade de jogos web com 47 jogos gratuitos para jogar no celular ou PC.","url":"https://jhoncorretor2025-blip.github.io/jogos/index.html","applicationCategory":"Game","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"BRL"}}
 </script>
 <meta name="description" content="Arcade de jogos web do Jhon com busca, favoritos, categorias, histórico e perfil gamer.">
 <style>
@@ -317,6 +317,58 @@
   body.arcade-large-text .desc,body.arcade-large-text .sub,body.arcade-large-text .filter,body.arcade-large-text .toolbtn,body.arcade-large-text .recent a{font-size:1.12em}
   body.arcade-reduced-motion *,body.arcade-reduced-motion *::before,body.arcade-reduced-motion *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
   @media(max-width:560px){.settings-grid{grid-template-columns:1fr}.family-head{align-items:flex-start}.achievement-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+  /* v4.10 — refinamento visual geral (10 melhorias de design) */
+  :root{--radius-card:20px;--surface-raised:#111c2e;--focus-ring:rgba(34,211,238,.95)}
+  body{line-height:1.55;text-rendering:optimizeLegibility}
+  .wrap{max-width:1120px}
+  .home-hero{padding:clamp(26px,4vw,42px) 22px 30px;border-radius:26px}
+  .hero-kicker{letter-spacing:2.2px}
+  .home-hero h1{font-size:clamp(32px,7vw,52px);letter-spacing:-1.6px}
+  .home-hero .sub{font-size:clamp(13px,2vw,16px);line-height:1.65}
+  .version{backdrop-filter:blur(8px);border-color:rgba(148,163,184,.22)}
+  .category-section,.menu-tools,.player-panel{margin-top:24px}
+  .section-head h2,.catalog-title{font-size:clamp(16px,2vw,19px);letter-spacing:-.25px}
+  .section-head p,.catalog-sub{line-height:1.55}
+  .category-chip{min-height:62px;border-radius:15px;box-shadow:inset 0 1px rgba(255,255,255,.035);transition:transform .18s ease,border-color .18s ease,background .18s ease}
+  .category-chip:hover,.category-chip.active{box-shadow:0 8px 20px -16px var(--a1)}
+  .grid{gap:16px}
+  .card{min-height:168px;border-radius:var(--radius-card);padding:21px 19px 18px;box-shadow:0 8px 24px -22px #000}
+  .card .ico{filter:drop-shadow(0 4px 8px #0005);font-size:36px}
+  .name{font-size:16px;line-height:1.35;letter-spacing:-.2px}
+  .desc{line-height:1.6}
+  .card-meta{gap:7px}
+  .meta-pill{border-color:rgba(148,163,184,.16)}
+  .searchbox{min-height:48px;border-radius:14px;background:rgba(11,18,32,.88);transition:border-color .18s ease,box-shadow .18s ease}
+  .searchbox:focus{box-shadow:0 0 0 4px rgba(34,211,238,.10)}
+  .toolbtn,.filter{min-height:42px;border-radius:12px;transition:background .16s ease,border-color .16s ease,transform .16s ease}
+  .toolbtn:hover,.filter:hover{border-color:#64748b;background:#1a2940}
+  .primary-cta{min-height:48px;padding-inline:20px;border-radius:14px}
+  .empty-state{border-color:#52647d;background:linear-gradient(145deg,rgba(34,211,238,.045),rgba(167,139,250,.035))}
+  .notes{border-radius:18px;background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.015))}
+  .notes li{padding-left:3px}
+  button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--focus-ring);outline-offset:3px}
+  @media(max-width:700px){
+    body{font-size:14px}
+    .wrap{width:100%}
+    .grid{gap:10px}
+    .grid:not(.list):not(.compact){grid-template-columns:repeat(2,minmax(0,1fr))}
+    .card{min-height:158px;padding:16px 13px 14px;border-radius:16px}
+    .card .ico{font-size:30px;margin-bottom:10px}
+    .name{font-size:14px}
+    .desc{font-size:12px}
+    .tag{font-size:9px;right:9px;top:9px}
+    .favbtn{right:9px;top:38px}
+    .catalog-head{gap:8px;flex-wrap:wrap}
+  }
+  @media(max-width:370px){
+    .grid:not(.list):not(.compact){grid-template-columns:1fr}
+    .card{min-height:0}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  }
+
 </style>
 </head>
 <body>
@@ -326,7 +378,7 @@
     <span class="hero-kicker">ARCADE PESSOAL</span>
     <h1>Jogos do Jhon</h1>
     <p class="sub">🎮 Seu cantinho de diversão: escolha um jogo e comece a jogar no celular ou no PC.</p>
-    <div class="version"><span class="dot"></span> Versão <b>v4.09</b> · atualizado em <b>25/11/2026</b></div>
+    <div class="version"><span class="dot"></span> Versão <b>v4.10</b> · atualizado em <b>27/11/2026</b></div>
     <div class="home-hero-actions">
       <a class="primary-cta" href="#catalogStart">🎮 Explorar jogos <span aria-hidden="true">↓</span></a>
       <span class="hero-count" id="heroGameCount">47 jogos no catálogo</span>
@@ -620,9 +672,9 @@
     </div>
   </details>
   <div class="notes">
-    <h2>📝 Novidades da tela inicial · v4.09</h2>
+    <h2>📝 Novidades da tela inicial · v4.10</h2>
     <ul>
-       <li><b>v4.09:</b> remoção do Futebol de Mesa do catálogo após avaliação da experiência de jogo.</li>
+       <li><b>v4.10:</b> remoção do Futebol de Mesa do catálogo após avaliação da experiência de jogo.</li>
        <li><b>v4.06 — Jogo da Memória v2.1:</b> reconstruído o tabuleiro com botões de carta independentes, dimensões quadradas explícitas e link com versão para evitar abrir o HTML antigo.</li>
        <li><b>v4.05 — Jogo da Memória v2.0:</b> reconstruídas as cartas com faces visíveis sem depender de rotação 3D, corrigindo o tabuleiro que mostrava apenas pontos.</li>
        <li><b>v4.04 — Jogo da Memória v1.9:</b> corrigido o dimensionamento das cartas, separado o estilo do botão voltar e aumentado o tamanho inicial do tabuleiro para 4×4.</li>
@@ -1098,7 +1150,7 @@ function validateBackup(raw){
 }
 function exportBackup(){
  try{
-  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v4.09',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
+  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v4.10',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
   const content=JSON.stringify(backup,null,2),blob=new Blob([content],{type:'application/json'});
   if(blob.size>MAX_BACKUP_BYTES)throw new Error('O backup ultrapassa 2 MB.');
   const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='jogos-do-jhon-backup-'+new Date().toISOString().slice(0,10)+'.json';
