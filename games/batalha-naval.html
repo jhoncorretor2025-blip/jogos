@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#070b14">
-<title>Batalha Naval — Jogos do Jhon v1.6</title>
+<title>Batalha Naval — Jogos do Jhon v1.7</title>
 <style>
   :root{--bg:#070b14;--card:#0f172a;--line:#1e293b;--txt:#e2e8f0;--muted:#94a3b8}
   *{box-sizing:border-box}
@@ -44,6 +44,7 @@
   .cell.hit{background:#7f1d1d;border-color:#dc2626}
   .cell.sunk{background:#450a0a;border-color:#b91c1c;color:#fca5a5}
   .cell:active{transform:scale(.94)}
+  .cell:focus-visible{outline:2px solid #67e8f9;outline-offset:2px;z-index:1}
   #radar .cell:hover{background:#16283f}
   .online-panel{width:100%;max-width:520px;margin:0 0 12px;padding:12px;border:1px solid #164e63;border-radius:14px;background:linear-gradient(135deg,rgba(8,47,73,.55),rgba(15,23,42,.9))}
 .online-head,.online-actions,.room-share{display:flex;align-items:center;justify-content:space-between;gap:8px}.online-head{font-size:13px;margin-bottom:9px}.online-status{font-size:11px;color:#94a3b8}.online-status.connected{color:#4ade80}.online-actions .btn{min-width:0}.room-share{margin-top:10px;font-size:13px}.room-share b{letter-spacing:2px;color:#67e8f9}.room-entry{display:block;margin-top:10px;font-size:12px;color:#cbd5e1}.room-entry input{display:block;width:100%;margin-top:5px;padding:11px;border-radius:9px;border:1px solid #334155;background:#07111f;color:#fff;font:inherit;text-transform:uppercase;letter-spacing:3px}.online-help{margin:9px 0 0;color:#94a3b8;font-size:11px;line-height:1.5}.disconnect-btn{margin-top:9px;width:100%}.ver{color:#475569;font-size:11.5px;margin-top:14px}
@@ -89,7 +90,7 @@
     </div>
   </div>
 
-  <div class="ver">v1.6 · 27/11/2026</div>
+  <div class="ver">v1.7 · 27/11/2026</div>
 
   <div id="ov">
     <div class="panel">
@@ -120,6 +121,7 @@
   const onlineStatus=document.getElementById('onlineStatus'),onlineHelp=document.getElementById('onlineHelp'),roomShare=document.getElementById('roomShare'),roomEntry=document.getElementById('roomEntry'),roomCodeInput=document.getElementById('roomCodeInput'),disconnectBtn=document.getElementById('disconnectRoom');
   const createRoomBtn=document.getElementById('createRoom'),joinRoomBtn=document.getElementById('joinRoom'),copyRoomBtn=document.getElementById('copyRoom');
   function setOnlineStatus(text,connected){onlineStatus.textContent=text;onlineStatus.classList.toggle('connected',!!connected)}
+  function coord(i){return String.fromCharCode(65+(i%SIZE))+(Math.floor(i/SIZE)+1)}
   function setOnlineControls(connected){createRoomBtn.disabled=connected;joinRoomBtn.disabled=connected;disconnectBtn.hidden=!connected}
   function loadPeerJS(){return new Promise((resolve,reject)=>{if(window.Peer){resolve();return}const script=document.createElement('script');script.src='https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js';script.onload=()=>window.Peer?resolve():reject(new Error('Biblioteca de conexão indisponível.'));script.onerror=()=>reject(new Error('Não foi possível carregar a conexão online. Verifique sua internet.'));document.head.appendChild(script)})}
   function makePeer(id){return new Peer(id||undefined,{debug:1,config:{iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}]}})}
@@ -146,6 +148,7 @@
     if(data.type==='shot'){
       const i=Number(data.index);if(!Number.isInteger(i)||i<0||i>=N||mine[i].shot||phase!=='battle'||playerTurn)return;
       mine[i].shot=true;const hit=mine[i].ship>=0,sunk=hit&&isSunk(mine,mine[i].ship),gameOver=SHIPS.every((_,id)=>isSunk(mine,id));
+      msgEl.textContent='🎯 O adversário disparou em '+coord(i)+'.';
       connSend({type:'shotResult',index:i,hit,sunk,gameOver});
       if(gameOver){paint();finish(false);return}
       playerTurn=true;msgEl.textContent=hit?(sunk?'🚢 O adversário afundou um navio seu! Sua vez de responder.':'💥 O adversário acertou! Sua vez de responder.'):'🌊 O adversário errou. Sua vez de disparar!';
@@ -154,7 +157,7 @@
     if(data.type==='shotResult'){
       const i=Number(data.index);if(!Number.isInteger(i)||i<0||i>=N||foe[i].shot||playerTurn)return;
       foe[i].shot=true;shots++;if(data.hit)hitsOnFoe++;
-      msgEl.textContent=data.hit?(data.sunk?'🚢 Você afundou um navio adversário!':'💥 Acertou o adversário!'):'🌊 Você errou. Aguarde o disparo adversário.';
+      msgEl.textContent=data.hit?(data.sunk?'🚢 Acertou em '+coord(i)+' e afundou um navio!':'💥 Acertou em '+coord(i)+'!'):'🌊 Disparo em '+coord(i)+': água. Aguarde o adversário.';
       paint();if(data.gameOver){finish(true);return}return;
     }
     if(data.type==='rematch'){reset(true);msgEl.textContent='🔄 Nova partida solicitada. Posicione sua frota.';return}
@@ -263,6 +266,8 @@ let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.
       const c = mine[i];
       const d = document.createElement('div');
       d.className = 'cell';
+      d.setAttribute('role','button');d.tabIndex=0;d.setAttribute('aria-label','Seu tabuleiro, posição '+coord(i)+(c.ship>=0?', navio':'')+(c.shot?', atingida':''));
+      d.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();tryPlace(i)}});
       if (c.ship >= 0 && phase !== 'battle') d.classList.add('ship');
       else if (c.ship >= 0 && phase === 'battle') d.classList.add('ship');
       if (c.shot) {
@@ -279,18 +284,21 @@ let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.
       const c = foe[i];
       const d = document.createElement('div');
       d.className = 'cell';
+      d.setAttribute('role','button');d.tabIndex=0;d.setAttribute('aria-label','Radar inimigo, posição '+coord(i)+(c.shot?', já atingida':', não explorada'));
       if (c.shot) {
         const sunk = c.ship >= 0 && isSunk(foe, c.ship);
         d.classList.add(sunk ? 'sunk' : (c.ship >= 0 ? 'hit' : 'miss'));
         d.textContent = c.ship >= 0 ? '✕' : '•';
       }
       d.addEventListener('click', function(){ shoot(i); });
+      d.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();shoot(i)}});
       radarEl.appendChild(d);
     }
 
     const remaining = SHIPS.filter(function(_, id){ return !isSunk(foe, id); }).length;
     const alive = SHIPS.filter(function(_, id){ return !isSunk(mine, id); }).length;
-    foeInfo.textContent = hitsOnFoe + ' acertos · ' + remaining + ' navios restantes · ' + shots + ' tiros';
+    const turnLabel=phase==='battle'?(onlineMode?(playerTurn?' · SUA VEZ':' · AGUARDE'):(playerTurn?' · SUA VEZ':' · IA JOGANDO')):'';
+    foeInfo.textContent = hitsOnFoe + ' acertos · ' + remaining + ' navios restantes · ' + shots + ' tiros' + turnLabel;
     mineInfo.textContent = phase === 'battle' ? alive + ' navios seus' : 'posicionando';
   }
 
@@ -345,15 +353,15 @@ let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.
     if (phase !== 'battle' || !playerTurn || over) return;
     if (foe[i].shot) return;
     if(onlineMode){
-      playerTurn=false;connSend({type:'shot',index:i});msgEl.textContent='🎯 Disparo enviado. Aguardando o adversário…';playTone(330);return;
+      playerTurn=false;connSend({type:'shot',index:i});msgEl.textContent='🎯 Disparo em '+coord(i)+' enviado. Aguardando o adversário…';paint();playTone(330);return;
     }
     foe[i].shot = true; shots++;
     playTone(foe[i].ship>=0?660:220);
     if (foe[i].ship >= 0) {
       hitsOnFoe++;
-      msgEl.innerHTML = isSunk(foe,foe[i].ship) ? '🚢 Você afundou um navio inimigo!' : '💥 Acertou!';
+      msgEl.innerHTML = isSunk(foe,foe[i].ship) ? '🚢 Você afundou um navio inimigo em '+coord(i)+'!' : '💥 Acertou em '+coord(i)+'!';
     } else {
-      msgEl.innerHTML = '🌊 Água.';
+      msgEl.innerHTML = '🌊 Água em '+coord(i)+'.';
     }
     paint();
 
@@ -397,9 +405,9 @@ let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.
         }
       });
       playTone(520);
-      if(isSunk(mine,mine[target].ship)){aiTargets=aiTargets.filter(function(k){return mine[k].shot});msgEl.innerHTML='🚢 A IA afundou um dos seus navios!';}else msgEl.innerHTML = '💥 A IA acertou seu navio.';
+      if(isSunk(mine,mine[target].ship)){aiTargets=aiTargets.filter(function(k){return mine[k].shot});msgEl.innerHTML='🚢 A IA afundou um dos seus navios em '+coord(target)+'!';}else msgEl.innerHTML = '💥 A IA acertou em '+coord(target)+'.';
     } else {
-      msgEl.innerHTML = '🌊 A IA errou. Sua vez!';
+      msgEl.innerHTML = '🌊 A IA errou em '+coord(target)+'. Sua vez!';
     }
     paint();
 
