@@ -1,5 +1,15 @@
 # Histórico de alterações — Jogos do Jhon
 
+## V4.25 — Forca revisada
+- Atualizado Forca para v2.5.
+- Corrigido erro ao pressionar letras no teclado antes de iniciar uma partida; entradas agora só são processadas com jogo ativo.
+- Placar, pontos, sequência atual e melhor sequência passam a ser salvos no navegador e restaurados ao retornar.
+- Corrigido o botão de zerar placar para funcionar também antes de iniciar o jogo e para limpar todos os recordes da sessão.
+- Adicionado controle opcional de efeitos sonoros e feedback ao acertar ou errar letras.
+- Melhorada a adaptação da barra de controles em telas estreitas.
+- Atualizados o catálogo e o cache do aplicativo para v4.25.
+
+
 ## V4.24 — Campo Minado revisado
 - Atualizado Campo Minado para v1.3.
 - Adicionado suporte a teclado nas casas do tabuleiro, com foco visível e rótulos acessíveis que informam o estado e os números.
