@@ -586,7 +586,7 @@ function frogger(){
 shellStats(stat('Pontos','score')+stat('Chegadas','homes')+stat('Recorde','best'));
 $('stage').innerHTML='<canvas id="frog" width="360" height="440" aria-label="Travessia Maluca"></canvas><div class="frog-pad"><span></span><button id="up">▲</button><span></span><button id="left">◀</button><button id="down">▼</button><button id="right">▶</button></div>';
 buttons(btn('new','🔄 Reiniciar','btn primary'));const cv=$('frog'),ctx=cv.getContext('2d');let px=4,py=9,homes=[],score=0,tick=0,alive=true,lanes=[],timer=0;
-function fresh(){if(timer)clearInterval(timer);px=4;py=9;homes=[];score=0;tick=0;alive=true;lanes=[];for(let r=1;r<=3;r++)lanes[r]=Array.from({length:3},(_,i)=>({x:i*4-1,len:2+(r%2),speed:(r%2?1:-1)*(.012+.006*r)}));for(let r=6;r<=8;r++)lanes[r]=Array.from({length:3},(_,i)=>({x:i*5-1,len:r===7?1:1.5,speed:(r%2?1:-1)*(.018+.008*(r-6))}));draw();setMsg('Atravesse com cuidado. Chegue a uma das cinco bases verdes!')}
+function fresh(){if(timer)clearInterval(timer);px=4;py=9;homes=[];score=0;tick=0;alive=true;lanes=[];for(let r=1;r<=3;r++)lanes[r]=Array.from({length:3},(_,i)=>({x:i*4-1,len:2+(r%2),speed:(r%2?1:-1)*(.012+.006*r)}));for(let r=6;r<=8;r++)lanes[r]=Array.from({length:3},(_,i)=>({x:i*5-1,len:r===7?1:1.5,speed:(r%2?1:-1)*(.018+.008*(r-6))}));draw();setMsg('Atravesse com cuidado. Chegue a uma das cinco bases verdes!')timer=setInterval(update,100)}
 function draw(){ctx.clearRect(0,0,360,440);for(let r=0;r<11;r++){ctx.fillStyle=(r===0||r===5||r===10)?'#14532d':r<=3?'#075985':r===4?'#334155':'#374151';ctx.fillRect(0,r*40,360,40);if(r<=3||r>=6&&r<=8){ctx.strokeStyle='#ffffff16';for(let x=0;x<360;x+=40){ctx.strokeRect(x,r*40,40,40)}}}
 homes.forEach(c=>{ctx.fillStyle='#fbbf24';ctx.fillRect(c*40+5,4,30,30);ctx.fillStyle='#14532d';ctx.font='22px sans-serif';ctx.fillText('★',c*40+10,28)});
 for(let r=1;r<=3;r++)lanes[r].forEach(o=>{ctx.fillStyle='#a16207';ctx.fillRect(o.x*40,r*40+7,o.len*40-3,26);ctx.fillStyle='#fbbf24';ctx.fillRect(o.x*40+8,r*40+11,Math.max(4,o.len*40-20),5)});
@@ -598,7 +598,7 @@ function update(){if(!alive)return;tick++;for(let r=1;r<=3;r++)lanes[r].forEach(
 if(py>=1&&py<=3){const log=lanes[py].find(o=>px+.45>=o.x&&px+.55<=o.x+o.len);if(!log){lose('Você caiu na água!')}else{px+=log.speed;if(px<0||px>8)lose('A corrente levou você!')}}
 if(py>=6&&py<=8&&lanes[py].some(o=>px+.5>=o.x&&px+.5<=o.x+o.len)){lose('Um veículo atingiu o sapinho!')}
 draw()}
-function action(id,dx,dy){on(id,()=>step(dx,dy))}action('up',0,-1);action('down',0,1);action('left',-1,0);action('right',1,0);on('new',fresh);window.addEventListener('keydown',e=>{const k=e.key.toLowerCase(),m={arrowup:[0,-1],w:[0,-1],arrowdown:[0,1],s:[0,1],arrowleft:[-1,0],a:[-1,0],arrowright:[1,0],d:[1,0]};if(m[k]){e.preventDefault();step(...m[k])}});fresh();timer=setInterval(update,100);
+function action(id,dx,dy){on(id,()=>step(dx,dy))}action('up',0,-1);action('down',0,1);action('left',-1,0);action('right',1,0);on('new',fresh);window.addEventListener('keydown',e=>{const k=e.key.toLowerCase(),m={arrowup:[0,-1],w:[0,-1],arrowdown:[0,1],s:[0,1],arrowleft:[-1,0],a:[-1,0],arrowright:[1,0],d:[1,0]};if(m[k]){e.preventDefault();step(...m[k])}});fresh();
 }
 function resta(){
 shellStats(stat('Peças restantes','leftCount')+stat('Recorde','best'));
