@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#070b14"><title>Clássicos Arcade · Jogos do Jhon v1.14</title>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#070b14"><title>Clássicos Arcade · Jogos do Jhon v1.15</title>
 <style>
 :root{color-scheme:dark;--bg:#070b14;--panel:#111b2d;--line:#29364c;--txt:#e2e8f0;--muted:#94a3b8;--cyan:#22d3ee;--gold:#fbbf24;--green:#34d399;--red:#fb7185}
 *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(850px 500px at 50% -10%,#172554 0,transparent 70%),var(--bg);color:var(--txt);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;padding:14px 12px 30px}button{font:inherit;cursor:pointer;color:inherit}.wrap{width:min(100%,820px);margin:auto}.top{display:flex;align-items:center;justify-content:space-between;gap:10px}.back{color:var(--muted);text-decoration:none;font-size:13px}.ver{font-size:11px;color:#a5f3fc;border:1px solid #155e75;border-radius:99px;padding:5px 10px}.hero{text-align:center;padding:13px 0 16px}.logo{font-size:clamp(45px,12vw,76px);line-height:1.1}.hero h1{margin:4px 0;font-size:clamp(25px,6vw,36px)}.sub{margin:0;color:var(--muted);font-size:14px}.panel{background:linear-gradient(145deg,#172338,#101827);border:1px solid var(--line);border-radius:18px;padding:13px;box-shadow:0 14px 32px #0004}.stats{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:12px}.stat{background:#0b1424;border:1px solid #26364c;border-radius:12px;padding:7px 12px;text-align:center;min-width:80px}.stat small{display:block;color:var(--muted);font-size:10px}.stat b{font-size:20px;font-variant-numeric:tabular-nums}.actions,.controls{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:12px}.btn{background:#1d2c42;border:1px solid #3b4b63;border-radius:11px;padding:10px 14px;font-weight:750}.btn.primary{background:#075466;border-color:#0891b2}.btn.gold{background:#563f08;border-color:#d6a51d}.btn:active{transform:scale(.97)}.hint{text-align:center;color:var(--muted);font-size:12px;margin:10px 0 0}.board{margin:auto;max-width:100%;overflow:auto}.message{text-align:center;min-height:25px;color:#bae6fd;font-weight:700;margin:8px 0}.pad{display:grid;grid-template-columns:repeat(3,56px);gap:7px;justify-content:center;margin:12px auto 0}.pad button{height:48px;border-radius:12px;background:#16263d;border:1px solid #334155;font-size:19px}.pad .empty{visibility:hidden}
@@ -62,7 +62,7 @@ canvas{display:block;max-width:100%;height:auto;touch-action:none;border-radius:
 @media(max-width:430px){.bubble-daily{grid-template-columns:1fr}.daily-goal{display:flex;justify-content:space-between;align-items:center;gap:8px}.daily-goal small{margin:0;text-align:right}.bubble-stage .controls .btn{min-width:calc(33.333% - 6px);padding:9px 7px;font-size:11px}}
 @media(prefers-reduced-motion:reduce){.bubble-stage .bubble-progress-head span:first-child{animation:none}}
 
-/* Clássicos Arcade v1.14 — Dominó tátil e Paciência premium */
+/* Clássicos Arcade v1.15 — Dominó tátil e Paciência premium */
 body[data-arcade-game="domino"]{background:radial-gradient(ellipse at 50% -10%,#164e63 0,transparent 48%),radial-gradient(ellipse at 100% 65%,#854d0e35,transparent 45%),linear-gradient(145deg,#07151d,#0b1d25 58%,#07111b)}
 body[data-arcade-game="domino"] .panel{background:linear-gradient(155deg,#12343a,#0b2029 60%,#0a1722);border-color:#367581;box-shadow:0 24px 55px #0009,inset 0 1px #ffffff18}
 body[data-arcade-game="domino"] .stat{background:linear-gradient(145deg,#153944,#0b202b);border-color:#34717c;box-shadow:inset 0 1px #ffffff15,0 7px 18px #0005}
@@ -114,10 +114,10 @@ body[data-arcade-game="paciencia"] .actions .btn{background:linear-gradient(145d
 body[data-arcade-game="paciencia"] .actions .btn.primary{background:linear-gradient(110deg,#059669,#0f766e);border-color:#6ee7b7}
 @media(max-width:430px){body[data-arcade-game="domino"] .domino-tile{width:60px;height:36px}body[data-arcade-game="paciencia"] .solgrid{gap:3px;padding:5px}body[data-arcade-game="paciencia"] .solgrid .pile{min-height:255px;padding:2px}body[data-arcade-game="paciencia"] .cardface{height:53px;padding:3px}.solmeta .cardface{height:51px!important}}
 </style></head><body><main class="wrap">
-<div class="top"><a class="back" href="../index.html">← Voltar ao Arcade</a><span class="ver">JOGO v1.14</span></div>
+<div class="top"><a class="back" href="../index.html">← Voltar ao Arcade</a><span class="ver">JOGO v1.15</span></div>
 <header class="hero"><div id="logo" class="logo">🎮</div><h1 id="title">Clássicos Arcade</h1><p id="subtitle" class="sub">Diversão para todos os momentos</p></header>
 <section class="panel"><div id="stats" class="stats"></div><div id="stage"></div><div id="message" class="message" aria-live="polite"></div><div id="controls" class="controls"></div><p id="hint" class="hint"></p></section>
-<footer class="game-version-footer">Jogos do Jhon · Clássicos Arcade v1.14</footer>
+<footer class="game-version-footer">Jogos do Jhon · Clássicos Arcade v1.15</footer>
 </main><script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id),params=new URLSearchParams(location.search),mode=params.get('game')||'domino';
@@ -132,7 +132,7 @@ const info={
 if(!info[mode])location.replace('../index.html');
 document.body.dataset.arcadeGame=mode;
 if(mode==='frogger')document.body.dataset.arcadeControls='both';
-const [logo,title,subtitle,hint]=info[mode];$('logo').textContent=logo;$('title').textContent=title;$('subtitle').textContent=subtitle;$('hint').textContent=hint;document.title=title+' · Jogos do Jhon v1.14';
+const [logo,title,subtitle,hint]=info[mode];$('logo').textContent=logo;$('title').textContent=title;$('subtitle').textContent=subtitle;$('hint').textContent=hint;document.title=title+' · Jogos do Jhon v1.15';
 const stat=(label,value)=>'<div class="stat"><small>'+label+'</small><b id="'+value+'">0</b></div>';
 function shellStats(html){$('stats').innerHTML=html}
 function setMsg(t){$('message').textContent=t}
@@ -146,9 +146,9 @@ function domino(){
 shellStats(stat('Pontos','score')+stat('Suas peças','mine')+stat('Peças da IA','ai')+stat('Monte','stockCount'));
 $('stage').innerHTML='<section class="domino-table-area"><div class="domino-table-title"><span>🁣 Mesa de jogo</span><span id="dominoCount">28 peças</span></div><div class="ends"><span id="leftEnd">Ponta esquerda: —</span><span id="rightEnd">Ponta direita: —</span></div><div class="domboard" id="domboard">O tabuleiro começa aqui</div></section><div class="domino-hand-title"><h3>🀄 Sua mão</h3><small id="handCount">7 peças</small></div><div class="hand" id="hand"></div><div class="side-choice" id="sideChoice" hidden></div><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px">'+btn('draw','＋ Comprar peça')+btn('pass','Passar')+'</div>';
 buttons(btn('new','🔄 Nova partida','btn primary'));
-let deck=[],hand=[],ai=[],board=[],score=0,blocked=0,locked=false;
+let deck=[],hand=[],ai=[],board=[],score=0,blocked=0,locked=false,aiTimer=0;
 function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
-function fresh(){deck=[];for(let a=0;a<=6;a++)for(let b=a;b<=6;b++)deck.push([a,b]);shuffle(deck);hand=deck.splice(0,7);ai=deck.splice(0,7);board=[deck.pop()];score=0;blocked=0;locked=false;render();setMsg('Sua vez! Escolha uma peça que combine com uma das pontas da mesa.')}
+function fresh(){if(aiTimer){clearTimeout(aiTimer);aiTimer=0}deck=[];for(let a=0;a<=6;a++)for(let b=a;b<=6;b++)deck.push([a,b]);shuffle(deck);hand=deck.splice(0,7);ai=deck.splice(0,7);board=[deck.pop()];score=0;blocked=0;locked=false;render();setMsg('Sua vez! Escolha uma peça que combine com uma das pontas da mesa.')}
 function ends(){return [board[0][0],board[board.length-1][1]]}
 function pipFace(n){const positions={0:[],1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]}[n]||[];return '<span class="domino-half">'+Array.from({length:9},(_,i)=>'<i class="domino-pip '+(positions.includes(i)?'on':'')+'"></i>').join('')+'</span>'}
 function tileMarkup(p,extra){return '<span class="domino-tile '+(extra||'')+'" aria-label="'+p[0]+' e '+p[1]+'">'+pipFace(p[0])+'<i class="domino-divider"></i>'+pipFace(p[1])+'</span>'}
@@ -161,7 +161,7 @@ function render(){
 }
 function legal(p){const [l,r]=ends();return p[0]===l||p[1]===l||p[0]===r||p[1]===r}
 function put(p,side){const [l,r]=ends();if(side==='L'){if(p[1]===l)board.unshift(p);else board.unshift([p[1],p[0]])}else{if(p[0]===r)board.push(p);else board.push([p[1],p[0]])}}
-function commitPiece(i,side){const p=hand[i];if(!p||!legal(p))return;put(p,side);hand.splice(i,1);$('sideChoice').hidden=true;score+=p[0]+p[1];if(!hand.length){finish(true);return}render();setMsg('Boa jogada! A IA está pensando…');locked=true;setTimeout(aiTurn,620)}
+function commitPiece(i,side){const p=hand[i];if(!p||!legal(p))return;put(p,side);hand.splice(i,1);$('sideChoice').hidden=true;score+=p[0]+p[1];blocked=0;if(!hand.length){finish(true);return}render();setMsg('Boa jogada! A IA está pensando…');locked=true;aiTimer=setTimeout(()=>{aiTimer=0;if(locked)aiTurn()},620)}
 function choose(i){
  if(locked)return;const p=hand[i];if(!legal(p)){setMsg('Essa peça não encaixa em nenhuma das pontas.');return}
  const [l,r]=ends(),fitsLeft=p[0]===l||p[1]===l,fitsRight=p[0]===r||p[1]===r;
@@ -170,30 +170,30 @@ function choose(i){
 }
 function aiTurn(){
  if(!ai.length){finish(false);return}let idx=ai.findIndex(legal);while(idx<0&&deck.length){ai.push(deck.pop());idx=ai.findIndex(legal)}
- if(idx<0){blocked++;locked=false;render();setMsg('A IA passou. Sua vez!');return}
- const p=ai.splice(idx,1)[0],[l,r]=ends();put(p,(p[0]===l||p[1]===l)?'L':'R');render();if(!ai.length){finish(false);return}locked=false;setMsg('A IA jogou '+p[0]+'|'+p[1]+'. Sua vez!');
+ if(idx<0){blocked++;locked=false;render();if(blocked>=2){finish(false);return}setMsg('A IA passou. Sua vez!');return}
+ const p=ai.splice(idx,1)[0],[l,r]=ends();put(p,(p[0]===l||p[1]===l)?'L':'R');blocked=0;render();if(!ai.length){finish(false);return}locked=false;setMsg('A IA jogou '+p[0]+'|'+p[1]+'. Sua vez!');
 }
 function finish(win){locked=true;const my=hand.reduce((s,p)=>s+p[0]+p[1],0),opp=ai.reduce((s,p)=>s+p[0]+p[1],0);if(win){score+=opp;saveBest('domino',score);setMsg('🏆 Você venceu! Pontuação da rodada: '+score+'.')}else if(!ai.length){setMsg('A IA venceu desta vez. Tente outra rodada!')}else{setMsg(my<opp?'Rodada bloqueada: você venceu pelos pontos!':'Rodada bloqueada: a IA venceu pelos pontos.')}render()}
 on('draw',()=>{if(deck.length&&!locked){hand.push(deck.pop());render();setMsg('Você comprou uma peça do monte.')}});
-on('pass',()=>{if(locked)return;if(hand.some(legal)){setMsg('Você ainda tem uma peça que pode ser encaixada.');return}if(deck.length){hand.push(deck.pop());render();setMsg('Compre uma peça antes de passar.')}else{locked=true;setMsg('Você passou. A IA vai jogar…');setTimeout(aiTurn,300)}});
+on('pass',()=>{if(locked)return;if(hand.some(legal)){setMsg('Você ainda tem uma peça que pode ser encaixada.');return}if(deck.length){hand.push(deck.pop());render();setMsg('Você não tinha jogada válida; uma peça foi comprada automaticamente. Tente encaixá-la.')}else{locked=true;blocked++;setMsg('Você passou. A IA vai jogar…');aiTimer=setTimeout(()=>{aiTimer=0;if(locked)aiTurn()},300)}});
 on('new',fresh);fresh();
 }
 function paciencia(){
 shellStats(stat('Movimentos','moves')+stat('Vitórias','wins')+stat('Recorde','best'));
-let stock=[],waste=[],cols=[],found=[[],[],[],[]],sel=null,moves=0,wins=0;
+let stock=[],waste=[],cols=[],found=[[],[],[],[]],sel=null,moves=0,wins=0,won=false;const winsKey='jhon-paciencia-wins',recordKey='jhon-paciencia-best-moves';try{wins=Math.max(0,Number(localStorage.getItem(winsKey))||0)}catch(e){}function bestMoves(){try{return Math.max(0,Number(localStorage.getItem(recordKey))||0)}catch(e){return 0}}
 const suits=['♠','♥','♦','♣'],red=s=>s==='♥'||s==='♦',label=c=>c.v===1?'A':c.v===11?'J':c.v===12?'Q':c.v===13?'K':c.v;
-function fresh(){let d=[];for(let s of suits)for(let v=1;v<=13;v++)d.push({s,v,id:s+v});for(let i=d.length-1;i>0;i--){let j=Math.random()*(i+1)|0;[d[i],d[j]]=[d[j],d[i]]}stock=d;waste=[];cols=Array.from({length:7},(_,i)=>stock.splice(0,i+1).map((c,j)=>({...c,up:j===i})));found=[[],[],[],[]];sel=null;moves=0;render();setMsg('Comece revelando uma carta do monte.')}
+function fresh(){let d=[];for(let s of suits)for(let v=1;v<=13;v++)d.push({s,v,id:s+v});for(let i=d.length-1;i>0;i--){let j=Math.random()*(i+1)|0;[d[i],d[j]]=[d[j],d[i]]}stock=d;waste=[];cols=Array.from({length:7},(_,i)=>stock.splice(0,i+1).map((c,j)=>({...c,up:j===i})));found=[[],[],[],[]];sel=null;moves=0;won=false;render();setMsg('Comece revelando uma carta do monte.')}
 function card(c,clickable=true){const back=c.up===false,val=label(c);return '<div class="cardface '+(red(c.s)?'red ':'')+(back?'back ':'')+(sel&&sel.card.id===c.id?'sel':'')+'" data-card="'+c.id+'">'+(back?'':'<span class="card-corner"><b>'+val+'</b><i>'+c.s+'</i></span><span class="card-center">'+c.s+'</span><span class="card-corner bottom"><b>'+val+'</b><i>'+c.s+'</i></span>')+'</div>'}
-function render(){ $('moves').textContent=moves;$('wins').textContent=wins;$('best').textContent=best('paciencia');let html='<div class="solmeta"><div class="pile" id="stock"><div class="pilehead">🂠</div>'+(stock.length?'<div class="cardface back">◆</div>':'')+'</div><div class="pile" id="waste"><div class="pilehead">Descarte</div>'+(waste.length?card({...waste[waste.length-1],up:true}):'')+'</div>';for(let i=0;i<4;i++)html+='<div class="pile" data-found="'+i+'"><div class="pilehead"> '+suits[i]+' </div>'+(found[i].length?card({...found[i][found[i].length-1],up:true}):'')+'</div>';html+='</div><div class="solgrid">'+cols.map((col,i)=>'<div class="pile" data-col="'+i+'">'+(col.length?col.map((c,j)=>'<div style="margin-top:'+(j?'-25px':'0')+'">'+card(c)+'</div>').join(''):'<div class="pilehead">K</div>')+'</div>').join('')+'</div>';$('stage').innerHTML=html;
+function render(){ $('moves').textContent=moves;$('wins').textContent=wins;$('best').textContent=bestMoves()?bestMoves()+' mov.':'—';let html='<div class="solmeta"><div class="pile" id="stock"><div class="pilehead">🂠</div>'+(stock.length?'<div class="cardface back">◆</div>':'')+'</div><div class="pile" id="waste"><div class="pilehead">Descarte</div>'+(waste.length?card({...waste[waste.length-1],up:true}):'')+'</div>';for(let i=0;i<4;i++)html+='<div class="pile" data-found="'+i+'"><div class="pilehead"> '+suits[i]+' </div>'+(found[i].length?card({...found[i][found[i].length-1],up:true}):'')+'</div>';html+='</div><div class="solgrid">'+cols.map((col,i)=>'<div class="pile" data-col="'+i+'">'+(col.length?col.map((c,j)=>'<div style="margin-top:'+(j?'-25px':'0')+'">'+card(c)+'</div>').join(''):'<div class="pilehead">K</div>')+'</div>').join('')+'</div>';$('stage').innerHTML=html;
 $('stock').onclick=draw;$('waste').onclick=()=>{if(waste.length)select({type:'waste',index:0,cardIndex:waste.length-1,card:waste[waste.length-1]})};document.querySelectorAll('[data-card]').forEach(el=>el.onclick=e=>{e.stopPropagation();const c=findCard(el.dataset.card);if(c)select(c)});document.querySelectorAll('[data-col]').forEach(el=>el.onclick=()=>destCol(+el.dataset.col));document.querySelectorAll('[data-found]').forEach(el=>el.onclick=()=>destFound(+el.dataset.found));}
 function findCard(id){for(let i=0;i<cols.length;i++){let j=cols[i].findIndex(c=>c.id===id);if(j>=0&&cols[i][j].up)return {type:'col',index:i,cardIndex:j,card:cols[i][j]}}let j=waste.findIndex(c=>c.id===id);if(j===waste.length-1&&j>=0)return {type:'waste',index:0,cardIndex:j,card:waste[j]};return null}
-function select(x){if(sel&&sel.card.id===x.card.id){sel=null}else sel=x;render()}
+function select(x){if(won)return;if(sel&&sel.card.id===x.card.id){sel=null}else sel=x;render()}
 function removeSel(){if(sel.type==='waste')return waste.splice(sel.cardIndex,1);const arr=cols[sel.index],part=arr.splice(sel.cardIndex);if(arr.length)arr[arr.length-1].up=true;return part}
-function destCol(i){if(!sel)return;const moving=sel.type==='waste'?[sel.card]:cols[sel.index].slice(sel.cardIndex),first=moving[0],dest=cols[i],top=dest[dest.length-1];if(sel.type==='col'&&sel.index===i){sel=null;render();return}if(!top?first.v===13:(first.v===top.v-1&&red(first.s)!==red(top.s))){const part=removeSel();if(sel.type==='waste'){}cols[i].push(...(Array.isArray(part)?part:[part]));moves++;sel=null;checkWin();render()}else setMsg('No tableau, alterne as cores e desça um valor.')}
-function destFound(i){if(!sel)return;const c=sel.card,top=found[i][found[i].length-1];if(c.s===suits[i]&&(!top?c.v===1:c.v===top.v+1)){removeSel();found[i].push(c);moves++;sel=null;checkWin();render()}else setMsg('A fundação recebe Ás e depois cartas do mesmo naipe em ordem crescente.')}
-function draw(){sel=null;if(stock.length){const c=stock.pop();c.up=true;waste.push(c)}else if(waste.length){stock=waste.reverse().map(c=>({...c,up:false}));waste=[]}render()}
-function checkWin(){if(found.every(a=>a.length===13)){wins++;setMsg('🏆 Parabéns! Você completou a Paciência!')}}
-buttons(btn('new','🔄 Novo jogo','btn primary')+btn('auto','↗ Enviar para fundação'));on('new',fresh);on('auto',()=>{let changed=true;while(changed){changed=false;const cands=[waste.length?{type:'waste',index:0,cardIndex:waste.length-1,card:waste[waste.length-1]}:null,...cols.map((col,i)=>col.length?{type:'col',index:i,cardIndex:col.length-1,card:col[col.length-1]}:null)].filter(Boolean);for(const c of cands){const j=suits.indexOf(c.card.s),top=found[j][found[j].length-1];if(!top?c.card.v===1:c.card.v===top.v+1){sel=c;removeSel();found[j].push(c.card);moves++;changed=true;break}}}checkWin();render()});fresh();
+function destCol(i){if(won||!sel)return;const moving=sel.type==='waste'?[sel.card]:cols[sel.index].slice(sel.cardIndex),first=moving[0],dest=cols[i],top=dest[dest.length-1];if(sel.type==='col'&&sel.index===i){sel=null;render();return}if(!top?first.v===13:(first.v===top.v-1&&red(first.s)!==red(top.s))){const part=removeSel();if(sel.type==='waste'){}cols[i].push(...(Array.isArray(part)?part:[part]));moves++;sel=null;checkWin();render()}else setMsg('No tableau, alterne as cores e desça um valor.')}
+function destFound(i){if(won||!sel)return;const c=sel.card,top=found[i][found[i].length-1];if(c.s===suits[i]&&(!top?c.v===1:c.v===top.v+1)){removeSel();found[i].push(c);moves++;sel=null;checkWin();render()}else setMsg('A fundação recebe Ás e depois cartas do mesmo naipe em ordem crescente.')}
+function draw(){if(won)return;sel=null;if(stock.length){const c=stock.pop();c.up=true;waste.push(c)}else if(waste.length){stock=waste.reverse().map(c=>({...c,up:false}));waste=[]}render()}
+function checkWin(){if(!won&&found.every(a=>a.length===13)){won=true;wins++;try{localStorage.setItem(winsKey,String(wins));const previous=bestMoves();if(!previous||moves<previous)localStorage.setItem(recordKey,String(moves))}catch(e){}setMsg('🏆 Parabéns! Você completou a Paciência em '+moves+' movimentos!')}}
+buttons(btn('new','🔄 Novo jogo','btn primary')+btn('auto','↗ Enviar para fundação'));on('new',fresh);on('auto',()=>{if(won)return;let changed=true;while(changed){changed=false;const cands=[waste.length?{type:'waste',index:0,cardIndex:waste.length-1,card:waste[waste.length-1]}:null,...cols.map((col,i)=>col.length?{type:'col',index:i,cardIndex:col.length-1,card:col[col.length-1]}:null)].filter(Boolean);for(const c of cands){const j=suits.indexOf(c.card.s),top=found[j][found[j].length-1];if(!top?c.card.v===1:c.card.v===top.v+1){sel=c;removeSel();found[j].push(c.card);moves++;changed=true;break}}}checkWin();render()});fresh();
 }
 function pinball(){
 shellStats(stat('Pontos','score')+stat('Vidas','lives')+stat('Recorde','best'));
@@ -201,17 +201,17 @@ $('stage').innerHTML='<canvas id="pin" width="360" height="520" aria-label="Mesa
 buttons(btn('restart','🔄 Reiniciar','btn primary'));const cv=$('pin'),ctx=cv.getContext('2d');let score=0,lives=3,ball={x:180,y:465,vx:0,vy:0,r:8,active:false},left=false,right=false,playing=true,anim=0;
 const bumpers=[[90,210,22],[180,145,24],[270,210,22],[130,300,17],[235,300,17]];
 function resetBall(){ball={x:180,y:465,vx:0,vy:0,r:8,active:false}}
-function launch(){if(!playing)return;ball.active=true;ball.vx=(Math.random()-.5)*3;ball.vy=-8.5}
+function launch(){if(!playing||ball.active)return;ball.active=true;ball.vx=(Math.random()-.5)*3;ball.vy=-8.5}
 function press(side,onoff){if(side==='L')left=onoff;else right=onoff}
 function frame(){if(!playing)return;ctx.clearRect(0,0,360,520);ctx.fillStyle='#0b1c2e';ctx.fillRect(0,0,360,520);ctx.strokeStyle='#38bdf8';ctx.lineWidth=6;ctx.strokeRect(8,8,344,504);ctx.fillStyle='#1e3a5f';ctx.fillRect(18,18,324,484);ctx.fillStyle='#fbbf24';for(const [x,y,r] of bumpers){ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fff7ed';ctx.beginPath();ctx.arc(x-5,y-6,5,0,Math.PI*2);ctx.fill();ctx.fillStyle='#fbbf24'}ctx.fillStyle='#94a3b8';ctx.fillRect(20,420,8,82);ctx.fillRect(332,420,8,82);
 ctx.save();ctx.translate(108,470);ctx.rotate(left?-.35:.25);ctx.fillStyle='#22d3ee';ctx.fillRect(-43,-7,86,14);ctx.restore();ctx.save();ctx.translate(252,470);ctx.rotate(right?.35:-.25);ctx.fillStyle='#22d3ee';ctx.fillRect(-43,-7,86,14);ctx.restore();
 if(ball.active){ball.vy+=.16;ball.x+=ball.vx;ball.y+=ball.vy;if(ball.x<25||ball.x>335){ball.x=Math.max(25,Math.min(335,ball.x));ball.vx*=-.85}if(ball.y<25){ball.y=25;ball.vy=Math.abs(ball.vy)*.8}
 for(const [x,y,r] of bumpers){let dx=ball.x-x,dy=ball.y-y,d=Math.hypot(dx,dy);if(d<r+ball.r){const nx=dx/(d||1),ny=dy/(d||1);ball.x=x+nx*(r+ball.r);ball.y=y+ny*(r+ball.r);ball.vx=nx*6;ball.vy=ny*6;score+=25}}
-if(ball.y>440&&ball.y<495&&((ball.x<175&&left)||(ball.x>185&&right))){ball.vy=-Math.abs(ball.vy)-5;ball.vx+=(ball.x<180?2:-2);score+=10}
+if(ball.y>440&&ball.y<495&&ball.vy>0&&((ball.x<175&&left)||(ball.x>185&&right))){ball.y=438;ball.vy=-Math.max(6,Math.abs(ball.vy)+4);ball.vx+=(ball.x<180?2:-2);score+=10}
 if(ball.y>520){lives--;resetBall();if(lives<=0){playing=false;saveBest('pinball',score);setMsg('Fim de jogo! Seu resultado: '+score+'. Toque em reiniciar para jogar novamente.')}}}
 ctx.fillStyle='#f8fafc';ctx.beginPath();ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2);ctx.fill();$('score').textContent=score;$('lives').textContent=lives;$('best').textContent=best('pinball');anim=requestAnimationFrame(frame)}
 function bind(id,side){const b=$(id);b.addEventListener('pointerdown',e=>{e.preventDefault();press(side,true)});['pointerup','pointercancel','pointerleave'].forEach(ev=>b.addEventListener(ev,()=>press(side,false)))}
-bind('leftFlipper','L');bind('rightFlipper','R');on('launch',launch);on('restart',()=>{score=0;lives=3;playing=true;resetBall();cancelAnimationFrame(anim);frame();setMsg('Bola pronta! Lance e acione as palhetas.')});window.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key.toLowerCase()==='a')press('L',true);if(e.key==='ArrowRight'||e.key.toLowerCase()==='d')press('R',true);if(e.code==='Space')launch()});window.addEventListener('keyup',e=>{if(e.key==='ArrowLeft'||e.key.toLowerCase()==='a')press('L',false);if(e.key==='ArrowRight'||e.key.toLowerCase()==='d')press('R',false)});frame();setMsg('Toque em LANÇAR para soltar a bolinha.');
+bind('leftFlipper','L');bind('rightFlipper','R');on('launch',launch);on('restart',()=>{score=0;lives=3;playing=true;resetBall();cancelAnimationFrame(anim);frame();setMsg('Bola pronta! Lance e acione as palhetas.')});window.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key.toLowerCase()==='a'){press('L',true);e.preventDefault()}if(e.key==='ArrowRight'||e.key.toLowerCase()==='d'){press('R',true);e.preventDefault()}if(e.code==='Space'){launch();e.preventDefault()}});window.addEventListener('blur',()=>{left=false;right=false});window.addEventListener('keyup',e=>{if(e.key==='ArrowLeft'||e.key.toLowerCase()==='a')press('L',false);if(e.key==='ArrowRight'||e.key.toLowerCase()==='d')press('R',false)});frame();setMsg('Toque em LANÇAR para soltar a bolinha.');
 }
 function bolhas(){
 shellStats(stat('Pontos','score')+stat('Bolhas','count')+stat('Recorde','best')+stat('Vidas','lives'));
@@ -585,20 +585,20 @@ try{if(localStorage.getItem('jhon-bolhas-tutorial')!=='1')showTutorial()}catch(e
 function frogger(){
 shellStats(stat('Pontos','score')+stat('Chegadas','homes')+stat('Recorde','best'));
 $('stage').innerHTML='<canvas id="frog" width="360" height="440" aria-label="Travessia Maluca"></canvas><div class="frog-pad"><span></span><button id="up">▲</button><span></span><button id="left">◀</button><button id="down">▼</button><button id="right">▶</button></div>';
-buttons(btn('new','🔄 Reiniciar','btn primary'));const cv=$('frog'),ctx=cv.getContext('2d');let px=4,py=9,homes=[],score=0,tick=0,alive=true,lanes=[];
-function fresh(){px=4;py=9;homes=[];score=0;tick=0;alive=true;lanes=[];for(let r=1;r<=3;r++)lanes[r]=Array.from({length:3},(_,i)=>({x:i*4-1,len:2+(r%2),speed:(r%2?1:-1)*(.012+.006*r)}));for(let r=6;r<=8;r++)lanes[r]=Array.from({length:3},(_,i)=>({x:i*5-1,len:r===7?1:1.5,speed:(r%2?1:-1)*(.018+.008*(r-6))}));draw();setMsg('Atravesse com cuidado. Chegue a uma das cinco bases verdes!')}
+buttons(btn('new','🔄 Reiniciar','btn primary'));const cv=$('frog'),ctx=cv.getContext('2d');let px=4,py=9,homes=[],score=0,tick=0,alive=true,lanes=[],timer=0;
+function fresh(){if(timer)clearInterval(timer);px=4;py=9;homes=[];score=0;tick=0;alive=true;lanes=[];for(let r=1;r<=3;r++)lanes[r]=Array.from({length:3},(_,i)=>({x:i*4-1,len:2+(r%2),speed:(r%2?1:-1)*(.012+.006*r)}));for(let r=6;r<=8;r++)lanes[r]=Array.from({length:3},(_,i)=>({x:i*5-1,len:r===7?1:1.5,speed:(r%2?1:-1)*(.018+.008*(r-6))}));draw();setMsg('Atravesse com cuidado. Chegue a uma das cinco bases verdes!')}
 function draw(){ctx.clearRect(0,0,360,440);for(let r=0;r<11;r++){ctx.fillStyle=(r===0||r===5||r===10)?'#14532d':r<=3?'#075985':r===4?'#334155':'#374151';ctx.fillRect(0,r*40,360,40);if(r<=3||r>=6&&r<=8){ctx.strokeStyle='#ffffff16';for(let x=0;x<360;x+=40){ctx.strokeRect(x,r*40,40,40)}}}
 homes.forEach(c=>{ctx.fillStyle='#fbbf24';ctx.fillRect(c*40+5,4,30,30);ctx.fillStyle='#14532d';ctx.font='22px sans-serif';ctx.fillText('★',c*40+10,28)});
 for(let r=1;r<=3;r++)lanes[r].forEach(o=>{ctx.fillStyle='#a16207';ctx.fillRect(o.x*40,r*40+7,o.len*40-3,26);ctx.fillStyle='#fbbf24';ctx.fillRect(o.x*40+8,r*40+11,Math.max(4,o.len*40-20),5)});
 for(let r=6;r<=8;r++)lanes[r].forEach(o=>{ctx.fillStyle=r===7?'#ef4444':'#f59e0b';ctx.fillRect(o.x*40,r*40+6,o.len*40-4,28);ctx.fillStyle='#111827';ctx.fillRect(o.x*40+7,r*40+29,10,5);ctx.fillRect(o.x*40+o.len*40-18,r*40+29,10,5)});
 ctx.font='30px sans-serif';ctx.fillText('🐸',px*40+5,py*40+32);$('score').textContent=score;$('homes').textContent=homes.length;$('best').textContent=best('frogger')}
-function lose(msg){alive=false;setMsg(msg+' Toque em reiniciar.');}
-function step(dx,dy){if(!alive)return;px=Math.max(0,Math.min(8,px+dx));py=Math.max(0,Math.min(10,py+dy));if(py===0){if([0,2,4,6,8].includes(px)&&!homes.includes(px)){homes.push(px);score+=100;saveBest('frogger',score);if(homes.length===5){score+=500;setMsg('🏆 Todas as chegadas completas!');alive=false;return}}else{lose('Essa chegada já foi ocupada.')}}draw()}
+function lose(msg){alive=false;if(timer){clearInterval(timer);timer=0}saveBest('frogger',score);setMsg(msg+' Toque em reiniciar.');}
+function step(dx,dy){if(!alive)return;px=Math.max(0,Math.min(8,px+dx));py=Math.max(0,Math.min(10,py+dy));if(py===0){if([0,2,4,6,8].includes(px)&&!homes.includes(px)){homes.push(px);score+=100;saveBest('frogger',score);if(homes.length===5){score+=500;saveBest('frogger',score);setMsg('🏆 Todas as chegadas completas!');alive=false;if(timer){clearInterval(timer);timer=0}return}else{px=4;py=9}}else{lose('Essa chegada já foi ocupada.')}}draw()}
 function update(){if(!alive)return;tick++;for(let r=1;r<=3;r++)lanes[r].forEach(o=>{o.x+=o.speed;if(o.speed>0&&o.x>9)o.x=-o.len;if(o.speed<0&&o.x+o.len<0)o.x=9});for(let r=6;r<=8;r++)lanes[r].forEach(o=>{o.x+=o.speed;if(o.speed>0&&o.x>9)o.x=-o.len;if(o.speed<0&&o.x+o.len<0)o.x=9});
 if(py>=1&&py<=3){const log=lanes[py].find(o=>px+.45>=o.x&&px+.55<=o.x+o.len);if(!log){lose('Você caiu na água!')}else{px+=log.speed;if(px<0||px>8)lose('A corrente levou você!')}}
 if(py>=6&&py<=8&&lanes[py].some(o=>px+.5>=o.x&&px+.5<=o.x+o.len)){lose('Um veículo atingiu o sapinho!')}
 draw()}
-function action(id,dx,dy){on(id,()=>step(dx,dy))}action('up',0,-1);action('down',0,1);action('left',-1,0);action('right',1,0);on('new',fresh);window.addEventListener('keydown',e=>{const k=e.key.toLowerCase(),m={arrowup:[0,-1],w:[0,-1],arrowdown:[0,1],s:[0,1],arrowleft:[-1,0],a:[-1,0],arrowright:[1,0],d:[1,0]};if(m[k]){e.preventDefault();step(...m[k])}});setInterval(update,100);fresh();
+function action(id,dx,dy){on(id,()=>step(dx,dy))}action('up',0,-1);action('down',0,1);action('left',-1,0);action('right',1,0);on('new',fresh);window.addEventListener('keydown',e=>{const k=e.key.toLowerCase(),m={arrowup:[0,-1],w:[0,-1],arrowdown:[0,1],s:[0,1],arrowleft:[-1,0],a:[-1,0],arrowright:[1,0],d:[1,0]};if(m[k]){e.preventDefault();step(...m[k])}});fresh();timer=setInterval(update,100);
 }
 function resta(){
 shellStats(stat('Peças restantes','leftCount')+stat('Recorde','best'));
