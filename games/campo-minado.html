@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#070b14">
-<title>Campo Minado — Jogos do Jhon</title>
+<title>Campo Minado — Jogos do Jhon v1.3</title>
 <style>
   :root{--bg:#070b14;--card:#0f172a;--line:#1e293b;--txt:#e2e8f0;--muted:#94a3b8}
   *{box-sizing:border-box}
@@ -57,6 +57,8 @@
   .msg b{color:var(--txt)}
   .hint{color:#64748b;font-size:12.5px;margin:12px 0 0;text-align:center;max-width:460px;line-height:1.6}
   .ver{color:#475569;font-size:11.5px;margin-top:10px}
+  .cell:focus-visible{outline:2px solid #67e8f9;outline-offset:2px}
+  .best{width:100%;max-width:520px;text-align:center;color:#94a3b8;font-size:12px;margin-top:8px}
 .btn:focus-visible, button:focus-visible{
   outline: 2px solid #67e8f9;
   outline-offset: 2px;
@@ -98,8 +100,9 @@ input:focus-visible, select:focus-visible{
 
   <div id="board"></div>
   <div class="msg" id="msg">Toque para abrir. O primeiro toque é sempre seguro.</div>
+  <div class="best" id="best">Recorde: —</div>
   <p class="hint">🚩 Toque no botão bandeira e depois na casa para marcar. No PC: clique direito também marca.</p>
-  <div class="ver">v1.2 · 22/11/2026</div>
+  <div class="ver">v1.3 · 27/11/2026</div>
 
 <script>
 (function(){
@@ -119,7 +122,13 @@ const boardEl = document.getElementById('board');
   let grid = [], cells = [];
   let started = false, over = false, flagMode = false;
   let flags = 0, opened = 0;
-  let seconds = 0, timerId = null;
+  let seconds = 0, timerId = null, soundOn=false, bestTimes={};
+  const bestEl=document.getElementById('best');
+  const soundBtn=document.createElement('button');soundBtn.className='btn';soundBtn.type='button';soundBtn.textContent='🔇';soundBtn.title='Ativar som';soundBtn.setAttribute('aria-label','Ativar som');document.querySelector('.bar').appendChild(soundBtn);
+  function tone(freq,duration=.09){if(!soundOn)return;try{const C=window.AudioContext||window.webkitAudioContext;if(!tone.ctx)tone.ctx=new C();if(tone.ctx.state==='suspended')tone.ctx.resume();const o=tone.ctx.createOscillator(),g=tone.ctx.createGain();o.type='sine';o.frequency.value=freq;g.gain.setValueAtTime(.035,tone.ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,tone.ctx.currentTime+duration);o.connect(g);g.connect(tone.ctx.destination);o.start();o.stop(tone.ctx.currentTime+duration)}catch(e){}}
+  try{bestTimes=JSON.parse(localStorage.getItem('campo-minado-recordes')||'{}')||{}}catch(e){bestTimes={}}
+  function updateBest(){const key=levelSel.value;bestEl.textContent='Recorde ('+levelSel.options[levelSel.selectedIndex].text.split(' · ')[0]+'): '+(Number(bestTimes[key])>0?fmt(Number(bestTimes[key])):'—')}
+  soundBtn.addEventListener('click',function(){soundOn=!soundOn;soundBtn.textContent=soundOn?'🔊':'🔇';soundBtn.title=soundOn?'Desativar som':'Ativar som';soundBtn.setAttribute('aria-label',soundBtn.title);tone(440)});
   let pressTimer = null, longPressed = false;
 
   function fmt(s){
@@ -157,7 +166,7 @@ const boardEl = document.getElementById('board');
   }
 
   function startTimer(){
-    if (started) return;
+    if (started || over) return;
     started = true;
     timerId = setInterval(function(){ seconds++; timeEl.textContent = fmt(seconds); }, 1000);
   }
@@ -166,6 +175,8 @@ const boardEl = document.getElementById('board');
     const g = grid[i], el = cells[i];
     el.className = 'cell';
     el.textContent = '';
+    el.setAttribute('aria-label','Casa '+(i+1)+(g.open?(g.mine?', mina':g.n?', '+g.n+' minas próximas':', vazia'):(g.flag?', marcada com bandeira':', fechada')));
+    el.setAttribute('aria-pressed',String(!!g.open||!!g.flag));
     if (g.open) {
       el.classList.add('open');
       if (g.mine) {
@@ -190,6 +201,7 @@ const boardEl = document.getElementById('board');
 
     if (g.mine) {
       g.open = true; g.exploded = true;
+      tone(110,.3);
       paintCell(i);
       return lose();
     }
@@ -201,6 +213,7 @@ const boardEl = document.getElementById('board');
       if (c.open || c.flag || c.mine) continue;
       c.open = true;
       opened++;
+      if(c.n>0)tone(300+c.n*55,.045);
       paintCell(k);
       if (c.n === 0) neighbors(Math.floor(k / cols), k % cols).forEach(function(n){
         if (!grid[n].open) stack.push(n);
@@ -214,6 +227,7 @@ const boardEl = document.getElementById('board');
     const g = grid[i];
     if (over || g.open) return;
     g.flag = !g.flag;
+    tone(g.flag?480:260,.05);
     flags += g.flag ? 1 : -1;
     minesEl.textContent = Math.max(0, mineCount - flags);
     paintCell(i);
@@ -227,6 +241,7 @@ const boardEl = document.getElementById('board');
       if (g.mine && !g.flag && !g.open) { g.open = true; paintCell(i); }
       if (!g.mine && g.flag) { g.wrong = true; paintCell(i); }
     }
+    tone(120,.35);
     msgEl.innerHTML = '💥 <b>Boom!</b> Você pisou numa mina. Tente de novo.';
   }
 
@@ -239,7 +254,10 @@ const boardEl = document.getElementById('board');
     }
     flags = mineCount;
     minesEl.textContent = '0';
-    msgEl.innerHTML = '🏆 <b>Campo limpo!</b> Você terminou em ' + fmt(seconds) + '.';
+    tone(740,.2);
+    const key=levelSel.value;const old=Number(bestTimes[key])||0;if(!old||seconds<old){bestTimes[key]=seconds;try{localStorage.setItem('campo-minado-recordes',JSON.stringify(bestTimes))}catch(e){}}
+    updateBest();
+    msgEl.innerHTML = '🏆 <b>Campo limpo!</b> Você terminou em ' + fmt(seconds) + (old&&seconds>=old?' (recorde: '+fmt(old)+')':' (novo recorde!)') + '.';
   }
 
   function build(){
@@ -249,11 +267,13 @@ const boardEl = document.getElementById('board');
     started = false; over = false; flags = 0; opened = 0; seconds = 0;
     if (timerId) clearInterval(timerId);
     timerId = null;
+    if(pressTimer){clearTimeout(pressTimer);pressTimer=null}longPressed=false;
 
     minesEl.textContent = mineCount;
     timeEl.textContent = '0:00';
     openEl.textContent = '0';
     msgEl.innerHTML = 'Toque para abrir. O primeiro toque é sempre seguro.';
+    updateBest();
     boardEl.style.setProperty('--cols', cols);
     boardEl.innerHTML = '';
 
@@ -262,6 +282,7 @@ const boardEl = document.getElementById('board');
       const el = document.createElement('div');
       el.className = 'cell';
       el.setAttribute('role', 'button');
+      el.setAttribute('tabindex', '0');
       el.setAttribute('aria-label', 'Casa ' + (i + 1));
       el.dataset.i = i;
 
@@ -269,6 +290,7 @@ const boardEl = document.getElementById('board');
         if (longPressed) { longPressed = false; return; }
         if (flagMode) toggleFlag(i); else reveal(i);
       });
+      el.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();if(flagMode)toggleFlag(i);else reveal(i)}});
       el.addEventListener('contextmenu', function(e){ e.preventDefault(); toggleFlag(i); });
       el.addEventListener('pointerdown', function(){
         longPressed = false;
