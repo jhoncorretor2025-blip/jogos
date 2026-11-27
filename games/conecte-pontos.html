@@ -223,7 +223,7 @@ function giveHint(){
 function start(ask=false){
  if(ask&&state&&state.moves>0&&!state.finished&&!confirm('Começar uma nova partida? O placar desta partida será encerrado sem ser contabilizado.'))return;
  clearTimeout(timer);n=Number($('size').value);mode=$('mode').value;state=newState();locked=false;history=[];humanTurnStart=null;humanTurnActive=false;hintEdge=null;lastEdge=null;lastBoxMove=-1;roundSaved=false;
- $('name2').value=mode==='cpu'?'IA':cleanName($('name2').value,'Jogador 2');$('name1').value=cleanName($('name1').value,'Você');
+ const currentOpponent=cleanName($('name2').value,'');if(mode==='cpu'&&(!currentOpponent||currentOpponent==='Jogador 2'))$('name2').value='IA';if(mode==='local'&&(!currentOpponent||currentOpponent==='IA'))$('name2').value='Jogador 2';$('name1').value=cleanName($('name1').value,'Você');
  $('message').textContent='Partida iniciada. Escolha uma linha entre dois pontos.';render();
  $('name2').disabled=false;$('level').disabled=mode!=='cpu';
 }
