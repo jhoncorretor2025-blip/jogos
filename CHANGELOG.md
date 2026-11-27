@@ -1,5 +1,11 @@
 # Histórico de alterações — Jogos do Jhon
 
+## V4.17 — Primeira rodada de revisão individual dos jogos
+- Voo Desafiador atualizado para v1.1: corrigida a identificação de novo recorde (empates não são mais anunciados como recorde novo), melhorados os efeitos de pontuação e cenário, ajustada a área de toque e impedida a repetição involuntária do comando de teclado.
+- Padronizada a versão exibida no título e na interface do Voo Desafiador.
+- Atualizado o cache do aplicativo para v4.17.
+
+
 ## V4.16 — Destaque, continuar jogando e ranking pessoal
 - Adicionada seção de jogo em destaque com atalho direto para jogar.
 - Criada área Continuar jogando com os últimos jogos do perfil ativo.
