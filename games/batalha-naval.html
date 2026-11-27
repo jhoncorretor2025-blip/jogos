@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#070b14">
-<title>Batalha Naval — Jogos do Jhon v1.3</title>
+<title>Batalha Naval — Jogos do Jhon v1.4</title>
 <style>
   :root{--bg:#070b14;--card:#0f172a;--line:#1e293b;--txt:#e2e8f0;--muted:#94a3b8}
   *{box-sizing:border-box}
@@ -80,7 +80,7 @@
     </div>
   </div>
 
-  <div class="ver">v1.3 · 24/11/2026</div>
+  <div class="ver">v1.4 · 24/11/2026</div>
 
   <div id="ov">
     <div class="panel">
@@ -106,12 +106,17 @@
   const ovTitle = document.getElementById('ovTitle');
   const ovText = document.getElementById('ovText');
 
-  let mine, foe, phase, placing, horiz, playerTurn, hitsOnFoe, aiTargets, aiHits, over;
+  let mine, foe, phase, placing, horiz, playerTurn, hitsOnFoe, aiTargets, aiHits, over, aiTimer=0, soundOn=false, shots=0, wins=0, bestShots=0;
 
   
 
 // Web Audio API - Som Retrô
-let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}}function tone(f,d,t='square',v=.05){if(!soundOn||!audioCtx)return;const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=t;o.frequency.value=f;g.gain.value=v;g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d)}function blank(){
+let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}}function tone(f,d,t='square',v=.05){if(!soundOn||!audioCtx)return;const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=t;o.frequency.value=f;g.gain.value=v;g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+d);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+d)}const soundBtn=document.getElementById('sound');
+  const STATS_KEY='jhon-batalha-naval-stats';
+  try{const saved=JSON.parse(localStorage.getItem(STATS_KEY)||'{}');wins=Math.max(0,Number(saved.wins)||0);bestShots=Math.max(0,Number(saved.bestShots)||0)}catch(e){}
+  function playTone(freq,duration=.12){if(!soundOn)return;try{ensureAudio();if(!audioCtx)return;if(audioCtx.state==='suspended')audioCtx.resume();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type='sine';o.frequency.value=freq;g.gain.setValueAtTime(.045,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+duration);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+duration)}catch(e){}}
+  function saveStats(){try{localStorage.setItem(STATS_KEY,JSON.stringify({wins,bestShots}))}catch(e){}}
+  function blank(){
     return Array.from({length: N}, function(){ return {ship: -1, shot: false}; });
   }
 
@@ -209,14 +214,15 @@ let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.
 
     const remaining = SHIPS.filter(function(_, id){ return !isSunk(foe, id); }).length;
     const alive = SHIPS.filter(function(_, id){ return !isSunk(mine, id); }).length;
-    foeInfo.textContent = hitsOnFoe + ' acertos · ' + remaining + ' navios restantes';
+    foeInfo.textContent = hitsOnFoe + ' acertos · ' + remaining + ' navios restantes · ' + shots + ' tiros';
     mineInfo.textContent = phase === 'battle' ? alive + ' navios seus' : 'posicionando';
   }
 
   function reset(){
+    if(aiTimer){clearTimeout(aiTimer);aiTimer=0}
     mine = blank(); foe = blank();
     phase = 'place'; placing = 0; horiz = true;
-    playerTurn = true; hitsOnFoe = 0; over = false;
+    playerTurn = true; hitsOnFoe = 0; over = false; shots=0;
     aiTargets = []; aiHits = [];
     startBtn.disabled = true;
     startBtn.textContent = 'Começar';
@@ -257,10 +263,11 @@ let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.
   function shoot(i){
     if (phase !== 'battle' || !playerTurn || over) return;
     if (foe[i].shot) return;
-    foe[i].shot = true;
+    foe[i].shot = true; shots++;
+    playTone(foe[i].ship>=0?660:220);
     if (foe[i].ship >= 0) {
       hitsOnFoe++;
-      msgEl.innerHTML = '💥 Acertou!';
+      msgEl.innerHTML = isSunk(foe,foe[i].ship) ? '🚢 Você afundou um navio inimigo!' : '💥 Acertou!';
     } else {
       msgEl.innerHTML = '🌊 Água.';
     }
@@ -269,11 +276,11 @@ let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.
     if (SHIPS.every(function(_, id){ return isSunk(foe, id); })) return finish(true);
     playerTurn = false;
     msgEl.innerHTML += ' Vez da IA…';
-    setTimeout(aiTurn, 520);
+    aiTimer=setTimeout(function(){aiTimer=0;aiTurn()}, 520);
   }
 
   function aiTurn(){
-    if (over) return;
+    if (over || phase !== 'battle' || playerTurn) return;
     let target = -1;
     while (aiTargets.length && target < 0) {
       const t = aiTargets.shift();
@@ -302,10 +309,11 @@ let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.
         const rr = r + d[0], cc = c + d[1];
         if (rr >= 0 && rr < SIZE && cc >= 0 && cc < SIZE) {
           const k = rr * SIZE + cc;
-          if (!mine[k].shot) aiTargets.push(k);
+          if (!mine[k].shot && aiTargets.indexOf(k)<0) aiTargets.push(k);
         }
       });
-      msgEl.innerHTML = '💥 A IA acertou seu navio.';
+      playTone(520);
+      if(isSunk(mine,mine[target].ship)){aiTargets=aiTargets.filter(function(k){return mine[k].shot});msgEl.innerHTML='🚢 A IA afundou um dos seus navios!';}else msgEl.innerHTML = '💥 A IA acertou seu navio.';
     } else {
       msgEl.innerHTML = '🌊 A IA errou. Sua vez!';
     }
@@ -316,12 +324,14 @@ let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.
   }
 
   function finish(win){
+    if(aiTimer){clearTimeout(aiTimer);aiTimer=0}
     over = true;
     phase = 'done';
     ovTitle.textContent = win ? '🏆 Você venceu!' : '💀 A IA venceu';
+    if(win){wins++;if(!bestShots||shots<bestShots)bestShots=shots;saveStats()}
     ovText.innerHTML = win
-      ? 'Afundou a frota inimiga com <b>' + hitsOnFoe + '</b> acertos.'
-      : 'A IA afundou seus navios. Tente de novo.';
+      ? 'Afundou a frota inimiga com <b>' + hitsOnFoe + '</b> acertos em <b>'+shots+'</b> tiros. Vitórias: <b>'+wins+'</b>. Melhor partida: <b>'+(bestShots||'—')+'</b> tiros.'
+      : 'A IA afundou seus navios após <b>'+shots+'</b> tiros. Vitórias registradas: <b>'+wins+'</b>. Tente de novo.';
     ov.classList.add('show');
     startBtn.textContent = 'Reiniciar';
   }
@@ -330,6 +340,7 @@ let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.
     if (phase === 'battle' || phase === 'done') reset();
     else startBattle();
   });
+  soundBtn.addEventListener('click',function(){soundOn=!soundOn;soundBtn.textContent=soundOn?'🔊 Som ligado':'🔇 Som desligado';if(soundOn)playTone(440,.08)});
   rotateBtn.addEventListener('click', function(){
     horiz = !horiz;
     msgEl.innerHTML = horiz ? '↔ Navios na horizontal.' : '↕ Navios na vertical.';
