@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Jogos do Jhon">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Jogos do Jhon · v4.10</title>
+<title>Jogos do Jhon · v4.11</title>
 <meta property="og:title" content="Jogos do Jhon · Arcade">
 <meta property="og:description" content="Arcade de jogos web do Jhon com 47 jogos para jogar no celular ou PC.">
 <meta property="og:type" content="website">
@@ -369,6 +369,48 @@
     *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
   }
 
+
+  /* v4.11 · recomendações personalizadas, filtros e capas */
+  .recommendations-section{margin:18px 0 22px}
+  .recommendation-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+  .recommendation-card{min-width:0;display:flex;align-items:center;gap:10px;text-align:left;padding:12px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(145deg,rgba(34,211,238,.08),rgba(167,139,250,.06)),#101a2b;color:var(--txt);cursor:pointer;transition:transform .16s,border-color .16s,background .16s}
+  .recommendation-card:hover,.recommendation-card:focus-visible{transform:translateY(-2px);border-color:var(--a1);outline:3px solid rgba(34,211,238,.2);outline-offset:1px}
+  .recommendation-icon{width:44px;height:44px;flex:0 0 44px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.12);border-radius:12px;background:radial-gradient(circle at 35% 25%,rgba(34,211,238,.22),transparent 65%),#17243a;font-size:25px}
+  .recommendation-copy{min-width:0;display:block}
+  .recommendation-copy b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}
+  .recommendation-copy small{display:block;margin-top:4px;color:var(--muted);font-size:10px;line-height:1.35}
+  .recommendation-reason{display:block;margin-top:4px;color:#67e8f9;font-size:9px;font-weight:700}
+  .smart-filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) auto;align-items:end;gap:9px;margin-top:10px;padding:12px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.025)}
+  .smart-filters label{display:grid;gap:6px;min-width:0;color:#cbd5e1;font-size:11px;font-weight:700}
+  .smart-filters select{width:100%;min-width:0;min-height:39px;padding:8px 10px;border:1px solid #334155;border-radius:9px;background:#0b1220;color:var(--txt);font:inherit;font-size:12px}
+  .smart-filters select:focus-visible{outline:3px solid rgba(34,211,238,.65);outline-offset:2px}
+  .filter-hint{grid-column:1/-1;margin:0;color:var(--muted);font-size:10px}
+  .game-cover{position:relative;display:grid;place-items:center;height:116px;margin:-20px -18px 15px;overflow:hidden;isolation:isolate;background:radial-gradient(200px 110px at 18% 15%,var(--glow,rgba(34,211,238,.22)),transparent 70%),linear-gradient(135deg,color-mix(in srgb,var(--accent,#22d3ee) 34%,#111827),#0a1221 78%);border-bottom:1px solid rgba(255,255,255,.10)}
+  .game-cover::before{content:"";position:absolute;width:148px;height:148px;right:-30px;top:-72px;border:1px solid color-mix(in srgb,var(--accent,#22d3ee) 62%,transparent);border-radius:38%;transform:rotate(32deg);box-shadow:0 0 0 16px rgba(255,255,255,.025),0 0 0 34px rgba(255,255,255,.018)}
+  .game-cover::after{content:"";position:absolute;inset:0;opacity:.35;background:repeating-linear-gradient(135deg,transparent 0 13px,rgba(255,255,255,.035) 13px 14px)}
+  .game-cover .ico{position:relative;z-index:1;display:grid;place-items:center;width:72px;height:72px;margin:0;border:1px solid rgba(255,255,255,.18);border-radius:24px;background:rgba(8,15,28,.35);font-size:47px;filter:drop-shadow(0 8px 10px rgba(0,0,0,.42))}
+  .cover-puzzle{background-image:radial-gradient(circle at 75% 20%,rgba(167,139,250,.23),transparent 40%),linear-gradient(135deg,color-mix(in srgb,var(--accent,#a78bfa) 35%,#111827),#0a1221 78%)}
+  .cover-strategy{background-image:radial-gradient(circle at 18% 85%,rgba(96,165,250,.19),transparent 45%),linear-gradient(135deg,color-mix(in srgb,var(--accent,#60a5fa) 35%,#111827),#0a1221 78%)}
+  .cover-action{background-image:radial-gradient(circle at 75% 20%,rgba(251,113,133,.22),transparent 42%),linear-gradient(135deg,color-mix(in srgb,var(--accent,#fb7185) 34%,#111827),#0a1221 78%)}
+  .cover-racing{background-image:radial-gradient(circle at 20% 20%,rgba(34,211,238,.24),transparent 42%),linear-gradient(135deg,color-mix(in srgb,var(--accent,#22d3ee) 35%,#111827),#0a1221 78%)}
+  .grid.list .game-cover{height:76px;margin:-15px -15px 12px}
+  .grid.list .card-link{display:block}
+  .grid.compact .game-cover{height:76px;margin:-13px -12px 10px}
+  .grid.compact .game-cover .ico{width:50px;height:50px;border-radius:16px;font-size:33px}
+  .home-layout-settings{margin:0 0 18px;padding:14px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.025)}
+  .home-layout-settings h3{margin:0 0 5px;color:#e2e8f0;font-size:14px}
+  .home-layout-settings>p{margin:5px 0 12px;color:var(--muted);font-size:11px;line-height:1.5}
+  .home-layout-list{display:grid;gap:7px}
+  .home-layout-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:7px;padding:8px 9px;border:1px solid var(--line);border-radius:10px;background:#0b1220}
+  .home-layout-row .layout-name{display:flex;align-items:center;gap:8px;min-width:0;color:#e2e8f0;font-size:12px}
+  .home-layout-row .layout-name input{accent-color:var(--a1)}
+  .home-layout-row .layout-actions{display:flex;gap:4px}
+  .home-layout-row button{width:32px;height:32px;border:1px solid #334155;border-radius:8px;background:#111b2d;color:var(--txt);cursor:pointer}
+  .home-layout-row button:disabled{opacity:.35;cursor:not-allowed}
+  .home-layout-row button:focus-visible{outline:2px solid var(--a1);outline-offset:2px}
+  @media(max-width:760px){.recommendation-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.smart-filters{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media(max-width:420px){.recommendation-card{padding:9px;gap:7px}.recommendation-icon{width:38px;height:38px;flex-basis:38px;font-size:22px}.recommendation-copy b{font-size:11px}.smart-filters{padding:9px;gap:7px}}
+
 </style>
 </head>
 <body>
@@ -378,7 +420,7 @@
     <span class="hero-kicker">ARCADE PESSOAL</span>
     <h1>Jogos do Jhon</h1>
     <p class="sub">🎮 Seu cantinho de diversão: escolha um jogo e comece a jogar no celular ou no PC.</p>
-    <div class="version"><span class="dot"></span> Versão <b>v4.10</b> · atualizado em <b>27/11/2026</b></div>
+    <div class="version"><span class="dot"></span> Versão <b>v4.11</b> · atualizado em <b>27/11/2026</b></div>
     <div class="home-hero-actions">
       <a class="primary-cta" href="#catalogStart">🎮 Explorar jogos <span aria-hidden="true">↓</span></a>
       <span class="hero-count" id="heroGameCount">47 jogos no catálogo</span>
@@ -386,7 +428,7 @@
   </header>
   <main id="mainContent">
     <p class="save-feedback" id="profileSaveFeedback" hidden role="status" aria-live="polite" aria-atomic="true"></p>
-  <section class="category-section" aria-label="Navegação por categoria">
+  <section class="category-section" id="categorySection" data-home-section="categories" aria-label="Navegação por categoria">
     <div class="section-head"><div><h2>Explore por categoria</h2><p>Escolha um estilo e encontre seu próximo jogo — incluindo uma seleção de clássicos e jogos tranquilos.</p></div></div>
     <div class="category-nav" id="categoryNav" role="group" aria-label="Filtrar por categoria">
 <button type="button" class="category-chip active" data-filter="all" aria-pressed="true"><span class="cat-icon">🎮</span><span><b>Todos</b><small>47 jogos</small></span></button>
@@ -401,7 +443,11 @@
 <button type="button" class="category-chip" data-filter="favorites" aria-pressed="false"><span class="cat-icon">⭐</span><span><b>Favoritos</b><small>Seus escolhidos</small></span></button>
 </div>
   </section>
-  <section class="menu-tools" aria-label="Ferramentas do catálogo">
+  <section class="recommendations-section" id="recommendationsSection" data-home-section="recommendations" aria-label="Recomendações personalizadas">
+    <div class="section-head"><div><h2>✨ Talvez você goste</h2><p id="recommendationCaption">Sugestões que combinam com seu jeito de jogar.</p></div></div>
+    <div class="recommendation-grid" id="recommendationGrid"></div>
+  </section>
+  <section class="menu-tools" id="toolsSection" data-home-section="tools" aria-label="Ferramentas do catálogo">
     <div class="search-shell">
       <input id="gameSearch" class="searchbox" type="search" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="searchSuggestions" aria-autocomplete="list" placeholder="🔎 Buscar jogo, estilo ou palavra..." autocomplete="off" inputmode="search" enterkeyhint="search" spellcheck="false" aria-label="Buscar jogos">
       <button class="search-clear" id="searchClear" type="button" aria-label="Limpar busca">×</button>
@@ -413,7 +459,35 @@
       <button class="toolbtn" id="installApp">📲 Instalar app</button>
       <span class="catalog-count" id="resultsLabel" role="status" aria-live="polite" aria-atomic="true">47 de 47 jogos</span>
     </div>
+    <div class="smart-filters" id="smartFilters" aria-label="Filtros inteligentes">
+      <label>⏱️ Tempo estimado
+        <select id="durationFilter">
+          <option value="">Qualquer duração</option>
+          <option value="short">Até 5 min</option>
+          <option value="medium">5 a 15 min</option>
+          <option value="long">Mais de 15 min</option>
+        </select>
+      </label>
+      <label>🎯 Dificuldade
+        <select id="difficultyFilter">
+          <option value="">Todas</option>
+          <option value="easy">Fácil</option>
+          <option value="medium">Média</option>
+          <option value="hard">Difícil</option>
+        </select>
+      </label>
+      <label>👥 Jogadores
+        <select id="playersFilter">
+          <option value="">Todos</option>
+          <option value="solo">Solo / contra IA</option>
+          <option value="multi">2 ou mais jogadores</option>
+        </select>
+      </label>
+      <button class="toolbtn" id="clearSmartFilters" type="button">✕ Limpar filtros</button>
+      <p class="filter-hint">Tempo e dificuldade são estimativas para uma partida e podem variar conforme seu ritmo.</p>
+    </div>
   </section>
+  <section id="catalogSection" data-home-section="catalog" aria-label="Biblioteca de jogos">
   <div class="catalog-head" id="catalogStart"><div><h2 class="catalog-title">🎮 Todos os jogos</h2><p class="catalog-sub" id="catalogDescription">Sua biblioteca completa, com 47 jogos para explorar.</p></div><span class="catalog-count" id="sortLabel" role="status" aria-live="polite">Ordem padrão</span></div>
   <div class="grid" id="gameGrid">
     <div class="card" data-category="puzzle" data-href="games/2048.html" style="--accent:#fbbf24;--glow:rgba(251,191,36,.20)">
@@ -589,7 +663,8 @@
     <p id="emptyMessage">Tente outra palavra ou limpe a busca para ver todos os jogos.</p>
     <button class="toolbtn" type="button" id="emptyReset">Ver todos os jogos</button>
   </section>
-  <details class="feature-panel player-panel" id="playerPanel">
+  </section>
+  <details class="feature-panel player-panel" id="playerPanel" data-home-section="player">
     <summary>👤 Painel do jogador <span>Estatísticas, favoritos, perfis e conquistas</span></summary>
     <div class="feature-content">
     <div>
@@ -624,6 +699,12 @@
   <details class="feature-panel" id="settingsPanel">
     <summary>⚙️ Configurações de experiência</summary>
     <div class="feature-content">
+      <section class="home-layout-settings" aria-label="Personalização da página inicial">
+        <h3>🧩 Personalizar página inicial</h3>
+        <p>Escolha quais áreas aparecem e mude a ordem com as setas. A biblioteca de jogos permanece sempre disponível.</p>
+        <div class="home-layout-list" id="homeLayoutList"></div>
+        <p class="settings-note">Essa organização fica salva neste navegador e acompanha o backup dos perfis.</p>
+      </section>
       <div class="settings-grid">
         <div class="setting"><label for="themeSetting">🎨 Tema visual</label><select id="themeSetting"><option value="neon">Neon (padrão)</option><option value="retro">Retrô</option><option value="minimal">Minimalista</option><option value="colorful">Colorido</option><option value="light">Claro</option></select></div>
         <div class="setting"><label for="textSetting">🔎 Tamanho dos textos</label><select id="textSetting"><option value="normal">Normal</option><option value="large">Maior</option></select></div>
@@ -671,8 +752,8 @@
       </details>
     </div>
   </details>
-  <div class="notes">
-    <h2>📝 Novidades da tela inicial · v4.10</h2>
+  <div class="notes" id="notesSection" data-home-section="notes">
+    <h2>📝 Novidades da tela inicial · v4.11</h2>
     <ul>
        <li><b>v4.10:</b> refinamento visual com hierarquia tipográfica, cartões mais claros, feedback de interação, espaçamento consistente, foco acessível, botões táteis maiores, animações suaves, suporte a movimento reduzido, melhor adaptação a telas pequenas e contraste reforçado.</li>
        <li><b>v4.09:</b> remoção do Futebol de Mesa do catálogo após avaliação da experiência de jogo.</li>
@@ -780,12 +861,29 @@
 <script>
 (()=>{'use strict';
 const grid=document.getElementById('gameGrid'),cards=[...grid.querySelectorAll('.card')],OLD_KEY='jhonArcadeMenuV21',FAMILY_KEY='jhonArcadeFamilyV1',SETTINGS_KEY='jhonArcadeSettingsV1';
-const defaultSettings={theme:'neon',sound:true,volume:45,contrast:false,textSize:'normal',reducedMotion:false,touchControls:'auto'};
+const HOME_SECTION_DEFS=[
+ {id:'categories',elementId:'categorySection',label:'🧭 Categorias'},
+ {id:'recommendations',elementId:'recommendationsSection',label:'✨ Recomendações'},
+ {id:'tools',elementId:'toolsSection',label:'🔎 Busca e filtros'},
+ {id:'catalog',elementId:'catalogSection',label:'🎮 Biblioteca de jogos',required:true},
+ {id:'player',elementId:'playerPanel',label:'👤 Painel do jogador'},
+ {id:'notes',elementId:'notesSection',label:'📝 Novidades'}
+];
+const DEFAULT_HOME_ORDER=HOME_SECTION_DEFS.map(s=>s.id);
+function normalizeHomeLayout(raw){
+ const source=raw&&typeof raw==='object'?raw:{},valid=new Set(DEFAULT_HOME_ORDER),order=[];
+ (Array.isArray(source.order)?source.order:[]).forEach(id=>{if(valid.has(id)&&!order.includes(id))order.push(id)});
+ DEFAULT_HOME_ORDER.forEach(id=>{if(!order.includes(id))order.push(id)});
+ const visible={};
+ HOME_SECTION_DEFS.forEach(def=>{visible[def.id]=def.required?true:(typeof source.visible?.[def.id]==='boolean'?source.visible[def.id]:true)});
+ return {order,visible};
+}
+const defaultSettings={theme:'neon',sound:true,volume:45,contrast:false,textSize:'normal',reducedMotion:false,touchControls:'auto',homeLayout:normalizeHomeLayout(null)};
 const makeProfile=(id,name,emoji)=>({id,name,emoji,plays:0,counts:{},favs:[],recent:[],achievements:[]});
 let family={activeId:'jhon',profiles:[makeProfile('pai','Pai','👨'),makeProfile('irma','Irmã','👩'),makeProfile('jhon','Jhon','🧑')],settings:{...defaultSettings}};
 let familyExists=false;
 try{const saved=JSON.parse(localStorage.getItem(FAMILY_KEY)||'null');if(saved&&Array.isArray(saved.profiles)&&saved.profiles.length){family=Object.assign(family,saved);familyExists=true}}catch(e){}
-family.settings=Object.assign({},defaultSettings,family.settings||{});
+family.settings=Object.assign({},defaultSettings,family.settings||{});family.settings.homeLayout=normalizeHomeLayout(family.settings.homeLayout);
 family.profiles=family.profiles.map(p=>Object.assign(makeProfile(p.id,p.name,p.emoji||'🧑'),p));
 if(!family.profiles.some(p=>p.id===family.activeId))family.activeId=family.profiles[0].id;
 if(!familyExists){try{const old=JSON.parse(localStorage.getItem(OLD_KEY)||'{}');const j=family.profiles.find(p=>p.id==='jhon');if(j){j.plays=Number(old.plays)||0;j.counts=old.counts&&typeof old.counts==='object'?old.counts:{};j.favs=Array.isArray(old.favs)?old.favs:[];j.recent=Array.isArray(old.recent)?old.recent:[]}}catch(e){}}
@@ -885,7 +983,8 @@ function refreshCardMeta(){
   const href=card.dataset.href,g=names.find(x=>x.href===href),isFav=p.favs.includes(href);
   const fav=card.querySelector('.favbtn'),meta=card.querySelector('.card-meta');
   if(fav){fav.textContent=isFav?'⭐':'☆';fav.classList.toggle('on',isFav);fav.title=isFav?'Remover dos favoritos':'Adicionar aos favoritos';fav.setAttribute('aria-label',fav.title)}
-  if(meta)meta.innerHTML='<span class="meta-pill">'+(categories[g.cat]||'🎮 Jogo')+'</span><span class="meta-pill">▶ '+(p.counts[href]||0)+'x aberto</span>'+(isFav?'<span class="meta-pill">⭐ Favorito</span>':'');
+  const details=getGameMeta(g);
+  if(meta)meta.innerHTML='<span class="meta-pill">'+(categories[g.cat]||'🎮 Jogo')+'</span><span class="meta-pill">⏱️ '+META_LABELS.duration[details.duration]+'</span><span class="meta-pill">🎯 '+META_LABELS.difficulty[details.difficulty]+'</span><span class="meta-pill">'+(details.players==='multi'?'👥 Multiplayer':'👤 Solo / IA')+'</span><span class="meta-pill">▶ '+(p.counts[href]||0)+'x aberto</span>'+(isFav?'<span class="meta-pill">⭐ Favorito</span>':'');
  });
 }
 const catalogOrder=['games/cobra.html','games/memoria.html','games/velha.html','games/tetris.html','games/palavras-cruzadas.html','games/bubble-shooter.html','games/galaxia-invasora.html','games/2048.html','games/batalha-naval.html','games/banco-imobiliario.html','games/forca.html','games/xadrez.html','games/stop.html','games/domino.html','games/sinuca.html','games/detetive.html','games/corrida.html','games/caminhoneiro.html','games/campo-minado.html','ninja_forest_run_v4_10.html','games/voo-desafiador.html','games/labirinto.html','games/sudoku.html','games/paciencia.html','games/pinball.html','games/travessia-maluca.html','games/resta-um.html','games/duelo-reflexos.html','games/conecte-pontos.html','games/acerte-numero.html','games/caca-palavras.html','games/torre-hanoi.html','games/damas.html','games/ludo.html','games/tower-defense.html','games/jewel-match.html'];
@@ -970,13 +1069,72 @@ function setView(mode){
  document.getElementById('viewToggle').title='Visualização: '+labels[mode];
  return saved;
 }
+
+const GAME_META={
+ 'games/2048.html':{duration:'medium',difficulty:'medium'},
+ 'games/batalha-naval.html':{duration:'long',difficulty:'medium'},
+ 'games/banco-imobiliario.html':{duration:'long',difficulty:'hard',players:'multi'},
+ 'games/detetive.html':{duration:'long',difficulty:'medium'},
+ 'games/corrida.html':{duration:'short',difficulty:'easy'},
+ 'games/caminhoneiro.html':{duration:'medium',difficulty:'medium'},
+ 'games/cobra.html':{duration:'short',difficulty:'medium'},
+ 'games/memoria.html?build=memory-2.1-20261125':{duration:'short',difficulty:'easy'},
+ 'games/velha.html':{duration:'short',difficulty:'easy',players:'multi'},
+ 'games/campo-minado.html':{duration:'medium',difficulty:'hard'},
+ 'games/forca.html':{duration:'short',difficulty:'easy'},
+ 'ninja_forest_run_v4_10.html':{duration:'medium',difficulty:'medium'},
+ 'games/tetris.html':{duration:'medium',difficulty:'medium'},
+ 'games/voo-desafiador.html':{duration:'short',difficulty:'easy'},
+ 'games/labirinto.html':{duration:'medium',difficulty:'medium'},
+ 'games/sudoku.html':{duration:'long',difficulty:'hard'},
+ 'games/xadrez.html':{duration:'long',difficulty:'hard',players:'multi'},
+ 'games/palavras-cruzadas.html':{duration:'long',difficulty:'medium'},
+ 'games/stop.html':{duration:'medium',difficulty:'medium',players:'multi'},
+ 'games/galaxia-invasora.html':{duration:'short',difficulty:'medium'},
+ 'games/domino.html':{duration:'medium',difficulty:'medium'},
+ 'games/paciencia.html':{duration:'medium',difficulty:'easy'},
+ 'games/pinball.html':{duration:'short',difficulty:'easy'},
+ 'games/sinuca.html':{duration:'medium',difficulty:'medium',players:'multi'},
+ 'games/bubble-shooter.html':{duration:'medium',difficulty:'easy'},
+ 'games/travessia-maluca.html':{duration:'short',difficulty:'medium'},
+ 'games/resta-um.html':{duration:'medium',difficulty:'medium'},
+ 'games/duelo-reflexos.html':{duration:'short',difficulty:'easy',players:'multi'},
+ 'games/conecte-pontos.html':{duration:'medium',difficulty:'medium',players:'multi'},
+ 'games/acerte-numero.html':{duration:'short',difficulty:'easy',players:'multi'},
+ 'games/caca-palavras.html':{duration:'medium',difficulty:'easy'},
+ 'games/torre-hanoi.html':{duration:'medium',difficulty:'medium'},
+ 'games/damas.html':{duration:'medium',difficulty:'medium',players:'multi'},
+ 'games/ludo.html':{duration:'long',difficulty:'easy',players:'multi'},
+ 'games/tower-defense.html':{duration:'long',difficulty:'hard'},
+ 'games/jewel-match.html':{duration:'medium',difficulty:'medium'},
+ 'games/conecte-cores.html':{duration:'medium',difficulty:'medium'},
+ 'games/reversi.html':{duration:'medium',difficulty:'hard'},
+ 'games/mancala.html':{duration:'medium',difficulty:'medium'},
+ 'games/arkanoid.html':{duration:'short',difficulty:'medium'},
+ 'games/corte-frutas.html':{duration:'short',difficulty:'easy'},
+ 'games/salto-infinito.html':{duration:'short',difficulty:'easy'},
+ 'games/arena-bombas.html':{duration:'medium',difficulty:'medium'},
+ 'games/ritmo-neon.html':{duration:'short',difficulty:'medium'},
+ 'games/arena-tanques.html':{duration:'long',difficulty:'hard'}
+};
+const META_LABELS={duration:{short:'Até 5 min',medium:'5–15 min',long:'Mais de 15 min'},difficulty:{easy:'Fácil',medium:'Média',hard:'Difícil'},players:{solo:'Solo / IA',multi:'Multiplayer'}};
+function getGameMeta(game){
+ const defaults={duration:game.cat==='strategy'?'long':game.cat==='puzzle'?'medium':'short',difficulty:['arcade','racing'].includes(game.cat)?'easy':'medium',players:'solo'};
+ return Object.assign(defaults,GAME_META[game.href]||{});
+}
+function getSmartFilterValues(){
+ return {duration:document.getElementById('durationFilter').value,difficulty:document.getElementById('difficultyFilter').value,players:document.getElementById('playersFilter').value};
+}
+
 function renderCards(){
  const p=active(),raw=document.getElementById('gameSearch').value.trim(),q=normalizeText(raw);let shown=0;
  cards.forEach(c=>{
   const href=c.dataset.href,cat=c.dataset.category||'arcade';
   const hay=normalizeText([c.innerText,categories[cat]||'',classics.has(href)?'melhor idade tranquilos clássicos fácil sem pressa':'',boardGames.has(href)?'tabuleiro jogos de mesa':'',cardGames.has(href)?'cartas paciência baralho':''].join(' '));
   const matches=filter==='all'||(filter==='favorites'&&p.favs.includes(href))||((filter==='senior'||filter==='classics')&&classics.has(href))||(filter==='board'&&boardGames.has(href))||(filter==='cards'&&cardGames.has(href))||(['puzzle','strategy','arcade','action','racing'].includes(filter)&&cat===filter);
-  const ok=matches&&(!q||hay.includes(q));c.style.display=ok?'':'none';if(ok)shown++;
+  const smart=getSmartFilterValues(),game=names.find(g=>g.href===href),meta=getGameMeta(game);
+  const smartMatches=(!smart.duration||meta.duration===smart.duration)&&(!smart.difficulty||meta.difficulty===smart.difficulty)&&(!smart.players||meta.players===smart.players);
+  const ok=matches&&smartMatches&&(!q||hay.includes(q));c.style.display=ok?'':'none';if(ok)shown++;
  });
  const ordered=cards.slice().sort((a,b)=>{const ai=catalogOrder.indexOf(a.dataset.href),bi=catalogOrder.indexOf(b.dataset.href);return (ai<0?999:ai)-(bi<0?999:bi)});
  ordered.forEach(card=>grid.appendChild(card));
@@ -992,7 +1150,73 @@ function renderCards(){
  if(shown===0){if(filter==='favorites'&&!q){document.getElementById('emptyTitle').textContent='Você ainda não salvou favoritos';document.getElementById('emptyMessage').textContent='Marque a estrela de um jogo para encontrá-lo aqui depois.';document.getElementById('emptyReset').textContent='Explorar todos os jogos'}else{document.getElementById('emptyTitle').textContent='Nenhum jogo encontrado';document.getElementById('emptyMessage').textContent=q?'Não encontramos um jogo com esse termo. Experimente outra palavra ou limpe a busca.':'Não há jogos nesta seleção. Volte para ver o catálogo completo.';document.getElementById('emptyReset').textContent='Ver todos os jogos'}}
  refreshCardMeta();
 }
-function renderAll(){renderProfiles();renderCategoryNav();renderCards();renderRecent();renderAchievements();applySettings();syncSettingsUI();setView(viewMode)}
+
+function renderRecommendations(){
+ const p=active(),box=document.getElementById('recommendationGrid'),caption=document.getElementById('recommendationCaption');
+ const counts=p.counts||{},hasHistory=p.plays>0||Object.keys(counts).length>0,categoryScores={};
+ Object.entries(counts).forEach(([href,count])=>{const game=names.find(g=>g.href===href);if(game)categoryScores[game.cat]=(categoryScores[game.cat]||0)+Math.max(0,Number(count)||0)});
+ p.favs.forEach(href=>{const game=names.find(g=>g.href===href);if(game)categoryScores[game.cat]=(categoryScores[game.cat]||0)+2});
+ const preferred=Object.entries(categoryScores).sort((a,b)=>b[1]-a[1])[0]?.[0]||'';
+ const curated=['games/cobra.html','games/memoria.html?build=memory-2.1-20261125','games/2048.html','games/velha.html','games/forca.html'];
+ const candidates=names.map((g,index)=>{
+  const played=Number(counts[g.href])||0,score=(categoryScores[g.cat]||0)*2.2+(played===0?5:0)-played*2-(p.recent.includes(g.href)?4:0)-(p.favs.includes(g.href)?10:0);
+  const orderIndex=catalogOrder.indexOf(g.href);return {game:g,score,orderIndex,index};
+ }).filter(x=>!p.favs.includes(x.game.href));
+ let chosen;
+ if(!hasHistory)chosen=curated.map(href=>candidates.find(x=>x.game.href===href)).filter(Boolean).slice(0,4);
+ else chosen=candidates.sort((a,b)=>b.score-a.score||(a.orderIndex<0?999:a.orderIndex)-(b.orderIndex<0?999:b.orderIndex)||a.index-b.index).slice(0,4);
+ if(!chosen.length)chosen=names.slice(0,4).map((game,index)=>({game,index}));
+ caption.textContent=hasHistory?'Sugestões com base nas categorias que você mais joga e em títulos que ainda pode explorar.':'Como este perfil ainda está começando, separamos opções variadas para você experimentar.';
+ box.innerHTML='';
+ chosen.forEach(({game})=>{
+  const meta=getGameMeta(game),button=document.createElement('button');button.type='button';button.className='recommendation-card';
+  const icon=document.createElement('span');icon.className='recommendation-icon';icon.textContent=game.icon;
+  const copy=document.createElement('span');copy.className='recommendation-copy';
+  const title=document.createElement('b');title.textContent=game.name;
+  const detail=document.createElement('small');detail.textContent=(categories[game.cat]||'🎮 Jogo')+' · '+META_LABELS.duration[meta.duration];
+  const reason=document.createElement('span');reason.className='recommendation-reason';reason.textContent=hasHistory&&game.cat===preferred?'Combina com seu estilo':'Boa opção para experimentar';
+  copy.append(title,detail,reason);button.append(icon,copy);button.setAttribute('aria-label','Jogar '+game.name);button.addEventListener('click',()=>launch(game.href));box.appendChild(button);
+ });
+}
+function renderHomeLayoutControls(){
+ const box=document.getElementById('homeLayoutList');if(!box)return;box.innerHTML='';
+ const layout=family.settings.homeLayout;
+ layout.order.forEach((id,index)=>{
+  const def=HOME_SECTION_DEFS.find(item=>item.id===id);if(!def)return;
+  const row=document.createElement('div');row.className='home-layout-row';
+  const label=document.createElement('label');label.className='layout-name';
+  const check=document.createElement('input');check.type='checkbox';check.checked=layout.visible[id];check.disabled=!!def.required;
+  check.addEventListener('change',()=>{
+   const previous=normalizeHomeLayout(family.settings.homeLayout);family.settings.homeLayout.visible[id]=check.checked;
+   if(!save()){family.settings.homeLayout=previous;renderHomeLayoutControls();return}
+   applyHomeLayout();
+  });
+  const textLabel=document.createElement('span');textLabel.textContent=def.label+(def.required?' · sempre visível':'');
+  label.append(check,textLabel);
+  const actions=document.createElement('span');actions.className='layout-actions';
+  ['up','down'].forEach(direction=>{
+   const button=document.createElement('button');button.type='button';button.textContent=direction==='up'?'↑':'↓';button.disabled=direction==='up'?index===0:index===layout.order.length-1;
+   button.setAttribute('aria-label',(direction==='up'?'Mover para cima: ':'Mover para baixo: ')+def.label);
+   button.addEventListener('click',()=>{
+    const previous=normalizeHomeLayout(family.settings.homeLayout),next=index+(direction==='up'?-1:1);if(next<0||next>=layout.order.length)return;
+    const order=[...layout.order];[order[index],order[next]]=[order[next],order[index]];family.settings.homeLayout.order=order;
+    if(!save()){family.settings.homeLayout=previous;renderHomeLayoutControls();return}
+    renderHomeLayoutControls();applyHomeLayout();
+   });
+   actions.appendChild(button);
+  });
+  row.append(label,actions);box.appendChild(row);
+ });
+}
+function applyHomeLayout(){
+ const main=document.getElementById('mainContent'),settings=document.getElementById('settingsPanel'),layout=family.settings.homeLayout;
+ layout.order.forEach(id=>{
+  const def=HOME_SECTION_DEFS.find(item=>item.id===id),node=def&&document.getElementById(def.elementId);if(!node)return;
+  node.hidden=def.required?false:layout.visible[id]===false;main.insertBefore(node,settings);
+ });
+}
+
+function renderAll(){renderProfiles();renderCategoryNav();renderCards();renderRecent();renderAchievements();renderRecommendations();renderHomeLayoutControls();applySettings();syncSettingsUI();setView(viewMode);applyHomeLayout()}
 function playUi(){if(window.ArcadeCommon)window.ArcadeCommon.playUi()}
 function launch(href){
  const p=active();p.plays++;p.counts[href]=(p.counts[href]||0)+1;p.recent=[href,...p.recent.filter(x=>x!==href)].slice(0,5);save();renderAll();playUi();window.location.href=href;
@@ -1000,6 +1224,9 @@ function launch(href){
 function toggleFavorite(href){const p=active();if(p.favs.includes(href))p.favs=p.favs.filter(x=>x!==href);else p.favs.push(href);save();renderAll();playUi()}
 cards.forEach(card=>{
  const href=card.dataset.href,g=names.find(x=>x.href===href);
+ const cover=document.createElement('div');cover.className='game-cover cover-'+g.cat;cover.setAttribute('aria-hidden','true');
+ const iconNode=card.querySelector('.ico');if(iconNode)cover.appendChild(iconNode);
+ const tagNode=card.querySelector('.tag');card.insertBefore(cover,tagNode||card.firstChild);
  const link=document.createElement('a');link.className='card-link';link.href=href;link.setAttribute('aria-label','Abrir '+g.name);
  [...card.children].filter(node=>!node.classList.contains('favbtn')&&!node.classList.contains('card-meta')).forEach(node=>link.appendChild(node));
  link.addEventListener('click',e=>{if(e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;e.preventDefault();launch(href)});
@@ -1020,6 +1247,8 @@ searchInput.addEventListener('keydown',e=>{
  if(e.key==='Enter'){const selected=activeSuggestionIndex>=0?options[activeSuggestionIndex]:options[0];if(selected){e.preventDefault();launch(selected.dataset.href)}}
 });
 document.getElementById('searchClear').addEventListener('click',()=>{searchInput.value='';renderCards();renderSuggestions();searchInput.focus()});
+['durationFilter','difficultyFilter','playersFilter'].forEach(id=>document.getElementById(id).addEventListener('change',()=>{renderCards();playUi()}));
+document.getElementById('clearSmartFilters').addEventListener('click',()=>{['durationFilter','difficultyFilter','playersFilter'].forEach(id=>document.getElementById(id).value='');renderCards();playUi()});
 searchInput.addEventListener('keydown',e=>{if(e.key==='Escape'){searchInput.value='';renderCards();renderSuggestions();searchInput.focus()}});
 document.getElementById('emptyReset').addEventListener('click',()=>{filter='all';searchInput.value='';renderCategoryNav();renderCards();renderSuggestions();searchInput.focus()});
 document.addEventListener('click',e=>{if(!e.target.closest('.search-shell'))closeSuggestions()});
@@ -1075,7 +1304,8 @@ function sanitizeBackupSettings(raw){
  contrast:typeof s.contrast==='boolean'?s.contrast:defaultSettings.contrast,
  textSize:['normal','large'].includes(s.textSize)?s.textSize:defaultSettings.textSize,
  reducedMotion:typeof s.reducedMotion==='boolean'?s.reducedMotion:defaultSettings.reducedMotion,
- touchControls:['auto','show','hide'].includes(s.touchControls)?s.touchControls:defaultSettings.touchControls};
+ touchControls:['auto','show','hide'].includes(s.touchControls)?s.touchControls:defaultSettings.touchControls,
+ homeLayout:normalizeHomeLayout(s.homeLayout)};
 }
 function sanitizeBackupProfile(raw){
  if(!raw||typeof raw!=='object'||Array.isArray(raw))throw new Error('Um perfil do backup está inválido.');
@@ -1151,7 +1381,7 @@ function validateBackup(raw){
 }
 function exportBackup(){
  try{
-  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v4.10',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
+  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v4.11',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
   const content=JSON.stringify(backup,null,2),blob=new Blob([content],{type:'application/json'});
   if(blob.size>MAX_BACKUP_BYTES)throw new Error('O backup ultrapassa 2 MB.');
   const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='jogos-do-jhon-backup-'+new Date().toISOString().slice(0,10)+'.json';
@@ -1307,7 +1537,7 @@ installBtn.addEventListener('click',async()=>{
  if(deferredInstall){deferredInstall.prompt();const choice=await deferredInstall.userChoice;deferredInstall=null;installBtn.textContent=choice.outcome==='accepted'?'✅ Instalação solicitada':'📲 Instalar app';}
  else alert('Para instalar no celular:\n\nAndroid: abra o menu do navegador e escolha “Instalar aplicativo” ou “Adicionar à tela inicial”.\niPhone/iPad: no Safari, toque em Compartilhar e depois em “Adicionar à Tela de Início”.\n\nA opção aparece quando o navegador oferece suporte à instalação.');
 });
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=4.10',{scope:'./',updateViaCache:'none'}).catch(e=>console.warn('PWA: não foi possível registrar o modo offline.',e)))}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=4.11',{scope:'./',updateViaCache:'none'}).catch(e=>console.warn('PWA: não foi possível registrar o modo offline.',e)))}
 renderAll();
 })();
 </script></body>
