@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Jogos do Jhon">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Jogos do Jhon · v4.37</title>
+<title>Jogos do Jhon · v4.38</title>
 <meta property="og:title" content="Jogos do Jhon · Arcade">
 <meta property="og:description" content="Arcade de jogos web do Jhon com jogos para jogar no celular ou PC.">
 <meta property="og:type" content="website">
@@ -548,10 +548,10 @@
     </div>
 
     <div class="card" data-category="strategy" data-href="games/batalha-naval.html" style="--accent:#60a5fa;--glow:rgba(96,165,250,.20)">
-      <span class="tag new">v2.4</span>
+      <span class="tag new">v2.5</span>
       <span class="ico">🚢</span>
       <p class="name">Batalha Naval <em class="new">ONLINE</em></p>
-      <p class="desc">Jogue contra a IA ou desafie outra pessoa online com salas privadas e turnos sincronizados.</p>
+      <p class="desc">Jogue contra a IA ou online, evolua seu perfil, conquiste níveis e compartilhe seu cartão de jogador.</p>
     </div>
 
     <div class="card" data-category="strategy" data-href="games/banco-imobiliario.html" style="--accent:#34d399;--glow:rgba(52,211,153,.20)">
@@ -1688,7 +1688,7 @@ installBtn.addEventListener('click',async()=>{
  if(deferredInstall){deferredInstall.prompt();const choice=await deferredInstall.userChoice;deferredInstall=null;installBtn.textContent=choice.outcome==='accepted'?'✅ Instalação solicitada':'📲 Instalar app';}
  else alert('Para instalar no celular:\n\nAndroid: abra o menu do navegador e escolha “Instalar aplicativo” ou “Adicionar à tela inicial”.\niPhone/iPad: no Safari, toque em Compartilhar e depois em “Adicionar à Tela de Início”.\n\nA opção aparece quando o navegador oferece suporte à instalação.');
 });
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=4.37',{scope:'./',updateViaCache:'none'}).catch(e=>console.warn('PWA: não foi possível registrar o modo offline.',e)))}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=4.38',{scope:'./',updateViaCache:'none'}).catch(e=>console.warn('PWA: não foi possível registrar o modo offline.',e)))}
 renderAll();
 })();
 </script></body>
