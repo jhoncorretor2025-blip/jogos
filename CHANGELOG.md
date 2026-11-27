@@ -2,6 +2,14 @@
 
 ## V4.21 — Ritmo Neon revisado
 - Atualizado Ritmo Neon para v1.3.
+- Adicionados pausa e retomada, inclusive pausa automática ao sair da aba, sem consumir o tempo da partida.
+- Adicionados contador de erros, precisão da partida e recorde persistente no navegador.
+- Corrigida a contabilização de notas perdidas e limitado o surgimento das notas para que todas possam ser alcançadas antes do fim do desafio.
+- Atualizados o catálogo e o cache do aplicativo para v4.21.
+
+
+## V4.21 — Ritmo Neon revisado
+- Atualizado Ritmo Neon para v1.3.
 - Corrigida a proporção do campo musical em telas menores, mantendo a escala do desenho.
 - Adicionados indicadores de precisão, acertos, notas perdidas e recorde.
 - Recorde de pontuação salvo automaticamente no navegador.
