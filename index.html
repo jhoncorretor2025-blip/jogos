@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Jogos do Jhon">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Jogos do Jhon · v4.13</title>
+<title>Jogos do Jhon · v4.14</title>
 <meta property="og:title" content="Jogos do Jhon · Arcade">
 <meta property="og:description" content="Arcade de jogos web do Jhon com 47 jogos para jogar no celular ou PC.">
 <meta property="og:type" content="website">
@@ -420,7 +420,7 @@
     <span class="hero-kicker">ARCADE PESSOAL</span>
     <h1>Jogos do Jhon</h1>
     <p class="sub">🎮 Seu cantinho de diversão: escolha um jogo e comece a jogar no celular ou no PC.</p>
-    <div class="version"><span class="dot"></span> Versão <b>v4.13</b> · atualizado em <b>27/11/2026</b></div>
+    <div class="version"><span class="dot"></span> Versão <b>v4.14</b> · atualizado em <b>27/11/2026</b></div>
     <div class="home-hero-actions">
       <a class="primary-cta" href="#catalogStart">🎮 Explorar jogos <span aria-hidden="true">↓</span></a>
       <span class="hero-count" id="heroGameCount">47 jogos no catálogo</span>
@@ -638,7 +638,7 @@
     <div class="card" data-category="puzzle" data-href="games/resta-um.html" style="--accent:#38bdf8;--glow:rgba(56,189,248,.20)"><span class="tag new">v1.1</span><span class="ico">🔵</span><p class="name">Resta Um <em class="new">NOVO</em></p><p class="desc">Salte sobre as peças vizinhas até deixar apenas uma no tabuleiro.</p></div>
 
     <div class="card" data-category="arcade" data-href="games/duelo-reflexos.html" style="--accent:#22d3ee;--glow:rgba(34,211,238,.20)"><span class="tag new">v1.1</span><span class="ico">⚡</span><p class="name">Duelo de Reflexos <em class="new">NOVO</em></p><p class="desc">Enfrente a IA em três dificuldades ou desafie outra pessoa.</p></div>
-    <div class="card" data-category="strategy" data-href="games/conecte-pontos.html" style="--accent:#a78bfa;--glow:rgba(167,139,250,.20)"><span class="tag new">v1.2</span><span class="ico">🔵</span><p class="name">Conecte os Pontos <em class="new">NOVO</em></p><p class="desc">Conquiste quadrados contra a IA ou em partidas para duas pessoas.</p></div>
+    <div class="card" data-category="strategy" data-href="games/conecte-pontos.html" style="--accent:#a78bfa;--glow:rgba(167,139,250,.20)"><span class="tag new">v1.3</span><span class="ico">🔵</span><p class="name">Conecte os Pontos <em class="new">NOVO</em></p><p class="desc">Use dicas, desfaça jogadas e enfrente uma IA com três níveis de estratégia.</p></div>
     <div class="card" data-category="puzzle" data-href="games/acerte-numero.html" style="--accent:#fbbf24;--glow:rgba(251,191,36,.20)"><span class="tag new">v1.1</span><span class="ico">🔢</span><p class="name">Acerte o Número <em class="new">NOVO</em></p><p class="desc">Um jogador escolhe o número secreto e o outro tenta descobrir com dicas de maior ou menor.</p></div>
     <div class="card" data-category="puzzle" data-href="games/caca-palavras.html" style="--accent:#38bdf8;--glow:rgba(56,189,248,.20)"><span class="tag new">v1.1</span><span class="ico">🔎</span><p class="name">Caça-Palavras <em class="new">NOVO</em></p><p class="desc">Encontre palavras escondidas na horizontal, vertical e diagonal, com desafios de diferentes níveis.</p></div>
     <div class="card" data-category="puzzle" data-href="games/torre-hanoi.html" style="--accent:#a78bfa;--glow:rgba(167,139,250,.20)"><span class="tag new">v1.1</span><span class="ico">🗼</span><p class="name">Torre de Hanói <em class="new">NOVO</em></p><p class="desc">Mova os discos entre três torres sem colocar uma peça maior sobre uma menor.</p></div>
@@ -753,8 +753,9 @@
     </div>
   </details>
   <div class="notes" id="notesSection" data-home-section="notes">
-    <h2>📝 Novidades da tela inicial · v4.13</h2>
+    <h2>📝 Novidades da tela inicial · v4.14</h2>
     <ul>
+       <li><b>v4.14:</b> Conecte os Pontos v1.3 com dez melhorias: layout móvel mais confortável; nomes dos jogadores; destaque da vez; barra de progresso e quadrados restantes; animações de captura e última linha; dica estratégica; desfazer a vez completa contra a IA; três níveis de IA com estratégias diferentes; efeitos sonoros opcionais; estatísticas de partidas, vitórias, derrotas, empates e melhor placar. Inclui atalhos de teclado e instruções acessíveis.</li>
        <li><b>v4.13:</b> cinco jogos aprimorados: 2048 restaurado com desfazer e recordes; Duelo de Reflexos com modo solo contra IA e três níveis; Detetive com pistas, dicas, pontuação e sequência de casos; Mancala com IA em três níveis e modo local para duas pessoas; Conecte os Pontos com IA e tabuleiros ajustáveis. Os recordes e estatísticas desses jogos passaram a integrar o backup.</li>
        <li><b>v4.12:</b> ordem do catálogo reorganizada: 2048, Corrida Infinita, Ninja Forest Rescue, Caminhoneiro, Campo Minado e Mancala agora aparecem por último.</li>
        <li><b>v4.11:</b> recomendações que consideram o histórico e as categorias mais jogadas por perfil; filtros combináveis por duração estimada, dificuldade e multiplayer; capas ilustradas com ícone e cores de cada jogo; organização da tela inicial com opções para ocultar e reordenar seções, salva no navegador e incluída no backup.</li>
@@ -1294,7 +1295,7 @@ document.getElementById('addProfile').addEventListener('click',()=>{
 function syncSettingsUI(){const s=family.settings;document.getElementById('themeSetting').value=s.theme;document.getElementById('textSetting').value=s.textSize;document.getElementById('controlsSetting').value=s.touchControls;document.getElementById('volumeSetting').value=s.volume;document.getElementById('volumeValue').textContent=s.volume+'%';document.getElementById('soundSetting').checked=s.sound;document.getElementById('contrastSetting').checked=s.contrast;document.getElementById('motionSetting').checked=s.reducedMotion}
 function updateSetting(key,value){family.settings[key]=value;save();applySettings();syncSettingsUI()}
 const BACKUP_FORMAT='jogos-do-jhon-backup',BACKUP_SCHEMA=2,MAX_BACKUP_BYTES=2*1024*1024,MAX_GAME_STORAGE_BYTES=1500000;
-const GAME_STORAGE_KEYS=new Set(['flowColorsRecord','fruitBest','jumpBest','parkingBest','g2048.best','corrida.best','cobra.best','memoria.muted','velha.score','jhon_v5_save','jhon_tetris_best','jhon_voo_best','jhon_labirinto_best','jhon_snooker_best','jhon_truck_best','jhon_truck_money','jhon_truck_deliveries','crosswordStatsV2','bubble_sound','bubble_achievements','bubble_theme','bubble_skin','jewelmatch_v2_save','duelo.bestTime','duelo.games','duelo.wins','mancala.best','mancala.games','mancala.wins','dots.games','dots.wins','dots.best','detetive.stats']);
+const GAME_STORAGE_KEYS=new Set(['flowColorsRecord','fruitBest','jumpBest','parkingBest','g2048.best','corrida.best','cobra.best','memoria.muted','velha.score','jhon_v5_save','jhon_tetris_best','jhon_voo_best','jhon_labirinto_best','jhon_snooker_best','jhon_truck_best','jhon_truck_money','jhon_truck_deliveries','crosswordStatsV2','bubble_sound','bubble_achievements','bubble_theme','bubble_skin','jewelmatch_v2_save','duelo.bestTime','duelo.games','duelo.wins','mancala.best','mancala.games','mancala.wins','dots.games','dots.wins','dots.best','dots.losses','dots.draws','detetive.stats']);
 const GAME_STORAGE_PREFIXES=['memoria.best.','memoria.time.','crosswordDaily_','arcade_best_'];
 const knownGameHrefs=new Set(names.map(g=>g.href)),knownAchievementIds=new Set(achievements.map(a=>a.id));
 function isGameStorageKey(key){return GAME_STORAGE_KEYS.has(key)||GAME_STORAGE_PREFIXES.some(prefix=>key.startsWith(prefix))}
@@ -1323,7 +1324,7 @@ function sanitizeBackupProfile(raw){
 function parseStoredObject(value){try{const x=JSON.parse(String(value));return x&&typeof x==='object'&&!Array.isArray(x)?x:null}catch(e){return null}}
 function sanitizeGameStorageValue(key,value){
  if(typeof value!=='string'||value.length>300000)return null;
- const numericKey=(GAME_STORAGE_PREFIXES.some(p=>p!=='crosswordDaily_'&&key.startsWith(p)))||['g2048.best','corrida.best','cobra.best','jhon_tetris_best','jhon_voo_best','jhon_labirinto_best','jhon_snooker_best','jhon_truck_best','jhon_truck_money','jhon_truck_deliveries','flowColorsRecord','fruitBest','jumpBest','parkingBest','duelo.bestTime','duelo.games','duelo.wins','mancala.best','mancala.games','mancala.wins','dots.games','dots.wins','dots.best'].includes(key)||key.startsWith('arcade_best_');
+ const numericKey=(GAME_STORAGE_PREFIXES.some(p=>p!=='crosswordDaily_'&&key.startsWith(p)))||['g2048.best','corrida.best','cobra.best','jhon_tetris_best','jhon_voo_best','jhon_labirinto_best','jhon_snooker_best','jhon_truck_best','jhon_truck_money','jhon_truck_deliveries','flowColorsRecord','fruitBest','jumpBest','parkingBest','duelo.bestTime','duelo.games','duelo.wins','mancala.best','mancala.games','mancala.wins','dots.games','dots.wins','dots.best','dots.losses','dots.draws'].includes(key)||key.startsWith('arcade_best_');
  if(numericKey){const n=Number(value);return Number.isFinite(n)&&n>=0?String(Math.min(100000000,Math.floor(n))):null}
  if(key==='memoria.muted')return ['0','1'].includes(value)?value:null;
  if(key==='bubble_sound')return ['on','off'].includes(value)?value:null;
@@ -1389,7 +1390,7 @@ function validateBackup(raw){
 }
 function exportBackup(){
  try{
-  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v4.13',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
+  const backup={format:BACKUP_FORMAT,schemaVersion:BACKUP_SCHEMA,appVersion:'v4.14',createdAt:new Date().toISOString(),payload:{family:JSON.parse(JSON.stringify(family)),viewMode,gameStorage:collectGameStorage()}};
   const content=JSON.stringify(backup,null,2),blob=new Blob([content],{type:'application/json'});
   if(blob.size>MAX_BACKUP_BYTES)throw new Error('O backup ultrapassa 2 MB.');
   const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='jogos-do-jhon-backup-'+new Date().toISOString().slice(0,10)+'.json';
@@ -1454,7 +1455,7 @@ function mergeGameStorageValue(key,current,incoming,strategy){
  if(key.startsWith('memoria.best.')||key.startsWith('memoria.time.')){
   const a=Number(current),b=Number(incoming);if(!Number.isFinite(a)||a<=0)return incoming;if(!Number.isFinite(b)||b<=0)return current;return String(Math.min(a,b));
  }
- if(/(^|[._])best($|[._])/.test(key)||key.startsWith('arcade_best_')||/\.(games|wins)$/.test(key)){
+ if(/(^|[._])best($|[._])/.test(key)||key.startsWith('arcade_best_')||/\.(games|wins|losses|draws)$/.test(key)){
   const a=Number(current),b=Number(incoming);if(Number.isFinite(a)&&Number.isFinite(b))return String(Math.max(a,b));
  }
  return current;
@@ -1549,7 +1550,7 @@ installBtn.addEventListener('click',async()=>{
  if(deferredInstall){deferredInstall.prompt();const choice=await deferredInstall.userChoice;deferredInstall=null;installBtn.textContent=choice.outcome==='accepted'?'✅ Instalação solicitada':'📲 Instalar app';}
  else alert('Para instalar no celular:\n\nAndroid: abra o menu do navegador e escolha “Instalar aplicativo” ou “Adicionar à tela inicial”.\niPhone/iPad: no Safari, toque em Compartilhar e depois em “Adicionar à Tela de Início”.\n\nA opção aparece quando o navegador oferece suporte à instalação.');
 });
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=4.13',{scope:'./',updateViaCache:'none'}).catch(e=>console.warn('PWA: não foi possível registrar o modo offline.',e)))}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js?v=4.14',{scope:'./',updateViaCache:'none'}).catch(e=>console.warn('PWA: não foi possível registrar o modo offline.',e)))}
 renderAll();
 })();
 </script></body>
