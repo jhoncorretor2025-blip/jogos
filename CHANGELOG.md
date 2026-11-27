@@ -1,5 +1,14 @@
 # Histórico de alterações — Jogos do Jhon
 
+## V4.24 — Campo Minado revisado
+- Atualizado Campo Minado para v1.3.
+- Adicionado suporte a teclado nas casas do tabuleiro, com foco visível e rótulos acessíveis que informam o estado e os números.
+- Adicionado controle opcional de efeitos sonoros para abrir casas, marcar bandeiras, vencer ou perder.
+- Recorde de menor tempo salvo separadamente por dificuldade e exibido ao selecionar o nível.
+- Corrigida a limpeza do temporizador de toque longo ao reiniciar ou trocar a dificuldade.
+- Atualizados o catálogo e o cache do aplicativo para v4.24.
+
+
 ## V4.23 — Jogo da Velha revisado
 - Atualizado Jogo da Velha para v1.3.
 - Corrigido o temporizador da IA ao reiniciar ou trocar o modo, impedindo jogadas atrasadas na rodada seguinte.
