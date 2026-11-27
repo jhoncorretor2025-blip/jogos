@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#070b14">
-<title>Jogo da Velha — Jogos do Jhon</title>
+<title>Jogo da Velha — Jogos do Jhon v1.3</title>
 <style>
   :root{--bg:#070b14;--card:#0f172a;--line:#1e293b;--txt:#e2e8f0;--muted:#94a3b8;--x:#22d3ee;--o:#f472b6}
   *{box-sizing:border-box}
@@ -41,6 +41,7 @@
   .sc b{font-size:20px;font-variant-numeric:tabular-nums}
   .hint{color:#64748b;font-size:12.5px;margin:16px 0 0;text-align:center;max-width:360px}
   .ver{color:#475569;font-size:11.5px;margin-top:10px}
+  .stats{width:100%;max-width:360px;display:flex;justify-content:space-between;gap:8px;margin-top:10px;color:var(--muted);font-size:12px}
 .btn:focus-visible, button:focus-visible{
   outline: 2px solid #67e8f9;
   outline-offset: 2px;
@@ -78,7 +79,7 @@ input:focus-visible, select:focus-visible{
   </div>
 
   <p class="hint" id="hint">No modo difícil a IA não perde. Empate já é vitória.</p>
-  <div class="ver">v1.2 · 22/11/2026</div>
+  <div class="ver">v1.3 · 27/11/2026</div>
 
 <script>
 (function(){
@@ -94,19 +95,26 @@ const LINES = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
   const sxEl = document.getElementById('sx');
   const soEl = document.getElementById('so');
   const sdEl = document.getElementById('sd');
+  const streakEl=document.createElement('span'),bestEl=document.createElement('span');
+  streakEl.id='streak';bestEl.id='best';const statsEl=document.createElement('div');statsEl.className='stats';statsEl.append(streakEl,bestEl);document.querySelector('.score').after(statsEl);
+  const soundBtn=document.createElement('button');soundBtn.className='btn';soundBtn.type='button';soundBtn.textContent='🔇';soundBtn.setAttribute('aria-label','Ativar som');document.querySelector('.bar').appendChild(soundBtn);
+  function tone(freq,duration=.08){if(!soundOn)return;try{const C=window.AudioContext||window.webkitAudioContext;if(!tone.ctx)tone.ctx=new C();if(tone.ctx.state==='suspended')tone.ctx.resume();const o=tone.ctx.createOscillator(),g=tone.ctx.createGain();o.type='sine';o.frequency.value=freq;g.gain.setValueAtTime(.035,tone.ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,tone.ctx.currentTime+duration);o.connect(g);g.connect(tone.ctx.destination);o.start();o.stop(tone.ctx.currentTime+duration)}catch(e){}}
+  soundBtn.addEventListener('click',function(){soundOn=!soundOn;soundBtn.textContent=soundOn?'🔊':'🔇';soundBtn.setAttribute('aria-label',soundOn?'Desativar som':'Ativar som');tone(440)});
 
-  let board, turn, over, busy;
+  let board, turn, over, busy, aiTimer=0, soundOn=false, streak=0, bestStreak=0;
   let score = {X: 0, O: 0, D: 0};
 
   try {
     const saved = JSON.parse(localStorage.getItem('velha.score') || 'null');
-    if (saved) score = saved;
+    if (saved) score = {X:Math.max(0,Number(saved.X)||0),O:Math.max(0,Number(saved.O)||0),D:Math.max(0,Number(saved.D)||0)};
+    try{const extra=JSON.parse(localStorage.getItem('velha.streak')||'{}');streak=Math.max(0,Number(extra.streak)||0);bestStreak=Math.max(0,Number(extra.best)||0)}catch(e){}
   } catch (e) {}
 
   function renderScore(){
     sxEl.textContent = score.X;
     soEl.textContent = score.O;
     sdEl.textContent = score.D;
+    streakEl.textContent='Sequência: '+streak;bestEl.textContent='Melhor: '+bestStreak;
   }
 
   function modeLabel(){
@@ -166,6 +174,10 @@ const LINES = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
 
   function finish(r){
     over = true;
+    if(aiTimer){clearTimeout(aiTimer);aiTimer=0}
+    if(r.p==='X'){streak++;bestStreak=Math.max(bestStreak,streak)}else if(r.p==='O'){streak=0}
+    try{localStorage.setItem('velha.streak',JSON.stringify({streak,best:bestStreak}))}catch(e){}
+    tone(r.p==='X'?660:r.p==='O'?180:330);
     if (r.p === 'D') {
       score.D++;
       statusEl.innerHTML = 'Empate. Ninguém cedeu. 🤝';
@@ -176,7 +188,7 @@ const LINES = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
       score.O++;
       statusEl.innerHTML = '<b>O</b> venceu! 🤖';
     }
-    localStorage.setItem('velha.score', JSON.stringify(score));
+    try{localStorage.setItem('velha.score', JSON.stringify(score))}catch(e){}
     renderScore();
     paint();
     if (r.line) {
@@ -188,6 +200,7 @@ const LINES = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
   function play(i){
     if (over || busy || board[i]) return;
     board[i] = turn;
+    tone(turn==='X'?520:390);
     paint();
     const r = result(board);
     if (r) return finish(r);
@@ -197,7 +210,9 @@ const LINES = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
       busy = true;
       statusEl.innerHTML = 'IA pensando…';
       paint();
-      setTimeout(function(){
+      aiTimer=setTimeout(function(){
+        aiTimer=0;
+        if(over||!busy||modeSel.value==='pvp'||turn!=='O')return;
         const m = aiMove();
         if (m >= 0) board[m] = 'O';
         busy = false;
@@ -215,6 +230,7 @@ const LINES = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
   }
 
   function reset(){
+    if(aiTimer){clearTimeout(aiTimer);aiTimer=0}
     board = Array(9).fill('');
     turn = 'X';
     over = false;
