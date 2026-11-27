@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#070b14">
-<title>Batalha Naval — Jogos do Jhon v1.4</title>
+<title>Batalha Naval — Jogos do Jhon v1.5</title>
 <style>
   :root{--bg:#070b14;--card:#0f172a;--line:#1e293b;--txt:#e2e8f0;--muted:#94a3b8}
   *{box-sizing:border-box}
@@ -45,7 +45,8 @@
   .cell.sunk{background:#450a0a;border-color:#b91c1c;color:#fca5a5}
   .cell:active{transform:scale(.94)}
   #radar .cell:hover{background:#16283f}
-  .ver{color:#475569;font-size:11.5px;margin-top:14px}
+  .online-panel{width:100%;max-width:520px;margin:0 0 12px;padding:12px;border:1px solid #164e63;border-radius:14px;background:linear-gradient(135deg,rgba(8,47,73,.55),rgba(15,23,42,.9))}
+.online-head,.online-actions,.room-share{display:flex;align-items:center;justify-content:space-between;gap:8px}.online-head{font-size:13px;margin-bottom:9px}.online-status{font-size:11px;color:#94a3b8}.online-status.connected{color:#4ade80}.online-actions .btn{min-width:0}.room-share{margin-top:10px;font-size:13px}.room-share b{letter-spacing:2px;color:#67e8f9}.room-entry{display:block;margin-top:10px;font-size:12px;color:#cbd5e1}.room-entry input{display:block;width:100%;margin-top:5px;padding:11px;border-radius:9px;border:1px solid #334155;background:#07111f;color:#fff;font:inherit;text-transform:uppercase;letter-spacing:3px}.online-help{margin:9px 0 0;color:#94a3b8;font-size:11px;line-height:1.5}.disconnect-btn{margin-top:9px;width:100%}.ver{color:#475569;font-size:11.5px;margin-top:14px}
   #ov{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(4,8,16,.86);backdrop-filter:blur(4px);z-index:9}
   #ov.show{display:flex}
   .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px 22px;text-align:center;max-width:330px;width:100%}
@@ -67,6 +68,14 @@
     <button class="btn" id="start" disabled>Começar</button>
   </div>
 
+  <section class="online-panel" aria-label="Multiplayer online">
+    <div class="online-head"><b>🌐 Multiplayer online</b><span id="onlineStatus" class="online-status">Desconectado</span></div>
+    <div class="online-actions"><button class="btn" id="createRoom">＋ Criar sala</button><button class="btn ghost" id="joinRoom">Entrar com código</button></div>
+    <div class="room-share" id="roomShare" hidden><span>Sala: <b id="roomCodeLabel"></b></span><button class="btn ghost" id="copyRoom">Copiar convite</button></div>
+    <label class="room-entry" id="roomEntry" hidden for="roomCodeInput">Código da sala<input id="roomCodeInput" maxlength="6" inputmode="text" autocomplete="off" placeholder="Ex.: A7K9P2"></label>
+    <p class="online-help" id="onlineHelp">Crie uma sala e compartilhe o código com outra pessoa. Os dois precisam manter o jogo aberto e conectados à internet.</p>
+    <button class="btn ghost disconnect-btn" id="disconnectRoom" hidden>Encerrar conexão</button>
+  </section>
   <div class="msg" id="msg">1) Toque em <b>Posicionar frota</b> para colocar os 5 navios automaticamente. 2) Toque em <b>Começar</b>. 3) No Radar inimigo, toque nas casas para disparar. Acerte todos os navios da IA para vencer.</div>
 
   <div class="boards">
@@ -80,7 +89,7 @@
     </div>
   </div>
 
-  <div class="ver">v1.4 · 27/11/2026</div>
+  <div class="ver">v1.5 · 27/11/2026</div>
 
   <div id="ov">
     <div class="panel">
@@ -107,6 +116,73 @@
   const ovText = document.getElementById('ovText');
 
   let mine, foe, phase, placing, horiz, playerTurn, hitsOnFoe, aiTargets, aiHits, over, aiTimer=0, soundOn=false, shots=0, wins=0, bestShots=0;
+  let peer=null, roomConn=null, onlineMode=false, isHost=false, roomCode="", localReady=false, opponentReady=false, opponentName="Adversário";
+  const onlineStatus=document.getElementById('onlineStatus'),onlineHelp=document.getElementById('onlineHelp'),roomShare=document.getElementById('roomShare'),roomEntry=document.getElementById('roomEntry'),roomCodeInput=document.getElementById('roomCodeInput'),disconnectBtn=document.getElementById('disconnectRoom');
+  const createRoomBtn=document.getElementById('createRoom'),joinRoomBtn=document.getElementById('joinRoom'),copyRoomBtn=document.getElementById('copyRoom');
+  function setOnlineStatus(text,connected){onlineStatus.textContent=text;onlineStatus.classList.toggle('connected',!!connected)}
+  function setOnlineControls(connected){createRoomBtn.disabled=connected;joinRoomBtn.disabled=connected;disconnectBtn.hidden=!connected}
+  function loadPeerJS(){return new Promise((resolve,reject)=>{if(window.Peer){resolve();return}const script=document.createElement('script');script.src='https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js';script.onload=()=>window.Peer?resolve():reject(new Error('Biblioteca de conexão indisponível.'));script.onerror=()=>reject(new Error('Não foi possível carregar a conexão online. Verifique sua internet.'));document.head.appendChild(script)})}
+  function makePeer(id){return new Peer(id||undefined,{debug:1,config:{iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}]}})}
+  function makeRoomCode(){return Math.random().toString(36).slice(2,8).toUpperCase().padEnd(6,'X')}
+  function roomPeerId(code){return 'jhon-bn-'+code.toLowerCase()}
+  function updateRoomShare(){roomShare.hidden=!roomCode;document.getElementById('roomCodeLabel').textContent=roomCode}
+  function connectRoom(conn){
+    roomConn=conn;
+    conn.on('open',()=>{setOnlineStatus('Conectado com '+opponentName,true);setOnlineControls(true);onlineHelp.textContent='Conexão estabelecida! Posicione sua frota e toque em Começar. A partida inicia quando os dois estiverem prontos.';msgEl.textContent='🤝 Adversário conectado. Posicione sua frota e prepare-se!';});
+    conn.on('data',handleOnlineData);
+    conn.on('close',()=>{setOnlineStatus('Adversário desconectado',false);onlineHelp.textContent='A conexão foi encerrada. Você pode criar ou entrar em outra sala.';msgEl.textContent='⚠️ O adversário saiu da sala.';roomConn=null;onlineMode=false;setOnlineControls(false);});
+    conn.on('error',e=>{onlineHelp.textContent='Erro na conexão: '+(e.message||'tente novamente.');});
+  }
+  function handleOnlineData(data){
+    if(!data||typeof data!=='object')return;
+    if(data.type==='hello'){opponentName=String(data.name||'Adversário').slice(0,20);connSend({type:'helloAck',name:'Jogador'});return}
+    if(data.type==='helloAck'){opponentName=String(data.name||'Adversário').slice(0,20);setOnlineStatus('Conectado com '+opponentName,true);return}
+    if(data.type==='ready'){
+      if(!Array.isArray(data.ships)||data.ships.length!==N)return;
+      foe=blank();data.ships.forEach((id,i)=>{if(Number.isInteger(id)&&id>=0&&id<SHIPS.length)foe[i].ship=id});
+      opponentReady=true;onlineHelp.textContent=localReady?'Os dois estão prontos. A partida vai começar!':'Adversário pronto! Termine de posicionar sua frota e toque em Começar.';
+      if(localReady)beginOnlineBattle();paint();return;
+    }
+    if(data.type==='shot'){
+      const i=Number(data.index);if(!Number.isInteger(i)||i<0||i>=N||mine[i].shot||phase!=='battle')return;
+      mine[i].shot=true;const hit=mine[i].ship>=0,sunk=hit&&isSunk(mine,mine[i].ship),gameOver=SHIPS.every((_,id)=>isSunk(mine,id));
+      connSend({type:'shotResult',index:i,hit,sunk,gameOver});
+      if(gameOver){paint();finish(false);return}
+      playerTurn=true;msgEl.textContent=hit?(sunk?'🚢 O adversário afundou um navio seu! Sua vez de responder.':'💥 O adversário acertou! Sua vez de responder.'):'🌊 O adversário errou. Sua vez de disparar!';
+      paint();return;
+    }
+    if(data.type==='shotResult'){
+      const i=Number(data.index);if(!Number.isInteger(i)||i<0||i>=N)return;
+      foe[i].shot=true;shots++;if(data.hit)hitsOnFoe++;
+      msgEl.textContent=data.hit?(data.sunk?'🚢 Você afundou um navio adversário!':'💥 Acertou o adversário!'):'🌊 Você errou. Aguarde o disparo adversário.';
+      paint();if(data.gameOver){finish(true);return}return;
+    }
+    if(data.type==='rematch'){reset();localReady=false;opponentReady=false;msgEl.textContent='🔄 Nova partida solicitada. Posicione sua frota.';return}
+  }
+  function connSend(data){if(roomConn&&roomConn.open)roomConn.send(data)}
+  async function createOnlineRoom(){
+    if(onlineMode)return;createRoomBtn.disabled=true;joinRoomBtn.disabled=true;setOnlineStatus('Criando sala…',false);onlineHelp.textContent='Preparando uma sala privada…';
+    try{await loadPeerJS();roomCode=makeRoomCode();peer=makePeer(roomPeerId(roomCode));peer.on('open',()=>{onlineMode=true;isHost=true;roomEntry.hidden=true;updateRoomShare();setOnlineStatus('Aguardando adversário',false);onlineHelp.textContent='Compartilhe o código '+roomCode+' com seu adversário. Quando ele entrar, vocês poderão iniciar.';setOnlineControls(false);});
+      peer.on('connection',conn=>{if(roomConn){conn.close();return}opponentName='Adversário';connectRoom(conn);conn.on('open',()=>connSend({type:'hello',name:'Jogador'}));});
+      peer.on('error',e=>{setOnlineStatus('Falha ao criar sala',false);onlineHelp.textContent=e.type==='unavailable-id'?'Código ocupado. Tente criar outra sala.':(e.message||'Não foi possível criar a sala.');createRoomBtn.disabled=false;joinRoomBtn.disabled=false;});
+    }catch(e){setOnlineStatus('Offline',false);onlineHelp.textContent=e.message;createRoomBtn.disabled=false;joinRoomBtn.disabled=false}
+  }
+  async function joinOnlineRoom(){
+    const code=roomCodeInput.value.trim().toUpperCase();if(!/^[A-Z0-9]{6}$/.test(code)){onlineHelp.textContent='Digite um código válido de 6 caracteres.';roomEntry.hidden=false;return}
+    if(onlineMode)return;createRoomBtn.disabled=true;joinRoomBtn.disabled=true;setOnlineStatus('Entrando na sala…',false);onlineHelp.textContent='Conectando ao anfitrião…';
+    try{await loadPeerJS();peer=makePeer();peer.on('open',()=>{roomCode=code;onlineMode=true;isHost=false;updateRoomShare();connectRoom(peer.connect(roomPeerId(code),{reliable:true}));});
+      peer.on('error',e=>{setOnlineStatus('Falha na conexão',false);onlineHelp.textContent=e.message||'Não foi possível entrar na sala.';createRoomBtn.disabled=false;joinRoomBtn.disabled=false;});
+    }catch(e){setOnlineStatus('Offline',false);onlineHelp.textContent=e.message;createRoomBtn.disabled=false;joinRoomBtn.disabled=false}
+  }
+  function beginOnlineBattle(){
+    phase='battle';playerTurn=isHost;over=false;startBtn.textContent='Partida em andamento';startBtn.disabled=true;
+    msgEl.textContent=playerTurn?'🎯 Sua vez de disparar!':'⏳ Adversário começa. Aguarde sua vez.';
+    onlineHelp.textContent='Partida online em andamento. Os turnos alternam após cada disparo.';paint();
+  }
+  function disconnectOnline(){
+    if(roomConn){roomConn.close();roomConn=null}if(peer){peer.destroy();peer=null}
+    onlineMode=false;roomCode='';localReady=false;opponentReady=false;isHost=false;updateRoomShare();roomEntry.hidden=true;setOnlineStatus('Desconectado',false);setOnlineControls(false);createRoomBtn.disabled=false;joinRoomBtn.disabled=false;onlineHelp.textContent='Crie uma sala e compartilhe o código com outra pessoa.';reset();
+  }
 
   
 
@@ -252,17 +328,23 @@ let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.
 
   function startBattle(){
     if (phase !== 'place' || placing < SHIPS.length) return;
-    phase = 'battle';
-    playerTurn = true;
-    msgEl.innerHTML = '🎯 Sua vez: toque no <b>radar inimigo</b>.';
-    startBtn.textContent = 'Reiniciar';
-    startBtn.disabled = false;
-    paint();
+    if(onlineMode){
+      if(!roomConn||!roomConn.open){msgEl.textContent='Aguarde um adversário conectar antes de iniciar.';return}
+      localReady=true;startBtn.disabled=true;startBtn.textContent='Aguardando adversário…';
+      connSend({type:'ready',ships:mine.map(cell=>cell.ship)});
+      msgEl.textContent=opponentReady?'Os dois prontos! Preparando partida…':'✅ Frota pronta! Aguardando o adversário posicionar os navios…';
+      if(opponentReady)beginOnlineBattle();return;
+    }
+    phase = 'battle';playerTurn = true;msgEl.innerHTML = '🎯 Sua vez: toque no <b>radar inimigo</b>.';
+    startBtn.textContent = 'Reiniciar';startBtn.disabled = false;paint();
   }
 
   function shoot(i){
     if (phase !== 'battle' || !playerTurn || over) return;
     if (foe[i].shot) return;
+    if(onlineMode){
+      playerTurn=false;connSend({type:'shot',index:i});msgEl.textContent='🎯 Disparo enviado. Aguardando o adversário…';playTone(330);return;
+    }
     foe[i].shot = true; shots++;
     playTone(foe[i].ship>=0?660:220);
     if (foe[i].ship >= 0) {
@@ -336,6 +418,16 @@ let audioCtx=null;function ensureAudio(){if(!audioCtx){try{audioCtx=new (window.
     startBtn.textContent = 'Reiniciar';
   }
 
+  createRoomBtn.addEventListener('click',createOnlineRoom);
+  joinRoomBtn.addEventListener('click',()=>{roomEntry.hidden=false;joinConfirm.hidden=false;roomCodeInput.focus();});
+  roomCodeInput.addEventListener('input',()=>{roomCodeInput.value=roomCodeInput.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,6)});
+  roomCodeInput.addEventListener('keydown',e=>{if(e.key==='Enter')joinOnlineRoom()});
+  document.getElementById('joinRoom').addEventListener('dblclick',joinOnlineRoom);
+  const joinConfirm=document.createElement('button');joinConfirm.type='button';joinConfirm.className='btn';joinConfirm.textContent='Conectar';joinConfirm.hidden=true;roomEntry.appendChild(joinConfirm);joinConfirm.addEventListener('click',joinOnlineRoom);
+  const roomEntryObserver=new MutationObserver(()=>{joinConfirm.hidden=roomEntry.hidden});roomEntryObserver.observe(roomEntry,{attributes:true,attributeFilter:['hidden']});
+  copyRoomBtn.addEventListener('click',async()=>{const invite=location.href.split('?')[0]+'?room='+roomCode;try{if(navigator.share)await navigator.share({title:'Batalha Naval Online',text:'Entre na minha sala de Batalha Naval: '+roomCode,url:invite});else{await navigator.clipboard.writeText('Código da sala: '+roomCode+' — '+invite);onlineHelp.textContent='Convite copiado! Envie para seu adversário.'}}catch(e){if(e.name!=='AbortError')onlineHelp.textContent='Não foi possível compartilhar. Copie o código '+roomCode+'.'}});
+  disconnectBtn.addEventListener('click',disconnectOnline);
+  const roomFromUrl=new URLSearchParams(location.search).get('room');if(roomFromUrl){roomCodeInput.value=roomFromUrl.toUpperCase().slice(0,6);roomEntry.hidden=false;onlineHelp.textContent='Convite recebido! Toque em Entrar com código e depois em Conectar.'}
   startBtn.addEventListener('click', function(){
     if (phase === 'battle' || phase === 'done') reset();
     else startBattle();
