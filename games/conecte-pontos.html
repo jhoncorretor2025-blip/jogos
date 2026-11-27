@@ -91,7 +91,7 @@ details.help{border-top:1px solid var(--line);margin-top:14px;padding-top:10px;c
 (()=>{'use strict';
 const $=id=>document.getElementById(id);
 const KEY_G='dots.games',KEY_W='dots.wins',KEY_B='dots.best',KEY_L='dots.losses',KEY_D='dots.draws';
-let n=5,mode='cpu',state=null,locked=false,timer=null,history=[],humanTurnStart=null,hintEdge=null,lastEdge=null,roundSaved=false,audioContext=null;
+let n=5,mode='cpu',state=null,locked=false,timer=null,history=[],humanTurnStart=null,humanTurnActive=false,hintEdge=null,lastEdge=null,roundSaved=false,audioContext=null;
 const has=(s,k)=>Object.prototype.hasOwnProperty.call(s.edges,k),keyH=(r,c)=>'h:'+r+':'+c,keyV=(r,c)=>'v:'+r+':'+c;
 function cleanName(value,fallback){return String(value||'').trim().slice(0,14)||fallback}
 function playerName(p){return p===0?cleanName($('name1').value,'Jogador 1'):cleanName($('name2').value,mode==='cpu'?'IA':'Jogador 2')}
@@ -188,7 +188,7 @@ function render(){
 }
 let lastBoxMove=-1;
 function finish(){
- if(roundSaved)return;roundSaved=true;state.finished=true;locked=false;clearTimeout(timer);history=[];humanTurnStart=null;
+ if(roundSaved)return;roundSaved=true;state.finished=true;locked=false;clearTimeout(timer);history=[];humanTurnStart=null;humanTurnActive=false;
  const [a,b]=state.scores;persist(KEY_G,readNumber(KEY_G)+1);
  let result;
  if(a===b){persist(KEY_D,readNumber(KEY_D)+1);result='🤝 Empate!'}
@@ -200,9 +200,9 @@ function finish(){
 function play(edge){
  if(locked||state.finished||state.edges[edge])return;
  const player=state.turn;
- if(mode==='cpu'&&player===0)humanTurnStart=cloneState(state);
+ if(mode==='cpu'&&player===0&&!humanTurnActive){humanTurnStart=cloneState(state);humanTurnActive=true;}
  if(mode==='local')history.push(cloneState(state));
- const result=applyEdge(state,edge,player);state=result.state;hintEdge=null;lastEdge=edge;lastBoxMove=result.gained?state.moves:-1;
+ const result=applyEdge(state,edge,player);state=result.state;if(mode==='cpu'&&player===0&&!result.gained)humanTurnActive=false;hintEdge=null;lastEdge=edge;lastBoxMove=result.gained?state.moves:-1;
  playTone(result.gained?740:430,result.gained ? .15 : .07,result.gained?'triangle':'sine');
  if(state.finished){finish();return}
  if(mode==='cpu'&&state.turn===1){
@@ -214,7 +214,7 @@ function play(edge){
 }
 function undo(){
  if(locked)return;
- if(mode==='cpu'&&humanTurnStart){state=cloneState(humanTurnStart);humanTurnStart=null;hintEdge=null;lastEdge=null;lastBoxMove=-1;roundSaved=false;$('message').textContent='Sua última vez e a resposta da IA foram desfeitas.';render();return}
+ if(mode==='cpu'&&humanTurnStart){state=cloneState(humanTurnStart);humanTurnStart=null;humanTurnActive=false;hintEdge=null;lastEdge=null;lastBoxMove=-1;roundSaved=false;$('message').textContent='Sua última vez e a resposta da IA foram desfeitas.';render();return}
  if(mode==='local'&&history.length){state=history.pop();hintEdge=null;lastEdge=null;lastBoxMove=-1;roundSaved=false;$('message').textContent='Última jogada desfeita. Vez de '+playerName(state.turn)+'.';render()}
 }
 function giveHint(){
@@ -222,7 +222,7 @@ function giveHint(){
 }
 function start(ask=false){
  if(ask&&state&&state.moves>0&&!state.finished&&!confirm('Começar uma nova partida? O placar desta partida será encerrado sem ser contabilizado.'))return;
- clearTimeout(timer);n=Number($('size').value);mode=$('mode').value;state=newState();locked=false;history=[];humanTurnStart=null;hintEdge=null;lastEdge=null;lastBoxMove=-1;roundSaved=false;
+ clearTimeout(timer);n=Number($('size').value);mode=$('mode').value;state=newState();locked=false;history=[];humanTurnStart=null;humanTurnActive=false;hintEdge=null;lastEdge=null;lastBoxMove=-1;roundSaved=false;
  $('name2').value=mode==='cpu'?'IA':cleanName($('name2').value,'Jogador 2');$('name1').value=cleanName($('name1').value,'Você');
  $('message').textContent='Partida iniciada. Escolha uma linha entre dois pontos.';render();
  $('name2').disabled=false;$('level').disabled=mode!=='cpu';
