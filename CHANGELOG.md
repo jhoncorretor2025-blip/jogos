@@ -1,5 +1,15 @@
 # Histórico de alterações — Jogos do Jhon
 
+## V4.21 — Ritmo Neon revisado
+- Atualizado Ritmo Neon para v1.3.
+- Corrigida a proporção do campo musical em telas menores, mantendo a escala do desenho.
+- Adicionados indicadores de precisão, acertos, notas perdidas e recorde.
+- Recorde de pontuação salvo automaticamente no navegador.
+- Encerramento apresenta o resumo da partida e permite reiniciar com os contadores zerados.
+- Corrigida a retomada do áudio após suspensão do navegador e evitada repetição de notas por tecla pressionada.
+- Atualizados o catálogo e o cache do aplicativo para v4.21.
+
+
 ## V4.20 — Clássicos Arcade revisado
 - Atualizado o motor Clássicos Arcade para v1.15, com correções nos jogos Dominó, Paciência, Pinball e Travessia Maluca.
 - Dominó: corrigida a sequência de passes sem jogadas, com encerramento por bloqueio e cancelamento da jogada atrasada ao iniciar outra partida.
